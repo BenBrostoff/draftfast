@@ -8,8 +8,13 @@ with open('dk-salaries-week-1.csv', 'rb') as dk:
     for player in rd:
         all.append(player)
 
-def pos_gather(pos, top=20):
-    select = [x for x in all if x[0] == pos]
+def pos_gather(pos, top=30):
+    if pos == "FLEX":
+        pos = ["WR", "RB"]  
+        select = [x for x in all if x[0] in pos]
+    else:
+      select = [x for x in all if x[0] == pos]
+
     select = sorted(select, key=lambda x: int(x[2]), reverse=True)
     return select[:top]
 
@@ -17,6 +22,7 @@ TEAM_REQS = {
     'QB': 1,
     'RB': 2,
     'WR': 3,
+    'FLEX': 1,
     'TE': 1,
     'DST': 1  
 }
