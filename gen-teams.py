@@ -8,7 +8,10 @@ with open('dk-salaries-week-1.csv', 'rb') as dk:
     for player in rd:
         all.append(player)
 
-def pos_gather(pos, top=30):
+def format_output(info):
+    print info[1] + ' (' + info[2] + ')'
+
+def pos_gather(pos, top=50):
     if pos == "FLEX":
         pos = ["WR", "RB"]  
         select = [x for x in all if x[0] in pos]
@@ -51,19 +54,31 @@ class Team:
                 mult.append(avail[randint(0, len(avail) - 1)])
             return mult
 
+    def contains_dups(self):
+      players = []
+      for pos, info in self.team.iteritems():
+            if type(info[0]) is not list:
+                players.append(info[1])
+            else:
+                for x in info:
+                    players.append(x[1])
+      return len(players) != len(set(players))  
+
     def team_report(self):
         for pos, info in self.team.iteritems():
             print pos + ':' 
             if type(info[0]) is not list:
-                print info[1]
+                format_output(info)
             else:
                 for x in info:
-                    print x[1]  
+                    format_output(x)
         print "Team Cost" + ": " + str(self.cost)
 
 random_samp = []
 for x in xrange(0, 100):
-    random_samp.append(Team())
+    team = Team()
+    if not team.contains_dups():
+      random_samp.append(team)
 
 random_samp = sorted(random_samp, key=lambda x: abs(x.cost - 50000))
 random_samp = [x for x in random_samp if x.cost <= 50000]
