@@ -21,10 +21,17 @@ class Player:
 
 with open('dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
-    for player in rd:
-        all.append(Player(player[0], 
-                          player[1], 
-                          player[2]))
+    for idx, player in enumerate(rd):
+        # skip header
+        if idx > 0:
+            pts = int(player[4].split('.')[0])
+            all.append(Player(player[0], 
+                              player[1], 
+                              player[2],
+                              pts))
+
+
+# TODO - Yahoo / ESPN add projected; for now, use DK avg
 
 for pos in ALL_POS:
     # eventually want to sort projected
@@ -61,6 +68,7 @@ class Team:
             getattr(self, pos).player_report()
 
         print 'Total Cost: ' + str(self.team_cost)
+        print 'Total Projected: ' + str(self.team_proj)
 
     def contains_dups(self):
         players = []
@@ -91,12 +99,14 @@ class Team:
 
 
 teams = []
-for x in xrange(0, 10000):
+for x in xrange(0, 100000):
     team = Team()
     if not team.contains_dups():
         teams.append(team)
 
 afford = [x for x in teams if x.team_cost <= 50000]
-random_samp = sorted(afford, key=lambda x: x.team_proj, reverse=True)
+top_samp = sorted(afford, key=lambda x: x.team_proj, reverse=True)[0:5]
 
-print random_samp[0].team_report()
+for team in top_samp:
+    print '*****************'
+    print team.team_report()
