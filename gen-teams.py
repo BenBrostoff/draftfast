@@ -1,16 +1,18 @@
 import csv
 from random import randint
+from cartesian import cartesian
+import time
 
 all = []
 
 TOP_POS = {}
 ALL_POS = ['QB', 'RB', 'WR', 'TE', 'DST']
 ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
-                'WR1', 'WR2', 'WR3',
+                'WR1', 'WR2', 'WR3', 'FLEX',
                 'TE', 'DST']
 
 class Player:
-    def __init__(self, pos, name, cost, proj=1):
+    def __init__(self, pos, name, cost, proj=4):
         self.pos = pos
         self.name = name
         self.cost = cost
@@ -40,7 +42,7 @@ for pos in ALL_POS:
     else:
         filter_pos = [p for p in all if p.pos == pos]
     
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:20]
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:3]
 
 def choose_random(pos_list):
     return pos_list[(randint(0, len(pos_list) - 1))]
@@ -58,8 +60,8 @@ pos_dict = {
 }
 
 class Team:
-    def __init__(self):
-        self._set_team_pos()
+    def __init__(self, give):
+        self._set_team_pos(give)
         self.team_cost = self._get_team_prop('proj')
         self.team_proj = self._get_team_prop('cost')
 
@@ -78,26 +80,43 @@ class Team:
 
         return len(players) != len(set(players))  
 
-    def _set_team_pos(self):
-        for k, v in pos_dict.iteritems():
-            setattr(self, k, choose_random(v))
+    def _set_team_pos(self, give):
+        for idx, val in enumerate(give):
+            setattr(self, ALL_POS_TEAM[idx], val)
 
     def _get_team_prop(self, prop):
-        cost = 0
+        val = 0
         for pos in ALL_POS_TEAM:
-            cost += int(getattr(getattr(self, pos), prop))
+            val += int(getattr(getattr(self, pos), prop))
 
-        return cost
+        return val
 
-teams = []
-for x in xrange(0, 100000):
-    team = Team()
-    if not team.contains_dups():
-        teams.append(team)
 
-afford = [x for x in teams if x.team_cost <= 50000]
-top_samp = sorted(afford, key=lambda x: x.team_proj, reverse=True)[0:5]
 
-for team in top_samp:
-    print '*****************'
-    print team.team_report()
+gather = cartesian((TOP_POS['QB'], 
+                    TOP_POS['RB'], 
+                    TOP_POS['RB'],
+                    TOP_POS['WR'],
+                    TOP_POS['WR'],
+                    TOP_POS['WR'],
+                    TOP_POS['QB'] +  TOP_POS['WR'] +  TOP_POS['RB'],
+                    TOP_POS['TE'],
+                    TOP_POS['DST']))
+
+hold = []
+check = len(gather)
+
+for idx, x in enumerate(gather):
+    print str(idx) + ' of ' + str(check) + '...'
+    team = Team(x)
+    if team.team_cost <= 5000000 and not team.contains_dups():
+        hold.append(team)
+
+print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
+
+
+
+
+
+
+
