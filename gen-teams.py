@@ -3,85 +3,110 @@ from random import randint
 
 all = []
 
+TOP_POS = {}
+ALL_POS = ['QB', 'RB', 'WR', 'TE', 'DST']
+ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
+                'WR1', 'WR2', 'WR3',
+                'TE', 'DST']
+
+class Player:
+    def __init__(self, pos, name, cost, proj=1):
+        self.pos = pos
+        self.name = name
+        self.cost = cost
+        self.proj = proj
+
+    def player_report(self):
+        print self.name + ' (' + self.cost + ')'
+
 with open('dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
-    for player in rd:
-        all.append(player)
+    for idx, player in enumerate(rd):
+        # skip header
+        if idx > 0:
+            pts = int(player[4].split('.')[0])
+            all.append(Player(player[0], 
+                              player[1], 
+                              player[2],
+                              pts))
 
-def format_output(info):
-    print info[1] + ' (' + info[2] + ')'
 
-def pos_gather(pos, top=50):
-    if pos == "FLEX":
-        pos = ["WR", "RB"]  
-        select = [x for x in all if x[0] in pos]
+# TODO - Yahoo / ESPN add projected; for now, use DK avg
+
+for pos in ALL_POS:
+    # eventually want to sort projected
+    if pos == 'FLEX':
+        filter_pos = [p for p in all if p.pos in ['QB', 'RB', 'WR']]
     else:
-      select = [x for x in all if x[0] == pos]
+        filter_pos = [p for p in all if p.pos == pos]
+    
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:20]
 
-    select = sorted(select, key=lambda x: int(x[2]), reverse=True)
-    return select[:top]
+def choose_random(pos_list):
+    return pos_list[(randint(0, len(pos_list) - 1))]
 
-TEAM_REQS = {
-    'QB': 1,
-    'RB': 2,
-    'WR': 3,
-    'FLEX': 1,
-    'TE': 1,
-    'DST': 1  
+pos_dict = {
+    'QB': TOP_POS['QB'],
+    'RB1': TOP_POS['RB'],
+    'RB2': TOP_POS['RB'],
+    'WR1': TOP_POS['WR'],
+    'WR2': TOP_POS['WR'],
+    'WR3': TOP_POS['WR'],
+    'FLEX': TOP_POS['QB'] + TOP_POS['WR'] + TOP_POS['RB'],
+    'TE': TOP_POS['TE'],
+    'DST': TOP_POS['DST']
 }
 
-class Team:    
+class Team:
     def __init__(self):
-        team = {}
-        for pos, number in TEAM_REQS.iteritems():
-            team[pos] = self.choose_random(pos, number)
-
-        self.team = team
-        self.cost = 0
-        for pos, info in self.team.iteritems():
-            if type(info[0]) is not list:
-                self.cost += int(info[2])
-            else:
-                for x in info: 
-                    self.cost += int(x[2])
-            
-    def choose_random(self, position, needed=1):
-        mult, avail = [], pos_gather(position)
-        if needed == 1:
-            return avail[randint(0, len(avail) - 1)]
-        else:
-            for x in xrange(0, needed):
-                mult.append(avail[randint(0, len(avail) - 1)])
-            return mult
-
-    def contains_dups(self):
-      players = []
-      for pos, info in self.team.iteritems():
-            if type(info[0]) is not list:
-                players.append(info[1])
-            else:
-                for x in info:
-                    players.append(x[1])
-      return len(players) != len(set(players))  
+        self._set_team_pos()
+        self.team_cost = self._get_team_cost()
+        self.team_proj = self._get_team_proj()
 
     def team_report(self):
-        for pos, info in self.team.iteritems():
-            print pos + ':' 
-            if type(info[0]) is not list:
-                format_output(info)
-            else:
-                for x in info:
-                    format_output(x)
-        print "Team Cost" + ": " + str(self.cost)
+        for pos in ALL_POS_TEAM:
+            getattr(self, pos).player_report()
 
-random_samp = []
-for x in xrange(0, 100):
+        print 'Total Cost: ' + str(self.team_cost)
+        print 'Total Projected: ' + str(self.team_proj)
+
+    def contains_dups(self):
+        players = []
+        for pos in ALL_POS_TEAM:
+            name = getattr(self, pos).name
+            players.append(name)
+
+        return len(players) != len(set(players))  
+
+    def _set_team_pos(self):
+        for k, v in pos_dict.iteritems():
+            setattr(self, k, choose_random(v))
+
+    def _get_team_cost(self):
+        cost = 0
+        for pos in ALL_POS_TEAM:
+            cost += int(getattr(self, pos).cost)
+
+        return cost
+
+    # dry this out, maybe with decorator    
+    def _get_team_proj(self):
+        proj = 0
+        for pos in ALL_POS_TEAM:
+            proj += int(getattr(self, pos).proj)
+
+        return proj
+
+
+teams = []
+for x in xrange(0, 100000):
     team = Team()
     if not team.contains_dups():
-      random_samp.append(team)
+        teams.append(team)
 
-random_samp = sorted(random_samp, key=lambda x: abs(x.cost - 50000))
-random_samp = [x for x in random_samp if x.cost <= 50000]
+afford = [x for x in teams if x.team_cost <= 50000]
+top_samp = sorted(afford, key=lambda x: x.team_proj, reverse=True)[0:5]
 
-for x in random_samp:
-    x.team_report()  
+for team in top_samp:
+    print '*****************'
+    print team.team_report()
