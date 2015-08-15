@@ -60,8 +60,8 @@ pos_dict = {
 class Team:
     def __init__(self):
         self._set_team_pos()
-        self.team_cost = self._get_team_cost()
-        self.team_proj = self._get_team_proj()
+        self.team_cost = self._get_team_prop('proj')
+        self.team_proj = self._get_team_prop('cost')
 
     def team_report(self):
         for pos in ALL_POS_TEAM:
@@ -82,21 +82,12 @@ class Team:
         for k, v in pos_dict.iteritems():
             setattr(self, k, choose_random(v))
 
-    def _get_team_cost(self):
+    def _get_team_prop(self, prop):
         cost = 0
         for pos in ALL_POS_TEAM:
-            cost += int(getattr(self, pos).cost)
+            cost += int(getattr(getattr(self, pos), prop))
 
         return cost
-
-    # dry this out, maybe with decorator    
-    def _get_team_proj(self):
-        proj = 0
-        for pos in ALL_POS_TEAM:
-            proj += int(getattr(self, pos).proj)
-
-        return proj
-
 
 teams = []
 for x in xrange(0, 100000):
