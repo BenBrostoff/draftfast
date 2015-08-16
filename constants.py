@@ -16,5 +16,7 @@ COMMAND_LINE = [
     ['-tep', 'price limit on TE', 4000],
     ['-dd', 'depth of defense to search through', 4],
     ['-dp', 'price limit on defense', 4000],
-    ['-wrk', 'processes enabled enabled', 2]    
+    ['-wrk', 'processes enabled - ' +
+             'you will still exhaust memory if you ' +
+             'stray far from depth defaults', 2]    
 ]

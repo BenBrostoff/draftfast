@@ -1,8 +1,8 @@
-from multiprocessing.dummy import Pool as ThreadPool 
 import time
 import csv
 import argparse
 from sys import argv
+from multiprocessing.dummy import Pool as ThreadPool 
 
 from constants import * 
 from lib.helpers import *
@@ -51,6 +51,10 @@ def get_avail_pos(all_avail, pos, proj_filter=0):
     if pos == 'RB' or pos == 'WR':
         cost_filter = 100000
 
+    if pos == 'FLEX':
+        return [p for p in all if p.pos in ['QB', 'RB', 'WR'] and \
+                                 int(p.cost) < cost_filter and \
+                                 int(p.proj) > proj_filter]
 
     return [p for p in all_avail if p.pos == pos and \
                                  int(p.cost) < cost_filter and \
@@ -60,11 +64,7 @@ def get_avail_pos(all_avail, pos, proj_filter=0):
 def set_search_depth():
     '''sets positions to search on'''
     for pos in ALL_POS:
-        print pos
-        if pos == 'FLEX':
-            filter_pos = [p for p in all if p.pos in ['QB', 'RB', 'WR'] and int(p.cost) < 7000]
-        elif pos !='WR' or pos != 'RB':
-            filter_pos = get_avail_pos(all, pos)
+        filter_pos = get_avail_pos(all, pos)
         
         setting = search_settings[pos]['d']
         if setting < 4:
