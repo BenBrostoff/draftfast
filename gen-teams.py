@@ -46,10 +46,10 @@ dst = int(argv[4])
 search_settings = {
     'QB': int(argv[1]),
     'RB': int(argv[2]),
-    'WR': int(argv[2]),
-    'FLEX': int(argv[2]),
-    'DST': int(argv[3]),
-    'TE': int(argv[4])
+    'WR': int(argv[3]),
+    'FLEX': int(argv[4]),
+    'DST': int(argv[5]),
+    'TE': int(argv[6])
 }
 
 def get_avail_pos(all_avail, cost_filter=0, proj_filter=0):
@@ -75,7 +75,7 @@ for pos in ALL_POS:
     if setting < 4:
         raise Exception('Must search beyond top 3 at each position')
 
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.proj)[:setting]
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.proj, reverse=True)[:setting]
 
 class Team:
     def __init__(self, give):
@@ -110,14 +110,14 @@ class Team:
         return val
 
 
+rbs = get_combos(TOP_POS['RB'], 2, 6500)
+wrs = get_combos(TOP_POS['WR'], 3, 6500)
 
-
-rbs = get_combos(TOP_POS['RB'], 2, 5500)
-wrs = get_combos(TOP_POS['WR'], 3, 5500)
-
+print rbs[0]    
 print wrs[0]
 print len(rbs)
 print len(wrs)
+time.sleep(3)
 
 gather = cartesian((TOP_POS['QB'], 
                     rbs,
@@ -147,12 +147,11 @@ def get_avail_teams(gather):
 
         team = Team(lineup)
 
-        if team.team_cost <= 500000 and not team.contains_dups():
+        if team.team_cost <= 50000 and not team.contains_dups():
             hold.append(team)
     if len(hold) > 0:
         print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
         print sorted(hold, key=lambda x: x.team_proj, reverse=True)[1].team_report()
-        print "THREAD ENDED"
 
 class myThread (threading.Thread):
     def __init__(self, name, chunk):
@@ -163,7 +162,5 @@ class myThread (threading.Thread):
         print 'Running ' + self.name
         get_avail_teams(self.chunk)
 
-print gather
-print get_avail_teams(gather)
-print 'abc'
+get_avail_teams(gather)
     
