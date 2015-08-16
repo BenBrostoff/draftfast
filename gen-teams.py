@@ -40,7 +40,7 @@ for pos in ALL_POS:
     else:
         filter_pos = [p for p in all if p.pos == pos]
     
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:4]
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:5]
 
 class Team:
     def __init__(self, give):
@@ -85,14 +85,14 @@ hold = []
 check = len(gather)
 
 for idx, x in enumerate(gather):
-    rb1, rb2 = x[1], x[2]
-    wr1, wr2, wr3 = x[3], x[4], x[5]
+    rb1, rb2 = x[1].A0, x[1].A1
+    wr1, wr2, wr3 = x[2].A0, x[2].A1, x[2].A2
     lineup = [x[0], rb1, rb2, wr1, wr2, wr3, x[3], x[4], x[5]]
 
     team = Team(lineup)
     
     print str(idx) + ' of ' + str(check) + '...'
-    if team.team_cost <= 50000:
+    if team.team_cost <= 500000 and not team.contains_dups():
         hold.append(team)
 
 print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()

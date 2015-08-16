@@ -1,6 +1,8 @@
 import numpy as np
 from itertools import combinations as combos
 
+# Special thanks to 
+# http://stackoverflow.com/questions/1208118/using-numpy-to-build-an-array-of-all-combinations-of-two-arrays
 def cartesian(arrays, out=None):
     """
     Generate a cartesian product of input arrays.
@@ -47,6 +49,13 @@ def cartesian(arrays, out=None):
             out[j*m:(j+1)*m,1:] = out[0:m,1:]
     return out
 
-def get_combos(pos_avail, num):
-    return [list(x) for x in list(combos(pos_avail, num))]  
+class ComboPlayerSet:
+    "exist as a workaround to limits of cartesian"
+    def __init__(self, combo):
+        for idx, x in enumerate(combo):
+            setattr(self, 'A' + str(idx), x)    
 
+
+
+def get_combos(pos_avail, num):
+    return [ComboPlayerSet(x) for x in list(combos(pos_avail, num))]  
