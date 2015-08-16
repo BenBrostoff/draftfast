@@ -1,7 +1,6 @@
 import csv
-from random import randint
 from cartesian import cartesian
-import time
+from itertools import combinations as combos
 
 all = []
 
@@ -42,28 +41,13 @@ for pos in ALL_POS:
     else:
         filter_pos = [p for p in all if p.pos == pos]
     
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:3]
-
-def choose_random(pos_list):
-    return pos_list[(randint(0, len(pos_list) - 1))]
-
-pos_dict = {
-    'QB': TOP_POS['QB'],
-    'RB1': TOP_POS['RB'],
-    'RB2': TOP_POS['RB'],
-    'WR1': TOP_POS['WR'],
-    'WR2': TOP_POS['WR'],
-    'WR3': TOP_POS['WR'],
-    'FLEX': TOP_POS['QB'] + TOP_POS['WR'] + TOP_POS['RB'],
-    'TE': TOP_POS['TE'],
-    'DST': TOP_POS['DST']
-}
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:5]
 
 class Team:
     def __init__(self, give):
         self._set_team_pos(give)
-        self.team_cost = self._get_team_prop('proj')
-        self.team_proj = self._get_team_prop('cost')
+        self.team_cost = self._get_team_prop('cost')
+        self.team_proj = self._get_team_prop('proj')
 
     def team_report(self):
         for pos in ALL_POS_TEAM:
@@ -92,13 +76,15 @@ class Team:
         return val
 
 
+def get_combos(pos_avail, num):
+    return [list(x) for x in list(combos(pos_avail, num))]
+
+
+#585937
 
 gather = cartesian((TOP_POS['QB'], 
-                    TOP_POS['RB'], 
-                    TOP_POS['RB'],
-                    TOP_POS['WR'],
-                    TOP_POS['WR'],
-                    TOP_POS['WR'],
+                    get_combos(TOP_POS['RB'], 2), 
+                    get_combos(TOP_POS['WR'], 3),
                     TOP_POS['QB'] +  TOP_POS['WR'] +  TOP_POS['RB'],
                     TOP_POS['TE'],
                     TOP_POS['DST']))
@@ -109,14 +95,10 @@ check = len(gather)
 for idx, x in enumerate(gather):
     print str(idx) + ' of ' + str(check) + '...'
     team = Team(x)
-    if team.team_cost <= 5000000 and not team.contains_dups():
+    print team.team_cost
+    print team.contains_dups()
+    if team.team_cost <= 5000000:
+        print 'x line'
         hold.append(team)
 
 print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
-
-
-
-
-
-
-
