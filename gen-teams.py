@@ -1,27 +1,23 @@
-import threading
+from multiprocessing.dummy import Pool as ThreadPool 
 import time
-from sys import argv
 import csv
+import argparse
+from sys import argv
+
+from constants import * 
 from lib.helpers import *
+from orm import *
+
+parser = argparse.ArgumentParser()
+
+for opt in COMMAND_LINE:
+    parser.add_argument(opt[0], help=opt[1], default=opt[2])
+
+args = parser.parse_args()
+
 
 all = []
-
 TOP_POS = {}
-ALL_POS = ['QB', 'RB', 'WR', 'TE', 'DST']
-ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
-                'WR1', 'WR2', 'WR3', 'FLEX',
-                'TE', 'DST']
-
-class Player:
-    def __init__(self, pos, name, cost, proj):
-        self.pos = pos
-        self.name = name
-        self.cost = cost
-        self.proj = proj
-
-    def player_report(self):
-        print self.pos + ' '+ self.name + \
-        ' (' + self.cost + ')' + ' (' + str(self.proj) + ')'
 
 with open('data/dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
@@ -38,90 +34,57 @@ with open('data/dk-salaries-week-1.csv', 'rb') as dk:
 # TODO - Yahoo / ESPN add projected; for now, use DK avg
 
 # Set search config
-qbs = int(argv[1])
-flex = int(argv[2])
-te = int(argv[3])
-dst = int(argv[4])
 
 search_settings = {
-    'QB': int(argv[1]),
-    'RB': int(argv[2]),
-    'WR': int(argv[3]),
-    'FLEX': int(argv[4]),
-    'DST': int(argv[5]),
-    'TE': int(argv[6])
+    'QB': {'d': args.qbd, 'p': args.qbp},
+    'RB': {'d': args.rbd, 'p': args.rbp},
+    'WR': {'d': args.wrd, 'p': args.wrp},
+    'FLEX': {'d': args.flexd, 'p': args.flexp},
+    'DST': {'d': args.dd, 'p': args.dp},
+    'TE': {'d': args.dd, 'p': args.dp}
 }
 
-def get_avail_pos(all_avail, cost_filter=0, proj_filter=0):
+def get_avail_pos(all_avail, pos, proj_filter=0):
+    cost_filter = search_settings[pos]['p']
+
+    # Do not filter individually, filter by average
+    if pos == 'RB' or pos == 'WR':
+        cost_filter = 100000
+
+
     return [p for p in all_avail if p.pos == pos and \
-                                 int(p.cost) > cost_filter and \
+                                 int(p.cost) < cost_filter and \
                                  int(p.proj) > proj_filter]
 
-for pos in ALL_POS:
-    # eventually want to sort projected
-    print pos
-    if pos == 'FLEX':
-        filter_pos = [p for p in all if p.pos in ['QB', 'RB', 'WR'] and int(p.cost) < 7000]
-    elif pos == 'QB':
-        filter_pos = [p for p in all if p.pos == pos and int(p.cost) and int(p.cost) < 7000]
-    elif pos == 'TE':
-        filter_pos = [p for p in all if p.pos == pos and int(p.cost) < 7000]
-    elif pos == 'DST':
-        filter_pos = [p for p in all if p.pos == pos and int(p.cost) > 2000]
-    else:
-        filter_pos = [p for p in all if p.pos == pos]
-    
-    setting = search_settings[pos]
-    if setting < 4:
-        raise Exception('Must search beyond top 3 at each position')
 
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.proj, reverse=True)[:setting]
+def set_search_depth():
+    '''sets positions to search on'''
+    for pos in ALL_POS:
+        print pos
+        if pos == 'FLEX':
+            filter_pos = [p for p in all if p.pos in ['QB', 'RB', 'WR'] and int(p.cost) < 7000]
+        elif pos !='WR' or pos != 'RB':
+            filter_pos = get_avail_pos(all, pos)
+        
+        setting = search_settings[pos]['d']
+        if setting < 4:
+            raise Exception('Must search beyond top 3 at each position')
 
-class Team:
-    def __init__(self, give):
-        self._set_team_pos(give)
-        self.team_cost = self._get_team_prop('cost')
-        self.team_proj = self._get_team_prop('proj')
+        TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.proj, reverse=True)[:setting]
 
-    def team_report(self):
-        for pos in ALL_POS_TEAM:
-            getattr(self, pos).player_report()
+    # set multi-player positions and filter by average
+    TOP_POS['MULTI_RB'] = get_combos(TOP_POS['RB'], 
+                                     2, 
+                                     search_settings['RB']['p'])
+    TOP_POS['MULTI_WR'] = get_combos(TOP_POS['WR'], 
+                                     3,
+                                     search_settings['WR']['p'])
 
-        print 'Total Cost: ' + str(self.team_cost)
-        print 'Total Projected: ' + str(self.team_proj)
-
-    def contains_dups(self):
-        players = []
-        for pos in ALL_POS_TEAM:
-            name = getattr(self, pos).name
-            players.append(name)
-
-        return len(players) != len(set(players))  
-
-    def _set_team_pos(self, give):
-        for idx, val in enumerate(give):
-            setattr(self, ALL_POS_TEAM[idx], val)
-
-    def _get_team_prop(self, prop):
-        val = 0
-        for pos in ALL_POS_TEAM:
-            val += int(getattr(getattr(self, pos), prop))
-
-        return val
-
-
-rbs = get_combos(TOP_POS['RB'], 2, 6500)
-wrs = get_combos(TOP_POS['WR'], 3, 6500)
-
-print rbs[0]    
-print wrs[0]
-print len(rbs)
-print len(wrs)
-time.sleep(3)
+set_search_depth()
 
 gather = cartesian((TOP_POS['QB'], 
-                    rbs,
-                    wrs,
+                    TOP_POS['MULTI_RB'],
+                    TOP_POS['MULTI_WR'],
                     TOP_POS['QB'] +  TOP_POS['WR'] +  TOP_POS['RB'],
                     TOP_POS['TE'],
                     TOP_POS['DST']))
@@ -137,8 +100,6 @@ def get_avail_teams(gather):
     check = len(gather)
     hold = []
     for idx, x in enumerate(gather):
-        print str(idx) + ' of ' + str(check) + '...'
-
         # 1 QB, 2RBs, 3 WRs, FLEX, TE, DST
         lineup = [x[0],
                   x[1].A0, x[1].A1,   
@@ -149,18 +110,18 @@ def get_avail_teams(gather):
 
         if team.team_cost <= 50000 and not team.contains_dups():
             hold.append(team)
+
     if len(hold) > 0:
-        print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
-        print sorted(hold, key=lambda x: x.team_proj, reverse=True)[1].team_report()
+        return sorted(hold, key=lambda x: x.team_proj, reverse=True)[0]
 
-class myThread (threading.Thread):
-    def __init__(self, name, chunk):
-        threading.Thread.__init__(self)
-        self.name = name
-        self.chunk = chunk
-    def run(self):
-        print 'Running ' + self.name
-        get_avail_teams(self.chunk)
 
-get_avail_teams(gather)
-    
+workers = int(args.wrk)
+chunks = split_list(gather, workers)
+
+pool = ThreadPool(workers) 
+best = pool.map(get_avail_teams, chunks)
+
+pool.close() 
+pool.join() 
+
+print sorted(best, key=lambda x: x.team_proj, reverse=True)[0].team_report()    
