@@ -1,6 +1,5 @@
 import csv
-from cartesian import cartesian
-from itertools import combinations as combos
+from lib.helpers import *
 
 all = []
 
@@ -11,7 +10,7 @@ ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
                 'TE', 'DST']
 
 class Player:
-    def __init__(self, pos, name, cost, proj=4):
+    def __init__(self, pos, name, cost, proj):
         self.pos = pos
         self.name = name
         self.cost = cost
@@ -20,7 +19,7 @@ class Player:
     def player_report(self):
         print self.name + ' (' + self.cost + ')'
 
-with open('dk-salaries-week-1.csv', 'rb') as dk:
+with open('data/dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
     for idx, player in enumerate(rd):
         # skip header
@@ -41,7 +40,7 @@ for pos in ALL_POS:
     else:
         filter_pos = [p for p in all if p.pos == pos]
     
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:5]
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:4]
 
 class Team:
     def __init__(self, give):
@@ -75,13 +74,6 @@ class Team:
 
         return val
 
-
-def get_combos(pos_avail, num):
-    return [list(x) for x in list(combos(pos_avail, num))]
-
-
-#585937
-
 gather = cartesian((TOP_POS['QB'], 
                     get_combos(TOP_POS['RB'], 2), 
                     get_combos(TOP_POS['WR'], 3),
@@ -93,12 +85,14 @@ hold = []
 check = len(gather)
 
 for idx, x in enumerate(gather):
+    rb1, rb2 = x[1], x[2]
+    wr1, wr2, wr3 = x[3], x[4], x[5]
+    lineup = [x[0], rb1, rb2, wr1, wr2, wr3, x[3], x[4], x[5]]
+
+    team = Team(lineup)
+    
     print str(idx) + ' of ' + str(check) + '...'
-    team = Team(x)
-    print team.team_cost
-    print team.contains_dups()
-    if team.team_cost <= 5000000:
-        print 'x line'
+    if team.team_cost <= 50000:
         hold.append(team)
 
 print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()

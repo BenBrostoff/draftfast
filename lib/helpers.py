@@ -1,4 +1,5 @@
 import numpy as np
+from itertools import combinations as combos
 
 def cartesian(arrays, out=None):
     """
@@ -45,4 +46,7 @@ def cartesian(arrays, out=None):
         for j in xrange(1, arrays[0].size):
             out[j*m:(j+1)*m,1:] = out[0:m,1:]
     return out
+
+def get_combos(pos_avail, num):
+    return [list(x) for x in list(combos(pos_avail, num))]  
 
