@@ -50,12 +50,10 @@ def cartesian(arrays, out=None):
     return out
 
 class ComboPlayerSet:
-    "exist as a workaround to limits of cartesian"
+    '''exist as a workaround to limits of cartesian'''
     def __init__(self, combo):
         for idx, x in enumerate(combo):
             setattr(self, 'A' + str(idx), x)    
-
-
 
 def get_combos(pos_avail, num):
     return [ComboPlayerSet(x) for x in list(combos(pos_avail, num))]  

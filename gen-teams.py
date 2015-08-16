@@ -1,3 +1,4 @@
+from sys import argv
 import csv
 from lib.helpers import *
 
@@ -17,7 +18,7 @@ class Player:
         self.proj = proj
 
     def player_report(self):
-        print self.name + ' (' + self.cost + ')'
+        print self.pos + ' '+ self.name + ' (' + self.cost + ')'
 
 with open('data/dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
@@ -40,7 +41,12 @@ for pos in ALL_POS:
     else:
         filter_pos = [p for p in all if p.pos == pos]
     
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:5]
+    depth = int(argv[1])
+    if depth < 4:
+        raise Exception('Must search beyond top 3 at each position')
+
+
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:depth]
 
 class Team:
     def __init__(self, give):
@@ -85,14 +91,18 @@ hold = []
 check = len(gather)
 
 for idx, x in enumerate(gather):
-    rb1, rb2 = x[1].A0, x[1].A1
-    wr1, wr2, wr3 = x[2].A0, x[2].A1, x[2].A2
-    lineup = [x[0], rb1, rb2, wr1, wr2, wr3, x[3], x[4], x[5]]
+    # 1 QB, 2RBs, 3 WRs, FLEX, TE, DST
+    lineup = [x[0],
+              x[1].A0, x[1].A1,   
+              x[2].A0, x[2].A1, x[2].A2,
+              x[3], x[4], x[5]]
 
     team = Team(lineup)
     
     print str(idx) + ' of ' + str(check) + '...'
+
     if team.team_cost <= 500000 and not team.contains_dups():
         hold.append(team)
 
 print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
+print sorted(hold, key=lambda x: x.team_cost)[0].team_report()
