@@ -52,8 +52,19 @@ def cartesian(arrays, out=None):
 class ComboPlayerSet:
     '''exist as a workaround to limits of cartesian'''
     def __init__(self, combo):
+        total_cost = 0
         for idx, x in enumerate(combo):
-            setattr(self, 'A' + str(idx), x)    
+            setattr(self, 'A' + str(idx), x)
+            total_cost += int(x.cost)
+        self.total_cost = total_cost    
 
-def get_combos(pos_avail, num):
-    return [ComboPlayerSet(x) for x in list(combos(pos_avail, num))]  
+def get_combos(pos_avail, num, limit_cost):
+    all = list(combos(pos_avail, num))
+    bos = [ComboPlayerSet(x) for x in all]
+    get = []
+    for x in bos:
+        if x.total_cost / num < limit_cost:
+            get.append(x)
+    return get
+
+

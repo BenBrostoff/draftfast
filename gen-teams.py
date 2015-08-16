@@ -1,5 +1,5 @@
 import threading
-
+import time
 from sys import argv
 import csv
 from lib.helpers import *
@@ -20,7 +20,8 @@ class Player:
         self.proj = proj
 
     def player_report(self):
-        print self.pos + ' '+ self.name + ' (' + self.cost + ')'
+        print self.pos + ' '+ self.name + \
+        ' (' + self.cost + ')' + ' (' + str(self.proj) + ')'
 
 with open('data/dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
@@ -51,19 +52,30 @@ search_settings = {
     'TE': int(argv[4])
 }
 
+def get_avail_pos(all_avail, cost_filter=0, proj_filter=0):
+    return [p for p in all_avail if p.pos == pos and \
+                                 int(p.cost) > cost_filter and \
+                                 int(p.proj) > proj_filter]
+
 for pos in ALL_POS:
     # eventually want to sort projected
+    print pos
     if pos == 'FLEX':
-        filter_pos = [p for p in all if p.pos in ['QB', 'RB', 'WR']]
+        filter_pos = [p for p in all if p.pos in ['QB', 'RB', 'WR'] and int(p.cost) < 7000]
+    elif pos == 'QB':
+        filter_pos = [p for p in all if p.pos == pos and int(p.cost) and int(p.cost) < 7000]
+    elif pos == 'TE':
+        filter_pos = [p for p in all if p.pos == pos and int(p.cost) < 7000]
+    elif pos == 'DST':
+        filter_pos = [p for p in all if p.pos == pos and int(p.cost) > 2000]
     else:
         filter_pos = [p for p in all if p.pos == pos]
-    
     
     setting = search_settings[pos]
     if setting < 4:
         raise Exception('Must search beyond top 3 at each position')
 
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:setting]
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.proj)[:setting]
 
 class Team:
     def __init__(self, give):
@@ -97,9 +109,19 @@ class Team:
 
         return val
 
+
+
+
+rbs = get_combos(TOP_POS['RB'], 2, 5500)
+wrs = get_combos(TOP_POS['WR'], 3, 5500)
+
+print wrs[0]
+print len(rbs)
+print len(wrs)
+
 gather = cartesian((TOP_POS['QB'], 
-                    get_combos(TOP_POS['RB'], 2), 
-                    get_combos(TOP_POS['WR'], 3),
+                    rbs,
+                    wrs,
                     TOP_POS['QB'] +  TOP_POS['WR'] +  TOP_POS['RB'],
                     TOP_POS['TE'],
                     TOP_POS['DST']))
@@ -112,9 +134,12 @@ def split_list(lst, parts):
     return [lst[i:i+sz] for i in range(0, len(lst), sz)]
 
 def get_avail_teams(gather):
+    check = len(gather)
     hold = []
     for idx, x in enumerate(gather):
-    # 1 QB, 2RBs, 3 WRs, FLEX, TE, DST
+        print str(idx) + ' of ' + str(check) + '...'
+
+        # 1 QB, 2RBs, 3 WRs, FLEX, TE, DST
         lineup = [x[0],
                   x[1].A0, x[1].A1,   
                   x[2].A0, x[2].A1, x[2].A2,
@@ -126,38 +151,19 @@ def get_avail_teams(gather):
             hold.append(team)
     if len(hold) > 0:
         print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
-        print sorted(hold, key=lambda x: x.team_cost)[0].team_report()
+        print sorted(hold, key=lambda x: x.team_proj, reverse=True)[1].team_report()
         print "THREAD ENDED"
 
-threads = []
-for chunk in split_list(gather, 4):
-    thread = threading.Thread(target=get_avail_teams(chunk))
-    thread.start()
+class myThread (threading.Thread):
+    def __init__(self, name, chunk):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.chunk = chunk
+    def run(self):
+        print 'Running ' + self.name
+        get_avail_teams(self.chunk)
 
-    threads.append(thread)
-
-print "Waiting..."
-
-for thread in threads:
-    thread.join()
-
-print "Complete."
-
-
-
-# for idx, x in enumerate(gather):
-#     # 1 QB, 2RBs, 3 WRs, FLEX, TE, DST
-#     lineup = [x[0],
-#               x[1].A0, x[1].A1,   
-#               x[2].A0, x[2].A1, x[2].A2,
-#               x[3], x[4], x[5]]
-
-#     team = Team(lineup)
+print gather
+print get_avail_teams(gather)
+print 'abc'
     
-#     print str(idx) + ' of ' + str(check) + '...'
-
-#     if team.team_cost <= 500000 and not team.contains_dups():
-#         hold.append(team)
-
-# print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
-# print sorted(hold, key=lambda x: x.team_cost)[0].team_report()
