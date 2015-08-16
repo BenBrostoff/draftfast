@@ -1,25 +1,26 @@
+from sys import argv
 import csv
-from random import randint
+from lib.helpers import *
 
 all = []
 
 TOP_POS = {}
 ALL_POS = ['QB', 'RB', 'WR', 'TE', 'DST']
 ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
-                'WR1', 'WR2', 'WR3',
+                'WR1', 'WR2', 'WR3', 'FLEX',
                 'TE', 'DST']
 
 class Player:
-    def __init__(self, pos, name, cost, proj=1):
+    def __init__(self, pos, name, cost, proj):
         self.pos = pos
         self.name = name
         self.cost = cost
         self.proj = proj
 
     def player_report(self):
-        print self.name + ' (' + self.cost + ')'
+        print self.pos + ' '+ self.name + ' (' + self.cost + ')'
 
-with open('dk-salaries-week-1.csv', 'rb') as dk:
+with open('data/dk-salaries-week-1.csv', 'rb') as dk:
     rd = csv.reader(dk, delimiter=',')
     for idx, player in enumerate(rd):
         # skip header
@@ -40,28 +41,18 @@ for pos in ALL_POS:
     else:
         filter_pos = [p for p in all if p.pos == pos]
     
-    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:20]
+    depth = int(argv[1])
+    if depth < 4:
+        raise Exception('Must search beyond top 3 at each position')
 
-def choose_random(pos_list):
-    return pos_list[(randint(0, len(pos_list) - 1))]
 
-pos_dict = {
-    'QB': TOP_POS['QB'],
-    'RB1': TOP_POS['RB'],
-    'RB2': TOP_POS['RB'],
-    'WR1': TOP_POS['WR'],
-    'WR2': TOP_POS['WR'],
-    'WR3': TOP_POS['WR'],
-    'FLEX': TOP_POS['QB'] + TOP_POS['WR'] + TOP_POS['RB'],
-    'TE': TOP_POS['TE'],
-    'DST': TOP_POS['DST']
-}
+    TOP_POS[pos] = sorted(filter_pos, key=lambda x: x.cost, reverse=True)[:depth]
 
 class Team:
-    def __init__(self):
-        self._set_team_pos()
-        self.team_cost = self._get_team_prop('proj')
-        self.team_proj = self._get_team_prop('cost')
+    def __init__(self, give):
+        self._set_team_pos(give)
+        self.team_cost = self._get_team_prop('cost')
+        self.team_proj = self._get_team_prop('proj')
 
     def team_report(self):
         for pos in ALL_POS_TEAM:
@@ -78,26 +69,40 @@ class Team:
 
         return len(players) != len(set(players))  
 
-    def _set_team_pos(self):
-        for k, v in pos_dict.iteritems():
-            setattr(self, k, choose_random(v))
+    def _set_team_pos(self, give):
+        for idx, val in enumerate(give):
+            setattr(self, ALL_POS_TEAM[idx], val)
 
     def _get_team_prop(self, prop):
-        cost = 0
+        val = 0
         for pos in ALL_POS_TEAM:
-            cost += int(getattr(getattr(self, pos), prop))
+            val += int(getattr(getattr(self, pos), prop))
 
-        return cost
+        return val
 
-teams = []
-for x in xrange(0, 100000):
-    team = Team()
-    if not team.contains_dups():
-        teams.append(team)
+gather = cartesian((TOP_POS['QB'], 
+                    get_combos(TOP_POS['RB'], 2), 
+                    get_combos(TOP_POS['WR'], 3),
+                    TOP_POS['QB'] +  TOP_POS['WR'] +  TOP_POS['RB'],
+                    TOP_POS['TE'],
+                    TOP_POS['DST']))
 
-afford = [x for x in teams if x.team_cost <= 50000]
-top_samp = sorted(afford, key=lambda x: x.team_proj, reverse=True)[0:5]
+hold = []
+check = len(gather)
 
-for team in top_samp:
-    print '*****************'
-    print team.team_report()
+for idx, x in enumerate(gather):
+    # 1 QB, 2RBs, 3 WRs, FLEX, TE, DST
+    lineup = [x[0],
+              x[1].A0, x[1].A1,   
+              x[2].A0, x[2].A1, x[2].A2,
+              x[3], x[4], x[5]]
+
+    team = Team(lineup)
+    
+    print str(idx) + ' of ' + str(check) + '...'
+
+    if team.team_cost <= 500000 and not team.contains_dups():
+        hold.append(team)
+
+print sorted(hold, key=lambda x: x.team_proj, reverse=True)[0].team_report()
+print sorted(hold, key=lambda x: x.team_cost)[0].team_report()
