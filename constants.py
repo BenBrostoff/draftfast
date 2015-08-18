@@ -20,3 +20,52 @@ COMMAND_LINE = [
              'you will still exhaust memory if you ' +
              'stray far from depth defaults', 2]    
 ]
+
+POSITION_LIMITS_WR_MAX = [
+  ["QB", 1],
+  ["RB", 2],
+  ["WR", 4],
+  ["TE", 1],
+  ["DST",  1]
+]
+
+
+POSITION_LIMITS_QB_MAX = [
+  ["QB", 2],
+  ["RB", 2],
+  ["WR", 3],
+  ["TE", 1],
+  ["DST",  1]
+]
+
+POSITION_LIMITS_RB_MAX = [
+  ["QB", 2],
+  ["RB", 3],
+  ["WR", 3],
+  ["TE", 1],
+  ["DST",  1]
+]
+
+POSITION_LIMITS_TE_MAX = [
+  ["QB", 2],
+  ["RB", 2],
+  ["WR", 3],
+  ["TE", 2],
+  ["DST",  1]
+]
+
+POSITION_LIMITS_DST_MAX = [
+  ["QB", 2],
+  ["RB", 2],
+  ["WR", 3],
+  ["TE", 1],
+  ["DST",  2]
+]
+
+ALL_LINEUPS = [
+    POSITION_LIMITS_WR_MAX,
+    POSITION_LIMITS_QB_MAX,
+    POSITION_LIMITS_RB_MAX,
+    POSITION_LIMITS_TE_MAX,
+    POSITION_LIMITS_DST_MAX
+]

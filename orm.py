@@ -1,15 +1,21 @@
-from constants import *
+from constants import ALL_POS_TEAM
 
 class Player:
     def __init__(self, pos, name, cost, proj):
         self.pos = pos
         self.name = name
-        self.cost = cost
+        self.cost = int(cost)
         self.proj = proj
 
     def player_report(self):
         print self.pos + ' '+ self.name + \
-        ' (' + self.cost + ')' + ' (' + str(self.proj) + ')'
+        ' (' + str(self.cost) + ')' + ' (' + str(self.proj) + ')'
+
+    def __repr__(self):
+        return "[{0: <2}] {1: <20}(${2}, {3})".format(self.pos, \
+                                    self.name, \
+                                    self.cost, \
+                                    self.proj)
 
 class Team:
     def __init__(self, give):
