@@ -2,25 +2,30 @@
 # this solution is almost wholly based off
 # https://github.com/swanson/degenerate
 
-import time
 import csv
+import subprocess
+from sys import argv
 from ortools.linear_solver import pywraplp
 from orm import Player, Roster
 from constants import *
 import time
 
-def check_missing_players(all_players, num):
+def check_missing_players(all_players, min_cost, e_raise):
     '''
     check for significant missing players
     as names from different data do not match up
+    continues or stops based on inputs
     '''
+    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
+    total_report = len(all_players)
+    
+    miss = len(filter(lambda x: x.marked != 'Y' and x.cost > min_cost, 
+                         all_players))
 
-    missing_report = filter(lambda x: x.marked != 'Y' and \
-                          x.cost_ranking < num, all_players)
-    for x in missing_report:
-        print x.name
-    if len(missing_report) > 0:
-        raise Exception('Data is missing significant players')
+    if e_raise < miss:
+        print 'Got {0} out of {1} total'.format(str(contained_report),
+                                                str(total_report))
+        raise Exception('Total missing players at price point: ' + str(miss))
 
 def run_solver(solver, all_players, max_flex):
     '''
@@ -72,18 +77,19 @@ def run(max_flex, maxed_over):
     for idx, x in enumerate(all_players):
         x.cost_ranking = idx + 1
 
-    with open('data/ffa.csv', 'rb') as csvfile:
+    with open('data/fan-pros.csv', 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
+        worked = 0
 
         for row in csvdata:
-            player = filter(lambda x: row['playername'] in x.name, all_players)
+            player = filter(lambda x: x.name in row['playername'], all_players)
             try:
-                player[0].proj = int(int(row['points'].split('.')[0]) / 16)
+                player[0].proj = int(int(row['points'].split('.')[0]))
                 player[0].marked = 'Y'
             except:
                 pass
 
-    check_missing_players(all_players, 100)
+    check_missing_players(all_players, 3000, 60)
     variables, solution = run_solver(solver, all_players, max_flex)
 
     if solution == solver.OPTIMAL:
@@ -101,5 +107,6 @@ def run(max_flex, maxed_over):
 
 
 if __name__ == "__main__":
+    subprocess.call(['python', 'scraper.py', argv[1]])
     for max_flex in ALL_LINEUPS.iterkeys():
         run(ALL_LINEUPS[max_flex], max_flex)
