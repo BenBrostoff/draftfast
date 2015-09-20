@@ -74,7 +74,7 @@ def run(max_flex, maxed_over, remove):
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     all_players = []
-    with open('data/dk-salaries-week-1.csv', 'rb') as csvfile:
+    with open('data/dk-salaries-current-week.csv', 'rb') as csvfile:
         csvdata = csv.reader(csvfile, skipinitialspace=True)
 
         for idx, row in enumerate(csvdata):
