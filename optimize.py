@@ -5,10 +5,19 @@
 import csv
 import subprocess
 from sys import argv
+import time
+import argparse
 from ortools.linear_solver import pywraplp
+
 from orm import Player, Roster
 from constants import *
-import time
+
+parser = argparse.ArgumentParser()
+
+for opt in OPTIMIZE_COMMAND_LINE:
+    parser.add_argument(opt[0], help=opt[1], default=opt[2])
+
+args = parser.parse_args()
 
 def check_missing_players(all_players, min_cost, e_raise):
     '''
@@ -60,7 +69,7 @@ def run_solver(solver, all_players, max_flex):
     return variables, solver.Solve()
 
 
-def run(max_flex, maxed_over):
+def run(max_flex, maxed_over, remove):
     solver = pywraplp.Solver('FD', 
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
@@ -89,7 +98,11 @@ def run(max_flex, maxed_over):
             except:
                 pass
 
-    check_missing_players(all_players, 3000, 60)
+    check_missing_players(all_players, args.sp, args.mp)
+
+    # remove previously optimize
+    all_players = filter(lambda x: x.name not in remove, all_players)
+
     variables, solution = run_solver(solver, all_players, max_flex)
 
     if solution == solver.OPTIMAL:
@@ -101,12 +114,19 @@ def run(max_flex, maxed_over):
 
         print "Optimal roster for: %s" % maxed_over
         print roster
-
+        return roster
     else:
       raise Exception('No solution error')
 
 
 if __name__ == "__main__":
-    subprocess.call(['python', 'scraper.py', argv[1]])
-    for max_flex in ALL_LINEUPS.iterkeys():
-        run(ALL_LINEUPS[max_flex], max_flex)
+    subprocess.call(['python', 'scraper.py', args.w])
+    rosters, remove = [], []
+    for x in xrange(0, int(args.i)):
+        for max_flex in ALL_LINEUPS.iterkeys():
+            rosters.append(run(ALL_LINEUPS[max_flex], max_flex, remove))
+        for roster in rosters:
+            for player in roster.players:
+                remove.append(player.name)
+
+

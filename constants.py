@@ -38,6 +38,13 @@ ALL_LINEUPS = {
     'TE_MAX': POSITION_LIMITS_TE_MAX
 }
 
+OPTIMIZE_COMMAND_LINE = [
+  ['-w', 'week of season', 1],
+  ['-mp', 'missing players to allow', 100],
+  ['-sp', 'salary threshold to ignore', 3000],
+  ['-i', 'iterations to run', 3]
+]
+
 COMMAND_LINE = [
     ['-qbd', 'depth of qbs to search through', 4],
     ['-qbp', 'price limit on QB', 100000],
