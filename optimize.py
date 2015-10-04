@@ -88,17 +88,43 @@ def run(max_flex, maxed_over, remove):
 
     with open('data/fan-pros.csv', 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
-        worked = 0
+        mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
         for row in csvdata:
+            holder = row
             player = filter(lambda x: x.name in row['playername'], all_players)
             try:
                 player[0].proj = int(int(row['points'].split('.')[0]))
                 player[0].marked = 'Y'
-            except:
-                pass
+                listify_holder = [
+                    row['playername'],
+                    row['points']
+                ]
+                if '0.0' not in row['points'] or player[0].cost != 0:
+                    ppd = float(row['points']) / float(player[0].cost)
+                else:
+                    ppd = 0
+                listify_holder.extend([player[0].cost, 
+                                       ppd * 100000])
+                mass_hold.append(listify_holder)
+            except Exception, e:
+                print e
+
+    check = []
+    with open('data/fan-pros.csv', 'rb') as csvdata:
+        for row in csvdata:
+            check = row
+            break
+
+    with open('data/fan-pros.csv', 'wb') as csvdata:        
+        if len(check) == 4:
+            pass
+        else:
+            writer = csv.writer(csvdata, lineterminator='\n')
+            writer.writerows(mass_hold)
 
     check_missing_players(all_players, args.sp, args.mp)
+
 
     # remove previously optimize
     all_players = filter(lambda x: x.name not in remove, all_players)
@@ -128,5 +154,3 @@ if __name__ == "__main__":
         for roster in rosters:
             for player in roster.players:
                 remove.append(player.name)
-
-

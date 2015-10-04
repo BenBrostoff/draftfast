@@ -15,7 +15,6 @@ for opt in COMMAND_LINE:
 
 args = parser.parse_args()
 
-
 all = []
 TOP_POS = {}
 
