@@ -39,9 +39,11 @@ ALL_LINEUPS = {
 }
 
 OPTIMIZE_COMMAND_LINE = [
+  ['-scrape', 'scrape from FanPros', 'n'],
   ['-w', 'week of season', 1],
   ['-mp', 'missing players to allow', 100],
   ['-sp', 'salary threshold to ignore', 3000],
+  ['-ms', 'max salary for player on roster', 10000],
   ['-i', 'iterations to run', 3]
 ]
 

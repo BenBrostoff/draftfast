@@ -78,7 +78,7 @@ def run(max_flex, maxed_over, remove):
         csvdata = csv.reader(csvfile, skipinitialspace=True)
 
         for idx, row in enumerate(csvdata):
-            if idx > 0:
+            if idx > 0 and int(row[2]) <= int(args.ms):
                 all_players.append(Player(row[0], row[1], row[2]))
 
     # give each a ranking
@@ -146,7 +146,8 @@ def run(max_flex, maxed_over, remove):
 
 
 if __name__ == "__main__":
-    subprocess.call(['python', 'scraper.py', args.w])
+    if args.scrape == 'y':
+        subprocess.call(['python', 'scraper.py', args.w])
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):
         for max_flex in ALL_LINEUPS.iterkeys():
