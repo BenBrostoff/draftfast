@@ -2,16 +2,32 @@ from sys import argv
 import csv
 import requests
 from bs4 import BeautifulSoup as BS
+import unicodedata
 
 from constants import FFPRO
 
-def build_fp_pages():
+def build_fp_pages(use_espn=1):
+    '''
+    Scrape FanPros - for some reason, defense projections disappear mid-week
+    so option exists to just scrape ESPN here
+    '''
     fp_pages = []
-    for page in ['qb', 'rb', 'wr', 'te', 'k', 'dst']:
+    pos = ['qb', 'rb', 'wr', 'te', 'k', 'dst']
+    if use_espn:
+        pos.remove('dst')
+        fp_pages.append('http://games.espn.go.com/ffl/tools/projections?slotCategoryId=16')
+    for page in pos:
         fp_pages.append(
             FFPRO + '{0}.php?week={1}'.format(page, argv[1])
         )
+
     return fp_pages
+
+def unicode_normalize(*args):
+    defense = []
+    for x in args:
+        defense.append(unicodedata.normalize('NFKD', x).encode('ascii','ignore'))
+    return defense
 
 def scrape():
     hold = []
@@ -19,13 +35,25 @@ def scrape():
     for page in build_fp_pages():
         r = requests.get(page)
         soup = BS(r.text)
-        for row in soup.find_all('tr'):
-            try:
-                hold.append([str(row.find_all('td')[0].text),
-                             str(row.find_all('td')[-1].text)])
-                
-            except Exception, e:
-                print e
+        if 'espn' in page:
+            for row in soup.find_all('tr'):
+                try:
+                    defense_name = row.findAll(class_="playertablePlayerName")[0].text
+                    defense_points = row.find_all('td')[-1].text
+                    defense = unicode_normalize(defense_name, defense_points)
+                    hold.append(defense)
+                except Exception, e:
+                    print e
+
+
+        else:
+            for row in soup.find_all('tr'):
+                try:
+                    hold.append([str(row.find_all('td')[0].text),
+                                 str(row.find_all('td')[-1].text)])
+                    
+                except Exception, e:
+                    print e
 
     with open('data/fan-pros.csv', 'w') as fp:
         w = csv.writer(fp, delimiter=',')
