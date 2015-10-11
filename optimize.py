@@ -79,7 +79,8 @@ def run(max_flex, maxed_over, remove):
 
         for idx, row in enumerate(csvdata):
             if idx > 0 and int(row[2]) <= int(args.ms):
-                all_players.append(Player(row[0], row[1], row[2]))
+                all_players.append(Player(row[0], row[1], row[2],
+                                   matchup=row[3]))
 
     # give each a ranking
     all_players = sorted(all_players, key=lambda x: x.cost, reverse=True)
@@ -96,6 +97,7 @@ def run(max_flex, maxed_over, remove):
             try:
                 player[0].proj = int(int(row['points'].split('.')[0]))
                 player[0].marked = 'Y'
+                player[0].team = row['playername'].split(' ')[-2]
                 listify_holder = [
                     row['playername'],
                     row['points']

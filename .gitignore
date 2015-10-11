@@ -1,4 +1,4 @@
 *.pyc
 .idea/
-fan-pros.csv
-dk-salaries-current-week.csv
+data/fan-pros.csv
+data/dk-salaries-current-week.csv
