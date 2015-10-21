@@ -148,7 +148,7 @@ def run(max_flex, maxed_over, remove):
 
 
 if __name__ == "__main__":
-    if args.scrape == 'y':
+    if args.s == 'y':
         subprocess.call(['python', 'scraper.py', args.w])
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):
