@@ -1,0 +1,4 @@
+beautifulsoup4==4.4.0
+google-apputils==0.4.2
+ortools==1.3853
+requests==2.5.1
