@@ -78,7 +78,7 @@ def run(max_flex, maxed_over, remove):
         csvdata = csv.reader(csvfile, skipinitialspace=True)
 
         for idx, row in enumerate(csvdata):
-            if idx > 0 and int(row[2]) <= int(args.ms):
+            if idx > 0:
                 all_players.append(Player(row[0], row[1], row[2],
                                    matchup=row[3]))
 
@@ -129,7 +129,9 @@ def run(max_flex, maxed_over, remove):
 
 
     # remove previously optimize
-    all_players = filter(lambda x: x.name not in remove, all_players)
+    all_players = filter(lambda x: x.name not in remove and \
+        x.proj >= int(args.lp) and \
+        x.cost <= int(args.ms), all_players)
 
     variables, solution = run_solver(solver, all_players, max_flex)
 
