@@ -6,7 +6,19 @@ ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
                 'TE', 'DST']
 
 SALARY_CAP = 50000
-ROSTER_SIZE = 9
+
+ROSTER_SIZE = {
+  'NFL': 9,
+  'NBA': 8
+}
+
+NBA =  [
+  ["PG", 2],
+  ["SG", 2],
+  ["SF", 2],
+  ["PF", 1],
+  ["C",  1],
+]
 
 POSITION_LIMITS_WR_MAX = [
   ["QB", 1],
@@ -45,7 +57,8 @@ OPTIMIZE_COMMAND_LINE = [
   ['-sp', 'salary threshold to ignore', 3000],
   ['-ms', 'max salary for player on roster', 10000],
   ['-i', 'iterations to run', 3],
-  ['-lp', 'lowest acceptable projection', 0]
+  ['-lp', 'lowest acceptable projection', 0],
+  ['-l', 'league', 'NFL']
 ]
 
 COMMAND_LINE = [

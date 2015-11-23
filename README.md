@@ -1,3 +1,5 @@
+## Introduction
+
 Special thanks to _swanson, who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of. I currently use data from [Fantasy Pros](http://www.fantasypros.com/) as the criteria to optimize on.
 
 Pre-reqs:
@@ -19,14 +21,17 @@ Arguments can also be passed to run the optimizer multiple times and continually
 
 <pre><code>python optimize.py -w 1 -i 3</pre></code>
 
+## NBA
+
+More to come here, but an NBA option exists for NBA contests. Currently it uses average PPG provided by DraftKings to optimize on:
+
+<pre><code>python optimize.py -l NBA -s n</pre></code>
+
 To do:
 
 * Require QB to have at least one WR on team in lineup 
 * More data
 * Find better way of combining data sets on name
 * Add virtualenv / automate depencies installation
-
-
-
-	
+* Improve NBA combination testing
 
