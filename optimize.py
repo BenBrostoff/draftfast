@@ -76,14 +76,15 @@ def run(max_flex, maxed_over, remove):
 
     all_players = []
     with open('data/dk-salaries-current-week.csv', 'rb') as csvfile:
-        csvdata = csv.reader(csvfile, skipinitialspace=True)
+        csvdata = csv.DictReader(csvfile)
 
         for idx, row in enumerate(csvdata):
             if idx > 0:
-                player = Player(row[0], row[1], row[2], matchup=row[3])
+                player = Player(row['Position'], row['Name'], row['Salary'], 
+                                matchup=row['GameInfo'])
                 if args.l == 'NBA':
-                    player.proj = float(row[-2])
-                    player.team = row[-1]
+                    player.proj = float(row['AvgPointsPerGame'])
+                    player.team = row['teamAbbrev']
                 all_players.append(player)
 
     # give each a ranking
@@ -100,7 +101,7 @@ def run(max_flex, maxed_over, remove):
                 holder = row
                 player = filter(lambda x: x.name in row['playername'], all_players)
                 try:
-                    player[0].proj = int(int(row['points'].split('.')[0]))
+                    player[0].proj = float(row['points'])
                     player[0].marked = 'Y'
                     player[0].team = row['playername'].split(' ')[-2]
                     listify_holder = [
