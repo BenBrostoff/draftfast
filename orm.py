@@ -2,14 +2,6 @@
 from constants import ALL_POS_TEAM
 
 class Roster:
-    POSITION_ORDER = {
-        "QB": 0,
-        "RB": 1,
-        "WR": 2,
-        "TE": 3,
-        "DST": 4
-    }
-
     def __init__(self):
         self.players = []
 
@@ -33,6 +25,24 @@ class Roster:
         s += "\n\nProjected Score: %s" % self.projected()
         s += "\tCost: $%s" % self.spent()
         return s
+
+class NFLRoster(Roster):
+    POSITION_ORDER = {
+        "QB": 0,
+        "RB": 1,
+        "WR": 2,
+        "TE": 3,
+        "DST": 4
+    }
+
+class NBARoster(Roster):
+    POSITION_ORDER = {
+        "PG": 0,
+        "SG": 1,
+        "SF": 2,
+        "PF": 3,
+        "C": 4
+    }
 
 class Player:
     def __init__(self, pos, name, cost, 
