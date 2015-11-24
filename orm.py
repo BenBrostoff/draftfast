@@ -1,4 +1,3 @@
-
 from constants import ALL_POS_TEAM
 
 class Roster:
@@ -43,6 +42,15 @@ class NBARoster(Roster):
         "PF": 3,
         "C": 4
     }
+
+class RosterSelect:
+    @staticmethod
+    def roster_gen(league):
+        roster_dict = {
+            'NBA': NBARoster(),
+            'NFL': NFLRoster()
+        }
+        return roster_dict[league]
 
 class Player:
     def __init__(self, pos, name, cost, 

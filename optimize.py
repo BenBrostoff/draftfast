@@ -9,7 +9,7 @@ import time
 import argparse
 from ortools.linear_solver import pywraplp
 
-from orm import Player, NBARoster, NFLRoster
+from orm import RosterSelect, Player
 from constants import *
 
 parser = argparse.ArgumentParser()
@@ -55,8 +55,8 @@ def run_solver(solver, all_players, max_flex):
     for i, player in enumerate(all_players):
         salary_cap.SetCoefficient(variables[i], player.cost)
 
-    for position, limit in max_flex:
-        position_cap = solver.Constraint(0, limit)
+    for position, min_limit, max_limit in POSITIONS[args.l]:
+        position_cap = solver.Constraint(min_limit, max_limit)
 
         for i, player in enumerate(all_players):
             if position == player.pos:
@@ -70,7 +70,7 @@ def run_solver(solver, all_players, max_flex):
     return variables, solver.Solve()
 
 
-def run(max_flex, maxed_over, remove):
+def run(position_distribution, league, remove):
     solver = pywraplp.Solver('FD', 
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
@@ -92,7 +92,7 @@ def run(max_flex, maxed_over, remove):
     for idx, x in enumerate(all_players):
         x.cost_ranking = idx + 1
 
-    if args.l == 'NFL':
+    if league == 'NFL':
         with open('data/fan-pros.csv', 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
             mass_hold = [['playername', 'points', 'cost', 'ppd']]
@@ -131,7 +131,8 @@ def run(max_flex, maxed_over, remove):
                 writer = csv.writer(csvdata, lineterminator='\n')
                 writer.writerows(mass_hold)
 
-    check_missing_players(all_players, args.sp, args.mp)
+    if league == 'NFL':
+        check_missing_players(all_players, args.sp, args.mp)
 
 
     # remove previously optimize
@@ -139,20 +140,21 @@ def run(max_flex, maxed_over, remove):
         x.proj >= int(args.lp) and \
         x.cost <= int(args.ms), all_players)
 
-    variables, solution = run_solver(solver, all_players, max_flex)
+    variables, solution = run_solver(solver, 
+                                     all_players, 
+                                     position_distribution)
 
     if solution == solver.OPTIMAL:
-        if args.l == 'NFL':
-            roster = NFLRoster()
-        else:
-            roster = NBARoster()
+        roster = RosterSelect().roster_gen(args.l)
 
         for i, player in enumerate(all_players):
             if variables[i].solution_value() == 1:
                 roster.add_player(player)
 
-        print "Optimal roster for: %s" % maxed_over
+        print "Optimal roster for: %s" % league
         print roster
+        print
+
         return roster
     else:
       raise Exception('No solution error')
@@ -162,12 +164,8 @@ if __name__ == "__main__":
     if args.s == 'y' and args.l == 'NFL':
         subprocess.call(['python', 'scraper.py', args.w])
     rosters, remove = [], []
-    if args.l == 'NFL':
-        for x in xrange(0, int(args.i)):
-            for max_flex in ALL_LINEUPS.iterkeys():
-                rosters.append(run(ALL_LINEUPS[max_flex], max_flex, remove))
-            for roster in rosters:
-                for player in roster.players:
-                    remove.append(player.name)
-    else:
-        run(NBA, 'NBA', remove)
+    for x in xrange(0, int(args.i)):
+        rosters.append(run(POSITIONS[args.l], args.l, remove))
+        for roster in rosters:
+            for player in roster.players:
+                remove.append(player.name)

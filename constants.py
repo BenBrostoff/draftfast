@@ -12,42 +12,22 @@ ROSTER_SIZE = {
   'NBA': 8
 }
 
-NBA =  [
-  ["PG", 2],
-  ["SG", 2],
-  ["SF", 2],
-  ["PF", 1],
-  ["C",  1],
-]
+POSITIONS = {
+  'NBA' : [
+    ["PG", 1, 3],
+    ["SG", 1, 3],
+    ["SF", 1, 3],
+    ["PF", 1, 3],
+    ["C", 1, 2]
+  ],
 
-POSITION_LIMITS_WR_MAX = [
-  ["QB", 1],
-  ["RB", 2],
-  ["WR", 4],
-  ["TE", 1],
-  ["DST",  1]
-]
-
-POSITION_LIMITS_RB_MAX = [
-  ["QB", 1],
-  ["RB", 3],
-  ["WR", 3],
-  ["TE", 1],
-  ["DST",  1]
-]
-
-POSITION_LIMITS_TE_MAX = [
-  ["QB", 1],
-  ["RB", 2],
-  ["WR", 3],
-  ["TE", 2],
-  ["DST",  1]
-]
-
-ALL_LINEUPS = {
-    'WR_MAX' : POSITION_LIMITS_WR_MAX,
-    'RB_MAX' : POSITION_LIMITS_RB_MAX,
-    'TE_MAX': POSITION_LIMITS_TE_MAX
+  'NFL' : [
+    ["QB", 1, 1],
+    ["RB", 2, 3],
+    ["WR", 3, 4],
+    ["TE", 1, 2],
+    ["DST", 1, 1]
+  ]
 }
 
 OPTIMIZE_COMMAND_LINE = [
