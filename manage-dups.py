@@ -1,7 +1,7 @@
 import csv
 
 new_rows = []
-dups = ['David Johnson']
+dups = ['David Johnson', 'Ryan Griffin']
 dk_csv = 'data/dk-salaries-current-week.csv'
 
 with open(dk_csv, 'rb') as f:
