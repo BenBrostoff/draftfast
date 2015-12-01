@@ -62,7 +62,6 @@ class Player:
         self.matchup = matchup
         self.proj = proj
         self.marked = marked
-        self.cost_ranking = 0
 
     def __repr__(self):
         return "[{0: <2}] {1: <20} {2} {3} (${4}, {5})".format(self.pos, \

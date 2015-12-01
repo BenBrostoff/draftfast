@@ -87,11 +87,6 @@ def run(position_distribution, league, remove):
                     player.team = row['teamAbbrev']
                 all_players.append(player)
 
-    # give each a ranking
-    all_players = sorted(all_players, key=lambda x: x.cost, reverse=True)
-    for idx, x in enumerate(all_players):
-        x.cost_ranking = idx + 1
-
     if league == 'NFL':
         with open('data/fan-pros.csv', 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
@@ -100,23 +95,23 @@ def run(position_distribution, league, remove):
             for row in csvdata:
                 holder = row
                 player = filter(lambda x: x.name in row['playername'], all_players)
-                try:
-                    player[0].proj = float(row['points'])
-                    player[0].marked = 'Y'
-                    player[0].team = row['playername'].split(' ')[-2]
-                    listify_holder = [
-                        row['playername'],
-                        row['points']
-                    ]
-                    if '0.0' not in row['points'] or player[0].cost != 0:
-                        ppd = float(row['points']) / float(player[0].cost)
-                    else:
-                        ppd = 0
-                    listify_holder.extend([player[0].cost, 
-                                           ppd * 100000])
-                    mass_hold.append(listify_holder)
-                except Exception, e:
-                    print e
+                if len(player) == 0:
+                    continue
+
+                player[0].proj = float(row['points'])
+                player[0].marked = 'Y'
+                player[0].team = row['playername'].split(' ')[-2]
+                listify_holder = [
+                    row['playername'],
+                    row['points']
+                ]
+                if '0.0' not in row['points'] or player[0].cost != 0:
+                    ppd = float(row['points']) / float(player[0].cost)
+                else:
+                    ppd = 0
+                listify_holder.extend([player[0].cost,
+                                       ppd * 100000])
+                mass_hold.append(listify_holder)
 
         check = []
         with open('data/fan-pros.csv', 'rb') as csvdata:

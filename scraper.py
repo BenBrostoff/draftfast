@@ -34,26 +34,29 @@ def scrape():
     hold.append(['playername', 'points'])
     for page in build_fp_pages():
         r = requests.get(page)
-        soup = BS(r.text)
+        soup = BS(r.text, 'html.parser')
         if 'espn' in page:
-            for row in soup.find_all('tr'):
+            for row in soup.select('.playerTableTable tr'):
                 try:
-                    defense_name = row.findAll(class_="playertablePlayerName")[0].text
+                    p_check = row.findAll(class_="playertablePlayerName")
+                    if len(p_check) == 0:
+                        continue
+                    defense_name = p_check[0].text
                     defense_points = row.find_all('td')[-1].text
                     defense = unicode_normalize(defense_name, defense_points)
                     hold.append(defense)
                 except Exception, e:
-                    print e
+                    print 'Error scraping ESPN data: ' + str(e)
 
 
         else:
-            for row in soup.find_all('tr'):
+            for row in soup.select('tr.mpb-available'):
                 try:
                     hold.append([str(row.find_all('td')[0].text),
                                  str(row.find_all('td')[-1].text)])
                     
                 except Exception, e:
-                    print e
+                    print 'Error scraping FanPros data: ' + str(e)
 
     with open('data/fan-pros.csv', 'w') as fp:
         w = csv.writer(fp, delimiter=',')
