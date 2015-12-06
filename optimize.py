@@ -7,6 +7,7 @@ import subprocess
 from sys import argv
 import time
 import argparse
+
 from ortools.linear_solver import pywraplp
 
 from orm import RosterSelect, Player
@@ -18,57 +19,6 @@ for opt in OPTIMIZE_COMMAND_LINE:
     parser.add_argument(opt[0], help=opt[1], default=opt[2])
 
 args = parser.parse_args()
-
-def check_missing_players(all_players, min_cost, e_raise):
-    '''
-    check for significant missing players
-    as names from different data do not match up
-    continues or stops based on inputs
-    '''
-    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
-    total_report = len(all_players)
-    
-    miss = len(filter(lambda x: x.marked != 'Y' and x.cost > min_cost, 
-                         all_players))
-
-    if e_raise < miss:
-        print 'Got {0} out of {1} total'.format(str(contained_report),
-                                                str(total_report))
-        raise Exception('Total missing players at price point: ' + str(miss))
-
-def run_solver(solver, all_players, max_flex):
-    '''
-    handle or-tools logic
-    '''
-    variables = []
-
-    for player in all_players:
-        variables.append(solver.IntVar(0, 1, player.name))
-      
-    objective = solver.Objective()
-    objective.SetMaximization()
-
-    for i, player in enumerate(all_players):
-        objective.SetCoefficient(variables[i], player.proj)
-
-    salary_cap = solver.Constraint(0, SALARY_CAP)
-    for i, player in enumerate(all_players):
-        salary_cap.SetCoefficient(variables[i], player.cost)
-
-    for position, min_limit, max_limit in POSITIONS[args.l]:
-        position_cap = solver.Constraint(min_limit, max_limit)
-
-        for i, player in enumerate(all_players):
-            if position == player.pos:
-                position_cap.SetCoefficient(variables[i], 1)
-
-    size_cap = solver.Constraint(ROSTER_SIZE[args.l], 
-                                 ROSTER_SIZE[args.l])
-    for variable in variables:
-        size_cap.SetCoefficient(variable, 1)
-
-    return variables, solver.Solve()
-
 
 def run(position_distribution, league, remove):
     solver = pywraplp.Solver('FD', 
@@ -127,13 +77,15 @@ def run(position_distribution, league, remove):
                 writer.writerows(mass_hold)
 
     if league == 'NFL':
-        check_missing_players(all_players, args.sp, args.mp)
+        _check_missing_players(all_players, args.sp, args.mp)
 
 
-    # remove previously optimize
+    # filter based on criteria and previously optimized
     all_players = filter(lambda x: x.name not in remove and \
         x.proj >= int(args.lp) and \
-        x.cost <= int(args.ms), all_players)
+        x.cost <= int(args.ms) and \
+        x.team is not None, 
+        all_players)
 
     variables, solution = run_solver(solver, 
                                      all_players, 
@@ -149,10 +101,91 @@ def run(position_distribution, league, remove):
         print "Optimal roster for: %s" % league
         print roster
         print
-
+ 
         return roster
     else:
       raise Exception('No solution error')
+
+def run_solver(solver, all_players, max_flex):
+    '''
+    Set objective and constraints, then optimize
+    '''
+    variables = []
+
+    for player in all_players:
+        variables.append(solver.IntVar(0, 1, player.name))
+      
+    objective = solver.Objective()
+    objective.SetMaximization()
+
+    # optimize on projected points
+    for i, player in enumerate(all_players):
+        objective.SetCoefficient(variables[i], player.proj)
+
+    # set salary cap constraint
+    salary_cap = solver.Constraint(0, SALARY_CAP)
+    for i, player in enumerate(all_players):
+        salary_cap.SetCoefficient(variables[i], player.cost)
+
+    # set roster size constraint
+    size_cap = solver.Constraint(ROSTER_SIZE[args.l], 
+                                 ROSTER_SIZE[args.l])
+    for variable in variables:
+        size_cap.SetCoefficient(variable, 1)
+
+    # set position limit constraint
+    for position, min_limit, max_limit in POSITIONS[args.l]:
+        position_cap = solver.Constraint(min_limit, max_limit)
+
+        for i, player in enumerate(all_players):
+            if position == player.pos:
+                position_cap.SetCoefficient(variables[i], 1)
+
+    # max out at one player per team (allow QB combos)
+    if args.limit !='n':
+        for team, min_limit, max_limit in COMBO_TEAM_LIMITS_NFL:
+            team_cap = solver.Constraint(min_limit, max_limit)
+
+            for i, player in enumerate(all_players):
+                if team == player.team and \
+                    player.pos != 'QB':
+                    team_cap.SetCoefficient(variables[i], 1)
+
+    # force QB / WR or QB / TE combo on specified team
+    if args.duo != 'n':
+        if args.duo not in all_nfl_teams:
+            class InvalidNFLTeamException(Exception):
+                pass
+
+            raise InvalidNFLTeamException('You need to pass in a valid NFL team ' +
+                'abbreviation to use this option. ' +
+                'See valid team abbreviations here: ' + str(all_nfl_teams))
+        for position, min_limit, max_limit in DUO_TYPE[args.dtype.lower()]:
+            position_cap = solver.Constraint(min_limit, max_limit)
+
+            for i, player in enumerate(all_players):
+                if position == player.pos and \
+                    player.team == args.duo:
+                    position_cap.SetCoefficient(variables[i], 1)
+
+    return variables, solver.Solve()
+
+def _check_missing_players(all_players, min_cost, e_raise):
+    '''
+    check for significant missing players
+    as names from different data do not match up
+    continues or stops based on inputs
+    '''
+    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
+    total_report = len(all_players)
+    
+    miss = len(filter(lambda x: x.marked != 'Y' and x.cost > min_cost, 
+                         all_players))
+
+    if e_raise < miss:
+        print 'Got {0} out of {1} total'.format(str(contained_report),
+                                                str(total_report))
+        raise Exception('Total missing players at price point: ' + str(miss))
 
 
 if __name__ == "__main__":

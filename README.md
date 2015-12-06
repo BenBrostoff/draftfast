@@ -17,9 +17,27 @@ Next, pass in the current week to the script, scrape data from FantasyPros and a
 
 One important note here is that passing in <code>y</code> for the scrape option will create <code>fantasy-pros.csv</code>. However, once you've scraped once, there's no need to do again.
 
-Arguments can also be passed to run the optimizer multiple times and continually eliminate pre-optimized players from the lineup. For instance, to run three different iterations and generate three different sets of players:
+## Optimization Options
+
+Force a QB/WR or QB/TE combination from a particular team. For instance, if I wanted a guaranteed Cam Newton / Greg Olsen duo:
+
+<pre><code>python optimize.py -w 13 -mp 100 -duo CAR -dtype TE</pre></code>
+
+Another example pairing DeAndre Hopkins and Brian Hoyer:
+
+<pre><code>python optimize.py -w 13 -mp 100 -duo HOU -dtype WR</pre></code>
+
+Limit same team representation except for QB / skill player combos. Example:
+
+<pre><code>python optimize.py -w 13 -mp 100 -limit y</pre></code>
+
+Run the optimizer multiple times and continually eliminate pre-optimized players from the lineup. For instance, to run three different iterations and generate three different sets of players:
 
 <pre><code>python optimize.py -w 1 -i 3</pre></code>
+
+At any time, you can get a list of all possible options via:
+
+<pre><code>python optimize.py --help</pre></code>
 
 ## NBA
 
