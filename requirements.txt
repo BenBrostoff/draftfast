@@ -1,4 +1,5 @@
 beautifulsoup4==4.4.0
 google-apputils==0.4.2
-ortools==1.3853
+ortools>=4.3
 requests==2.5.1
+nose>=1.3

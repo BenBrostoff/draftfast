@@ -50,6 +50,7 @@ To do:
 * Require QB to have at least one WR on team in lineup 
 * More data
 * Find better way of combining data sets on name
-* Add virtualenv / automate depencies installation
+* Add virtualenv / automate dependencies installation
 * Improve NBA combination testing
+* Testing
 
