@@ -1,4 +1,5 @@
 from sys import argv
+import re
 import csv
 import requests
 from bs4 import BeautifulSoup as BS
@@ -50,7 +51,7 @@ def scrape():
 
 
         else:
-            for row in soup.select('tr.mpb-available'):
+            for row in soup.find_all('tr', class_=re.compile('mpb-player-')):
                 try:
                     hold.append([str(row.find_all('td')[0].text),
                                  str(row.find_all('td')[-1].text)])
