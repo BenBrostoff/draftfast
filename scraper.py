@@ -1,5 +1,6 @@
 from sys import argv
 import csv
+import re
 import requests
 from bs4 import BeautifulSoup as BS
 import unicodedata
@@ -36,7 +37,7 @@ def scrape():
         r = requests.get(page)
         soup = BS(r.text, 'html.parser')
         if 'espn' in page:
-            for row in soup.select('.playerTableTable tr'):
+            for row in soup.find_all('tr', class_=re.compile('mpb-player-')):
                 try:
                     p_check = row.findAll(class_="playertablePlayerName")
                     if len(p_check) == 0:
