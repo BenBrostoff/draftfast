@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.png)](https://travis-ci.org/BenBrostoff/draft-kings-fun)
+
 ## Introduction
 
 Special thanks to _swanson, who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of. I currently use data from [Fantasy Pros](http://www.fantasypros.com/) as the criteria to optimize on.
