@@ -4,7 +4,7 @@
 
 import csv
 import subprocess
-from sys import argv
+from sys import argv, exit
 import time
 import argparse
 
@@ -15,17 +15,22 @@ from constants import *
 
 parser = argparse.ArgumentParser()
 
+fns = 'data/{}-salaries.csv'
+fnp = 'data/{}-projections.csv'
+
 for opt in OPTIMIZE_COMMAND_LINE:
     parser.add_argument(opt[0], help=opt[1], default=opt[2])
 
 args = parser.parse_args()
 
-def run(position_distribution, league, remove):
+def run(position_distribution, league, remove, args, test_mode=False):
+    csv_name = 'test' if test_mode else 'current'
     solver = pywraplp.Solver('FD', 
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     all_players = []
-    with open('data/dk-salaries-current-week.csv', 'rb') as csvfile:
+
+    with open(fns.format(csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
 
         for idx, row in enumerate(csvdata):
@@ -38,7 +43,7 @@ def run(position_distribution, league, remove):
                 all_players.append(player)
 
     if league == 'NFL':
-        with open('data/fan-pros.csv', 'rb') as csvfile:
+        with open(fnp.format(csv_name), 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
             mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
@@ -64,12 +69,12 @@ def run(position_distribution, league, remove):
                 mass_hold.append(listify_holder)
 
         check = []
-        with open('data/fan-pros.csv', 'rb') as csvdata:
+        with open(fns.format(csv_name), 'rb') as csvdata:
             for row in csvdata:
                 check = row
                 break
 
-        with open('data/fan-pros.csv', 'wb') as csvdata:        
+        with open(fnp.format(csv_name), 'wb') as csvdata:        
             if len(check) == 4:
                 pass
             else:
@@ -81,8 +86,9 @@ def run(position_distribution, league, remove):
 
 
     # filter based on criteria and previously optimized
+    # do not include DST or TE projections in min point threshold.
     all_players = filter(lambda x: x.name not in remove and \
-        x.proj >= int(args.lp) and \
+        (x.proj >= int(args.lp) or x.pos in ['DST', 'TE']) and \
         x.cost <= int(args.ms) and \
         x.team is not None, 
         all_players)
@@ -104,7 +110,9 @@ def run(position_distribution, league, remove):
  
         return roster
     else:
-      raise Exception('No solution error')
+      print("No solution found for command line query. " +
+            "Try adjusting your query by taking away constraints.")
+      return None
 
 def run_solver(solver, all_players, max_flex):
     '''
@@ -193,7 +201,10 @@ if __name__ == "__main__":
         subprocess.call(['python', 'scraper.py', args.w])
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):
-        rosters.append(run(POSITIONS[args.l], args.l, remove))
-        for roster in rosters:
-            for player in roster.players:
-                remove.append(player.name)
+        rosters.append(run(POSITIONS[args.l], args.l, remove, args))
+        if None not in rosters:
+            for roster in rosters:
+                for player in roster.players:
+                    remove.append(player.name)
+        else:
+            exit()
