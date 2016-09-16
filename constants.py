@@ -89,7 +89,8 @@ OPTIMIZE_COMMAND_LINE = [
   ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
   ['-duo', 'force a QB + WR/TE duo on specific team', 'n'],
   ['-dtype', 'specify WR or TE in combo', 'wr'],
-  ['-l', 'league', 'NFL']
+  ['-l', 'league', 'NFL'],
+  ['-pids', 'Player id file (create upload file)', '']
 ]
 
 COMMAND_LINE = [
