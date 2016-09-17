@@ -10,6 +10,7 @@ import argparse
 from itertools import islice
 from ortools.linear_solver import pywraplp
 
+import query_constraints as qc
 import dke_exceptions as dke
 import constants as cons
 from orm import RosterSelect, Player
@@ -90,11 +91,11 @@ def run(position_distribution, league, remove, args, test_mode=False):
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
+    if isinstance(args.teams, str):
+        args.teams = args.teams.split(' ')
+
     all_players = filter(
-        lambda x: x.name not in remove and
-        (x.proj >= int(args.lp) or x.pos in ['DST', 'TE']) and
-        x.cost <= int(args.ms) and
-        x.team is not None,
+        qc.add_constraints(args, remove),
         all_players)
 
     variables, solution = run_solver(solver,
