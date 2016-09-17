@@ -8,6 +8,7 @@ from sys import argv, exit
 import time
 import argparse
 
+from itertools import islice
 from ortools.linear_solver import pywraplp
 
 from orm import RosterSelect, Player
@@ -17,6 +18,8 @@ parser = argparse.ArgumentParser()
 
 fns = 'data/{}-salaries.csv'
 fnp = 'data/{}-projections.csv'
+fnu = 'data/{}-upload.csv'
+
 
 for opt in OPTIMIZE_COMMAND_LINE:
     parser.add_argument(opt[0], help=opt[1], default=opt[2])
@@ -195,13 +198,74 @@ def _check_missing_players(all_players, min_cost, e_raise):
                                                 str(total_report))
         raise Exception('Total missing players at price point: ' + str(miss))
 
+def create_upload_file_and_map_pids(pid_file, test_mode=False):
+    # create upload file
+    csv_name = 'test' if test_mode else 'current'
+    with open(fnu.format(csv_name), "w") as f:
+        writer = csv.writer(f)
+        writer.writerow(['QB','RB','RB', 'WR', 'WR', 'WR', 'TE', 'FLEX', 'DST'])
+
+    # create a player map from name/position to id
+    player_map = {}
+    with open(pid_file, "r") as f:
+        n = 0
+        for line in f.readlines():
+            n += 1
+            if 'TeamAbbrev' in line: # line with field names was found
+                fields= line.split(',')
+                break
+        f.close()
+        f = islice(open(pid_file, "r"), n, None)
+        reader = csv.DictReader(f, fieldnames=fields)
+        for line in reader:
+            player_map[line[' Name'] + " " + line['Position']] = line[' ID']
+    return player_map
+
+def update_upload_csv(player_map, players, test_mode=False):
+    csv_name = 'test' if test_mode else 'current'
+    with open(fnu.format(csv_name), "a") as f:
+        writer = csv.writer(f)
+        player_ids = []
+        flexid=-1
+        rbs=0
+        wrs=0
+
+        for p in players:
+            # For the players in the roster, get their id.
+            # they are sorted when they are printed out, so the order is good, excepet
+            # for the flex player
+            id = player_map[p.name + " " + p.pos]
+
+            #  keep track of the flex player and write them out after the TE
+            if (p.pos == 'WR'):
+                if(wrs==3):
+                    flexid=id
+                    continue
+                wrs+=1
+                player_ids.append(id)
+            elif (p.pos == 'RB'):
+                if(rbs==2):
+                    flexid=id
+                    continue
+                rbs+=1
+                player_ids.append(id)
+            elif (p.pos == 'TE'):
+                player_ids.append(id)
+                player_ids.append(flexid)
+            else:
+                player_ids.append(id)
+        writer.writerow(player_ids)
 
 if __name__ == "__main__":
+    if args.pids:
+        player_map = create_upload_file_and_map_pids(args.pids)
     if args.s == 'y' and args.l == 'NFL':
         subprocess.call(['python', 'scraper.py', args.w])
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):
         rosters.append(run(POSITIONS[args.l], args.l, remove, args))
+        if args.pids:
+            update_upload_csv(player_map, rosters[x].sorted_players()[:])
         if None not in rosters:
             for roster in rosters:
                 for player in roster.players:
