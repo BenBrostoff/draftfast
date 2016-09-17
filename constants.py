@@ -6,7 +6,7 @@ ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
                 'TE', 'DST']
 
 COMBO_TEAM_LIMITS_NFL = []
-all_nfl_teams = [
+ALL_NFL_TEAMS = [
  'MIN',
  'MIA',
  'CAR',
@@ -39,8 +39,8 @@ all_nfl_teams = [
  'D/ST',
  'SD']
 
-for team in all_nfl_teams:
-  COMBO_TEAM_LIMITS_NFL.append([team, 0, 1])
+for team in ALL_NFL_TEAMS:
+    COMBO_TEAM_LIMITS_NFL.append([team, 0, 1])
 
 SALARY_CAP = 50000
 
@@ -50,7 +50,7 @@ ROSTER_SIZE = {
 }
 
 POSITIONS = {
-  'NBA' : [
+  'NBA': [
     ["PG", 1, 3],
     ["SG", 1, 3],
     ["SF", 1, 3],
@@ -58,7 +58,7 @@ POSITIONS = {
     ["C", 1, 2]
   ],
 
-  'NFL' : [
+  'NFL': [
     ["QB", 1, 1],
     ["RB", 2, 3],
     ["WR", 3, 4],
@@ -68,11 +68,11 @@ POSITIONS = {
 }
 
 DUO_TYPE = {
-  'wr' : [
+  'wr': [
     ["QB", 1, 1],
     ["WR", 1, 1]
   ],
-  'te' : [
+  'te': [
     ["QB", 1, 1],
     ["TE", 1, 1]
   ]
@@ -91,22 +91,4 @@ OPTIMIZE_COMMAND_LINE = [
   ['-dtype', 'specify WR or TE in combo', 'wr'],
   ['-l', 'league', 'NFL'],
   ['-pids', 'Player id file (create upload file)', '']
-]
-
-COMMAND_LINE = [
-    ['-qbd', 'depth of qbs to search through', 4],
-    ['-qbp', 'price limit on QB', 100000],
-    ['-rbd', 'depth of qbs to search through', 10],
-    ['-rbp', 'avg price limit on RBs', 7500],
-    ['-wrd', 'depth of qbs to search through', 20],
-    ['-wrp', 'avg price limit on WR', 6500],
-    ['-flexd', 'depth of flex to search through', 4],
-    ['-flexp', 'price limit on flex', 8000],
-    ['-ted', 'depth of TE to search through', 4],
-    ['-tep', 'price limit on TE', 4000],
-    ['-dd', 'depth of defense to search through', 4],
-    ['-dp', 'price limit on defense', 4000],
-    ['-wrk', 'processes enabled - ' +
-             'you will still exhaust memory if you ' +
-             'stray far from depth defaults', 2]    
 ]

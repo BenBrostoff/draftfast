@@ -7,6 +7,7 @@ import unicodedata
 
 from constants import FFPRO
 
+
 def build_fp_pages():
     fp_pages = []
     pos = ['qb', 'rb', 'wr', 'te', 'k', 'dst']
@@ -16,11 +17,14 @@ def build_fp_pages():
 
     return fp_pages
 
+
 def unicode_normalize(*args):
     defense = []
     for x in args:
-        defense.append(unicodedata.normalize('NFKD', x).encode('ascii','ignore'))
+        defense.append(unicodedata.normalize(
+            'NFKD', x).encode('ascii', 'ignore'))
     return defense
+
 
 def scrape():
     hold = []
@@ -32,7 +36,7 @@ def scrape():
             try:
                 hold.append([str(row.find_all('td')[0].text),
                              str(row.find_all('td')[-1].text)])
-                
+
             except Exception, e:
                 print 'Error scraping FanPros data: ' + str(e)
 

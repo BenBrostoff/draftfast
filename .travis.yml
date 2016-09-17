@@ -6,4 +6,5 @@ services:
 before_install:
     - docker build -t draft-kings-fun .
 script:
+    - docker run flake8 .
     - docker run draft-kings-fun nosetests

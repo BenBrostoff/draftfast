@@ -1,5 +1,6 @@
 from constants import ALL_POS_TEAM
 
+
 class Roster:
     def __init__(self):
         self.players = []
@@ -25,6 +26,7 @@ class Roster:
         s += "\tCost: $%s" % self.spent()
         return s
 
+
 class NFLRoster(Roster):
     POSITION_ORDER = {
         "QB": 0,
@@ -33,6 +35,7 @@ class NFLRoster(Roster):
         "TE": 3,
         "DST": 4
     }
+
 
 class NBARoster(Roster):
     POSITION_ORDER = {
@@ -43,6 +46,7 @@ class NBARoster(Roster):
         "C": 4
     }
 
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -52,8 +56,9 @@ class RosterSelect:
         }
         return roster_dict[league]
 
+
 class Player:
-    def __init__(self, pos, name, cost, 
+    def __init__(self, pos, name, cost,
                  matchup=None, team=None, proj=0, marked=None):
         self.pos = pos
         self.name = name
@@ -64,12 +69,14 @@ class Player:
         self.marked = marked
 
     def __repr__(self):
-        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5})".format(self.pos, \
-                                    self.name, \
-									self.team, \
-                                    self.matchup, \
-                                    self.cost, \
-                                    self.proj)
+        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5})".format(
+                self.pos,
+                self.name,
+                self.team,
+                self.matchup,
+                self.cost,
+                self.proj)
+
 
 class Team:
     def __init__(self, give):
@@ -90,7 +97,7 @@ class Team:
             name = getattr(self, pos).name
             players.append(name)
 
-        return len(players) != len(set(players))  
+        return len(players) != len(set(players))
 
     def _set_team_pos(self, give):
         for idx, val in enumerate(give):
