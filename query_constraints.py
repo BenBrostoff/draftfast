@@ -24,7 +24,7 @@ def _is_below_cost(player, query_args):
 def _is_selected_team(player, query_args):
     if player.team is None:
         return False
-    if not query_args.teams or player.pos == 'DST':
+    if not query_args.teams or player.pos in ['DST', 'TE']:
         return True
 
     return player.team in query_args.teams

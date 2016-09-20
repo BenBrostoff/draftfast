@@ -41,21 +41,21 @@ At any time, you can get a list of all possible options via:
 
 <pre><code>python optimize.py --help</pre></code>
 
-## Generating excel lineup files for uploading to DraftKings
+## Generating CSV for uploading multiple lineups to DraftKings
 
-DraftKings allows uploading multiple lineups using a single csv file. This tool now supports
-generating an uppload-able csv file containing the generated optimized lineups.
+DraftKings allows uploading up to 500 lineups using a single CSV file. [You can learn more about DraftKings' support for lineup uploads here.](https://playbook.draftkings.com/news/draftkings-lineup-upload-tool) This tool supports
+generating an uploadable CSV file containing the generated optimized lineups.
 
 To use this feature:
-1) Download the "normal" CSV available this repo has always been using
-(containing player name, DK-estimated points, salary, etc)
-2) Run new_week.sh
-3) Download the "special" template upload CSV and get the file location
-4) run python optimize.py -w 2 -pids <special_location>
 
-DraftKing's template upload is at:
-https://www.draftkings.com/lineup/upload
-(Note, the name of this template file is also DKSalaries.csv, but contains a different structure)
+1. Download the weekly salaries CSV from DraftKings
+(containing player name, DK-estimated points, salary, etc).
+2. Run `bash new_week.sh`.
+3. Download the [CSV upload template](https://www.draftkings.com/lineup/upload) and get the file location (probably something like `~/Downloads/DKSalaries.csv`). *Note - this file has the same name as the weekly salaries CSV when downloaded from DraftKings, which can be confusing.*
+4. Run `python optimize.py -w 2 -pids <upload_tpl_location>`.
+5. Upload the newly generated file to DraftKings from `data/current-upload.csv`.
+
+I find this feature is extremely useful for "saving" lineups in DraftKings - one nice workflow is to run the optimizer always with the `--pids` flag and continually upload the lineups to DK.
 
 ## NBA
 

@@ -15,6 +15,7 @@ ALL_NFL_TEAMS = [
  'CIN',
  'NYJ',
  'DEN',
+ 'DET',
  'BAL',
  'NYG',
  'TEN',
