@@ -41,6 +41,22 @@ At any time, you can get a list of all possible options via:
 
 <pre><code>python optimize.py --help</pre></code>
 
+## Generating excel lineup files for uploading to DraftKings
+
+DraftKings allows uploading multiple lineups using a single csv file. This tool now supports
+generating an uppload-able csv file containing the generated optimized lineups.
+
+To use this feature:
+1) Download the "normal" CSV available this repo has always been using
+(containing player name, DK-estimated points, salary, etc)
+2) Run new_week.sh
+3) Download the "special" template upload CSV and get the file location
+4) run python optimize.py -w 2 -pids <special_location>
+
+DraftKing's template upload is at:
+https://www.draftkings.com/lineup/upload
+(Note, the name of this template file is also DKSalaries.csv, but contains a different structure)
+
 ## NBA
 
 More to come here, but an NBA option exists for NBA contests. Currently it uses average PPG provided by DraftKings to optimize on:
