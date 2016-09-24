@@ -4,6 +4,7 @@ def add_constraints(query_args, remove):
         return _is_not_selected(player, remove) and \
             _is_above_projected_points(**kwargs) and \
             _is_below_cost(**kwargs) and \
+            not _is_banned_player(**kwargs) and \
             _is_selected_team(**kwargs)
 
     return filter_fn
@@ -28,3 +29,9 @@ def _is_selected_team(player, query_args):
         return True
 
     return player.team in query_args.teams
+
+
+def _is_banned_player(player, query_args):
+    if not query_args.banned:
+        return False
+    return player.name in query_args.banned

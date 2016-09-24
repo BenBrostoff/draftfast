@@ -23,7 +23,14 @@ fnu = 'data/{}-upload.csv'
 
 
 for opt in cons.OPTIMIZE_COMMAND_LINE:
-    parser.add_argument(opt[0], help=opt[1], default=opt[2])
+    nargs = '?'
+    if opt[0] in cons.MULTIPLE_ARGS_COMMAND:
+        nargs = '+'
+    parser.add_argument(
+        opt[0],
+        nargs=nargs,
+        help=opt[1],
+        default=opt[2])
 
 args = parser.parse_args()
 
@@ -91,9 +98,6 @@ def run(position_distribution, league, remove, args, test_mode=False):
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
-    if isinstance(args.teams, str):
-        args.teams = args.teams.split(' ')
-
     all_players = filter(
         qc.add_constraints(args, remove),
         all_players)
@@ -209,7 +213,8 @@ def create_upload_file_and_map_pids(pid_file, test_mode=False):
     with open(fnu.format(csv_name), "w") as f:
         writer = csv.writer(f)
         writer.writerow(
-            ['QB', 'RB', 'RB', 'WR', 'WR', 'WR', 'TE', 'FLEX', 'DST'])
+            ['QB', 'RB', 'RB',
+             'WR', 'WR', 'WR', 'TE', 'FLEX', 'DST'])
 
     # create a player map from name/position to id
     player_map = {}
