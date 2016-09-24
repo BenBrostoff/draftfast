@@ -68,14 +68,19 @@ class Player:
         self.proj = proj
         self.marked = marked
 
+
+    def get_ppd(self):
+        return round((self.proj / self.cost) * 1000, 3)
+
     def __repr__(self):
-        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5})".format(
+        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6})".format(
                 self.pos,
                 self.name,
                 self.team,
                 self.matchup,
                 self.cost,
-                self.proj)
+                self.proj,
+                self.get_ppd())
 
 
 class Team:
