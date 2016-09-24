@@ -4,16 +4,17 @@ import requests
 from bs4 import BeautifulSoup as BS
 import unicodedata
 
-FFPRO = 'http://www.fantasypros.com/nfl/projections/'
+from ppr import calculate_fanpros_ppr
+from constants import ALL_POS
 
+FFPRO = 'http://www.fantasypros.com/nfl/projections/'
 
 def build_fp_pages():
     fp_pages = []
-    pos = ['qb', 'rb', 'wr', 'te', 'k', 'dst']
-    for page in pos:
-        fp_pages.append(
-            FFPRO + '{0}.php'.format(page))
-
+    for pos in ALL_POS:
+        fp_pages.append([
+            '{}{}.php'.format(FFPRO, pos), pos
+        ])
     return fp_pages
 
 
@@ -29,15 +30,14 @@ def scrape():
     hold = []
     hold.append(['playername', 'points'])
     for page in build_fp_pages():
-        r = requests.get(page)
+        r = requests.get(page[0])
         soup = BS(r.text, 'html.parser')
         for row in soup.find_all('tr', class_=re.compile('mpb-player-')):
             try:
-                hold.append([str(row.find_all('td')[0].text),
-                             str(row.find_all('td')[-1].text)])
-
+                player_row = row.find_all('td')
+                hold.append([str(player_row[0].text), calculate_fanpros_ppr(player_row, page[1])])
             except Exception, e:
-                print 'Error scraping FanPros data: ' + str(e)
+                print 'Error scraping FanPros data: {}'.format(e)
 
     with open('data/current-projections.csv', 'w') as fp:
         w = csv.writer(fp, delimiter=',')
