@@ -68,7 +68,6 @@ class Player:
         self.proj = proj
         self.marked = marked
 
-
     def get_ppd(self):
         return round((self.proj / self.cost) * 1000, 3)
 
