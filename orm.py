@@ -59,7 +59,8 @@ class RosterSelect:
 
 class Player:
     def __init__(self, pos, name, cost,
-                 matchup=None, team=None, proj=0, marked=None):
+                 matchup=None, team=None, proj=0, marked=None,
+                 lock=False):
         self.pos = pos
         self.name = name
         self.cost = int(cost)
@@ -67,19 +68,21 @@ class Player:
         self.matchup = matchup
         self.proj = proj
         self.marked = marked
+        self.lock = lock
 
     def get_ppd(self):
         return round((self.proj / self.cost) * 1000, 3)
 
     def __repr__(self):
-        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6})".format(
+        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6}), {7}".format(
                 self.pos,
                 self.name,
                 self.team,
                 self.matchup,
                 self.cost,
                 self.proj,
-                self.get_ppd())
+                self.get_ppd(),
+                'LOCK' if self.lock else '')
 
 
 class Team:

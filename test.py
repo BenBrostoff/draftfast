@@ -8,7 +8,7 @@ default_args = Namespace(
     dtype='wr', duo='n', i=3,
     l='NFL', limit='n', lp=0,
     mp=100, ms=10000, s='n', sp=3000, w='1',
-    teams=None, banned=None)
+    locked=None, teams=None, banned=None)
 
 
 def test_default_constraints():
@@ -38,6 +38,15 @@ def test_banned_constraint():
     default_args.banned = [jg]
     roster = run(POSITIONS[NFL], NFL, [], default_args, True)
     assert jg not in [p.name for p in roster.players]
+
+
+def test_locked_constraint():
+    jb = 'Jacoby Brissett'
+    default_args.teams = ['NE', 'Dal']
+    default_args.banned = []
+    default_args.locked = [jb]
+    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    assert [p for p in roster.players if p.name == jb][0].lock
 
 
 def test_bad_constraints():

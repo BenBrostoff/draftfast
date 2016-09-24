@@ -34,7 +34,9 @@ def run(position_distribution, league, remove, args, test_mode=False):
             if idx > 0:
                 player = Player(row['Position'], row['Name'], row['Salary'],
                                 team=row['teamAbbrev'],
-                                matchup=row['GameInfo'])
+                                matchup=row['GameInfo'],
+                                lock=(args.locked and
+                                      row['Name'] in args.locked))
                 if args.l == 'NBA':
                     player.proj = float(row['AvgPointsPerGame'])
                     player.team = row['teamAbbrev']
@@ -117,7 +119,10 @@ def run_solver(solver, all_players, max_flex, args):
     variables = []
 
     for player in all_players:
-        variables.append(solver.IntVar(0, 1, player.name))
+        if player.lock:
+            variables.append(solver.IntVar(1, 1, player.name))
+        else:
+            variables.append(solver.IntVar(0, 1, player.name))
 
     objective = solver.Objective()
     objective.SetMaximization()

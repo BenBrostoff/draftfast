@@ -11,6 +11,7 @@ OPTIMIZE_COMMAND_LINE = [
   ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
   ['-duo', 'force a QB + WR/TE duo on specific team', 'n'],
   ['-teams', 'player must be on specified teams', None],
+  ['-locked', 'player must be in final lineup', None],
   ['-banned', 'player cannot be named players', None],
   ['-dtype', 'specify WR or TE in combo', 'wr'],
   ['-source', 'data source to use', 'fanpros'],
@@ -21,7 +22,8 @@ OPTIMIZE_COMMAND_LINE = [
 
 MULTIPLE_ARGS_COMMAND = [
   '-teams',
-  '-banned'
+  '-banned',
+  '-locked'
 ]
 
 PARSER = argparse.ArgumentParser()
