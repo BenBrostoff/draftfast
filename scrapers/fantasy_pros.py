@@ -14,7 +14,7 @@ def build_fp_pages():
     fp_pages = []
     for pos in ALL_POS:
         fp_pages.append([
-            '{}{}.php'.format(FFPRO, pos), pos
+            '{}{}.php'.format(FFPRO, pos.lower()), pos
         ])
     return fp_pages
 
