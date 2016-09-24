@@ -24,17 +24,17 @@ def test_duo_constraint():
 
 
 def test_teams_constraint():
-    default_args.teams = ['NE']
+    default_args.teams = ['NE', 'Dal']
     roster = run(POSITIONS[NFL], NFL, [], default_args, True)
     for p in roster.players:
         if p.pos == 'DST':
             continue
-        assert p.team == 'NE'
+        assert p.team == 'NE' or p.team == 'Dal'
 
 
 def test_banned_constraint():
     jg = 'Jimmy Garoppolo'
-    default_args.teams = ['NE']
+    default_args.teams = ['NE', 'Dal']
     default_args.banned = [jg]
     roster = run(POSITIONS[NFL], NFL, [], default_args, True)
     assert jg not in [p.name for p in roster.players]

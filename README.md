@@ -15,7 +15,7 @@ If you're not a Mac user, after downloading the CSV data and placing it in its p
 <pre><code>python manage-dups.py</pre></code>
 
 Next, pass in the current week to the script, scrape data from FantasyPros and allow for some mismatched data between the two sources:
-<pre><code>python optimize.py -w 1 -mp 100 -s y</pre></code>
+<pre><code>python optimize.py -mp 100 -s y</pre></code>
 
 One important note here is that passing in <code>y</code> for the scrape option will create <code>fantasy-pros.csv</code>. However, once you've scraped once, there's no need to do again.
 
@@ -23,19 +23,19 @@ One important note here is that passing in <code>y</code> for the scrape option 
 
 Force a QB/WR or QB/TE combination from a particular team. For instance, if I wanted a guaranteed Cam Newton / Greg Olsen duo:
 
-<pre><code>python optimize.py -w 13 -mp 100 -duo CAR -dtype TE</pre></code>
+<pre><code>python optimize.py -mp 100 -duo CAR -dtype TE</pre></code>
 
 Another example pairing DeAndre Hopkins and Brian Hoyer:
 
-<pre><code>python optimize.py -w 13 -mp 100 -duo HOU -dtype WR</pre></code>
+<pre><code>python optimize.py -mp 100 -duo HOU -dtype WR</pre></code>
 
 Limit same team representation except for QB / skill player combos. Example:
 
-<pre><code>python optimize.py -w 13 -mp 100 -limit y</pre></code>
+<pre><code>python optimize.py -mp 100 -limit y</pre></code>
 
 Run the optimizer multiple times and continually eliminate pre-optimized players from the lineup. For instance, to run three different iterations and generate three different sets of players:
 
-<pre><code>python optimize.py -w 1 -i 3</pre></code>
+<pre><code>python optimize.py -i 3</pre></code>
 
 At any time, you can get a list of all possible options via:
 
@@ -52,7 +52,7 @@ To use this feature:
 (containing player name, DK-estimated points, salary, etc).
 2. Run `bash new_week.sh`.
 3. Download the [CSV upload template](https://www.draftkings.com/lineup/upload) and get the file location (probably something like `~/Downloads/DKSalaries.csv`). *Note - this file has the same name as the weekly salaries CSV when downloaded from DraftKings, which can be confusing.*
-4. Run `python optimize.py -w 2 -pids <upload_tpl_location>`.
+4. Run `python optimize.py -pids <upload_tpl_location>`.
 5. Upload the newly generated file to DraftKings from `data/current-upload.csv`.
 
 I find this feature is extremely useful for "saving" lineups in DraftKings - one nice workflow is to run the optimizer always with the `--pids` flag and continually upload the lineups to DK.

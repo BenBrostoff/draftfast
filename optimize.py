@@ -3,36 +3,21 @@
 # https://github.com/swanson/degenerate
 
 import csv
-import subprocess
 from sys import exit
-import argparse
 
 from itertools import islice
 from ortools.linear_solver import pywraplp
 
+import scrapers
 import query_constraints as qc
 import dke_exceptions as dke
 import constants as cons
 from orm import RosterSelect, Player
-
-parser = argparse.ArgumentParser()
+from command_line import get_args
 
 fns = 'data/{}-salaries.csv'
 fnp = 'data/{}-projections.csv'
 fnu = 'data/{}-upload.csv'
-
-
-for opt in cons.OPTIMIZE_COMMAND_LINE:
-    nargs = '?'
-    if opt[0] in cons.MULTIPLE_ARGS_COMMAND:
-        nargs = '+'
-    parser.add_argument(
-        opt[0],
-        nargs=nargs,
-        help=opt[1],
-        default=opt[2])
-
-args = parser.parse_args()
 
 
 def run(position_distribution, league, remove, args, test_mode=False):
@@ -48,6 +33,7 @@ def run(position_distribution, league, remove, args, test_mode=False):
         for idx, row in enumerate(csvdata):
             if idx > 0:
                 player = Player(row['Position'], row['Name'], row['Salary'],
+                                team=row['teamAbbrev'],
                                 matchup=row['GameInfo'])
                 if args.l == 'NBA':
                     player.proj = float(row['AvgPointsPerGame'])
@@ -67,7 +53,6 @@ def run(position_distribution, league, remove, args, test_mode=False):
 
                 player[0].proj = float(row['points'])
                 player[0].marked = 'Y'
-                player[0].team = row['playername'].split(' ')[-2]
                 listify_holder = [
                     row['playername'],
                     row['points']
@@ -104,7 +89,8 @@ def run(position_distribution, league, remove, args, test_mode=False):
 
     variables, solution = run_solver(solver,
                                      all_players,
-                                     position_distribution)
+                                     position_distribution,
+                                     args)
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.l)
@@ -124,7 +110,7 @@ def run(position_distribution, league, remove, args, test_mode=False):
         return None
 
 
-def run_solver(solver, all_players, max_flex):
+def run_solver(solver, all_players, max_flex, args):
     '''
     Set objective and constraints, then optimize
     '''
@@ -171,7 +157,7 @@ def run_solver(solver, all_players, max_flex):
 
     # force QB / WR or QB / TE combo on specified team
     if args.duo != 'n':
-        if args.duo not in cons.ALL_NFL_TEAMS:
+        if args.duo.upper() not in cons.ALL_NFL_TEAMS:
             raise dke.InvalidNFLTeamException(
                 'You need to pass in a valid NFL team ' +
                 'abbreviation to use this option. ' +
@@ -278,10 +264,14 @@ def update_upload_csv(player_map, players, test_mode=False):
         writer.writerow(player_ids)
 
 if __name__ == "__main__":
+    args = get_args()
     if args.pids:
         player_map = create_upload_file_and_map_pids(args.pids)
     if args.s == 'y' and args.l == 'NFL':
-        subprocess.call(['python', 'scraper.py', args.w])
+        try:
+            scrapers.scrape(args.source)
+        except KeyError:
+            raise Exception('You must choose a valid data source.')
 
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):

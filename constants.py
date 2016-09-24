@@ -1,5 +1,3 @@
-FFPRO = 'http://www.fantasypros.com/nfl/projections/'
-
 ALL_POS = ['QB', 'RB', 'WR', 'TE', 'DST']
 ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
                 'WR1', 'WR2', 'WR3', 'FLEX',
@@ -30,7 +28,7 @@ ALL_NFL_TEAMS = [
  'CHI',
  'HOU',
  'WAS',
- 'JAC',
+ 'JAX',
  'KC',
  'PHI',
  'BUF',
@@ -78,25 +76,3 @@ DUO_TYPE = {
     ["TE", 1, 1]
   ]
 }
-
-OPTIMIZE_COMMAND_LINE = [
-  ['-s', 'scrape from FanPros', 'y'],
-  ['-w', 'week of season', 1],
-  ['-mp', 'missing players to allow', 100],
-  ['-sp', 'salary threshold to ignore', 3000],
-  ['-ms', 'max salary for player on roster', 10000],
-  ['-i', 'iterations to run', 3],
-  ['-lp', 'lowest acceptable projection', 0],
-  ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
-  ['-duo', 'force a QB + WR/TE duo on specific team', 'n'],
-  ['-teams', 'player must be on specified teams', None],
-  ['-banned', 'player cannot be named players', None],
-  ['-dtype', 'specify WR or TE in combo', 'wr'],
-  ['-l', 'league', 'NFL'],
-  ['-pids', 'Player id file (create upload file)', '']
-]
-
-MULTIPLE_ARGS_COMMAND = [
-  '-teams',
-  '-banned'
-]

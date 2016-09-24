@@ -1,11 +1,10 @@
-from sys import argv
 import re
 import csv
 import requests
 from bs4 import BeautifulSoup as BS
 import unicodedata
 
-from constants import FFPRO
+FFPRO = 'http://www.fantasypros.com/nfl/projections/'
 
 
 def build_fp_pages():
@@ -13,7 +12,7 @@ def build_fp_pages():
     pos = ['qb', 'rb', 'wr', 'te', 'k', 'dst']
     for page in pos:
         fp_pages.append(
-            FFPRO + '{0}.php?week={1}'.format(page, argv[1]))
+            FFPRO + '{0}.php'.format(page))
 
     return fp_pages
 
@@ -43,6 +42,3 @@ def scrape():
     with open('data/current-projections.csv', 'w') as fp:
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)
-
-if __name__ == "__main__":
-    scrape()

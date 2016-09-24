@@ -15,7 +15,7 @@ def _is_not_selected(player, remove):
 
 
 def _is_above_projected_points(player, query_args):
-    return (player.proj >= int(query_args.lp) or player.pos in ['DST', 'TE'])
+    return (player.proj >= int(query_args.lp) or player.pos in ['DST'])
 
 
 def _is_below_cost(player, query_args):
