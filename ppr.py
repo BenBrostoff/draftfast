@@ -45,8 +45,8 @@ def calculate_fanpros_ppr(row, pos):
         else:
             projected_score += -4
         projected_score += (1 * float(row[1])) \
-                       + (2 * float(row[2])) \
-                       + (2 * float(row[3])) \
-                       + (6 * float(row[5])) \
-                       + (2 * float(row[7]))
+            + (2 * float(row[2])) \
+            + (2 * float(row[3])) \
+            + (6 * float(row[5])) \
+            + (2 * float(row[7]))
     return round(projected_score, 2)
