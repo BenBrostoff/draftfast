@@ -1,5 +1,6 @@
 # converts the row values to DraftKings scoring
 
+
 def calculate_fanpros_ppr(row, pos):
     row = [x.text for x in row]
     projected_score = 0
@@ -44,8 +45,8 @@ def calculate_fanpros_ppr(row, pos):
         else:
             projected_score += -4
         projected_score += (1 * float(row[1])) \
-                           + (2 * float(row[2])) \
-                           + (2 * float(row[3])) \
-                           + (6 * float(row[5])) \
-                           + (2 * float(row[7]))
+                       + (2 * float(row[2])) \
+                       + (2 * float(row[3])) \
+                       + (6 * float(row[5])) \
+                       + (2 * float(row[7]))
     return round(projected_score, 2)
