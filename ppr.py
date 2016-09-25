@@ -1,52 +1,63 @@
-# converts the row values to DraftKings scoring
+# converts nfl stats to DraftKings scoring
+
+DK_OFF_SCORING_MULTIPLIERS = {
+    'PASS-TD': 4,
+    'PASS-YD': 0.04,
+    'INT': -1,
+    'RUSH-TD': 6,
+    'RUSH-YD': 0.1,
+    'REC-TD': 6,
+    'REC-YD': 0.1,
+    'REC': 1,
+    'MISC-TD': 6,
+    'FL': -1,
+    '2PT': 2
+}
+
+DK_DEF_SCORING_MULTIPLIERS = {
+    'SACK': 1,
+    'INT': 2,
+    'FR': 2,
+    'TD': 6,
+    'SAFETY': 2,
+    'BLOCKED_KICK': 2,
+    '2PT': 2
+}
 
 
-def calculate_fanpros_ppr(row, pos):
-    row = [x.text for x in row]
-    projected_score = 0
-    if pos.upper() == 'QB':
-        projected_score += (0.04 * float(row[3])) \
-                           + (4 * float(row[4])) \
-                           + (3 if float(row[3]) >= 300 else 0) \
-                           + (-1 * float(row[5])) \
-                           + (0.1 * float(row[7])) \
-                           + (6 * float(row[8])) \
-                           + (3 if float(row[7]) >= 100 else 0) \
-                           + (-1 * float(row[9]))
-    elif pos.upper() == 'RB' or pos.upper() == 'WR':
-        projected_score += (0.1 * float(row[2])) \
-                           + (6 * float(row[3])) \
-                           + (3 if float(row[2]) >= 100 else 0) \
-                           + (1 * float(row[4])) \
-                           + (0.1 * float(row[5])) \
-                           + (6 * float(row[6])) \
-                           + (3 if float(row[5]) >= 100 else 0) \
-                           + (-1 * float(row[7]))
-    elif pos.upper() == 'TE':
-        projected_score += (1 * float(row[1])) \
-                           + (0.1 * float(row[2])) \
-                           + (6 * float(row[3])) \
-                           + (3 if float(row[2]) >= 100 else 0) \
-                           + (-1 * float(row[4]))
-    elif pos.upper() == 'DST':
-        points_allowed = float(row[8])
-        if points_allowed == 0:
-            projected_score += 10
-        elif points_allowed <= 6:
-            projected_score += 7
-        elif points_allowed <= 13:
-            projected_score += 4
-        elif points_allowed <= 20:
-            projected_score += 1
-        elif points_allowed <= 27:
-            pass
-        elif points_allowed <= 34:
-            projected_score += -1
-        else:
-            projected_score += -4
-        projected_score += (1 * float(row[1])) \
-            + (2 * float(row[2])) \
-            + (2 * float(row[3])) \
-            + (6 * float(row[5])) \
-            + (2 * float(row[7]))
-    return round(projected_score, 2)
+def points_allowed_score(points_allowed):
+    if points_allowed == 0:
+        score = 10
+    elif points_allowed <= 6:
+        score = 7
+    elif points_allowed <= 13:
+        score = 4
+    elif points_allowed <= 20:
+        score = 1
+    elif points_allowed <= 27:
+        score = 0
+    elif points_allowed <= 34:
+        score = -1
+    else:
+        score = -4
+    return score
+
+
+def offensive_conditional_points(stat_dict):
+    return (3 if stat_dict['PASS-YD'] >= 300 else 0) + \
+           (3 if stat_dict['RUSH-YD'] >= 100 else 0) + \
+           (3 if stat_dict['REC-YD'] >= 100 else 0)
+
+
+def calculate_ppr(pos, stat_dict):
+    projected_points = 0
+    if pos.upper() in ('QB', 'RB', 'WR', 'TE'):
+        for key, val in stat_dict.items():
+            projected_points += val * DK_OFF_SCORING_MULTIPLIERS[key]
+        projected_points += offensive_conditional_points(stat_dict)
+    else:
+        for key, val in stat_dict.items():
+            if key != 'POINTS_ALLOWED':
+                projected_points += val * DK_DEF_SCORING_MULTIPLIERS[key]
+        projected_points += points_allowed_score(stat_dict['POINTS_ALLOWED'])
+    return round(projected_points, 2)
