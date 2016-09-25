@@ -25,6 +25,33 @@ DK_DEF_SCORING_MULTIPLIERS = {
 }
 
 
+def generate_empty_stat_dict(pos):
+    stat_dict = {}
+    if pos.upper() in ('QB', 'RB', 'WR', 'TE'):
+        for key in ('PASS-TD',
+                    'PASS-YD',
+                    'INT',
+                    'RUSH-TD',
+                    'RUSH-YD',
+                    'REC-TD',
+                    'REC-YD',
+                    'REC',
+                    'MISC-TD',
+                    'FL',
+                    '2PT'):
+            stat_dict[key] = 0
+    else:
+        for key in ('SACK',
+                    'INT',
+                    'FR',
+                    'TD',
+                    'SAFETY',
+                    'BLOCKED_KICK',
+                    '2PT'):
+            stat_dict[key] = 0
+    return stat_dict
+
+
 def points_allowed_score(points_allowed):
     if points_allowed == 0:
         score = 10

@@ -2,7 +2,7 @@ import csv
 import requests
 from bs4 import BeautifulSoup as BS
 
-from ppr import calculate_ppr
+from ppr import calculate_ppr, generate_empty_stat_dict
 
 NFL_FAN_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'DEF']
 
@@ -33,7 +33,9 @@ def scrape_nfl_fan(limit):
                 pos = filter(lambda x:
                              x in player_stats[0], NFL_FAN_POSITIONS)[0]
                 name = player_stats[0].split(pos)[0].rstrip()
-                projected_points = calculate_ppr(pos, convert_nfl_fantasy_data(pos, player_stats))
+                projected_points = \
+                    calculate_ppr(pos,
+                                  convert_nfl_fantasy_data(pos, player_stats))
                 if projected_points != 0:
                     hold.append([name, projected_points])
     for i in (0, 25):
@@ -47,37 +49,16 @@ def scrape_nfl_fan(limit):
                     unicode('0') if x == '-' else x, [x.text for x in row])
             if any(map(lambda x: x in player_stats[0], ['DEF'])):
                 name = player_stats[0].split('DEF')[0].rstrip()
-                projected_points = calculate_ppr('DEF', convert_nfl_fantasy_data('DEF', player_stats))
+                projected_points = \
+                    calculate_ppr('DEF',
+                                  convert_nfl_fantasy_data('DEF',
+                                                           player_stats))
                 hold.append([name, projected_points])
     return hold
 
 
 def convert_nfl_fantasy_data(pos, row):
-    if pos.upper() != 'DEF':
-        stat_dict = {
-            'PASS-TD': 0,
-            'PASS-YD': 0,
-            'INT': 0,
-            'RUSH-TD': 0,
-            'RUSH-YD': 0,
-            'REC-TD': 0,
-            'REC-YD': 0,
-            'REC': 0,
-            'MISC-TD': 0,
-            'FL': 0,
-            '2PT': 0
-        }
-    else:
-        stat_dict = {
-            'SACK': 0,
-            'INT': 0,
-            'FR': 0,
-            'TD': 0,
-            'SAFETY': 0,
-            'BLOCKED_KICK': 0,
-            '2PT': 0,
-            'POINTS_ALLOWED': 0
-        }
+    stat_dict = generate_empty_stat_dict(pos)
 
     # Placing stats into dict
     if pos != 'DEF':

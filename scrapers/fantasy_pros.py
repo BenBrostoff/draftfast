@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup as BS
 import unicodedata
 
-from ppr import calculate_ppr
+from ppr import calculate_ppr, generate_empty_stat_dict
 from constants import ALL_POS
 
 FFPRO = 'http://www.fantasypros.com/nfl/projections/'
@@ -38,7 +38,10 @@ def scrape():
                 player_row = row.find_all('td')
                 hold.append([
                     str(player_row[0].text),
-                    calculate_ppr(page[1], convert_fanpros_data(page[1], [x.text for x in player_row]))
+                    calculate_ppr(
+                        page[1],
+                        convert_fanpros_data(page[1],
+                                             [x.text for x in player_row]))
                 ])
             except Exception, e:
                 print 'Error scraping FanPros data: {}'.format(e)
@@ -47,32 +50,9 @@ def scrape():
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)
 
+
 def convert_fanpros_data(pos, row):
-    if pos.upper() != 'DST':
-        stat_dict = {
-            'PASS-TD': 0,
-            'PASS-YD': 0,
-            'INT': 0,
-            'RUSH-TD': 0,
-            'RUSH-YD': 0,
-            'REC-TD': 0,
-            'REC-YD': 0,
-            'REC': 0,
-            'MISC-TD': 0,
-            'FL': 0,
-            '2PT': 0
-        }
-    else:
-        stat_dict = {
-            'SACK': 0,
-            'INT': 0,
-            'FR': 0,
-            'TD': 0,
-            'SAFETY': 0,
-            'BLOCKED_KICK': 0,
-            '2PT': 0,
-            'POINTS_ALLOWED': 0
-        }
+    stat_dict = generate_empty_stat_dict(pos)
 
     # Placing stats into dict
     if pos.upper() == 'QB':
@@ -102,4 +82,3 @@ def convert_fanpros_data(pos, row):
         stat_dict['SAFETY'] = float(row[7])
         stat_dict['POINTS_ALLOWED'] = float(row[8])
     return stat_dict
-
