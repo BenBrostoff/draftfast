@@ -14,7 +14,7 @@ OPTIMIZE_COMMAND_LINE = [
   ['-locked', 'player must be in final lineup', None],
   ['-banned', 'player cannot be named players', None],
   ['-dtype', 'specify WR or TE in combo', 'wr'],
-  ['-source', 'data source to use', 'fanpros'],
+  ['-source', 'data source to use', 'all'],
   ['-l', 'league', 'NFL'],
   ['-pids', 'Player id file (create upload file)', '']
 ]

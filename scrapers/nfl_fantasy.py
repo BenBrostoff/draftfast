@@ -18,6 +18,7 @@ def scrape(limit=1000, file_path=DEFAULT_FILE_PATH):
 
 def scrape_nfl_fan(limit):
     hold = []
+    hold.append(['playername', 'points'])
     for i in range(0, limit/25):
         param = (i * 25) + 1
         r = requests.get(NFL_FAN_URL.format(param, 'O'))
