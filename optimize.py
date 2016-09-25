@@ -14,6 +14,7 @@ import dke_exceptions as dke
 import constants as cons
 from orm import RosterSelect, Player
 from command_line import get_args
+from combine_projections import write_combined_projections
 
 fns = 'data/{}-salaries.csv'
 fnp = 'data/{}-projections.csv'
@@ -275,6 +276,7 @@ if __name__ == "__main__":
     if args.s == 'y' and args.l == 'NFL':
         try:
             scrapers.scrape(args.source)
+            write_combined_projections()
         except KeyError:
             raise Exception('You must choose a valid data source.')
 
