@@ -3,4 +3,4 @@ function get_current_week {
 }
 
 get_current_week
-python manage_dups.py
+python prepare_data.py
