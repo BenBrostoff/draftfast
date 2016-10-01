@@ -8,6 +8,7 @@ OPTIMIZE_COMMAND_LINE = [
   ['-ms', 'max salary for player on roster', 10000],
   ['-i', 'iterations to run', 3],
   ['-lp', 'lowest acceptable projection', 0],
+  ['-po', 'highest acceptable ownership', 100],
   ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
   ['-duo', 'force a QB + WR/TE duo on specific team', 'n'],
   ['-teams', 'player must be on specified teams', None],

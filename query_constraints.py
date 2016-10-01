@@ -4,6 +4,7 @@ def add_constraints(query_args, remove):
         return _is_not_selected(player, remove) and \
             _is_above_projected_points(**kwargs) and \
             _is_below_cost(**kwargs) and \
+            _is_below_proj_ownership_pct(**kwargs) and \
             not _is_banned_player(**kwargs) and \
             _is_selected_team(**kwargs)
 
@@ -20,6 +21,10 @@ def _is_above_projected_points(player, query_args):
 
 def _is_below_cost(player, query_args):
     return player.cost <= int(query_args.ms)
+
+
+def _is_below_proj_ownership_pct(player, query_args):
+    return player.projected_ownership_pct <= int(query_args.po)
 
 
 def _is_selected_team(player, query_args):
