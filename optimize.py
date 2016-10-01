@@ -276,7 +276,9 @@ if __name__ == "__main__":
         try:
             scrapers.scrape(args.source)
         except KeyError:
-            raise Exception('You must choose a valid data source.')
+            raise dke.InvalidProjectionSourceException(
+                'You must choose from the following data sources {}.'
+                .format(scrapers.scrape_dict.keys()))
 
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):

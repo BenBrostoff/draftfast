@@ -8,3 +8,7 @@ class InvalidNFLTeamException(Exception):
 
 class InvalidCSVUploadFileException(Exception):
     pass
+
+
+class InvalidProjectionSourceException(Exception):
+    pass
