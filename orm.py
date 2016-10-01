@@ -59,7 +59,8 @@ class RosterSelect:
 
 class Player:
     def __init__(self, pos, name, cost,
-                 matchup=None, team=None, proj=0, marked=None,
+                 proj=0, ownership_pct=0,
+                 matchup=None, team=None,  marked=None,
                  lock=False):
         self.pos = pos
         self.name = name
@@ -67,6 +68,7 @@ class Player:
         self.team = team
         self.matchup = matchup
         self.proj = proj
+        self.ownership_pct = ownership_pct
         self.marked = marked
         self.lock = lock
 

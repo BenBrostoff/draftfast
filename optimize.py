@@ -47,9 +47,17 @@ def run(position_distribution, league, remove, args, test_mode=False):
             csvdata = csv.DictReader(csvfile)
             mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
+            # hack for weird defensive formatting
+            def name_match(row):
+                def match_fn(p):
+                    if p.pos == 'DST':
+                        return p.name.strip() in row['playername']
+                    return p.name in row['playername']
+                return match_fn
+
             for row in csvdata:
-                player = filter(lambda x: x.name in row['playername'],
-                                all_players)
+                player = filter(name_match(row), all_players)
+
                 if len(player) == 0:
                     continue
 
