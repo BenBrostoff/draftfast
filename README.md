@@ -59,7 +59,7 @@ I find this feature is extremely useful for "saving" lineups in DraftKings - one
 
 ## Projected Ownership Percentages (Experimental)
 
-Projected ownership percentages as of this writing could be downloaded from [DFS Cafe](https://dfsreport.com/draftkings-ownership-percentages). If you download the CSV, you can filter on projected ownership percentage. For example, only include players below 15% owned.
+Projected ownership percentages as of this writing could be downloaded from [DFS Report](https://dfsreport.com/draftkings-ownership-percentages). If you download the CSV, you can filter on projected ownership percentage. For example, only include players below 15% owned.
 
 ```
 python optimize.py -po_location 'data/ownership.csv' -po 15
