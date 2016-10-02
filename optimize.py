@@ -206,14 +206,14 @@ def _check_missing_players(all_players, min_cost, e_raise):
     contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
     total_report = len(all_players)
 
-    miss = len(filter(lambda x: x.marked != 'Y' and x.cost > min_cost,
-                      all_players))
-
-    if e_raise < miss:
+    missing = filter(lambda x: x.marked != 'Y' and x.cost > min_cost,
+                     all_players)
+    miss_len = len(missing)
+    if e_raise < miss_len:
         print 'Got {0} out of {1} total'.format(str(contained_report),
                                                 str(total_report))
         raise dke.MissingPlayersException(
-            'Total missing players at price point: ' + str(miss))
+            'Total missing players at price point: ' + str(miss_len))
 
 
 def create_upload_file_and_map_pids(pid_file, test_mode=False):
