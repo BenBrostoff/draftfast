@@ -59,7 +59,8 @@ class RosterSelect:
 
 class Player:
     def __init__(self, pos, name, cost,
-                 proj=0, ownership_pct=0,
+                 proj=0, projected_ownership_pct=0,
+                 lineup_count=0,
                  matchup=None, team=None,  marked=None,
                  lock=False):
         self.pos = pos
@@ -68,7 +69,8 @@ class Player:
         self.team = team
         self.matchup = matchup
         self.proj = proj
-        self.ownership_pct = ownership_pct
+        self.projected_ownership_pct = projected_ownership_pct
+        self.lineup_count = lineup_count
         self.marked = marked
         self.lock = lock
 
@@ -76,7 +78,7 @@ class Player:
         return round((self.proj / self.cost) * 1000, 3)
 
     def __repr__(self):
-        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6}), {7}".format(
+        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6}), {7}, {8}".format(
                 self.pos,
                 self.name,
                 self.team,
@@ -84,6 +86,7 @@ class Player:
                 self.cost,
                 self.proj,
                 self.get_ppd(),
+                self.projected_ownership_pct,
                 'LOCK' if self.lock else '')
 
 

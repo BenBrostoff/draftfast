@@ -43,6 +43,16 @@ def run(position_distribution, league, remove, args, test_mode=False):
                 all_players.append(player)
 
     if league == 'NFL':
+        if args.po_location and args.po:
+            with open(args.po_location, 'rb') as csvfile:
+                csvdata = csv.DictReader(csvfile)
+                for row in csvdata:
+                    player = filter(
+                        lambda p: p.name in row['Name'],
+                        all_players)
+                    if player:
+                        player[0].projected_ownership_pct = float(row['%'])
+
         with open(fnp.format(csv_name), 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
             mass_hold = [['playername', 'points', 'cost', 'ppd']]

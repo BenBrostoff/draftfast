@@ -57,6 +57,14 @@ To use this feature:
 
 I find this feature is extremely useful for "saving" lineups in DraftKings - one nice workflow is to run the optimizer always with the `--pids` flag and continually upload the lineups to DK.
 
+## Projected Ownership Percentages (Experimental)
+
+Projected ownership percentages as of this writing could be downloaded from [DFS Cafe](https://dfsreport.com/draftkings-ownership-percentages). If you download the CSV, you can filter on projected ownership percentage. For example, only include players below 15% owned.
+
+```
+python optimize.py -po_location 'data/ownership.csv' -po 15
+```
+
 ## NBA
 
 More to come here, but an NBA option exists for NBA contests. Currently it uses average PPG provided by DraftKings to optimize on:
@@ -71,4 +79,3 @@ To do:
 * Add virtualenv / automate dependencies installation
 * Improve NBA combination testing
 * Testing
-
