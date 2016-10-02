@@ -18,7 +18,7 @@ from command_line import get_args
 fns = 'data/{}-salaries.csv'
 fnp = 'data/{}-projections.csv'
 fnu = 'data/{}-upload.csv'
-fnpo = 'data/{}-po.csv'
+
 
 def run(position_distribution, league, remove, args, test_mode=False):
     csv_name = 'test' if test_mode else 'current'
@@ -43,14 +43,15 @@ def run(position_distribution, league, remove, args, test_mode=False):
                 all_players.append(player)
 
     if league == 'NFL':
-        with open(fnpo.format(csv_name), 'rb') as csvfile:
-            csvdata = csv.DictReader(csvfile)
-            for row in csvdata:
-                player = filter(
-                    lambda p: p.name in row['Name'], 
-                    all_players)
-                if player:
-                    player[0].projected_ownership_pct = float(row['%'])
+        if args.po_location and args.po:
+            with open(args.po_location, 'rb') as csvfile:
+                csvdata = csv.DictReader(csvfile)
+                for row in csvdata:
+                    player = filter(
+                        lambda p: p.name in row['Name'],
+                        all_players)
+                    if player:
+                        player[0].projected_ownership_pct = float(row['%'])
 
         with open(fnp.format(csv_name), 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
@@ -105,7 +106,6 @@ def run(position_distribution, league, remove, args, test_mode=False):
     all_players = filter(
         qc.add_constraints(args, remove),
         all_players)
-    from IPython import embed; embed();
 
     variables, solution = run_solver(solver,
                                      all_players,
