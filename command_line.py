@@ -18,6 +18,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-source', 'data source to use', 'fanpros'],
     ['-l', 'league', 'NFL'],
     ['-pids', 'Player id file (create upload file)', None],
+    ['-keep_pids', 'Player id file (create upload file)', None],
     ['-po_location', 'Projected ownership percentages file location', None]
 ]
 
