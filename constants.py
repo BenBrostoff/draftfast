@@ -5,6 +5,7 @@ ALL_POS_TEAM = ['QB', 'RB1', 'RB2',
 
 COMBO_TEAM_LIMITS_NFL = []
 ALL_NFL_TEAMS = [
+ 'GB',
  'MIN',
  'MIA',
  'CAR',
