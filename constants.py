@@ -25,7 +25,6 @@ ALL_NFL_TEAMS = [
  'CLE',
  'TB',
  'PIT',
- 'STL',
  'CHI',
  'HOU',
  'WAS',
@@ -36,6 +35,7 @@ ALL_NFL_TEAMS = [
  'IND',
  'ARI',
  'SF',
+ 'LA',
  'D/ST',
  'SD']
 
