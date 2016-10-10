@@ -5,6 +5,12 @@ class Roster:
     def __init__(self):
         self.players = []
 
+    def __repr__(self):
+        s = '\n'.join(str(x) for x in self.sorted_players())
+        s += "\n\nProjected Score: %s" % self.projected()
+        s += "\tCost: $%s" % self.spent()
+        return s
+
     def add_player(self, player):
         self.players.append(player)
 
@@ -20,11 +26,13 @@ class Roster:
     def sorted_players(self):
         return sorted(self.players, key=self.position_order)
 
-    def __repr__(self):
-        s = '\n'.join(str(x) for x in self.sorted_players())
-        s += "\n\nProjected Score: %s" % self.projected()
-        s += "\tCost: $%s" % self.spent()
-        return s
+    def same_roster(self, roster):
+        if len(self.players) == 9 and len(roster.players) == 9:
+            for p in self.players:
+                if p.name not in map(lambda x: x.name, roster.players):
+                    return False
+            return True
+        return False
 
 
 class NFLRoster(Roster):
