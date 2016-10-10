@@ -121,3 +121,18 @@ class Team:
             val += int(getattr(getattr(self, pos), prop))
 
         return val
+
+
+class Game:
+    def __init__(self, team, opp):
+        self.team = team
+        self.opponent = opp
+
+    def __repr__(self):
+        return "{} @ {}".format(self.team, self.opponent)
+
+    def team_in_game(self, team):
+        return team == self.team or team == self.opponent
+
+    def get_teams(self):
+        return self.team, self.opponent

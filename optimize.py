@@ -173,7 +173,7 @@ def run_solver(solver, all_players, max_flex, args):
             team_cap = solver.Constraint(min_limit, max_limit)
 
             for i, player in enumerate(all_players):
-                if team == player.team and \
+                if team.upper() == player.team.upper() and \
                            player.pos != 'QB':
                     team_cap.SetCoefficient(variables[i], 1)
 
@@ -190,7 +190,7 @@ def run_solver(solver, all_players, max_flex, args):
 
             for i, player in enumerate(all_players):
                 if pos == player.pos and \
-                          player.team == args.duo:
+                          player.team.upper() == args.duo.upper():
                     position_cap.SetCoefficient(variables[i], 1)
 
     return variables, solver.Solve()
