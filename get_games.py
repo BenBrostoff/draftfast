@@ -2,6 +2,7 @@ import csv
 
 from orm import Game
 
+
 def get_games():
     all_games = []
     with open('data/current-salaries.csv', 'r') as csvfile:
