@@ -1,5 +1,4 @@
 from optimize import run
-from constants import POSITIONS
 from argparse import Namespace
 from collections import Counter
 from orm import NFLRoster, Player
@@ -56,6 +55,7 @@ def test_bad_constraints():
     default_args.lp = 1000
     roster = run(POSITIONS[NFL], NFL, [], default_args, True)
     assert roster is None
+
 
 def test_same_roster():
     roster_one = NFLRoster()
