@@ -3,7 +3,9 @@ import os
 
 from orm import Game, Player
 
-salaries_csv = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'current-salaries.csv')
+salaries_csv = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            'data', 'current-salaries.csv')
+
 
 def get_games():
     all_games = []
