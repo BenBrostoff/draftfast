@@ -1,7 +1,8 @@
 from optimize import run
-from constants import POSITIONS
 from argparse import Namespace
 from collections import Counter
+from orm import NFLRoster, Player
+from constants import POSITIONS
 
 NFL = 'NFL'
 default_args = Namespace(
@@ -54,3 +55,19 @@ def test_bad_constraints():
     default_args.lp = 1000
     roster = run(POSITIONS[NFL], NFL, [], default_args, True)
     assert roster is None
+
+
+def test_same_roster():
+    roster_one = NFLRoster()
+    roster_two = NFLRoster()
+    for pos in POSITIONS['NFL']:
+        for x in range(0, pos[1]):
+            roster_one.add_player(Player(pos[0], 'Kacper{}'.format(x), 4000))
+            roster_two.add_player(Player(pos[0], 'Kacper{}'.format(x), 4000))
+    roster_one.add_player(Player('WR', 'Kacper8'.format(x), 4000))
+    roster_two.add_player(Player('WR', 'Kacper8'.format(x), 4000))
+    assert roster_one == roster_two
+    roster_one.players.pop()
+    assert not roster_one == roster_two
+    roster_one.players.append(Player('WR', 'Kacper8'.format(x), 6000))
+    assert not roster_one == roster_two
