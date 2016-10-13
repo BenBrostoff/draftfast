@@ -11,6 +11,14 @@ class Roster:
         s += "\tCost: $%s" % self.spent()
         return s
 
+    def __eq__(self, roster):
+        if len(self.players) == 9 and len(roster.players) == 9:
+            for p in self.players:
+                if not any(filter(lambda x: x == p, roster.players)):
+                    return False
+            return True
+        return False
+
     def add_player(self, player):
         self.players.append(player)
 
@@ -26,13 +34,7 @@ class Roster:
     def sorted_players(self):
         return sorted(self.players, key=self.position_order)
 
-    def same_roster(self, roster):
-        if len(self.players) == 9 and len(roster.players) == 9:
-            for p in self.players:
-                if p.name not in map(lambda x: x.name, roster.players):
-                    return False
-            return True
-        return False
+
 
 
 class NFLRoster(Roster):
@@ -82,9 +84,6 @@ class Player:
         self.marked = marked
         self.lock = lock
 
-    def get_ppd(self):
-        return round((self.proj / self.cost) * 1000, 3)
-
     def __repr__(self):
         return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6}), {7}, {8}".format(
                 self.pos,
@@ -96,6 +95,15 @@ class Player:
                 self.get_ppd(),
                 self.projected_ownership_pct,
                 'LOCK' if self.lock else '')
+
+    def __eq__(self, player):
+        return self.pos == player.pos and \
+               self.name == player.name and \
+               self.cost == player.cost and \
+               self.team == player.team
+
+    def get_ppd(self):
+        return round((self.proj / self.cost) * 1000, 3)
 
 
 class Team:

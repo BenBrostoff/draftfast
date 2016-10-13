@@ -66,6 +66,8 @@ def test_same_roster():
             roster_two.add_player(Player(pos[0], 'Kacper{}'.format(x), 4000))
     roster_one.add_player(Player('WR', 'Kacper8'.format(x), 4000))
     roster_two.add_player(Player('WR', 'Kacper8'.format(x), 4000))
-    assert roster_one.same_roster(roster_two)
+    assert roster_one == roster_two
     roster_one.players.pop()
-    assert not roster_one.same_roster(roster_two)
+    assert not roster_one == roster_two
+    roster_one.players.append(Player('WR', 'Kacper8'.format(x), 6000))
+    assert not roster_one == roster_two
