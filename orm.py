@@ -35,8 +35,6 @@ class Roster:
         return sorted(self.players, key=self.position_order)
 
 
-
-
 class NFLRoster(Roster):
     POSITION_ORDER = {
         "QB": 0,
