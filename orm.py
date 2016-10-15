@@ -12,7 +12,8 @@ class Roster:
         return s
 
     def __eq__(self, roster):
-        if len(self.players) == 9 and len(roster.players) == 9:
+        if self.__class__ == roster.__class__ and \
+           len(self.players) == 9 and len(roster.players) == 9:
             for p in self.players:
                 if not any(filter(lambda x: x == p, roster.players)):
                     return False
