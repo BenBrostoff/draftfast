@@ -107,6 +107,9 @@ def run(position_distribution, league, remove, args, test_mode=False):
         qc.add_constraints(args, remove),
         all_players)
 
+    if args.no_double_te == _YES:
+        cons.POSITIONS['NFL'] = cons.get_nfl_positions(te_upper=1)
+
     variables, solution = run_solver(solver,
                                      all_players,
                                      position_distribution,
@@ -221,8 +224,6 @@ if __name__ == "__main__":
         upload.create_upload_file()
     if args.pids:
         player_map = upload.map_pids(args.pids)
-    if args.no_double_te == _YES:
-        cons.POSITIONS['NFL'] = cons.get_nfl_positions(te_upper=1)
     if args.s == _YES and args.l == 'NFL':
         try:
             scrapers.scrape(args.source)

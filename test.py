@@ -7,7 +7,7 @@ from constants import POSITIONS
 NFL = 'NFL'
 default_args = Namespace(
     dtype='wr', duo='n', i=1,
-    l='NFL', limit='n', lp=0,
+    l='NFL', limit='n', lp=0, no_double_te='n',
     mp=100, ms=10000, s='n', sp=3000, w='1',
     locked=None, teams=None, banned=None,
     po=0, po_location=None)
