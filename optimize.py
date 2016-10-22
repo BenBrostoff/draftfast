@@ -17,7 +17,7 @@ from command_line import get_args
 
 fns = 'data/{}-salaries.csv'
 fnp = 'data/{}-projections.csv'
-
+_YES = 'y'
 
 def run(position_distribution, league, remove, args, test_mode=False):
     csv_name = 'test' if test_mode else 'current'
@@ -220,7 +220,10 @@ if __name__ == "__main__":
         upload.create_upload_file()
     if args.pids:
         player_map = upload.map_pids(args.pids)
-    if args.s == 'y' and args.l == 'NFL':
+    if args.no_double_te == _YES:
+        print('Override.')
+        cons.POSITIONS['NFL'] = cons.get_nfl_positions(te_upper=1)
+    if args.s == _YES and args.l == 'NFL':
         try:
             scrapers.scrape(args.source)
         except KeyError:

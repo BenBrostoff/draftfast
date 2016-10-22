@@ -11,6 +11,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-po', 'highest acceptable ownership', 100],
     ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
     ['-duo', 'force a QB + WR/TE duo on specific team', 'n'],
+    ['-no_double_te', 'disallow two tight end lineups', 'n'],
     ['-teams', 'player must be on specified teams', None],
     ['-locked', 'player must be in final lineup', None],
     ['-banned', 'player cannot be named players', None],

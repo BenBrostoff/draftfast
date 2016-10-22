@@ -49,6 +49,16 @@ ROSTER_SIZE = {
   'NBA': 8
 }
 
+
+def get_nfl_positions(te_upper=2):
+    return [
+        ["QB", 1, 1],
+        ["RB", 2, 3],
+        ["WR", 3, 4],
+        ["TE", 1, te_upper],
+        ["DST", 1, 1]
+    ]
+
 POSITIONS = {
   'NBA': [
     ["PG", 1, 3],
@@ -57,14 +67,7 @@ POSITIONS = {
     ["PF", 1, 3],
     ["C", 1, 2]
   ],
-
-  'NFL': [
-    ["QB", 1, 1],
-    ["RB", 2, 3],
-    ["WR", 3, 4],
-    ["TE", 1, 2],
-    ["DST", 1, 1]
-  ]
+  'NFL': get_nfl_positions()
 }
 
 DUO_TYPE = {
