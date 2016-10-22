@@ -221,7 +221,6 @@ if __name__ == "__main__":
     if args.pids:
         player_map = upload.map_pids(args.pids)
     if args.no_double_te == _YES:
-        print('Override.')
         cons.POSITIONS['NFL'] = cons.get_nfl_positions(te_upper=1)
     if args.s == _YES and args.l == 'NFL':
         try:
