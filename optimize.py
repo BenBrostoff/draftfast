@@ -19,6 +19,7 @@ fns = 'data/{}-salaries.csv'
 fnp = 'data/{}-projections.csv'
 _YES = 'y'
 
+
 def run(position_distribution, league, remove, args, test_mode=False):
     csv_name = 'test' if test_mode else 'current'
     solver = pywraplp.Solver('FD',
