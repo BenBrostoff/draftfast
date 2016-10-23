@@ -30,17 +30,16 @@ def run(position_distribution, league, remove, args, test_mode=False):
     with open(fns.format(csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
 
-        for idx, row in enumerate(csvdata):
-            if idx > 0:
-                player = Player(row['Position'], row['Name'], row['Salary'],
-                                team=row['teamAbbrev'],
-                                matchup=row['GameInfo'],
-                                lock=(args.locked and
-                                      row['Name'] in args.locked))
-                if args.l == 'NBA':
-                    player.proj = float(row['AvgPointsPerGame'])
-                    player.team = row['teamAbbrev']
-                all_players.append(player)
+        for row in csvdata:
+            player = Player(row['Position'], row['Name'], row['Salary'],
+                            team=row['teamAbbrev'],
+                            matchup=row['GameInfo'],
+                            lock=(args.locked and
+                                  row['Name'] in args.locked))
+            if args.l == 'NBA':
+                player.proj = float(row['AvgPointsPerGame'])
+                player.team = row['teamAbbrev']
+            all_players.append(player)
 
     if league == 'NFL':
         if args.po_location and args.po:
