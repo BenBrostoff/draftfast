@@ -80,3 +80,38 @@ DUO_TYPE = {
     ["TE", 1, 1]
   ]
 }
+
+DK_TO_NFL_DRAFTKINGS = {
+    'Panthers': 'Carolina Panthers',
+    'Buccaneers': 'Tampa Bay Buccaneers',
+    'Dolphins': 'Miami Dolphins',
+    'Bears': 'Chicago Bears',
+    'Raiders': 'Oakland Raiders',
+    'Patriots': 'New England Patriots',
+    'Vikings': 'Minnesota Vikings',
+    'Eagles': 'Philadelphia Eagles',
+    '49ers': 'San Francisco 49ers',
+    'Bengals': 'Cincinnati Bengals',
+    'Bills': 'Buffalo Bills',
+    'Broncos': 'Denver Broncos',
+    'Browns': 'Cleveland Browns',
+    'Cardinals': 'Arizona Cardinals',
+    'Chargers': 'San Diego Chargers',
+    'Chiefs': 'Kansas City Chiefs',
+    'Colts': 'Indianapolis Colts',
+    'Cowboys': 'Dallas Cowboys',
+    'Falcons': 'Atlanta Falcons',
+    'Giants': 'New York Giants',
+    'Jaguars': 'Jacksonville Jaguars',
+    'Jets': 'New York Jets',
+    'Lions': 'Detroit Lions',
+    'Packers': 'Green Bay Packers',
+    'Rams': 'Los Angeles Rams',
+    'Ravens': 'Baltimore Ravens',
+    'Redskins': 'Washington Redskins',
+    'Saints': 'New Orleans Saints',
+    'Seahawks': 'Seattle Seahawks',
+    'Steelers': 'Pittsburgh Steelers',
+    'Texans': 'Houston Texans',
+    'Titans': 'Tennessee Titans'
+}
