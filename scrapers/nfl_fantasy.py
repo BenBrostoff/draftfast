@@ -3,9 +3,13 @@ import requests
 from bs4 import BeautifulSoup as BS
 from os import path
 
-from draft_kings_fun import calculate_ppr, generate_empty_stat_dict
+from ppr import calculate_ppr, generate_empty_stat_dict
 
-DEFAULT_FILE_PATH = path.join(path.split(path.split(path.realpath(__file__))[0])[0], 'data', '{}')
+DEFAULT_FILE_PATH = path.join(
+    path.split(path.split(path.realpath(__file__))[0])[0],
+    'data',
+    '{}'
+)
 
 NFL_FAN_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'DEF']
 

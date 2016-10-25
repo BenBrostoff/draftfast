@@ -5,12 +5,17 @@ from os import path
 from bs4 import BeautifulSoup as BS
 import unicodedata
 
-from draft_kings_fun import calculate_ppr, generate_empty_stat_dict
-from draft_kings_fun import ALL_POS
+from ppr import calculate_ppr, generate_empty_stat_dict
+from constants import ALL_POS
 
-CSV_FILE_PATH = path.join(path.split(path.split(path.realpath(__file__))[0])[0], 'data', '{}')
+CSV_FILE_PATH = path.join(
+    path.split(path.split(path.realpath(__file__))[0])[0],
+    'data',
+    '{}'
+)
 
 FFPRO = 'http://www.fantasypros.com/nfl/projections/'
+
 
 def build_fp_pages():
     fp_pages = []

@@ -8,7 +8,6 @@ scrape_dict = {
     'nfl_fantasy': nfl_scrape
 }
 
+
 def scrape(source):
     return scrape_dict[source]()
-
-

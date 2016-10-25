@@ -2,14 +2,21 @@ import csv
 import requests
 from os import path
 
-from draft_kings_fun import DUPLICATES
+from data_cleaning_constants import DUPLICATES
 
-CSV_FILE_PATH = path.join(path.split(path.split(path.realpath(__file__))[0])[0], 'data', '{}')
+
+CSV_FILE_PATH = path.join(
+    path.split(path.split(path.realpath(__file__))[0])[0],
+    'data',
+    '{}'
+)
+
 
 ROTO_GRINDERS = ''.join([
     'https://rotogrinders.com',
     '/projected-stats/nfl-{}.csv?site=draftkings'
 ])
+
 
 pos = ['qb', 'rb', 'wr', 'te', 'defense']
 
