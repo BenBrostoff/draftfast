@@ -2,7 +2,7 @@ import csv
 import requests
 from os import path
 
-from data_cleaning_constants import DUPLICATES
+from draft_kings_fun.data_cleaning_constants import DUPLICATES
 
 
 CSV_FILE_PATH = path.join(
