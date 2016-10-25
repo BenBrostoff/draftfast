@@ -1,6 +1,10 @@
 import csv
 import requests
-from data_cleaning_constants import DUPLICATES
+from os import path
+
+from draft_kings_fun import DUPLICATES
+
+CSV_FILE_PATH = path.join(path.split(path.split(path.realpath(__file__))[0])[0], 'data', '{}')
 
 ROTO_GRINDERS = ''.join([
     'https://rotogrinders.com',
@@ -10,7 +14,7 @@ ROTO_GRINDERS = ''.join([
 pos = ['qb', 'rb', 'wr', 'te', 'defense']
 
 
-def scrape():
+def scrape(file_name='current-projections.csv'):
     hold = [['playername', 'points']]
     for page in pos:
         content = requests.get(
@@ -27,6 +31,6 @@ def scrape():
             if len(p):
                 hold.append([p[0], p[-1]])
 
-    with open('data/current-projections.csv', 'w') as fp:
+    with open(CSV_FILE_PATH.format(file_name), 'w') as fp:
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)

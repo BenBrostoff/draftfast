@@ -1,20 +1,21 @@
 import csv
 import requests
 from bs4 import BeautifulSoup as BS
+from os import path
 
-from ppr import calculate_ppr, generate_empty_stat_dict
+from draft_kings_fun import calculate_ppr, generate_empty_stat_dict
+
+DEFAULT_FILE_PATH = path.join(path.split(path.split(path.realpath(__file__))[0])[0], 'data', '{}')
 
 NFL_FAN_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'DEF']
 
 NFL_FAN_URL = \
     'http://fantasy.nfl.com/research/projections?offset={}&position={}'
 
-DEFAULT_FILE_PATH = 'data/current-nfl-fan-projections.csv'
 
-
-def scrape(limit=1000, file_path=DEFAULT_FILE_PATH):
+def scrape(limit=1000, file_name='current-projections.csv'):
     hold = scrape_nfl_fan(limit)
-    write_to_csv(hold, file_path)
+    write_to_csv(hold, DEFAULT_FILE_PATH.format(file_name))
 
 
 def scrape_nfl_fan(limit):
