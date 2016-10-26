@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.png)](https://travis-ci.org/BenBrostoff/draft-kings-fun)
+[![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun)
 
 ## Introduction
 
