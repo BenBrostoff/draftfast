@@ -18,7 +18,7 @@ RUN wget https://github.com/google/or-tools/releases/download/v4.3/or-tools.pyth
 
 RUN mkdir /draft-kings-fun
 COPY . /draft-kings-fun
-RUN cd dk && ls && pip install -r requirements.txt
+RUN cd draft-kings-fun && ls && pip install -r requirements.txt
 WORKDIR /draft-kings-fun
 
 CMD ["/bin/bash"]
