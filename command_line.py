@@ -2,7 +2,10 @@ import argparse
 
 
 OPTIMIZE_COMMAND_LINE = [
-    ['-s', 'scrape from FanPros', 'y'],
+    ['-s', 'scrape from data source', 'y'],
+    ['-w', 'current week', None],
+    ['-season', 'current season', None],
+    ['-historical', 'fetch historical data', 'n'],
     ['-mp', 'missing players to allow', 100],
     ['-sp', 'salary threshold to ignore', 3000],
     ['-ms', 'max salary for player on roster', 10000],

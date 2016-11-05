@@ -41,6 +41,12 @@ def run(position_distribution, league, remove, args, test_mode=False):
                 player.team = row['teamAbbrev']
             all_players.append(player)
 
+    if args.w and args.season and args.historical == _YES:
+        print('Fetching {} season data for all players...'
+              .format(args.season))
+        for p in all_players:
+            p.set_historical(int(args.w), int(args.season))
+
     if league == 'NFL':
         if args.po_location and args.po:
             with open(args.po_location, 'rb') as csvfile:

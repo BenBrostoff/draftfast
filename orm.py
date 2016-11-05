@@ -1,3 +1,5 @@
+import numpy as np
+import NFL_Draftkings as NFLDK
 from constants import ALL_POS_TEAM
 
 
@@ -67,6 +69,8 @@ class RosterSelect:
 
 
 class Player:
+    _PLAYER_DATA_CACHE = {}
+
     def __init__(self, pos, name, cost,
                  proj=0, projected_ownership_pct=0,
                  lineup_count=0,
@@ -103,6 +107,52 @@ class Player:
 
     def get_ppd(self):
         return round((self.proj / self.cost) * 1000, 3)
+
+    def set_historical(self, week, season):
+        if self.name in self._PLAYER_DATA_CACHE:
+            self.__set_from_data_cache(
+                self._PLAYER_DATA_CACHE[self.name])
+            return
+        try:
+            scores = NFLDK.get_weekly_scores(
+                name=self.name,
+                weeks=range(1, week),
+                season=season
+            )
+            scores = [
+                s.get('stats', 0) for s in scores
+            ]
+            self.all_scores = scores
+            self.last_score = scores[-1]
+            self.max_score = max(scores)
+            self.min_score = min(scores)
+            self.average_score = min(scores)
+            self.median_score = np.median(scores)
+            self.stdev_score = np.std(scores)
+
+            self.__set_data_cache()
+
+            print('Fetched player data for {}'.format(self.name))
+        except:
+            self._PLAYER_DATA_CACHE[self.name] = None
+            print('Failed to fetch player data for {}'.format(self.name))
+
+    def __set_data_cache(self):
+        self._PLAYER_DATA_CACHE[self.name] = {
+            'all_scores': self.all_scores,
+            'last_score': self.last_score,
+            'max_score': self.max_score,
+            'min_score': self.min_score,
+            'average_score': self.average_score,
+            'median_score': self.median_score,
+            'std_score': self.stdev_score,
+        }
+
+    def __set_from_data_cache(self, player_data):
+        if player_data is None:
+            return
+        for k, v in player_data.items():
+            setattr(self, k, v)
 
 
 class Team:

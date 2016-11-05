@@ -1,3 +1,4 @@
 *.pyc
+*.sqlite
 .idea/
 \current*
