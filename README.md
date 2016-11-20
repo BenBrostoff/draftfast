@@ -12,12 +12,12 @@ To run, download your desired week's salaries on DraftKings. For Mac users, this
 
 If you're not a Mac user, after downloading the CSV data and placing it in its proper location:
 
-<pre><code>python manage-dups.py</pre></code>
+<pre><code>python prepare_data.py</pre></code>
 
-Next, pass in the current week to the script, scrape data from FantasyPros and allow for some mismatched data between the two sources:
-<pre><code>python optimize.py -mp 100 -s y</pre></code>
+Next, scrape data from FantasyPros or Rotogrinders and allow for some mismatched data between the two sources:
+<pre><code>python optimize.py -mp 100 -s y -source rotogrinders</pre></code>
 
-One important note here is that passing in <code>y</code> for the scrape option will create <code>fantasy-pros.csv</code>. However, once you've scraped once, there's no need to do again.
+One important note here is that passing in <code>y</code> for the scrape option will create <code>current-projections.csv</code>. However, once you've scraped once, there's no need to do again.
 
 ## Optimization Options
 
@@ -25,9 +25,9 @@ Force a QB/WR or QB/TE combination from a particular team. For instance, if I wa
 
 <pre><code>python optimize.py -mp 100 -duo CAR -dtype TE</pre></code>
 
-Another example pairing DeAndre Hopkins and Brian Hoyer:
+Another example pairing Antonio Brown and Ben Roethlisberger:
 
-<pre><code>python optimize.py -mp 100 -duo HOU -dtype WR</pre></code>
+<pre><code>python optimize.py -mp 100 -duo PIT -dtype WR</pre></code>
 
 Limit same team representation except for QB / skill player combos. Example:
 
@@ -71,11 +71,3 @@ More to come here, but an NBA option exists for NBA contests. Currently it uses 
 
 <pre><code>python optimize.py -l NBA -s n</pre></code>
 
-To do:
-
-* Require QB to have at least one WR on team in lineup 
-* More data
-* Find better way of combining data sets on name
-* Add virtualenv / automate dependencies installation
-* Improve NBA combination testing
-* Testing
