@@ -223,6 +223,7 @@ def _check_missing_players(all_players, min_cost, e_raise):
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
 
+
 if __name__ == "__main__":
     args = get_args()
     if not args.keep_pids:

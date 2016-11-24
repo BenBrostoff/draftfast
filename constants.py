@@ -59,6 +59,7 @@ def get_nfl_positions(te_upper=2):
         ["DST", 1, 1]
     ]
 
+
 POSITIONS = {
   'NBA': [
     ["PG", 1, 3],
