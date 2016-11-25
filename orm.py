@@ -1,6 +1,5 @@
 import numpy as np
 import NFL_Draftkings as NFLDK
-from constants import ALL_POS_TEAM
 
 
 class Roster:
@@ -32,7 +31,13 @@ class Roster:
         return sum(map(lambda x: x.proj, self.players))
 
     def position_order(self, player):
-        return self.POSITION_ORDER[player.pos]
+        try:
+            return self.POSITION_ORDER[player.pos]
+        except KeyError:
+            # Hack to deal with multi-position players
+            # See outstanding GitHub issue
+            first_pos = player.pos.split('/')[0]
+            return self.POSITION_ORDER[first_pos]
 
     def sorted_players(self):
         return sorted(self.players, key=self.position_order)
@@ -153,39 +158,6 @@ class Player:
             return
         for k, v in player_data.items():
             setattr(self, k, v)
-
-
-class Team:
-    def __init__(self, give):
-        self._set_team_pos(give)
-        self.team_cost = self._get_team_prop('cost')
-        self.team_proj = self._get_team_prop('proj')
-
-    def team_report(self):
-        for pos in ALL_POS_TEAM:
-            getattr(self, pos).player_report()
-
-        print 'Total Cost: ' + str(self.team_cost)
-        print 'Total Projected: ' + str(self.team_proj)
-
-    def contains_dups(self):
-        players = []
-        for pos in ALL_POS_TEAM:
-            name = getattr(self, pos).name
-            players.append(name)
-
-        return len(players) != len(set(players))
-
-    def _set_team_pos(self, give):
-        for idx, val in enumerate(give):
-            setattr(self, ALL_POS_TEAM[idx], val)
-
-    def _get_team_prop(self, prop):
-        val = 0
-        for pos in ALL_POS_TEAM:
-            val += int(getattr(getattr(self, pos), prop))
-
-        return val
 
 
 class Game:
