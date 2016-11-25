@@ -1,4 +1,6 @@
-# converts nfl stats to DraftKings scoring
+'''
+Converts nfl stats to DraftKings scoring
+'''
 
 DK_OFF_SCORING_MULTIPLIERS = {
     'PASS-TD': 4,

@@ -2,7 +2,7 @@ import csv
 from itertools import islice
 
 import dke_exceptions as dke
-from data_cleaning_constants import RENAMES
+from nfl.data_cleaning_constants import RENAMES
 
 upload_file = 'data/current-upload.csv'
 
