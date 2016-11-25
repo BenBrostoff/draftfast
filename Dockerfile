@@ -16,9 +16,9 @@ RUN wget https://github.com/google/or-tools/releases/download/v4.3/or-tools.pyth
   rm -R ortools_examples && \
   rm or-tools.python.examples_4.3.3805.tar.gz
 
-RUN mkdir /dk
-COPY . /dk
-RUN cd dk && ls && pip install -r requirements.txt
-WORKDIR /dk
+RUN mkdir /draft_kings_fun
+COPY . /draft_kings_fun
+RUN cd draft_kings_fun && ls && pip install -r requirements.txt
+WORKDIR /draft_kings_fun
 
 CMD ["/bin/bash"]

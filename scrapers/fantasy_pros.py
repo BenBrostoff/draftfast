@@ -1,11 +1,18 @@
 import re
 import csv
 import requests
+from os import path
 from bs4 import BeautifulSoup as BS
 import unicodedata
 
-from ppr import calculate_ppr, generate_empty_stat_dict
-from constants import ALL_POS
+from draft_kings_fun.ppr import calculate_ppr, generate_empty_stat_dict
+from draft_kings_fun.constants import ALL_POS
+
+CSV_FILE_PATH = path.join(
+    path.split(path.split(path.realpath(__file__))[0])[0],
+    'data',
+    '{}'
+)
 
 FFPRO = 'http://www.fantasypros.com/nfl/projections/'
 
@@ -27,7 +34,7 @@ def unicode_normalize(*args):
     return defense
 
 
-def scrape():
+def scrape(file_name='current-projections.csv'):
     hold = []
     hold.append(['playername', 'points'])
     for page in build_fp_pages():
@@ -46,7 +53,7 @@ def scrape():
             except Exception, e:
                 print 'Error scraping FanPros data: {}'.format(e)
 
-    with open('data/current-projections.csv', 'w') as fp:
+    with open(CSV_FILE_PATH.format(file_name), 'w') as fp:
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)
 
