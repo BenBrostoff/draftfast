@@ -47,64 +47,62 @@ def run(position_distribution, league, remove, args, test_mode=False):
         for p in all_players:
             p.set_historical(int(args.w), int(args.season))
 
-    if league == 'NFL':
-        if args.po_location and args.po:
-            with open(args.po_location, 'rb') as csvfile:
-                csvdata = csv.DictReader(csvfile)
-                for row in csvdata:
-                    player = filter(
-                        lambda p: p.name in row['Name'],
-                        all_players)
-                    if player:
-                        player[0].projected_ownership_pct = float(row['%'])
-
-        with open(fnp.format(csv_name), 'rb') as csvfile:
+    if args.po_location and args.po:
+        with open(args.po_location, 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
-            mass_hold = [['playername', 'points', 'cost', 'ppd']]
-
-            # hack for weird defensive formatting
-            def name_match(row):
-                def match_fn(p):
-                    if p.pos == 'DST':
-                        return p.name.strip() in row['playername']
-                    return p.name in row['playername']
-                return match_fn
-
             for row in csvdata:
-                player = filter(name_match(row), all_players)
+                player = filter(
+                    lambda p: p.name in row['Name'],
+                    all_players)
+                if player:
+                    player[0].projected_ownership_pct = float(row['%'])
 
-                if len(player) == 0:
-                    continue
+    with open(fnp.format(csv_name), 'rb') as csvfile:
+        csvdata = csv.DictReader(csvfile)
+        mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
-                player[0].proj = float(row['points'])
-                player[0].marked = 'Y'
-                listify_holder = [
-                    row['playername'],
-                    row['points']
-                ]
-                if '0.0' not in row['points'] or player[0].cost != 0:
-                    ppd = float(row['points']) / float(player[0].cost)
-                else:
-                    ppd = 0
-                listify_holder.extend([player[0].cost,
-                                       ppd * 100000])
-                mass_hold.append(listify_holder)
+        # hack for weird defensive formatting
+        def name_match(row):
+            def match_fn(p):
+                if p.pos == 'DST':
+                    return p.name.strip() in row['playername']
+                return p.name in row['playername']
+            return match_fn
 
-        check = []
-        with open(fns.format(csv_name), 'rb') as csvdata:
-            for row in csvdata:
-                check = row
-                break
+        for row in csvdata:
+            player = filter(name_match(row), all_players)
 
-        with open(fnp.format(csv_name), 'wb') as csvdata:
-            if len(check) == 4:
-                pass
+            if len(player) == 0:
+                continue
+
+            player[0].proj = float(row['points'])
+            player[0].marked = 'Y'
+            listify_holder = [
+                row['playername'],
+                row['points']
+            ]
+            if '0.0' not in row['points'] or player[0].cost != 0:
+                ppd = float(row['points']) / float(player[0].cost)
             else:
-                writer = csv.writer(csvdata, lineterminator='\n')
-                writer.writerows(mass_hold)
+                ppd = 0
+            listify_holder.extend([player[0].cost,
+                                   ppd * 100000])
+            mass_hold.append(listify_holder)
 
-    if league == 'NFL':
-        _check_missing_players(all_players, args.sp, args.mp)
+    check = []
+    with open(fns.format(csv_name), 'rb') as csvdata:
+        for row in csvdata:
+            check = row
+            break
+
+    with open(fnp.format(csv_name), 'wb') as csvdata:
+        if len(check) == 4:
+            pass
+        else:
+            writer = csv.writer(csvdata, lineterminator='\n')
+            writer.writerows(mass_hold)
+
+    _check_missing_players(all_players, args.sp, args.mp)
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
@@ -230,7 +228,7 @@ if __name__ == "__main__":
         upload.create_upload_file()
     if args.pids:
         player_map = upload.map_pids(args.pids)
-    if args.s == _YES and args.l == 'NFL':
+    if args.s == _YES:
         try:
             scrapers.scrape(args.source)
         except KeyError:

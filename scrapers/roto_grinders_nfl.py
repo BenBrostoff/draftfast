@@ -1,6 +1,8 @@
 import csv
+
 import requests
-from data_cleaning_constants import DUPLICATES
+
+from nfl.data_cleaning_constants import DUPLICATES
 
 ROTO_GRINDERS = ''.join([
     'https://rotogrinders.com',

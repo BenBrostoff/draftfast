@@ -2,20 +2,26 @@
 
 ## Introduction
 
-Special thanks to _swanson, who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of. I currently use data from [Fantasy Pros](http://www.fantasypros.com/) as the criteria to optimize on.
+Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of.
 
 Pre-reqs:
 
 * [ortools](https://developers.google.com/optimization/installing?hl=en)
+* `pip install -r requirements.txt`
 
-To run, download your desired week's salaries on DraftKings. For Mac users, this file will make its way into <code>~/Downloads/</code> as <code>DKSalaries.csv</code>. The script <code> new_week.sh</code> will move this file into its proper location if you're using a Mac (simply <code>bash new_week.sh</code>); otherwise, please do this step manually. It will also handle duplicate names in the CSV that would normally cause <code> ortools </code> to crash (currently only David Johnson has a shared name in the NFL).
+To run, download your desired week's salaries on DraftKings, and then run:
+ 
+```
+bash nfl/prepare_contest_data.sh
+```
 
-If you're not a Mac user, after downloading the CSV data and placing it in its proper location:
-
-<pre><code>python prepare_data.py</pre></code>
+Note that this script will error out if the CSV from DraftKings is not in `~/Downloads`.
 
 Next, scrape data from FantasyPros or Rotogrinders and allow for some mismatched data between the two sources:
-<pre><code>python optimize.py -mp 100 -s y -source rotogrinders</pre></code>
+
+```
+python optimize.py -mp 100 -s y -source nfl_rotogrinders
+```
 
 One important note here is that passing in <code>y</code> for the scrape option will create <code>current-projections.csv</code>. However, once you've scraped once, there's no need to do again.
 
@@ -67,7 +73,13 @@ python optimize.py -po_location 'data/ownership.csv' -po 15
 
 ## NBA
 
-More to come here, but an NBA option exists for NBA contests. Currently it uses average PPG provided by DraftKings to optimize on:
+An NBA option exists for NBA contests. After downloading the DraftKings salaries for a contest:
 
-<pre><code>python optimize.py -l NBA -s n</pre></code>
+```
+bash nba/prepare_contest_data.sh
+```
+
+Currently, Rotogrinders is the only available datasource:
+
+<pre><code>python optimize.py -l NBA -source nba_rotogrinders</pre></code>
 

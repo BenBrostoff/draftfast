@@ -1,11 +1,12 @@
-import re
 import csv
-import requests
-from bs4 import BeautifulSoup as BS
+import re
 import unicodedata
 
-from ppr import calculate_ppr, generate_empty_stat_dict
+import requests
+from bs4 import BeautifulSoup as BS
+
 from constants import ALL_POS
+from nfl.ppr import calculate_ppr, generate_empty_stat_dict
 
 FFPRO = 'http://www.fantasypros.com/nfl/projections/'
 

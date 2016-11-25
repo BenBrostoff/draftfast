@@ -1,8 +1,9 @@
 import csv
+
 import requests
 from bs4 import BeautifulSoup as BS
 
-from ppr import calculate_ppr, generate_empty_stat_dict
+from nfl.ppr import calculate_ppr, generate_empty_stat_dict
 
 NFL_FAN_POSITIONS = ['QB', 'RB', 'WR', 'TE', 'DEF']
 
