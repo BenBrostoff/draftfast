@@ -21,7 +21,6 @@ Next, scrape data from FantasyPros or Rotogrinders and allow for some mismatched
 
 ```
 python optimize.py -mp 100 -s y -source nfl_rotogrinders
-
 ```
 
 One important note here is that passing in <code>y</code> for the scrape option will create <code>current-projections.csv</code>. However, once you've scraped once, there's no need to do again.
@@ -77,7 +76,7 @@ python optimize.py -po_location 'data/ownership.csv' -po 15
 An NBA option exists for NBA contests. After downloading the DraftKings salaries for a contest:
 
 ```
-bash nba/new_day.sh
+bash nba/prepare_contest_data.sh
 ```
 
 Currently, Rotogrinders is the only available datasource:
