@@ -13,6 +13,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-lp', 'lowest acceptable projection', 0],
     ['-po', 'highest acceptable ownership', 100],
     ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
+    ['-home', 'only select players playing at home', None],
     ['-duo', 'force a QB + WR/TE duo on specific team', 'n'],
     ['-no_double_te', 'disallow two tight end lineups', 'n'],
     ['-teams', 'player must be on specified teams', None],
@@ -23,7 +24,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-l', 'league', 'NFL'],
     ['-pids', 'Player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
-    ['-po_location', 'Projected ownership percentages file location', None]
+    ['-po_location', 'Projected ownership percentages file location', None],
 ]
 
 

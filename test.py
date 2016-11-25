@@ -9,7 +9,7 @@ default_args = Namespace(
     dtype='wr', duo='n', i=1,
     season=2016, w=1, historical='n',
     l='NFL', limit='n', lp=0, no_double_te='n',
-    mp=100, ms=10000, s='n', sp=3000,
+    mp=100, ms=10000, s='n', sp=3000, home=None,
     locked=None, teams=None, banned=None,
     po=0, po_location=None)
 
@@ -17,6 +17,14 @@ default_args = Namespace(
 def test_default_constraints():
     roster = run(POSITIONS[NFL], NFL, [], default_args, True)
     assert roster
+
+
+def test_is_home():
+    default_args.home = True
+    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    for p in roster.players:
+        assert p.is_home
+    default_args.home = False
 
 
 def test_duo_constraint():

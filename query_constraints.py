@@ -6,7 +6,8 @@ def add_constraints(query_args, remove):
             _is_below_cost(**kwargs) and \
             _is_below_proj_ownership_pct(**kwargs) and \
             not _is_banned_player(**kwargs) and \
-            _is_selected_team(**kwargs)
+            _is_selected_team(**kwargs) and \
+            _is_home(**kwargs)
 
     return filter_fn
 
@@ -16,7 +17,7 @@ def _is_not_selected(player, remove):
 
 
 def _is_above_projected_points(player, query_args):
-    return (player.proj >= int(query_args.lp) or player.pos in ['DST'])
+    return player.proj >= int(query_args.lp) or player.pos in ['DST']
 
 
 def _is_below_cost(player, query_args):
@@ -40,3 +41,9 @@ def _is_banned_player(player, query_args):
     if not query_args.banned:
         return False
     return player.name in query_args.banned
+
+
+def _is_home(player, query_args):
+    if query_args.home:
+        return player.is_home
+    return True

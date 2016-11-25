@@ -110,6 +110,11 @@ class Player:
                self.cost == player.cost and \
                self.team == player.team
 
+    @property
+    def is_home(self):
+        match_up_teams = self.matchup.split(' ')[0]
+        return self.team == match_up_teams.split('@')[-1]
+
     def get_ppd(self):
         return round((self.proj / self.cost) * 1000, 3)
 
