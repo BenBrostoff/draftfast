@@ -175,23 +175,25 @@ def run_solver(solver, all_players, max_flex, args):
                 position_cap.SetCoefficient(variables[i], 1)
 
     # max out at one player per team (allow QB combos)
+    team_limits = set([(p.team, 0, 1) for p in all_players])
     if args.limit != 'n':
-        for team, min_limit, max_limit in cons.COMBO_TEAM_LIMITS_NFL:
+        for team, min_limit, max_limit in team_limits:
             team_cap = solver.Constraint(min_limit, max_limit)
 
             for i, player in enumerate(all_players):
                 if team.upper() == player.team.upper() and \
-                           player.pos != 'QB':
+                        player.pos != 'QB':
                     team_cap.SetCoefficient(variables[i], 1)
 
     # force QB / WR or QB / TE combo on specified team
     if args.duo != 'n':
-        if args.duo.upper() not in cons.ALL_NFL_TEAMS:
+        all_teams = set(p.team for p in all_players)
+        if args.duo.upper() not in all_teams:
             raise dke.InvalidNFLTeamException(
                 'You need to pass in a valid NFL team ' +
                 'abbreviation to use this option. ' +
                 'See valid team abbreviations here: '
-                + str(cons.ALL_NFL_TEAMS))
+                + str(all_teams))
         for pos, min_limit, max_limit in cons.DUO_TYPE[args.dtype.lower()]:
             position_cap = solver.Constraint(min_limit, max_limit)
 

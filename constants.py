@@ -1,44 +1,4 @@
-ALL_POS = ['QB', 'RB', 'WR', 'TE', 'DST']
-COMBO_TEAM_LIMITS_NFL = []
-ALL_NFL_TEAMS = [
-    'GB',
-    'MIN',
-    'MIA',
-    'CAR',
-    'ATL',
-    'OAK',
-    'CIN',
-    'NYJ',
-    'DEN',
-    'DET',
-    'BAL',
-    'NYG',
-    'TEN',
-    'NO',
-    'DAL',
-    'NE',
-    'SEA',
-    'CLE',
-    'TB',
-    'PIT',
-    'CHI',
-    'HOU',
-    'WAS',
-    'JAX',
-    'KC',
-    'PHI',
-    'BUF',
-    'IND',
-    'ARI',
-    'SF',
-    'LA',
-    'D/ST',
-    'SD'
-]
-
-for team in ALL_NFL_TEAMS:
-    COMBO_TEAM_LIMITS_NFL.append([team, 0, 1])
-
+ALL_POS = ('QB', 'RB', 'WR', 'TE', 'DST')
 SALARY_CAP = 50000
 
 ROSTER_SIZE = {
