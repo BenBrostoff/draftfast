@@ -8,7 +8,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-historical', 'fetch historical data', 'n'],
     ['-mp', 'missing players to allow', 100],
     ['-sp', 'salary threshold to ignore', 3000],
-    ['-ms', 'max salary for player on roster', 10000],
+    ['-ms', 'max salary for player on roster', 100000],
     ['-i', 'iterations to run', 3],
     ['-lp', 'lowest acceptable projection', 0],
     ['-po', 'highest acceptable ownership', 100],
