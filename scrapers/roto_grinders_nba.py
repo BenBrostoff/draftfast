@@ -1,6 +1,7 @@
 import csv
 import requests
-from nfl.data_cleaning_constants import DUPLICATES
+from nba.data_cleaning_constants import RENAMES
+
 
 ROTO_GRINDERS = ''.join([
     'https://rotogrinders.com',
@@ -15,12 +16,11 @@ def scrape():
     ).content.decode('utf-8')
     cr = csv.reader(content.splitlines(), delimiter=',')
     for p in list(cr):
-        if p[0] in [x['name'] for x in DUPLICATES]:
-            entry = [x for x in DUPLICATES if
-                     x['name'] == p[0]][0]
-            if p[2].lower() != entry['team'].lower():
-                print "Skipping non-key duplicate %s" % p[0]
-                continue
+        renames = \
+            [x['dk_name'] for x in RENAMES
+             if p[0] == x['name']]
+        if renames:
+            p[0] = renames[0]
 
         if len(p):
             hold.append([p[0], p[-1]])

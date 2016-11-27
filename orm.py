@@ -79,6 +79,7 @@ class Player:
     def __init__(self, pos, name, cost,
                  proj=0, projected_ownership_pct=0,
                  lineup_count=0,
+                 average_score=0,
                  matchup=None, team=None,  marked=None,
                  lock=False):
         self.pos = pos
@@ -87,22 +88,27 @@ class Player:
         self.team = team
         self.matchup = matchup
         self.proj = proj
+        self.average_score = average_score
         self.projected_ownership_pct = projected_ownership_pct
         self.lineup_count = lineup_count
         self.marked = marked
         self.lock = lock
 
     def __repr__(self):
-        return "[{0: <2}] {1: <20} {2} {3} (${4}, {5}, {6}), {7}, {8}".format(
-                self.pos,
-                self.name,
-                self.team,
-                self.matchup,
-                self.cost,
-                self.proj,
-                self.get_ppd(),
-                self.projected_ownership_pct,
-                'LOCK' if self.lock else '')
+        player_dict = dict(
+            pos=self.pos,
+            name=self.name,
+            team=self.team,
+            match=self.matchup,
+            cost=self.cost,
+            proj=self.proj,
+            diff=self.proj - self.average_score,
+            lock='LOCK' if self.lock else ''
+        )
+
+        return "[{pos: <2}] {name: <20} {team} {match} " \
+               "(${cost}, {proj} ({diff})), {lock}".format(
+                **player_dict)
 
     def __eq__(self, player):
         return self.pos == player.pos and \

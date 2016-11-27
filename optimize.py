@@ -34,11 +34,10 @@ def run(position_distribution, league, remove, args, test_mode=False):
             player = Player(row['Position'], row['Name'], row['Salary'],
                             team=row['teamAbbrev'],
                             matchup=row['GameInfo'],
+                            average_score=float(
+                                row.get('AvgPointsPerGame', 0)),
                             lock=(args.locked and
                                   row['Name'] in args.locked))
-            if args.l == 'NBA':
-                player.proj = float(row['AvgPointsPerGame'])
-                player.team = row['teamAbbrev']
             all_players.append(player)
 
     if args.w and args.season and args.historical == _YES:
