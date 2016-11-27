@@ -95,6 +95,12 @@ class Player:
         self.lock = lock
 
     def __repr__(self):
+        v_avg = self.proj - self.average_score
+        if v_avg > 0:
+            v_avg = '\x1b[6;30;42m+{}\x1b[0m'.format(v_avg)
+        else:
+            v_avg = '\x1b[2;30;41m{}\x1b[0m'.format(v_avg)
+
         player_dict = dict(
             pos=self.pos,
             name=self.name,
@@ -102,12 +108,12 @@ class Player:
             match=self.matchup,
             cost=self.cost,
             proj=self.proj,
-            diff=self.proj - self.average_score,
+            v_avg=v_avg,
             lock='LOCK' if self.lock else ''
         )
 
         return "[{pos: <2}] {name: <20} {team} {match} " \
-               "(${cost}, {proj} ({diff})), {lock}".format(
+               "(${cost}, {proj} ({v_avg})), {lock}".format(
                 **player_dict)
 
     def __eq__(self, player):
