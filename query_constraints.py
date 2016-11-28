@@ -7,7 +7,8 @@ def add_constraints(query_args, remove):
             _is_below_proj_ownership_pct(**kwargs) and \
             not _is_banned_player(**kwargs) and \
             _is_selected_team(**kwargs) and \
-            _is_home(**kwargs)
+            _is_home(**kwargs) and \
+            _is_within_avg(**kwargs)
 
     return filter_fn
 
@@ -47,3 +48,7 @@ def _is_home(player, query_args):
     if query_args.home:
         return player.is_home
     return True
+
+
+def _is_within_avg(player, query_args):
+    return abs(player.v_avg) < abs(float(query_args.v_avg))

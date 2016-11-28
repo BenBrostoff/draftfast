@@ -95,7 +95,7 @@ class Player:
         self.lock = lock
 
     def __repr__(self):
-        v_avg = self.proj - self.average_score
+        v_avg = self.v_avg
         if v_avg > 0:
             v_avg = '\x1b[6;30;42m+{}\x1b[0m'.format(v_avg)
         else:
@@ -121,6 +121,10 @@ class Player:
                self.name == player.name and \
                self.cost == player.cost and \
                self.team == player.team
+
+    @property
+    def v_avg(self):
+        return self.proj - self.average_score
 
     @property
     def is_home(self):
