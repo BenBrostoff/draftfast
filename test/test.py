@@ -26,18 +26,19 @@ default_args = Namespace(
     banned=None,
     po=0,
     po_location=None,
-    v_avg=10000
+    v_avg=10000,
+    test_mode=True,
 )
 
 
 def test_default_constraints():
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     assert roster
 
 
 def test_is_home():
     default_args.home = True
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     for p in roster.players:
         assert p.is_home
     default_args.home = False
@@ -46,7 +47,7 @@ def test_is_home():
 def test_within_avg():
     avg_test_val = 3
     default_args.v_avg = avg_test_val
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     for player in roster.players:
         assert abs(player.v_avg) < avg_test_val
     default_args.v_avg = 10000
@@ -54,14 +55,14 @@ def test_within_avg():
 
 def test_duo_constraint():
     default_args.duo = 'NE'
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     team_instances = Counter([p.team for p in roster.players]).values()
     assert 2 in team_instances
 
 
 def test_teams_constraint():
     default_args.teams = ['NE', 'Dal']
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     for p in roster.players:
         if p.pos == 'DST':
             continue
@@ -72,7 +73,7 @@ def test_banned_constraint():
     jg = 'Jimmy Garoppolo'
     default_args.teams = ['NE', 'Dal']
     default_args.banned = [jg]
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     assert jg not in [p.name for p in roster.players]
 
 
@@ -81,13 +82,13 @@ def test_locked_constraint():
     default_args.teams = ['NE', 'Dal']
     default_args.banned = []
     default_args.locked = [jb]
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     assert [p for p in roster.players if p.name == jb][0].lock
 
 
 def test_bad_constraints():
     default_args.lp = 1000
-    roster = run(POSITIONS[NFL], NFL, [], default_args, True)
+    roster = run(POSITIONS[NFL], NFL, [], default_args)
     assert roster is None
 
 

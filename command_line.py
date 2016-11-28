@@ -26,6 +26,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-pids', 'Player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
     ['-po_location', 'Projected ownership percentages file location', None],
+    ['test_mode', 'Run in test mode', False],
 ]
 
 

@@ -15,19 +15,19 @@ import constants as cons
 from orm import RosterSelect, Player
 from command_line import get_args
 
-fns = 'data/{}-salaries.csv'
-fnp = 'data/{}-projections.csv'
+fns = '{}/{}-salaries.csv'
+fnp = '{}/{}-projections.csv'
 _YES = 'y'
 
 
-def run(position_distribution, league, remove, args, test_mode=False):
-    csv_name = 'test' if test_mode else 'current'
+def run(position_distribution, league, remove, args):
+    csv_name = ['test', 'test'] if args.test_mode else ['data', 'current']
     solver = pywraplp.Solver('FD',
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     all_players = []
 
-    with open(fns.format(csv_name), 'rb') as csvfile:
+    with open(fns.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
 
         for row in csvdata:
@@ -56,7 +56,7 @@ def run(position_distribution, league, remove, args, test_mode=False):
                 if player:
                     player[0].projected_ownership_pct = float(row['%'])
 
-    with open(fnp.format(csv_name), 'rb') as csvfile:
+    with open(fnp.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
         mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
@@ -89,12 +89,12 @@ def run(position_distribution, league, remove, args, test_mode=False):
             mass_hold.append(listify_holder)
 
     check = []
-    with open(fns.format(csv_name), 'rb') as csvdata:
+    with open(fns.format(*csv_name), 'rb') as csvdata:
         for row in csvdata:
             check = row
             break
 
-    with open(fnp.format(csv_name), 'wb') as csvdata:
+    with open(fnp.format(*csv_name), 'wb') as csvdata:
         if len(check) == 4:
             pass
         else:
