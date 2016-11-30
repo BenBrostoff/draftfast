@@ -1,5 +1,13 @@
+import locale
+from terminaltables import AsciiTable
 import numpy as np
 import NFL_Draftkings as NFLDK
+
+locale.setlocale(locale.LC_ALL, 'en_US')
+
+
+def cs(n):
+    return locale.format('%d', n, grouping=True)
 
 
 class Roster:
@@ -7,10 +15,28 @@ class Roster:
         self.players = []
 
     def __repr__(self):
-        s = '\n'.join(str(x) for x in self.sorted_players())
-        s += "\n\nProjected Score: %s" % self.projected()
-        s += "\tCost: $%s" % self.spent()
-        return s
+        table_data = []
+        headers = [
+            'Position',
+            'Player',
+            'Team',
+            'Matchup',
+            'Salary',
+            'Projection',
+            'vs. Avg.',
+            'Locked'
+        ]
+        table_data.append(headers)
+        for p in self.players:
+            table_data.append(p.to_table_row())
+
+        table = AsciiTable(table_data).table
+
+        aggregate_info = '\n\nProjected Score: {} \t Cost: ${}'.format(
+            self.projected(),
+            cs(self.spent()))
+
+        return table + aggregate_info
 
     def __eq__(self, roster):
         if self.__class__ == roster.__class__ and \
@@ -94,19 +120,26 @@ class Player:
         self.marked = marked
         self.lock = lock
 
-    def __repr__(self):
-        v_avg = self.v_avg
-        if v_avg > 0:
-            v_avg = '\x1b[6;30;42m+{}\x1b[0m'.format(v_avg)
-        else:
-            v_avg = '\x1b[2;30;41m{}\x1b[0m'.format(v_avg)
+    def to_table_row(self):
+        return [
+            self.pos,
+            self.name,
+            self.team,
+            self.matchup,
+            cs(self.cost),
+            self.proj,
+            self.__format_v_avg(),
+            'LOCK' if self.lock else ''
+        ]
 
+    def __repr__(self):
+        v_avg = self.__format_v_avg()
         player_dict = dict(
             pos=self.pos,
             name=self.name,
             team=self.team,
             match=self.matchup,
-            cost=self.cost,
+            cost=cs(self.cost),
             proj=self.proj,
             v_avg=v_avg,
             lock='LOCK' if self.lock else ''
@@ -180,6 +213,11 @@ class Player:
         for k, v in player_data.items():
             setattr(self, k, v)
 
+    def __format_v_avg(self):
+        if self.v_avg > 0:
+            return '\x1b[0;32;40m{}\x1b[0m'.format(self.v_avg)
+        return '\x1b[0;31;40m{}\x1b[0m'.format(self.v_avg)
+
 
 class Game:
     def __init__(self, team, opp):
@@ -187,7 +225,7 @@ class Game:
         self.opponent = opp
 
     def __repr__(self):
-        return "{} @ {}".format(self.team, self.opponent)
+        return '{} @ {}'.format(self.team, self.opponent)
 
     def team_in_game(self, team):
         return team == self.team or team == self.opponent
