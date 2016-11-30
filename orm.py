@@ -3,7 +3,10 @@ from terminaltables import AsciiTable
 import numpy as np
 import NFL_Draftkings as NFLDK
 
-locale.setlocale(locale.LC_ALL, 'en_US')
+try:
+    locale.setlocale(locale.LC_ALL, 'en_US')
+except:
+    pass
 
 
 def cs(n):
