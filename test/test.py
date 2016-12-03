@@ -28,6 +28,7 @@ default_args = Namespace(
     po_location=None,
     v_avg=10000,
     test_mode=True,
+    source='nfl_rotogrinders',
 )
 
 

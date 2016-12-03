@@ -119,6 +119,8 @@ def run(position_distribution, league, remove, args):
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.l)
+        roster.projection_source = \
+            scrapers.scrape_dict[args.source]['readable']
 
         for i, player in enumerate(all_players):
             if variables[i].solution_value() == 1:

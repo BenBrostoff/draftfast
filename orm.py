@@ -39,7 +39,10 @@ class Roster:
             self.projected(),
             cs(self.spent()))
 
-        return table + aggregate_info
+        source = '\nProjection Source: {}'.format(
+            getattr(self, 'projection_source', None))
+
+        return table + aggregate_info + source
 
     def __eq__(self, roster):
         if self.__class__ == roster.__class__ and \
@@ -49,6 +52,14 @@ class Roster:
                     return False
             return True
         return False
+
+    @property
+    def projection_source(self):
+        return self._source
+
+    @projection_source.setter
+    def projection_source(self, source):
+        self._source = source
 
     def add_player(self, player):
         self.players.append(player)
