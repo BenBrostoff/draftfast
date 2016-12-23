@@ -39,6 +39,10 @@ def _is_selected_team(player, query_args):
 
 
 def _is_banned_player(player, query_args):
+    if player.pos == 'DST' and query_args.banned:
+        return player.name.strip() in [
+            n.strip() for n in query_args.banned
+        ]
     if not query_args.banned:
         return False
     return player.name in query_args.banned
