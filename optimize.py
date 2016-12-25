@@ -7,13 +7,13 @@ from sys import exit
 
 from ortools.linear_solver import pywraplp
 
-import scrapers
-import upload
-import query_constraints as qc
-import dke_exceptions as dke
 import constants as cons
-from orm import RosterSelect, Player
+import dke_exceptions as dke
+import query_constraints as qc
+import scrapers
 from command_line import get_args
+from csv_upload import nfl_upload, nba_upload
+from orm import RosterSelect, Player
 
 fns = '{}/{}-salaries.csv'
 fnp = '{}/{}-projections.csv'
@@ -227,10 +227,11 @@ def _check_missing_players(all_players, min_cost, e_raise):
 
 if __name__ == "__main__":
     args = get_args()
+    uploader = nba_upload if args.l == 'NBA' else nfl_upload
     if not args.keep_pids:
-        upload.create_upload_file()
+        uploader.create_upload_file()
     if args.pids:
-        player_map = upload.map_pids(args.pids)
+        player_map = uploader.map_pids(args.pids)
     if args.s == _YES:
         try:
             scrapers.scrape(args.source)
@@ -243,7 +244,7 @@ if __name__ == "__main__":
     for x in xrange(0, int(args.i)):
         rosters.append(run(cons.POSITIONS[args.l], args.l, remove, args))
         if args.pids:
-            upload.update_upload_csv(
+            uploader.update_upload_csv(
                 player_map, rosters[x].sorted_players()[:])
         if None not in rosters:
             for roster in rosters:
@@ -254,4 +255,4 @@ if __name__ == "__main__":
 
     if args.pids and len(rosters) > 0:
         print "{} rosters now available for upload in file {}." \
-               .format(len(rosters), upload.upload_file)
+               .format(len(rosters), uploader.upload_file)

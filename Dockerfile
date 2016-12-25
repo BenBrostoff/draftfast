@@ -20,5 +20,6 @@ RUN mkdir /dk
 COPY . /dk
 RUN cd dk && ls && pip install -r requirements.txt
 WORKDIR /dk
+RUN mkdir data
 
 CMD ["/bin/bash"]
