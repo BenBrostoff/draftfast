@@ -1,9 +1,11 @@
+import os
 import csv
 from itertools import islice
 
 import dke_exceptions as dke
 
-upload_file = 'data/current-upload.csv'
+print(os.getcwd())
+upload_file = '{}/data/current-upload.csv'.format(os.getcwd())
 
 
 def create_upload_file():
