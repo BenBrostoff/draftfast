@@ -1,14 +1,15 @@
 import os
+import subprocess
 import csv
 from itertools import islice
 
 import dke_exceptions as dke
 
-print(os.getcwd())
 upload_file = '{}/data/current-upload.csv'.format(os.getcwd())
 
 
 def create_upload_file():
+    subprocess.call(['touch', upload_file])
     with open(upload_file, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(
