@@ -56,12 +56,12 @@ To use this feature:
 
 1. Download the weekly salaries CSV from DraftKings
 (containing player name, DK-estimated points, salary, etc).
-2. Run `bash new_week.sh`.
+2. Run `bash scripts/prepare_<nba/nfl>_contest_data.sh`.
 3. Download the [CSV upload template](https://www.draftkings.com/lineup/upload) and get the file location (probably something like `~/Downloads/DKSalaries.csv`). *Note - this file has the same name as the weekly salaries CSV when downloaded from DraftKings, which can be confusing.*
-4. Run `python optimize.py -pids <upload_tpl_location>`.
+4. Run `python optimize.py -pids <upload_tpl_location>`. Remember to specify league, constraints, number of iterations to run, etc.
 5. Upload the newly generated file to DraftKings from `data/current-upload.csv`.
 
-I find this feature is extremely useful for "saving" lineups in DraftKings - one nice workflow is to run the optimizer always with the `--pids` flag and continually upload the lineups to DK.
+One nice workflow is to run the optimizer with the `-keep_pids` flag after you create your CSV; this option will put future optimizations in the same CSV file.
 
 ## Projected Ownership Percentages (Experimental)
 

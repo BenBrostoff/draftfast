@@ -143,7 +143,7 @@ class Player:
         return self.pos
 
     def get_player_id(self, player_map):
-        return player_map[self.name + " " + self.pos]
+        return player_map[self.name + ' ' + self.pos]
 
     def to_table_row(self):
         return [
