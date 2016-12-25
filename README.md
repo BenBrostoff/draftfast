@@ -12,7 +12,7 @@ Pre-reqs:
 To run, download your desired week's salaries on DraftKings, and then run:
  
 ```
-bash nfl/prepare_contest_data.sh
+bash scripts/prepare_nfl_contest_data.sh
 ```
 
 Note that this script will error out if the CSV from DraftKings is not in `~/Downloads`.
@@ -76,7 +76,7 @@ python optimize.py -po_location 'data/ownership.csv' -po 15
 An NBA option exists for NBA contests. After downloading the DraftKings salaries for a contest:
 
 ```
-bash nba/prepare_contest_data.sh
+bash scripts/prepare_nba_contest_data.sh
 ```
 
 Currently, Rotogrinders is the only available datasource:

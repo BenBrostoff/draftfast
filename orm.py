@@ -134,6 +134,17 @@ class Player:
         self.marked = marked
         self.lock = lock
 
+    @property
+    def first_pos(self):
+        # TODO - handle multi-position better
+        poss = self.pos.split('/')
+        if len(poss) > 1:
+            return poss[0]
+        return self.pos
+
+    def get_player_id(self, player_map):
+        return player_map[self.name + " " + self.pos]
+
     def to_table_row(self):
         return [
             self.pos,
