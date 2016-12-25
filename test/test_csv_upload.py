@@ -1,3 +1,4 @@
+import os
 import csv
 
 from csv_upload import nba_upload
@@ -22,7 +23,8 @@ for idx, p in enumerate(players):
 def test_upload():
     nba_upload.create_upload_file()
     nba_upload.update_upload_csv(p_map, players)
-    with open('data/current-upload.csv', 'rb') as csvfile:
+    upload = '{}/data/current-upload.csv'.format(os.getcwd())
+    with open(upload, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for idx, row in enumerate(reader):
             if idx == 0:
