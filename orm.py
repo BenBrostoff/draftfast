@@ -136,7 +136,7 @@ class Player:
 
     def to_table_row(self):
         return [
-            self.possible_positions,
+            self.formatted_position,
             self.name,
             self.team,
             self.matchup,
@@ -149,7 +149,7 @@ class Player:
     def __repr__(self):
         v_avg = self.__format_v_avg()
         player_dict = dict(
-            pos=self.possible_positions,
+            pos=self.formatted_position,
             name=self.name,
             team=self.team,
             match=self.matchup,
@@ -172,6 +172,12 @@ class Player:
     @property
     def solver_id(self):
         return '{} {} {}'.format(self.name, self.pos, self.team)
+
+    @property
+    def formatted_position(self):
+        if self.multi_position:
+            return '{} ({})'.format(self.possible_positions, self.pos)
+        return self.pos
 
     @property
     def v_avg(self):
