@@ -41,7 +41,10 @@ def test_multi_position():
     multi_pos_args = Namespace(**default_args_dict)
     multi_pos_args.locked = ['Eli Manning']
     roster = run(NFL, [], multi_pos_args)
-    assert roster
+    multi_pos = [p for p in roster.players if p.name == 'Eli Manning']
+    assert len(multi_pos) == 1
+    assert multi_pos[0].pos == 'TE'
+
 
 def test_is_home():
     default_args.home = True

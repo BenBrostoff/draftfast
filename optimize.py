@@ -29,11 +29,14 @@ def run(league, remove, args):
 
     with open(fns.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
+
         def generate_player(pos, row):
             return Player(
                 pos,
                 row['Name'],
                 row['Salary'],
+                possible_positions=row['Position'],
+                multi_position=('/' in row['Position']),
                 team=row['teamAbbrev'],
                 matchup=row['GameInfo'],
                 average_score=float(
@@ -152,7 +155,7 @@ def run_solver(solver, all_players, args):
     variables = []
 
     for player in all_players:
-        if player.lock:
+        if player.lock and not player.multi_position:
             variables.append(solver.IntVar(1, 1, player.solver_id))
         else:
             variables.append(solver.IntVar(0, 1, player.solver_id))
@@ -163,6 +166,19 @@ def run_solver(solver, all_players, args):
     # optimize on projected points
     for i, player in enumerate(all_players):
         objective.SetCoefficient(variables[i], player.proj)
+
+    # set multi-player constraint
+    multi_caps = {}
+    for i, p in enumerate(all_players):
+        if not p.multi_position:
+            continue
+
+        if p.name not in multi_caps:
+            if p.lock:
+                multi_caps[p.name] = solver.Constraint(1, 1)
+            else:
+                multi_caps[p.name] = solver.Constraint(0, 1)
+        multi_caps[p.name].SetCoefficient(variables[i], 1)
 
     # set salary cap constraint
     salary_cap = solver.Constraint(0, cons.SALARY_CAP)

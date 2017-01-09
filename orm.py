@@ -71,13 +71,7 @@ class Roster:
         return sum(map(lambda x: x.proj, self.players))
 
     def position_order(self, player):
-        try:
-            return self.POSITION_ORDER[player.pos]
-        except KeyError:
-            # Hack to deal with multi-position players
-            # See outstanding GitHub issue
-            first_pos = player.pos.split('/')[0]
-            return self.POSITION_ORDER[first_pos]
+        return self.POSITION_ORDER[player.pos]
 
     def sorted_players(self):
         return sorted(self.players, key=self.position_order)
@@ -121,7 +115,8 @@ class Player:
                  lineup_count=0,
                  average_score=0,
                  matchup=None, team=None,  marked=None,
-                 lock=False):
+                 possible_positions=None,
+                 lock=False, multi_position=False):
         self.pos = pos
         self.name = name
         self.cost = int(cost)
@@ -133,14 +128,8 @@ class Player:
         self.lineup_count = lineup_count
         self.marked = marked
         self.lock = lock
-
-    @property
-    def first_pos(self):
-        # TODO - handle multi-position better
-        poss = self.pos.split('/')
-        if len(poss) > 1:
-            return poss[0]
-        return self.pos
+        self.multi_position = multi_position
+        self.possible_positions = possible_positions
 
     def get_player_id(self, player_map):
         return player_map[self.name + ' ' + self.pos]
@@ -160,7 +149,7 @@ class Player:
     def __repr__(self):
         v_avg = self.__format_v_avg()
         player_dict = dict(
-            pos=self.pos,
+            pos=self.possible_positions,
             name=self.name,
             team=self.team,
             match=self.matchup,

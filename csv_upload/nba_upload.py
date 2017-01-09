@@ -74,4 +74,4 @@ def update_upload_csv(player_map, players):
 
 
 def _on_position(players, possible):
-    return [p for p in players if p.first_pos in possible]
+    return [p for p in players if p.pos in possible]
