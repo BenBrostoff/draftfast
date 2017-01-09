@@ -76,24 +76,26 @@ def run(league, remove, args):
             return match_fn
 
         for row in csvdata:
-            player = filter(name_match(row), all_players)
+            matching_players = filter(name_match(row), all_players)
 
-            if len(player) == 0:
+            if len(matching_players) == 0:
                 continue
 
-            player[0].proj = float(row['points'])
-            player[0].marked = 'Y'
-            listify_holder = [
-                row['playername'],
-                row['points']
-            ]
-            if '0.0' not in row['points'] or player[0].cost != 0:
-                ppd = float(row['points']) / float(player[0].cost)
-            else:
-                ppd = 0
-            listify_holder.extend([player[0].cost,
-                                   ppd * 100000])
-            mass_hold.append(listify_holder)
+            for p in matching_players:
+                # TODO - eliminate
+                p.proj = float(row['points'])
+                p.marked = 'Y'
+                listify_holder = [
+                    row['playername'],
+                    row['points']
+                ]
+                if '0.0' not in row['points'] or p.cost != 0:
+                    ppd = float(row['points']) / float(p.cost)
+                else:
+                    ppd = 0
+                listify_holder.extend([p.cost,
+                                       ppd * 100000])
+                mass_hold.append(listify_holder)
 
     check = []
     with open(fns.format(*csv_name), 'rb') as csvdata:
