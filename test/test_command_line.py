@@ -5,7 +5,7 @@ from orm import NFLRoster, Player
 from constants import POSITIONS
 
 NFL = 'NFL'
-default_args = Namespace(
+default_args_dict = dict(
     dtype='wr',
     duo='n',
     i=1,
@@ -30,11 +30,21 @@ default_args = Namespace(
     test_mode=True,
     source='nfl_rotogrinders',
 )
+default_args = Namespace(**default_args_dict)
 
 
 def test_default_constraints():
     roster = run(NFL, [], default_args)
     assert roster
+
+
+def test_multi_position():
+    multi_pos_args = Namespace(**default_args_dict)
+    multi_pos_args.locked = ['Eli Manning']
+    roster = run(NFL, [], multi_pos_args)
+    multi_pos = [p for p in roster.players if p.name == 'Eli Manning']
+    assert len(multi_pos) == 1
+    assert multi_pos[0].pos == 'TE'
 
 
 def test_is_home():

@@ -30,15 +30,24 @@ def run(league, remove, args):
     with open(fns.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
 
+        def generate_player(pos, row):
+            return Player(
+                pos,
+                row['Name'],
+                row['Salary'],
+                possible_positions=row['Position'],
+                multi_position=('/' in row['Position']),
+                team=row['teamAbbrev'],
+                matchup=row['GameInfo'],
+                average_score=float(
+                    row.get('AvgPointsPerGame', 0)),
+                lock=(args.locked and row['Name'] in args.locked))
+
         for row in csvdata:
-            player = Player(row['Position'], row['Name'], row['Salary'],
-                            team=row['teamAbbrev'],
-                            matchup=row['GameInfo'],
-                            average_score=float(
-                                row.get('AvgPointsPerGame', 0)),
-                            lock=(args.locked and
-                                  row['Name'] in args.locked))
-            all_players.append(player)
+            for pos in row['Position'].split('/'):
+                all_players.append(
+                    generate_player(pos, row)
+                )
 
     if args.w and args.season and args.historical == _YES:
         print('Fetching {} season data for all players...'
@@ -58,7 +67,6 @@ def run(league, remove, args):
 
     with open(fnp.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
-        mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
         # hack for weird defensive formatting
         def name_match(row):
@@ -69,37 +77,14 @@ def run(league, remove, args):
             return match_fn
 
         for row in csvdata:
-            player = filter(name_match(row), all_players)
+            matching_players = filter(name_match(row), all_players)
 
-            if len(player) == 0:
+            if len(matching_players) == 0:
                 continue
 
-            player[0].proj = float(row['points'])
-            player[0].marked = 'Y'
-            listify_holder = [
-                row['playername'],
-                row['points']
-            ]
-            if '0.0' not in row['points'] or player[0].cost != 0:
-                ppd = float(row['points']) / float(player[0].cost)
-            else:
-                ppd = 0
-            listify_holder.extend([player[0].cost,
-                                   ppd * 100000])
-            mass_hold.append(listify_holder)
-
-    check = []
-    with open(fns.format(*csv_name), 'rb') as csvdata:
-        for row in csvdata:
-            check = row
-            break
-
-    with open(fnp.format(*csv_name), 'wb') as csvdata:
-        if len(check) == 4:
-            pass
-        else:
-            writer = csv.writer(csvdata, lineterminator='\n')
-            writer.writerows(mass_hold)
+            for p in matching_players:
+                p.proj = float(row['points'])
+                p.marked = 'Y'
 
     _check_missing_players(all_players, args.sp, args.mp)
 
@@ -143,10 +128,10 @@ def run_solver(solver, all_players, args):
     variables = []
 
     for player in all_players:
-        if player.lock:
-            variables.append(solver.IntVar(1, 1, player.name))
+        if player.lock and not player.multi_position:
+            variables.append(solver.IntVar(1, 1, player.solver_id))
         else:
-            variables.append(solver.IntVar(0, 1, player.name))
+            variables.append(solver.IntVar(0, 1, player.solver_id))
 
     objective = solver.Objective()
     objective.SetMaximization()
@@ -154,6 +139,19 @@ def run_solver(solver, all_players, args):
     # optimize on projected points
     for i, player in enumerate(all_players):
         objective.SetCoefficient(variables[i], player.proj)
+
+    # set multi-player constraint
+    multi_caps = {}
+    for i, p in enumerate(all_players):
+        if not p.multi_position:
+            continue
+
+        if p.name not in multi_caps:
+            if p.lock:
+                multi_caps[p.name] = solver.Constraint(1, 1)
+            else:
+                multi_caps[p.name] = solver.Constraint(0, 1)
+        multi_caps[p.name].SetCoefficient(variables[i], 1)
 
     # set salary cap constraint
     salary_cap = solver.Constraint(0, cons.SALARY_CAP)
