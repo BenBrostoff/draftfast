@@ -20,7 +20,7 @@ fnp = '{}/{}-projections.csv'
 _YES = 'y'
 
 
-def run(position_distribution, league, remove, args):
+def run(league, remove, args):
     csv_name = ['test', 'test'] if args.test_mode else ['data', 'current']
     solver = pywraplp.Solver('FD',
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
@@ -114,7 +114,6 @@ def run(position_distribution, league, remove, args):
 
     variables, solution = run_solver(solver,
                                      all_players,
-                                     position_distribution,
                                      args)
 
     if solution == solver.OPTIMAL:
@@ -137,7 +136,7 @@ def run(position_distribution, league, remove, args):
         return None
 
 
-def run_solver(solver, all_players, max_flex, args):
+def run_solver(solver, all_players, args):
     '''
     Set objective and constraints, then optimize
     '''
@@ -242,7 +241,7 @@ if __name__ == "__main__":
 
     rosters, remove = [], []
     for x in xrange(0, int(args.i)):
-        rosters.append(run(cons.POSITIONS[args.l], args.l, remove, args))
+        rosters.append(run(args.l, remove, args))
         if args.pids:
             uploader.update_upload_csv(
                 player_map, rosters[x].sorted_players()[:])
