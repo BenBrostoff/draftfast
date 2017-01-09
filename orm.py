@@ -136,7 +136,7 @@ class Player:
 
     def to_table_row(self):
         return [
-            self.pos,
+            self.possible_positions,
             self.name,
             self.team,
             self.matchup,

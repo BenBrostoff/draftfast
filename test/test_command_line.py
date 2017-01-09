@@ -32,6 +32,7 @@ default_args_dict = dict(
 )
 default_args = Namespace(**default_args_dict)
 
+
 def test_default_constraints():
     roster = run(NFL, [], default_args)
     assert roster

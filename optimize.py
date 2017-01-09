@@ -41,8 +41,7 @@ def run(league, remove, args):
                 matchup=row['GameInfo'],
                 average_score=float(
                     row.get('AvgPointsPerGame', 0)),
-                lock=(args.locked and
-                    row['Name'] in args.locked))
+                lock=(args.locked and row['Name'] in args.locked))
 
         for row in csvdata:
             for pos in row['Position'].split('/'):
@@ -68,7 +67,6 @@ def run(league, remove, args):
 
     with open(fnp.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
-        mass_hold = [['playername', 'points', 'cost', 'ppd']]
 
         # hack for weird defensive formatting
         def name_match(row):
@@ -85,33 +83,8 @@ def run(league, remove, args):
                 continue
 
             for p in matching_players:
-                # TODO - eliminate
                 p.proj = float(row['points'])
                 p.marked = 'Y'
-                listify_holder = [
-                    row['playername'],
-                    row['points']
-                ]
-                if '0.0' not in row['points'] or p.cost != 0:
-                    ppd = float(row['points']) / float(p.cost)
-                else:
-                    ppd = 0
-                listify_holder.extend([p.cost,
-                                       ppd * 100000])
-                mass_hold.append(listify_holder)
-
-    check = []
-    with open(fns.format(*csv_name), 'rb') as csvdata:
-        for row in csvdata:
-            check = row
-            break
-
-    with open(fnp.format(*csv_name), 'wb') as csvdata:
-        if len(check) == 4:
-            pass
-        else:
-            writer = csv.writer(csvdata, lineterminator='\n')
-            writer.writerows(mass_hold)
 
     _check_missing_players(all_players, args.sp, args.mp)
 
