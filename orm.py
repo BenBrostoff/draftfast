@@ -181,6 +181,10 @@ class Player:
                self.team == player.team
 
     @property
+    def solver_id(self):
+        return '{} {} {}'.format(self.name, self.pos, self.team)
+
+    @property
     def v_avg(self):
         return self.proj - self.average_score
 

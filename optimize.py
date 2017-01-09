@@ -29,16 +29,23 @@ def run(league, remove, args):
 
     with open(fns.format(*csv_name), 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
+        def generate_player(pos, row):
+            return Player(
+                pos,
+                row['Name'],
+                row['Salary'],
+                team=row['teamAbbrev'],
+                matchup=row['GameInfo'],
+                average_score=float(
+                    row.get('AvgPointsPerGame', 0)),
+                lock=(args.locked and
+                    row['Name'] in args.locked))
 
         for row in csvdata:
-            player = Player(row['Position'], row['Name'], row['Salary'],
-                            team=row['teamAbbrev'],
-                            matchup=row['GameInfo'],
-                            average_score=float(
-                                row.get('AvgPointsPerGame', 0)),
-                            lock=(args.locked and
-                                  row['Name'] in args.locked))
-            all_players.append(player)
+            for pos in row['Position'].split('/'):
+                all_players.append(
+                    generate_player(pos, row)
+                )
 
     if args.w and args.season and args.historical == _YES:
         print('Fetching {} season data for all players...'
@@ -144,9 +151,9 @@ def run_solver(solver, all_players, args):
 
     for player in all_players:
         if player.lock:
-            variables.append(solver.IntVar(1, 1, player.name))
+            variables.append(solver.IntVar(1, 1, player.solver_id))
         else:
-            variables.append(solver.IntVar(0, 1, player.name))
+            variables.append(solver.IntVar(0, 1, player.solver_id))
 
     objective = solver.Objective()
     objective.SetMaximization()
