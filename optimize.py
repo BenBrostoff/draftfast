@@ -172,6 +172,16 @@ def run_solver(solver, all_players, args):
             if position == player.pos:
                 position_cap.SetCoefficient(variables[i], 1)
 
+    # set G / F NBA position limits
+    if args.l == 'NBA':
+        for general_position, min_limit, max_limit in \
+                cons.NBA_GENERAL_POSITIONS:
+            position_cap = solver.Constraint(min_limit, max_limit)
+
+            for i, player in enumerate(all_players):
+                if general_position == player.nba_general_position:
+                    position_cap.SetCoefficient(variables[i], 1)
+
     # max out at one player per team (allow QB combos)
     team_limits = set([(p.team, 0, 1) for p in all_players])
     if args.limit != 'n':
