@@ -1,6 +1,7 @@
 import os
 import csv
 
+from nose.tools import assert_equal
 from csv_upload import nba_upload
 from orm import Player
 
@@ -17,6 +18,7 @@ players = [
 
 p_map = {}
 for idx, p in enumerate(players):
+    p.possible_positions = p.pos
     p_map['{} {}'.format(p.name, p.pos)] = idx
 
 
@@ -29,6 +31,7 @@ def test_upload():
         for idx, row in enumerate(reader):
             if idx == 0:
                 continue
-            assert row == [
-                '1', '0', '3', '4', '6', '2', '5', '7'
-            ]
+            assert_equal(
+                row,
+                ['1', '0', '3', '4', '6', '2', '5', '7']
+            )

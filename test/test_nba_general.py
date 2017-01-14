@@ -1,4 +1,5 @@
 import os
+from nose import tools as ntools
 from orm import Player
 from optimize import run
 from argparse import Namespace
@@ -6,21 +7,21 @@ from argparse import Namespace
 
 def test_general_guard():
     pg = Player(name='A', cost=1, proj=1, pos='PG')
-    assert pg.nba_general_position == 'G'
+    ntools.assert_equal(pg.nba_general_position, 'G')
     sg = Player(name='A', cost=1, proj=1, pos='SG')
-    assert sg.nba_general_position == 'G'
+    ntools.assert_equal(sg.nba_general_position, 'G')
 
 
 def test_general_forward():
     pg = Player(name='A', cost=1, proj=1, pos='SF')
-    assert pg.nba_general_position == 'F'
+    ntools.assert_equal(pg.nba_general_position, 'F')
     sg = Player(name='A', cost=1, proj=1, pos='PF')
-    assert sg.nba_general_position == 'F'
+    ntools.assert_equal(sg.nba_general_position, 'F')
 
 
 def test_general_center():
     pg = Player(name='A', cost=1, proj=1, pos='C')
-    assert pg.nba_general_position == 'C'
+    ntools.assert_equal(pg.nba_general_position, 'C')
 
 
 def test_optimize_with_general():
@@ -58,6 +59,6 @@ def test_optimize_with_general():
             if p.nba_general_position == pos
         ])
 
-    assert 4 == get_player_count_at_pos('G')
-    assert 3 == get_player_count_at_pos('F')
-    assert 1 == get_player_count_at_pos('C')
+    ntools.assert_equal(4, get_player_count_at_pos('G'))
+    ntools.assert_equal(3, get_player_count_at_pos('F'))
+    ntools.assert_equal(1, get_player_count_at_pos('C'))
