@@ -1,7 +1,6 @@
 # A huge thanks to swanson
 # this solution is almost wholly based off
 # https://github.com/swanson/degenerate
-import os
 import csv
 from sys import exit
 
@@ -19,8 +18,6 @@ _YES = 'y'
 
 
 def run(league, remove, args):
-    csv_name = [os.getcwd() + '/data', 'test'] if args.test_mode \
-        else ['data', 'current']
     solver = pywraplp.Solver('FD',
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
