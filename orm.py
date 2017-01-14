@@ -135,7 +135,7 @@ class Player:
         self.possible_positions = possible_positions
 
     def get_player_id(self, player_map):
-        return player_map[self.name + ' ' + self.pos]
+        return player_map[self.name + ' ' + self.possible_positions]
 
     def to_table_row(self):
         return [
