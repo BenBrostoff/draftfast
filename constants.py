@@ -28,6 +28,12 @@ POSITIONS = {
   'NFL': get_nfl_positions()
 }
 
+NBA_GENERAL_POSITIONS = [
+    ['G', 3, 4],
+    ['F', 3, 4],
+    ['C', 1, 2],
+]
+
 DUO_TYPE = {
   'wr': [
     ["QB", 1, 1],

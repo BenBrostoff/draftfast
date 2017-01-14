@@ -30,7 +30,7 @@ class Roster:
             'Locked'
         ]
         table_data.append(headers)
-        for p in self.players:
+        for p in self.sorted_players():
             table_data.append(p.to_table_row())
 
         table = AsciiTable(table_data).table
@@ -74,7 +74,10 @@ class Roster:
         return self.POSITION_ORDER[player.pos]
 
     def sorted_players(self):
-        return sorted(self.players, key=self.position_order)
+        return sorted(
+            self.players,
+            key=lambda p: self.position_order(p)
+        )
 
 
 class NFLRoster(Roster):
@@ -187,6 +190,14 @@ class Player:
     def is_home(self):
         match_up_teams = self.matchup.split(' ')[0]
         return self.team == match_up_teams.split('@')[-1]
+
+    @property
+    def nba_general_position(self):
+        if self.pos == 'SG' or self.pos == 'PG':
+            return 'G'
+        elif self.pos == 'SF' or self.pos == 'PF':
+            return 'F'
+        return 'C'
 
     def get_ppd(self):
         return round((self.proj / self.cost) * 1000, 3)

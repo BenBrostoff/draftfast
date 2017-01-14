@@ -1,5 +1,5 @@
 import argparse
-
+import os
 
 OPTIMIZE_COMMAND_LINE = [
     ['-s', 'scrape from data source', 'y'],
@@ -26,7 +26,10 @@ OPTIMIZE_COMMAND_LINE = [
     ['-pids', 'Player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
     ['-po_location', 'Projected ownership percentages file location', None],
-    ['-test_mode', 'Run in test mode', False],
+    ['-salary_file', 'File location for salaries',
+     os.getcwd() + '/data/current-salaries.csv'],
+    ['-projection_file', 'File location for projections',
+     os.getcwd() + '/data/current-projections.csv'],
 ]
 
 

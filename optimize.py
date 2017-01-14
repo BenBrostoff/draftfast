@@ -1,7 +1,6 @@
 # A huge thanks to swanson
 # this solution is almost wholly based off
 # https://github.com/swanson/degenerate
-
 import csv
 from sys import exit
 
@@ -15,19 +14,16 @@ from command_line import get_args
 from csv_upload import nfl_upload, nba_upload
 from orm import RosterSelect, Player
 
-fns = '{}/{}-salaries.csv'
-fnp = '{}/{}-projections.csv'
 _YES = 'y'
 
 
 def run(league, remove, args):
-    csv_name = ['test', 'test'] if args.test_mode else ['data', 'current']
     solver = pywraplp.Solver('FD',
                              pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
 
     all_players = []
 
-    with open(fns.format(*csv_name), 'rb') as csvfile:
+    with open(args.salary_file, 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
 
         def generate_player(pos, row):
@@ -65,7 +61,7 @@ def run(league, remove, args):
                 if player:
                     player[0].projected_ownership_pct = float(row['%'])
 
-    with open(fnp.format(*csv_name), 'rb') as csvfile:
+    with open(args.projection_file, 'rb') as csvfile:
         csvdata = csv.DictReader(csvfile)
 
         # hack for weird defensive formatting
@@ -171,6 +167,16 @@ def run_solver(solver, all_players, args):
         for i, player in enumerate(all_players):
             if position == player.pos:
                 position_cap.SetCoefficient(variables[i], 1)
+
+    # set G / F NBA position limits
+    if args.l == 'NBA':
+        for general_position, min_limit, max_limit in \
+                cons.NBA_GENERAL_POSITIONS:
+            position_cap = solver.Constraint(min_limit, max_limit)
+
+            for i, player in enumerate(all_players):
+                if general_position == player.nba_general_position:
+                    position_cap.SetCoefficient(variables[i], 1)
 
     # max out at one player per team (allow QB combos)
     team_limits = set([(p.team, 0, 1) for p in all_players])

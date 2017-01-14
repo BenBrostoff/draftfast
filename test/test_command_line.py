@@ -1,3 +1,4 @@
+import os
 from optimize import run
 from argparse import Namespace
 from collections import Counter
@@ -29,6 +30,8 @@ default_args_dict = dict(
     v_avg=10000,
     test_mode=True,
     source='nfl_rotogrinders',
+    salary_file=os.getcwd() + '/test/data/test-salaries.csv',
+    projection_file=os.getcwd() + '/test/data/test-projections.csv',
 )
 default_args = Namespace(**default_args_dict)
 
