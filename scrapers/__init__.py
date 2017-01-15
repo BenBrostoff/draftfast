@@ -2,6 +2,7 @@ from fantasy_pros import scrape as fp_nfl_scrape
 from roto_grinders_nfl import scrape as rg_nfl_scrape
 from roto_grinders_nba import scrape as rg_nba_scrape
 from nfl_fantasy import scrape as nfl_scrape
+from scrapers.log_scrape import log_scrape_wrapper
 
 scrape_dict = {
     'nfl_fanpros': {
@@ -23,5 +24,6 @@ scrape_dict = {
 }
 
 
+@log_scrape_wrapper
 def scrape(source):
     return scrape_dict[source]['method']()
