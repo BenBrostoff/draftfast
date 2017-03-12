@@ -1,6 +1,7 @@
 import requests
 import csv
 from bs4 import BeautifulSoup
+from nba.data_cleaning_constants import RENAMES
 
 NUMBER_FIRE_URL = 'http://www.numberfire.com/nba/daily-fantasy/'
 
@@ -19,7 +20,14 @@ def scrape():
     player_fp = soup.find_all("td", {"class": "fp active"})
 
     for i in player_names:
-        playernames.append(i.get_text().strip())
+        name = i.get_text().strip()
+        renames = \
+            [n['dk_name'] for n in RENAMES
+             if n['name'] == name]
+        if renames:
+            name = renames[0]
+
+        playernames.append(name)
     for i in player_fp:
         points.append(i.get_text().strip())
 
