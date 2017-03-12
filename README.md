@@ -79,7 +79,10 @@ An NBA option exists for NBA contests. After downloading the DraftKings salaries
 bash scripts/prepare_nba_contest_data.sh
 ```
 
-Currently, Rotogrinders is the only available datasource:
+Currently, Rotogrinders and Numberfire are the only available datasources:
 
-<pre><code>python optimize.py -l NBA -source nba_rotogrinders</pre></code>
+```
+python optimize.py -l NBA -source nba_rotogrinders
+python optimize.py -l NBA -source nba_number_fire
+```
 
