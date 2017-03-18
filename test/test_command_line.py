@@ -58,7 +58,6 @@ def test_is_home():
     roster = run(NFL, [], args)
     for p in roster.players:
         ntools.assert_true(p.is_home)
-    args.home = False
 
 
 def test_within_avg():
@@ -68,7 +67,6 @@ def test_within_avg():
     roster = run(NFL, [], args)
     for player in roster.players:
         ntools.assert_less(abs(player.v_avg), avg_test_val)
-    args.v_avg = 10000
 
 
 def test_duo_constraint():
@@ -106,6 +104,20 @@ def test_locked_constraint():
     args.locked = [jb]
     roster = run(NFL, [], args)
     ntools.assert_true([p for p in roster.players if p.name == jb][0].lock)
+
+
+def test_lock_overrides():
+    args = Namespace(**args_dict)
+    args.teams = ['NE', 'Dal']
+    args.v_avg = 1
+    args.locked = ['Eli Manning']
+    roster = run(NFL, [], args)
+    ntools.assert_true(
+        [
+            p for p in roster.players
+            if p.name == 'Eli Manning'
+        ][0].lock
+    )
 
 
 def test_bad_constraints():
