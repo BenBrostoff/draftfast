@@ -9,6 +9,7 @@ upload_file = '{}/data/current-upload.csv'.format(os.getcwd())
 
 
 def create_upload_file():
+    subprocess.call(['mkdir', 'data'])
     subprocess.call(['touch', upload_file])
     with open(upload_file, 'w') as f:
         writer = csv.writer(f)
