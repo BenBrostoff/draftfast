@@ -6,6 +6,7 @@ Special thanks to [swanson](https://github.com/swanson/), who authored [this rep
 
 Pre-reqs:
 
+* Python 2 but NOT Python 3 compatible yet (currently working on implementation)
 * [ortools](https://developers.google.com/optimization/installing?hl=en)
 * `pip install -r requirements.txt`
 
