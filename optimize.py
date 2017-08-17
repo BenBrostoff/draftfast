@@ -27,7 +27,8 @@ def run(league, remove, args):
         csvdata = csv.DictReader(csvfile)
 
         def generate_player(pos, row):
-            return Player(
+            avg = float(row.get('AvgPointsPerGame', 0))
+            player = Player(
                 pos,
                 row['Name'],
                 row['Salary'],
@@ -35,9 +36,12 @@ def run(league, remove, args):
                 multi_position=('/' in row['Position']),
                 team=row['teamAbbrev'],
                 matchup=row['GameInfo'],
-                average_score=float(
-                    row.get('AvgPointsPerGame', 0)),
+                average_score=avg,
                 lock=(args.locked and row['Name'] in args.locked))
+            if args.source == 'DK_AVG':
+                p.proj = avg
+
+            return player
 
         for row in csvdata:
             for pos in row['Position'].split('/'):
@@ -61,26 +65,29 @@ def run(league, remove, args):
                 if player:
                     player[0].projected_ownership_pct = float(row['%'])
 
-    with open(args.projection_file, 'rb') as csvfile:
-        csvdata = csv.DictReader(csvfile)
+    if args.source == 'DK_AVG':
+        pass
+    else:
+        with open(args.projection_file, 'rb') as csvfile:
+            csvdata = csv.DictReader(csvfile)
 
-        # hack for weird defensive formatting
-        def name_match(row):
-            def match_fn(p):
-                if p.pos == 'DST':
-                    return p.name.strip() in row['playername']
-                return p.name in row['playername']
-            return match_fn
+            # hack for weird defensive formatting
+            def name_match(row):
+                def match_fn(p):
+                    if p.pos == 'DST':
+                        return p.name.strip() in row['playername']
+                    return p.name in row['playername']
+                return match_fn
 
-        for row in csvdata:
-            matching_players = filter(name_match(row), all_players)
+            for row in csvdata:
+                matching_players = filter(name_match(row), all_players)
 
-            if len(matching_players) == 0:
-                continue
+                if len(matching_players) == 0:
+                    continue
 
-            for p in matching_players:
-                p.proj = float(row['points'])
-                p.marked = 'Y'
+                for p in matching_players:
+                    p.proj = float(row['points'])
+                    p.marked = 'Y'
 
     _check_missing_players(all_players, args.sp, args.mp)
 
@@ -99,8 +106,9 @@ def run(league, remove, args):
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.l)
-        roster.projection_source = \
-            scrapers.scrape_dict[args.source]['readable']
+        if args.source != 'DK_AVG':
+            roster.projection_source = \
+                scrapers.scrape_dict[args.source]['readable']
 
         for i, player in enumerate(all_players):
             if variables[i].solution_value() == 1:
@@ -235,7 +243,7 @@ if __name__ == "__main__":
         uploader.create_upload_file()
     if args.pids:
         player_map = uploader.map_pids(args.pids)
-    if args.s == _YES:
+    if args.s == _YES and args.source != 'DK_AVG':
         try:
             scrapers.scrape(args.source)
         except KeyError:
