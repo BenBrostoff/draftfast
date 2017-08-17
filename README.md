@@ -2,6 +2,8 @@
 
 ## Introduction
 
+![](marketing/NBA_Optimize.png)
+
 Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of.
 
 Pre-reqs:

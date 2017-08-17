@@ -3,3 +3,4 @@
 .idea/
 \current*
 .coverage
+.DS_Store
