@@ -39,7 +39,7 @@ def run(league, remove, args):
                 average_score=avg,
                 lock=(args.locked and row['Name'] in args.locked))
             if args.source == 'DK_AVG':
-                p.proj = avg
+                player.proj = avg
 
             return player
 
@@ -106,7 +106,7 @@ def run(league, remove, args):
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.l)
-        if args.source != 'DK_AVG':
+        if args.source != 'DK_AVG' or args.proj:
             roster.projection_source = \
                 scrapers.scrape_dict[args.source]['readable']
 
@@ -177,9 +177,13 @@ def run_solver(solver, all_players, args):
                 position_cap.SetCoefficient(variables[i], 1)
 
     # set G / F NBA position limits
-    if args.l == 'NBA':
+    if args.l == 'NBA' or args.l == 'WNBA':
+        general_positions = {
+            'NBA': cons.NBA_GENERAL_POSITIONS,
+            'WNBA': cons.WNBA_GENERAL_POSITIONS,
+        }[args.l]
         for general_position, min_limit, max_limit in \
-                cons.NBA_GENERAL_POSITIONS:
+                general_positions:
             position_cap = solver.Constraint(min_limit, max_limit)
 
             for i, player in enumerate(all_players):
@@ -236,8 +240,29 @@ def _check_missing_players(all_players, min_cost, e_raise):
             'Total missing players at price point: ' + str(miss_len))
 
 
+def check_validity(args):
+    if args.s != _YES:
+        with open(args.projection_file, 'rb') as csvfile:
+            csvdata = csv.DictReader(csvfile)
+            fieldnames = csvdata.fieldnames
+            errors = []
+            for f in ['playername', 'points']:
+                if f not in fieldnames:
+                    errors.append(f)
+
+            if len(errors) > 0:
+                raise Exception(
+                    '''
+                    If you are choosing to provide your own projection source,
+                    you must provide the following fields: {}
+                    '''.format(errors)
+                )
+
+
 if __name__ == "__main__":
     args = get_args()
+    check_validity(args)
+
     uploader = nba_upload if args.l == 'NBA' else nfl_upload
     if not args.keep_pids:
         uploader.create_upload_file()

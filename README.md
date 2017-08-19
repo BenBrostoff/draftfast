@@ -26,29 +26,47 @@ Next, scrape data from FantasyPros or Rotogrinders and allow for some mismatched
 python optimize.py -mp 100 -s y -source nfl_rotogrinders
 ```
 
+Or, use your own projection source:
+
+```
+python optimize.py -mp 100 -s n -projection_file "/Users/benbrostoff/Downloads/my_projections.csv"
+```
+
+Note that any projection file you provide must include `playername` and `points` as header names.
+
 One important note here is that passing in <code>y</code> for the scrape option will create <code>current-projections.csv</code>. However, once you've scraped once, there's no need to do again.
 
 ## Optimization Options
 
 Force a QB/WR or QB/TE combination from a particular team. For instance, if I wanted a guaranteed Cam Newton / Greg Olsen duo:
 
-<pre><code>python optimize.py -mp 100 -duo CAR -dtype TE</pre></code>
+```
+python optimize.py -mp 100 -duo CAR -dtype TE
+```
 
 Another example pairing Antonio Brown and Ben Roethlisberger:
 
-<pre><code>python optimize.py -mp 100 -duo PIT -dtype WR</pre></code>
+```
+python optimize.py -mp 100 -duo PIT -dtype WR
+```
 
 Limit same team representation except for QB / skill player combos. Example:
 
-<pre><code>python optimize.py -mp 100 -limit y</pre></code>
+```
+python optimize.py -mp 100 -limit y
+```
 
 Run the optimizer multiple times and continually eliminate pre-optimized players from the lineup. For instance, to run three different iterations and generate three different sets of players:
 
-<pre><code>python optimize.py -i 3</pre></code>
+```
+python optimize.py -i 3
+```
 
 At any time, you can get a list of all possible options via:
 
-<pre><code>python optimize.py --help</pre></code>
+```
+python optimize.py --help
+```
 
 ## Generating CSV for uploading multiple lineups to DraftKings
 
@@ -87,5 +105,14 @@ Currently, Rotogrinders and Numberfire are the only available datasources:
 ```
 python optimize.py -l NBA -source nba_rotogrinders
 python optimize.py -l NBA -source nba_number_fire
+```
+
+## WNBA
+
+A WNBA option is available, but users must provide their own projection source:
+
+```
+bash scripts/prepare_nba_contest_data.sh
+python optimize.py -l WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
 ```
 
