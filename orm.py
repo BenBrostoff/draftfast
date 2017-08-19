@@ -99,13 +99,22 @@ class NBARoster(Roster):
         "C": 4
     }
 
+class WNBARoster(Roster):
+    POSITION_ORDER = {
+        "PG": 0,
+        "SG": 1,
+        "SF": 2,
+        "PF": 3,
+    }
+
 
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
         roster_dict = {
             'NBA': NBARoster(),
-            'NFL': NFLRoster()
+            'WNBA': WNBARoster(),
+            'NFL': NFLRoster(),
         }
         return roster_dict[league]
 
