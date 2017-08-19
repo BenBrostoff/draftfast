@@ -240,8 +240,29 @@ def _check_missing_players(all_players, min_cost, e_raise):
             'Total missing players at price point: ' + str(miss_len))
 
 
+def check_validity(args):
+    if args.s != _YES:
+        with open(args.projection_file, 'rb') as csvfile:
+            csvdata = csv.DictReader(csvfile)
+            fieldnames = csvdata.fieldnames
+            errors = []
+            for f in ['playername', 'points']:
+                if f not in fieldnames:
+                    errors.append(f)
+
+            if len(errors) > 0:
+                raise Exception(
+                    '''
+                    If you are choosing to provide your own projection source,
+                    you must provide the following fields: {}
+                    '''.format(errors)
+                )
+
+
 if __name__ == "__main__":
     args = get_args()
+    check_validity(args)
+
     uploader = nba_upload if args.l == 'NBA' else nfl_upload
     if not args.keep_pids:
         uploader.create_upload_file()

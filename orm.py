@@ -99,6 +99,7 @@ class NBARoster(Roster):
         "C": 4
     }
 
+
 class WNBARoster(Roster):
     POSITION_ORDER = {
         "PG": 0,
