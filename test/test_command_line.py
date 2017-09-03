@@ -77,6 +77,14 @@ def test_duo_constraint():
     ntools.assert_in(2, team_instances)
 
 
+def test_min_salary():
+    args = Namespace(**args_dict)
+    args.sp = 3500
+    roster = run(NFL, [], args)
+    for p in roster.players:
+        ntools.assert_true(p.cost >= 3500)
+
+
 def test_teams_constraint():
     args = Namespace(**args_dict)
     args.teams = ['NE', 'Dal']
