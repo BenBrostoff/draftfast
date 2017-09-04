@@ -10,7 +10,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-sp', 'salary threshold to ignore', 3000],
     ['-ms', 'max salary for player on roster', 100000],
     ['-v_avg', 'projections must be within points v avg', 100000],
-    ['-i', 'iterations to run', 3],
+    ['-i', 'iterations to run', 1],
     ['-lp', 'lowest acceptable projection', 0],
     ['-po', 'highest acceptable ownership', 100],
     ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
