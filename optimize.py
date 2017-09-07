@@ -1,6 +1,9 @@
-# A huge thanks to swanson
-# this solution is almost wholly based off
-# https://github.com/swanson/degenerate
+'''
+A huge thanks to @swanson
+this solution is almost wholly based off
+https://github.com/swanson/degenerate
+'''
+
 import csv
 from sys import exit
 
@@ -15,16 +18,19 @@ from csv_upload import nfl_upload, nba_upload
 from orm import RosterSelect, Player
 
 _YES = 'y'
+_DK_AVG = 'DK_AVG'
 
 
 def run(league, remove, args):
-    solver = pywraplp.Solver('FD',
-                             pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING)
+    solver = pywraplp.Solver(
+        'FD',
+        pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
+    )
 
     all_players = []
 
-    with open(args.salary_file, 'rb') as csvfile:
-        csvdata = csv.DictReader(csvfile)
+    with open(args.salary_file, 'rb') as csv_file:
+        csv_data = csv.DictReader(csv_file)
 
         def generate_player(pos, row):
             avg = float(row.get('AvgPointsPerGame', 0))
@@ -37,37 +43,21 @@ def run(league, remove, args):
                 team=row['teamAbbrev'],
                 matchup=row['GameInfo'],
                 average_score=avg,
-                lock=(args.locked and row['Name'] in args.locked))
-            if args.source == 'DK_AVG':
+                lock=(args.locked and row['Name'] in args.locked)
+            )
+            if args.source == _DK_AVG:
                 player.proj = avg
 
             return player
 
-        for row in csvdata:
+        for row in csv_data:
             for pos in row['Position'].split('/'):
-                all_players.append(
-                    generate_player(pos, row)
-                )
+                all_players.append(generate_player(pos, row))
 
-    if args.w and args.season and args.historical == _YES:
-        print('Fetching {} season data for all players...'
-              .format(args.season))
-        for p in all_players:
-            p.set_historical(int(args.w), int(args.season))
+    _set_historical_points(all_players, args)
+    _set_player_ownership(all_players, args)
 
-    if args.po_location and args.po:
-        with open(args.po_location, 'rb') as csvfile:
-            csvdata = csv.DictReader(csvfile)
-            for row in csvdata:
-                player = filter(
-                    lambda p: p.name in row['Name'],
-                    all_players)
-                if player:
-                    player[0].projected_ownership_pct = float(row['%'])
-
-    if args.source == 'DK_AVG':
-        pass
-    else:
+    if args.source != _DK_AVG:
         with open(args.projection_file, 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
 
@@ -95,18 +85,21 @@ def run(league, remove, args):
     # do not include DST or TE projections in min point threshold.
     all_players = filter(
         qc.add_constraints(args, remove),
-        all_players)
+        all_players
+    )
 
     if args.no_double_te == _YES:
         cons.POSITIONS['NFL'] = cons.get_nfl_positions(te_upper=1)
 
-    variables, solution = run_solver(solver,
-                                     all_players,
-                                     args)
+    variables, solution = run_solver(
+        solver,
+        all_players,
+        args
+    )
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.l)
-        if args.source != 'DK_AVG' or args.proj:
+        if args.source != _DK_AVG or args.proj:
             roster.projection_source = \
                 scrapers.scrape_dict[args.source]['readable']
 
@@ -114,14 +107,18 @@ def run(league, remove, args):
             if variables[i].solution_value() == 1:
                 roster.add_player(player)
 
-        print "Optimal roster for: %s" % league
-        print roster
-        print
+        print('Optimal roster for: %s' % league)
+        print(roster)
+        print()
 
         return roster
     else:
-        print("No solution found for command line query. " +
-              "Try adjusting your query by taking away constraints.")
+        print(
+            '''
+            No solution found for command line query.
+            Try adjusting your query by taking away constraints.
+            '''
+        )
         return None
 
 
@@ -177,7 +174,7 @@ def run_solver(solver, all_players, args):
                 position_cap.SetCoefficient(variables[i], 1)
 
     # set G / F NBA position limits
-    if args.l == 'NBA' or args.l == 'WNBA':
+    if args.l in ['NBA', 'WNBA']:
         general_positions = {
             'NBA': cons.NBA_GENERAL_POSITIONS,
             'WNBA': cons.WNBA_GENERAL_POSITIONS,
@@ -209,7 +206,8 @@ def run_solver(solver, all_players, args):
                 'You need to pass in a valid NFL team ' +
                 'abbreviation to use this option. ' +
                 'See valid team abbreviations here: '
-                + str(all_teams))
+                + str(all_teams)
+            )
         for pos, min_limit, max_limit in cons.DUO_TYPE[args.dtype.lower()]:
             position_cap = solver.Constraint(min_limit, max_limit)
 
@@ -219,6 +217,26 @@ def run_solver(solver, all_players, args):
                     position_cap.SetCoefficient(variables[i], 1)
 
     return variables, solver.Solve()
+
+
+def _set_historical_points(all_players, args):
+    if args.w and args.season and args.historical == _YES:
+        print('Fetching {} season data for all players...'.format(args.season))
+        for p in all_players:
+            p.set_historical(int(args.w), int(args.season))
+
+
+def _set_player_ownership(all_players, args):
+    if args.po_location and args.po:
+        with open(args.po_location, 'rb') as csv_file:
+            csv_data = csv.DictReader(csv_file)
+            for row in csv_data:
+                player = filter(
+                    lambda p: p.name in row['Name'],
+                    all_players
+                )
+                if player:
+                    player[0].projected_ownership_pct = float(row['%'])
 
 
 def _check_missing_players(all_players, min_cost, e_raise):
@@ -234,8 +252,8 @@ def _check_missing_players(all_players, min_cost, e_raise):
                      all_players)
     miss_len = len(missing)
     if e_raise < miss_len:
-        print 'Got {0} out of {1} total'.format(str(contained_report),
-                                                str(total_report))
+        print('Got {0} out of {1} total') \
+            .format(str(contained_report), str(total_report))
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
 
@@ -259,7 +277,7 @@ def check_validity(args):
                 )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     args = get_args()
     check_validity(args)
 
@@ -277,7 +295,7 @@ if __name__ == "__main__":
                 .format(scrapers.scrape_dict.keys()))
 
     rosters, remove = [], []
-    for x in xrange(0, int(args.i)):
+    for x in range(0, int(args.i)):
         rosters.append(run(args.l, remove, args))
         if args.pids:
             uploader.update_upload_csv(
@@ -290,5 +308,7 @@ if __name__ == "__main__":
             exit()
 
     if args.pids and len(rosters) > 0:
-        print "{} rosters now available for upload in file {}." \
-               .format(len(rosters), uploader.upload_file)
+        print(
+            '{} rosters now available for upload in file {}.'
+            .format(len(rosters), uploader.upload_file)
+        )
