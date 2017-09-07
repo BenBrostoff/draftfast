@@ -38,7 +38,7 @@ def map_pids(pid_file):
         f = islice(open(pid_file, "r"), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
-            player_map[line[' Name'] + " " + line['Position']] = line[' ID']
+            player_map[line['Name'] + " " + line['Position']] = line['ID']
 
     return player_map
 
