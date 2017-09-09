@@ -29,7 +29,10 @@ def scrape():
             if len(p):
                 if p[0] in RENAMES:
                     dk_name = RENAMES[p[0]]
-                    print('Renaming {} to {} to match DraftKings'.format(p[0], dk_name))
+                    print(
+                        'Renaming {} to {} to match DraftKings'
+                        .format(p[0], dk_name)
+                    )
                     p[0] = dk_name
 
                 hold.append([p[0], p[-1]])
