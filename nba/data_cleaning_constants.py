@@ -1,3 +1,4 @@
+# TODO - convert this to a dict and use same strategy as NFL
 RENAMES = [
     {'dk_name': 'Maurice Harkless', 'name': 'Moe Harkless'},
     {'dk_name': 'Larry Nance Jr.', 'name': 'Larry Nance'},

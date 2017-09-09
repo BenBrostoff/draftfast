@@ -2,7 +2,7 @@ import csv
 
 import requests
 
-from nfl.data_cleaning_constants import DUPLICATES
+from nfl.data_cleaning_constants import DUPLICATES, RENAMES
 
 ROTO_GRINDERS = ''.join([
     'https://rotogrinders.com',
@@ -27,6 +27,11 @@ def scrape():
                     continue
 
             if len(p):
+                if p[0] in RENAMES:
+                    dk_name = RENAMES[p[0]]
+                    print('Renaming {} to {} to match DraftKings'.format(p[0], dk_name))
+                    p[0] = dk_name
+
                 hold.append([p[0], p[-1]])
 
     with open('data/current-projections.csv', 'w') as fp:

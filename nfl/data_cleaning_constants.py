@@ -3,6 +3,7 @@ DUPLICATES = [
     {'name': 'Ryan Griffin', 'team': 'Hou'}
 ]
 
-RENAMES = [
-    {'dk_name': 'Marvin Jones Jr.', 'rename': 'Marvin Jones'}
-]
+RENAMES = {
+    'Marvin Jones': 'Marvin Jones Jr.',
+    'Todd Gurley': 'Todd Gurley II',
+}
