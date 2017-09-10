@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup as BS
 
 from constants import ALL_POS
 from nfl.ppr import calculate_ppr, generate_empty_stat_dict
+from nfl.data_cleaning_constants import RENAMES
 
 FFPRO = 'http://www.fantasypros.com/nfl/projections/'
 
@@ -37,8 +38,18 @@ def scrape():
         for row in soup.find_all('tr', class_=re.compile('mpb-player-')):
             try:
                 player_row = row.find_all('td')
+                player_name = str(player_row[0].text)
+                if player_name:
+                    if player_name in RENAMES:
+                        dk_name = RENAMES[player_name]
+                        print(
+                            'Renaming {} to {} to match DraftKings'
+                            .format(player_name, dk_name)
+                        )
+                        player_name = dk_name
+
                 hold.append([
-                    str(player_row[0].text),
+                    player_name,
                     calculate_ppr(
                         page[1],
                         convert_fanpros_data(page[1],

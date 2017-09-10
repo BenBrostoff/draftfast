@@ -10,10 +10,10 @@ with open(dk_csv, 'rb') as f:
         new_row = row
         for player in cons.DUPLICATES:
             if player['name'] in row:
-                if player['team'] not in row:
+                if player['team'] in row:
                     print(
-                        'Skipping non-key duplicate {}'
-                        .format(player['name'])
+                        'Skipping non-key duplicate {} on {}'
+                        .format(player['name'], player['team'])
                     )
                     new_row = None
         if new_row:
