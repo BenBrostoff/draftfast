@@ -88,8 +88,15 @@ def run(league, remove, args):
         all_players
     )
 
+    flex_args = {}
     if args.no_double_te == _YES:
-        cons.POSITIONS['NFL'] = cons.get_nfl_positions(te_upper=1)
+        flex_args['te_upper'] = 1
+    if args.flex_position == 'RB':
+        flex_args['rb_min'] = 3
+    if args.flex_position == 'WR':
+        flex_args['wr_min'] = 4
+
+    cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
 
     variables, solution = run_solver(
         solver,

@@ -50,6 +50,7 @@ def test_optimize_with_general():
         source='nba_rotogrinders',
         salary_file=os.getcwd() + '/test/data/nba-test-salaries.csv',
         projection_file=os.getcwd() + '/test/data/nba-test-projections.csv',
+        flex_position=None,
     )
     roster = run('NBA', [], run_args)
 

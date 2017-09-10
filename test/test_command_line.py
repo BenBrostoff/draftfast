@@ -34,6 +34,7 @@ args_dict = dict(
     source='nfl_rotogrinders',
     salary_file=os.getcwd() + '/test/data/test-salaries.csv',
     projection_file=os.getcwd() + '/test/data/test-projections.csv',
+    flex_position=None,
 )
 
 

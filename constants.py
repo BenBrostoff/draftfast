@@ -8,12 +8,17 @@ ROSTER_SIZE = {
 }
 
 
-def get_nfl_positions(te_upper=2):
+def get_nfl_positions(
+    rb_min=2,
+    wr_min=3,
+    te_min=1,
+    te_upper=2
+):
     return [
         ["QB", 1, 1],
-        ["RB", 2, 3],
-        ["WR", 3, 4],
-        ["TE", 1, te_upper],
+        ["RB", rb_min, 3],
+        ["WR", wr_min, 4],
+        ["TE", te_min, te_upper],
         ["DST", 1, 1]
     ]
 
