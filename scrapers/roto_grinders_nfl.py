@@ -12,12 +12,13 @@ ROTO_GRINDERS = ''.join([
 pos = ['qb', 'rb', 'wr', 'te', 'defense']
 
 
-def scrape():
+def scrape(use='avg'):
     hold = [['playername', 'points']]
     for page in pos:
         content = requests.get(
             ROTO_GRINDERS.format(page)).content.decode('utf-8')
         cr = csv.reader(content.splitlines(), delimiter=',')
+
         for p in list(cr):
             if p[0] in [x['name'] for x in DUPLICATES]:
                 entry = [x for x in DUPLICATES if
@@ -35,7 +36,15 @@ def scrape():
                     )
                     p[0] = dk_name
 
-                hold.append([p[0], p[-1]])
+
+                # fragile - will break if RG changes their CSV
+                proj = p[-1]
+                if use == 'max':
+                    proj = p[-3]
+                elif use == 'min':
+                    proj = p[-2]
+
+                hold.append([p[0], proj or p[-1]])
 
     with open('data/current-projections.csv', 'w') as fp:
         w = csv.writer(fp, delimiter=',')
