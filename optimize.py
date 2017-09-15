@@ -5,6 +5,7 @@ https://github.com/swanson/degenerate
 '''
 
 import csv
+import random
 from sys import exit
 
 from ortools.linear_solver import pywraplp
@@ -248,7 +249,7 @@ def _set_player_ownership(all_players, args):
 
 def _check_missing_players(all_players, min_cost, e_raise):
     '''
-    check for significant missing players
+    Check for significant missing players
     as names from different data do not match up
     continues or stops based on inputs
     '''
@@ -263,6 +264,35 @@ def _check_missing_players(all_players, min_cost, e_raise):
             .format(str(contained_report), str(total_report))
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
+
+
+def _randomize_projections(weight):
+    '''
+    Iterate through projections and multiply by a factor
+    between (1-x) and (1+x).
+
+    This can occasionally be useful for breaking patterns where a certain
+    value group of players always show up in lineup results and you do not
+    want to ban any of them, or to just see how slight changes in projections
+    can impact optimization.
+    '''
+    hold = []
+    proj_file = 'data/current-projections.csv'
+    with open(proj_file) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            hold.append(row)
+
+    with open(proj_file, 'w') as csvfile:
+        fieldnames = ['playername', 'points']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in hold:
+            factor = 1 + random.uniform(-float(weight), float(weight))
+            row['points'] = float(row['points']) * factor
+            writer.writerow(row)
+
+    print('Rewrite complete with weighted factor {}'.format(weight))
 
 
 def check_validity(args):
@@ -296,6 +326,8 @@ if __name__ == '__main__':
     if args.s == _YES and args.source != 'DK_AVG':
         try:
             scrapers.scrape(args.source)
+            if args.randomize_projections:
+                _randomize_projections(args.randomize_projections)
         except KeyError:
             raise dke.InvalidProjectionSourceException(
                 'You must choose from the following data sources {}.'

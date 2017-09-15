@@ -36,7 +36,6 @@ def scrape(use='avg'):
                     )
                     p[0] = dk_name
 
-
                 # fragile - will break if RG changes their CSV
                 proj = p[-1]
                 if use == 'max':

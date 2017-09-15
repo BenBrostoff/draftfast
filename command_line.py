@@ -31,6 +31,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-projection_file', 'File location for projections',
      os.getcwd() + '/data/current-projections.csv'],
     ['-flex_position', 'Force player to have FLEX position', None],
+    ['-randomize_projections', 'Use random projection factor', None]
 ]
 
 
