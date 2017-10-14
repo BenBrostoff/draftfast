@@ -84,8 +84,6 @@ def update_upload_csv(player_map, players):
 
 
 def _convert_to_dk_name(name):
-    name_list = [n for n in RENAMES
-                 if n['rename'] == name]
-    if len(name_list):
-        return name_list[0]['dk_name']
+    if name in RENAMES:
+        return RENAMES['name']
     return name
