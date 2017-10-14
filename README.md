@@ -4,6 +4,10 @@
 
 ![](marketing/NBA_OPTIMIZED.png)
 
+This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee.
+
+This project allows you to create an unlimited amount of optimized DraftKings lineups based on any projection source of your choice. You can use this repo as a command line application, or import functionality as needed to build your own scripts to construct thousands of DraftKings lineups each week and upload them in seconds using their [CSV upload tool](https://www.draftkings.com/lineup/upload). Examples of how to do the latter are provided in the `examples` directory.
+
 Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of.
 
 Pre-reqs:
@@ -13,7 +17,7 @@ Pre-reqs:
 * `pip install -r requirements.txt`
 
 To run, download your desired week's salaries on DraftKings, and then run:
- 
+
 ```
 bash scripts/prepare_nfl_contest_data.sh
 ```
@@ -115,4 +119,3 @@ A WNBA option is available, but users must provide their own projection source:
 bash scripts/prepare_nba_contest_data.sh
 python optimize.py -l WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
 ```
-
