@@ -20,40 +20,55 @@ import random
 from collections import Counter
 from optimize import run as optimizer_run
 from argparse import Namespace
+
 from csv_upload.nfl_upload import (
+    update_upload_csv,
+    create_upload_file,
+    map_pids,
+)
+from csv_upload.nba_upload import (
     update_upload_csv,
     create_upload_file,
     map_pids,
 )
 
 DEFAULT_ARGS = dict(
-    source='nfl_rotogrinders',
     dtype='wr',
     duo='n',
-    s='y',
+    s='n',
     w=5,
     season=2017,
     historical='n',
     i=1,
-    l='NFL',
+    l='NBA',
     limit='n',
     no_double_te='y',
     lp=0,
     mp=500,
     ms=100000,
     sp=1000,
-    locked=None,
-    teams=None,
-    banned=['Michael Thomas'],
+    banned=['Zach Randolph'],
     po=0,
-    po_location=None,
     pids='data/pid-file.csv',
     salary_file='data/current-salaries.csv',
     projection_file='data/current-projections.csv',
-    home='N',
+    home='n',
     v_avg=100,
+    source=None,
+    locked=None,
+    teams=None,
+    po_location=None,
     flex_position=None,
 )
+
+
+def is_duplicate(r, rp):
+    '''
+    Checks for duplicate rosters irrespective of position distirbution.
+    '''
+    rp = [sorted([p.name for p in rn.players]) for rn in rp]
+    rcur = sorted([p.name for p in r.players])
+    return rcur in rp
 
 
 def run(lineups=20, exposure=0.3):
@@ -70,15 +85,15 @@ def run(lineups=20, exposure=0.3):
                 name for name, freq in exposure.items()
                 if freq > max_exposure
             ]
-        roster = optimizer_run('NFL', [], Namespace(**args))
+        roster = optimizer_run('NBA', [], Namespace(**args))
 
         # discard and replace duplicate lineups
-        if roster in roster_list:
-            while roster in roster_list:
+        if is_duplicate(roster, roster_list):
+            while is_duplicate(roster, roster_list):
                 args['banned'].append(
                     random.choice(roster.players).name
                 )
-                roster = optimizer_run('NFL', [], Namespace(**args))
+                roster = optimizer_run('NBA', [], Namespace(**args))
 
         roster_list.append(roster)
         player_list += [p.name for p in roster.players]
