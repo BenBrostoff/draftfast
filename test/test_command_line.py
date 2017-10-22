@@ -35,6 +35,7 @@ args_dict = dict(
     salary_file=os.getcwd() + '/test/data/test-salaries.csv',
     projection_file=os.getcwd() + '/test/data/test-projections.csv',
     flex_position=None,
+    min_avg=-1,
 )
 
 

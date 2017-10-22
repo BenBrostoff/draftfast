@@ -1,6 +1,7 @@
 """
 Generate as many lineups as you want with
-max exposures of your selected exposure to any one player.
+max exposures of your selected exposure to any one player,
+with a specified minimum average of your choice.
 The output here is a CSV file that can be used
 to upload lineups at https://www.draftkings.com/lineup/upload
 
@@ -17,16 +18,12 @@ balanced_lineups.run()
 """
 
 import random
+import numpy
 from collections import Counter
 from optimize import run as optimizer_run
 from argparse import Namespace
 
 from csv_upload.nfl_upload import (
-    update_upload_csv,
-    create_upload_file,
-    map_pids,
-)
-from csv_upload.nba_upload import (
     update_upload_csv,
     create_upload_file,
     map_pids,
@@ -40,25 +37,26 @@ DEFAULT_ARGS = dict(
     season=2017,
     historical='n',
     i=1,
-    l='NBA',
+    l='NFL',
     limit='n',
     no_double_te='y',
     lp=0,
     mp=500,
     ms=100000,
     sp=1000,
-    banned=['Zach Randolph'],
+    banned=[],
     po=0,
     pids='data/pid-file.csv',
     salary_file='data/current-salaries.csv',
     projection_file='data/current-projections.csv',
     home='n',
     v_avg=100,
-    source=None,
+    source='nfl_rotogrinders',
+    flex_position=None,
     locked=None,
     teams=None,
     po_location=None,
-    flex_position=None,
+    min_avg=None,
 )
 
 
@@ -71,7 +69,8 @@ def is_duplicate(r, rp):
     return rcur in rp
 
 
-def run(lineups=20, exposure=0.3):
+def run(lineups=20, exposure=0.4, min_avg=7):
+    DEFAULT_ARGS['min_avg'] = min_avg
     roster_list, player_list = [], []
     create_upload_file()
     player_map = map_pids(DEFAULT_ARGS['pids'])
@@ -85,7 +84,7 @@ def run(lineups=20, exposure=0.3):
                 name for name, freq in exposure.items()
                 if freq > max_exposure
             ]
-        roster = optimizer_run('NBA', [], Namespace(**args))
+        roster = optimizer_run('NFL', [], Namespace(**args))
 
         # discard and replace duplicate lineups
         if is_duplicate(roster, roster_list):
@@ -93,7 +92,7 @@ def run(lineups=20, exposure=0.3):
                 args['banned'].append(
                     random.choice(roster.players).name
                 )
-                roster = optimizer_run('NBA', [], Namespace(**args))
+                roster = optimizer_run('NFL', [], Namespace(**args))
 
         roster_list.append(roster)
         player_list += [p.name for p in roster.players]
@@ -110,3 +109,10 @@ def run(lineups=20, exposure=0.3):
             'Duplication error in logic. Expected {} and got {} lineups'
             .format(lineups, unique)
         )
+
+    scores = [r.projected() for r in roster_list]
+    print('Generated {} lineups.'.format(lineups))
+    print('Maximum score: {}'.format(numpy.max(scores)))
+    print('Minimum score: {}'.format(numpy.min(scores)))
+    print('Average score: {}'.format(numpy.average(scores)))
+    print('Median score: {}'.format(numpy.median(scores)))
