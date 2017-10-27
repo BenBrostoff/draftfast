@@ -2,6 +2,7 @@
 
 ## Introduction
 
+[Web UI Demo](https://motm-stats.firebaseapp.com/)
 ![](marketing/NBA_OPTIMIZED.png)
 
 This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee.
