@@ -109,8 +109,8 @@ bash scripts/prepare_nba_contest_data.sh
 Currently, Rotogrinders and Numberfire are the only available datasources:
 
 ```
-python optimize.py -l NBA -source nba_rotogrinders
-python optimize.py -l NBA -source nba_number_fire
+python optimize.py -league NBA -source nba_rotogrinders
+python optimize.py -league NBA -source nba_number_fire
 ```
 
 ## WNBA
@@ -119,5 +119,5 @@ A WNBA option is available, but users must provide their own projection source:
 
 ```
 bash scripts/prepare_nba_contest_data.sh
-python optimize.py -l WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
+python optimize.py -league WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
 ```

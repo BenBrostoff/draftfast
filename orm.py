@@ -5,7 +5,7 @@ import NFL_Draftkings as NFLDK
 
 try:
     locale.setlocale(locale.LC_ALL, 'en_US')
-except:
+except Exception:
     pass
 
 
@@ -237,7 +237,7 @@ class Player:
             self.__set_data_cache()
 
             print('Fetched player data for {}'.format(self.name))
-        except:
+        except Exception:
             self._PLAYER_DATA_CACHE[self.name] = None
             print('Failed to fetch player data for {}'.format(self.name))
 

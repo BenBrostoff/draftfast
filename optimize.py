@@ -106,7 +106,7 @@ def run(league, remove, args):
     )
 
     if solution == solver.OPTIMAL:
-        roster = RosterSelect().roster_gen(args.l)
+        roster = RosterSelect().roster_gen(args.league)
         if args.source != _DK_AVG or args.proj:
             roster.projection_source = \
                 scrapers.scrape_dict[args.source]['readable']
@@ -168,13 +168,13 @@ def run_solver(solver, all_players, args):
         salary_cap.SetCoefficient(variables[i], player.cost)
 
     # set roster size constraint
-    size_cap = solver.Constraint(cons.ROSTER_SIZE[args.l],
-                                 cons.ROSTER_SIZE[args.l])
+    size_cap = solver.Constraint(cons.ROSTER_SIZE[args.league],
+                                 cons.ROSTER_SIZE[args.league])
     for variable in variables:
         size_cap.SetCoefficient(variable, 1)
 
     # set position limit constraint
-    for position, min_limit, max_limit in cons.POSITIONS[args.l]:
+    for position, min_limit, max_limit in cons.POSITIONS[args.league]:
         position_cap = solver.Constraint(min_limit, max_limit)
 
         for i, player in enumerate(all_players):
@@ -182,11 +182,11 @@ def run_solver(solver, all_players, args):
                 position_cap.SetCoefficient(variables[i], 1)
 
     # set G / F NBA position limits
-    if args.l in ['NBA', 'WNBA']:
+    if args.league in ['NBA', 'WNBA']:
         general_positions = {
             'NBA': cons.NBA_GENERAL_POSITIONS,
             'WNBA': cons.WNBA_GENERAL_POSITIONS,
-        }[args.l]
+        }[args.league]
         for general_position, min_limit, max_limit in \
                 general_positions:
             position_cap = solver.Constraint(min_limit, max_limit)
@@ -318,7 +318,7 @@ if __name__ == '__main__':
     args = get_args()
     check_validity(args)
 
-    uploader = nba_upload if args.l == 'NBA' else nfl_upload
+    uploader = nba_upload if args.league == 'NBA' else nfl_upload
     if not args.keep_pids:
         uploader.create_upload_file()
     if args.pids:
@@ -335,7 +335,7 @@ if __name__ == '__main__':
 
     rosters, remove = [], []
     for x in range(0, int(args.i)):
-        rosters.append(run(args.l, remove, args))
+        rosters.append(run(args.league, remove, args))
         if args.pids:
             uploader.update_upload_csv(
                 player_map, rosters[x].sorted_players()[:])

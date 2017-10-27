@@ -32,7 +32,7 @@ def test_optimize_with_general():
         season=2016,
         w=1,
         historical='n',
-        l='NBA',
+        league='NBA',
         limit='n',
         lp=0,
         no_double_te='n',
