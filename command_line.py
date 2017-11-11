@@ -22,7 +22,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-banned', 'player cannot be named players', None],
     ['-dtype', 'specify WR or TE in combo', 'wr'],
     ['-source', 'data source to use', 'nfl_rotogrinders'],
-    ['-l', 'league', 'NFL'],
+    ['-league', 'league', 'NFL'],
     ['-pids', 'player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
     ['-po_location', 'projected ownership percentages file location', None],
