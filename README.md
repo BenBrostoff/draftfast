@@ -1,6 +1,6 @@
-## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun)
+## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/)
 
-[*Web UI Demo*](https://motm-stats.firebaseapp.com/) &middot; [*Slack Channel*](https://join.slack.com/t/draftfast/shared_invite/enQtMjY2MTI2NzE3ODQ2LTBjNGNhMTliNjkyZjM4ZTYzZGM4YjJmZTAwZTA0MWI1MGFhYWVlMmQyMDNmOTNhNGE4ZWI1M2I1MTcyOTllN2Q)
+[*Web UI Demo*](https://motm-stats.firebaseapp.com/)
 
 ![](marketing/NBA_OPTIMIZED.png)
 
