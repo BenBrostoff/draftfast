@@ -247,6 +247,16 @@ def _set_player_ownership(all_players, args):
                     player[0].projected_ownership_pct = float(row['%'])
 
 
+_MISSING_ERROR = """
+Got {} projections out of {} total players.
+
+You are allowing {} players to be missing from your
+projections compared to the total players DraftKings
+will allow you to play. You can change this allowance
+via the mp flag.
+"""
+
+
 def _check_missing_players(all_players, min_cost, e_raise):
     '''
     Check for significant missing players
@@ -259,9 +269,9 @@ def _check_missing_players(all_players, min_cost, e_raise):
     missing = filter(lambda x: x.marked != 'Y' and x.cost > min_cost,
                      all_players)
     miss_len = len(missing)
-    if e_raise < miss_len:
-        print('Got {0} out of {1} total') \
-            .format(str(contained_report), str(total_report))
+    if int(e_raise) < miss_len:
+        print(_MISSING_ERROR) \
+            .format(str(contained_report), str(total_report), e_raise)
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
 
