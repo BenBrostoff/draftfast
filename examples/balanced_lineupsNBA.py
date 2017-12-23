@@ -23,7 +23,7 @@ from collections import Counter
 from optimize import run as optimizer_run
 from argparse import Namespace
 
-from csv_upload.nfl_upload import (
+from csv_upload.nba_upload import (
     update_upload_csv,
     create_upload_file,
     map_pids,
@@ -46,12 +46,12 @@ DEFAULT_ARGS = dict(
     sp=1000,
     banned=[],
     po=0,
-    pids='data/pid-file.csv',
+    pids='data/pid-fileNBA.csv',
     salary_file='data/current-salaries.csv',
     projection_file='data/current-projections.csv',
     home=None,
     v_avg=100,
-    source='nfl_rotogrinders',
+    source='nba_rotogrinders',
     flex_position=None,
     locked=None,
     teams=None,
