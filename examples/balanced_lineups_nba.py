@@ -12,8 +12,8 @@ Pre-reqs:
 
 Example usage:
 ```python
-from examples import balanced_lineups
-balanced_lineups.run()
+from examples import balanced_lineups_nba
+balanced_lineups_nba.run()
 ```
 """
 
@@ -23,7 +23,7 @@ from collections import Counter
 from optimize import run as optimizer_run
 from argparse import Namespace
 
-from csv_upload.nfl_upload import (
+from csv_upload.nba_upload import (
     update_upload_csv,
     create_upload_file,
     map_pids,
@@ -37,7 +37,7 @@ DEFAULT_ARGS = dict(
     season=2017,
     historical='n',
     i=1,
-    league='NFL',
+    league='NBA',
     limit='n',
     no_double_te='y',
     lp=0,
@@ -46,12 +46,12 @@ DEFAULT_ARGS = dict(
     sp=1000,
     banned=[],
     po=0,
-    pids='data/pid-file.csv',
+    pids='data/pid-file-nba.csv',
     salary_file='data/current-salaries.csv',
     projection_file='data/current-projections.csv',
     home=None,
     v_avg=100,
-    source='nfl_rotogrinders',
+    source='nba_rotogrinders',
     flex_position=None,
     locked=None,
     teams=None,
@@ -84,7 +84,7 @@ def run(lineups=20, exposure=0.4, min_avg=7):
                 name for name, freq in exposure.items()
                 if freq > max_exposure
             ]
-        roster = optimizer_run('NFL', [], Namespace(**args))
+        roster = optimizer_run('NBA', [], Namespace(**args))
 
         # discard and replace duplicate lineups
         if is_duplicate(roster, roster_list):
@@ -92,7 +92,7 @@ def run(lineups=20, exposure=0.4, min_avg=7):
                 args['banned'].append(
                     random.choice(roster.players).name
                 )
-                roster = optimizer_run('NFL', [], Namespace(**args))
+                roster = optimizer_run('NBA', [], Namespace(**args))
 
         roster_list.append(roster)
         player_list += [p.name for p in roster.players]
