@@ -30,16 +30,12 @@ from csv_upload.nba_upload import (
 )
 
 DEFAULT_ARGS = dict(
-    dtype='wr',
     duo='n',
     s='n',
     w=5,
-    season=2017,
-    historical='n',
     i=1,
     league='NBA',
     limit='n',
-    no_double_te='y',
     lp=0,
     mp=500,
     ms=100000,
@@ -52,6 +48,10 @@ DEFAULT_ARGS = dict(
     home=None,
     v_avg=100,
     source='nba_rotogrinders',
+    no_double_te=None,
+    historical=None,
+    season=None,
+    dtype=None,
     flex_position=None,
     locked=None,
     teams=None,
