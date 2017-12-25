@@ -1,6 +1,6 @@
 ## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/)
 
-[*Web UI Demo*](https://motm-stats.firebaseapp.com/)
+[*Blog*](https://medium.com/draftfast) &middot; [*Web UI Demo*](https://motm-stats.firebaseapp.com/) &middot; [*Slack Channel*](https://draftfast.herokuapp.com/)
 
 ![](marketing/NBA_OPTIMIZED.png)
 
