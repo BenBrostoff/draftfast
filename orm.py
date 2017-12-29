@@ -123,16 +123,25 @@ class RosterSelect:
 class Player:
     _PLAYER_DATA_CACHE = {}
 
-    def __init__(self, pos, name, cost,
-                 proj=0, projected_ownership_pct=0,
-                 lineup_count=0,
-                 average_score=0,
-                 matchup=None, team=None,  marked=None,
-                 possible_positions=None,
-                 lock=False, multi_position=False):
+    def __init__(
+        self,
+        pos,
+        name,
+        cost,
+        proj=0,
+        projected_ownership_pct=0,
+        lineup_count=0,
+        average_score=0,
+        matchup=None,
+        team=None,
+        marked=None,
+        possible_positions=None,
+        lock=False,
+        multi_position=False
+    ):
         self.pos = pos
         self.name = name
-        self.cost = int(cost)
+        self.cost = float(cost)
         self.team = team
         self.matchup = matchup
         self.proj = proj
@@ -183,6 +192,10 @@ class Player:
                self.team == player.team
 
     @property
+    def value(self):
+        return round(self.proj / (self.cost / 1000), 2)
+
+    @property
     def solver_id(self):
         return '{} {} {}'.format(self.name, self.pos, self.team)
 
@@ -208,9 +221,6 @@ class Player:
         elif self.pos == 'SF' or self.pos == 'PF':
             return 'F'
         return 'C'
-
-    def get_ppd(self):
-        return round((self.proj / self.cost) * 1000, 3)
 
     def set_historical(self, week, season):
         if self.name in self._PLAYER_DATA_CACHE:
