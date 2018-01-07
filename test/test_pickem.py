@@ -40,4 +40,3 @@ def test_default_lineup():
         optimized.total,
         50 + 48 + 46 + 44 + 42 + 40
     )
-

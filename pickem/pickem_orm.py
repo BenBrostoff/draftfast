@@ -32,12 +32,12 @@ class TieredLineup(object):
 
         self.players = players
         [
-            self.T1,
-            self.T2,
-            self.T3,
-            self.T4,
-            self.T5,
-            self.T6,
+            self.TIER_1,
+            self.TIER_2,
+            self.TIER_3,
+            self.TIER_4,
+            self.TIER_5,
+            self.TIER_6,
         ] = players
 
     def __repr__(self):
