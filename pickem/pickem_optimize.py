@@ -40,4 +40,7 @@ def run(pickem_file_location):
                 )
             )
 
-    return optimize(all_players)
+    roster = optimize(all_players)
+    print(roster)
+
+run('/Users/benbrostoff/Downloads/DKSalaries.csv')
