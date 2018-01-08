@@ -1,6 +1,9 @@
 import csv
 import random
 import requests
+import numpy
+from terminaltables import AsciiTable
+from draft_kings_db import client
 from pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
 from pickem import pickem_upload
 
@@ -68,3 +71,35 @@ def upload(pickem_file_location, map_file_location, lineup_nums=10):
             player_map,
             TieredLineup(random_lineup)
         )
+
+
+def review_past(file_loc, banned):
+    '''
+    Prints out results from a previous slate with variance (numpy.std)
+    for each tier.
+
+    :param file_loc: Salaries file from already played games
+    :param banned: Players to not include (injured or missed game)
+    '''
+    c = client.DraftKingsHistory()
+    c.initialize_nba()
+    players = get_all_players(file_loc)
+    for t in TIERS:
+        headers = [[
+            'Name',
+            'Actual',
+            'Tier'
+        ]]
+        tp = [p for p in players if p.tier == t and p.name not in banned]
+        body_data = []
+        for tpl in tp:
+            actual = c.lookup_nba_performances(tpl.name)[0].draft_kings_points
+            body_data += [[tpl.name, actual, tpl.tier]]
+
+        sorted_body = sorted(body_data, key=lambda x: x[1], reverse=True)
+
+        print(t)
+        print(AsciiTable(headers + sorted_body).table)
+        print('Variance: {}'.format(numpy.std([g[1] for g in body_data])))
+        print('***********')
+        print('')
