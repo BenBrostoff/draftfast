@@ -43,10 +43,10 @@ def get_all_players(
                     proj = float(projection_map[row['Name']])
                 except KeyError:
                     print(
-                        'No projection provided for {}.'
-                        'Falling back to average.'
+                        'No projection provided for {}. '
+                        'Setting points to 0.'
                     ).format(row['Name'])
-                    proj = float(row['AvgPointsPerGame'])
+                    proj = 0
 
             all_players.append(
                 TieredPlayer(

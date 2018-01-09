@@ -5,9 +5,9 @@ from pickem.pickem_optimize import optimize, get_all_players
 
 if __name__ == '__main__':
     args = get_args()
-    if args.scrape:
+    if args.scrape_source:
         try:
-            scrapers.scrape(args.source)
+            scrapers.scrape(args.scrape_source)
         except KeyError:
             raise dke.InvalidProjectionSourceException(
                 'You must choose from the following data sources {}.'

@@ -2,7 +2,6 @@ import argparse
 import os
 
 OPTIMIZE_COMMAND_LINE = [
-    ['-scrape', 'scrape from data source', None],
     ['-scrape_source', 'scrape from data source', None],
     ['-use_averages', 'use averages as projections', False],
     ['-v_avg', 'projections must be within points v avg', 100000],
