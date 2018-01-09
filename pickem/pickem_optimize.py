@@ -1,15 +1,18 @@
 import csv
 import random
-import requests
-import numpy
 from terminaltables import AsciiTable
 from draft_kings_db import client
+from query_constraints import add_pickem_contraints
 from pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
 from pickem import pickem_upload
 
 
-def optimize(all_players):
+def optimize(all_players, cmd_args=None):
     lineup_players = []
+    all_players = filter(
+        add_pickem_contraints(cmd_args),
+        all_players
+    )
     for t in TIERS:
         best = sorted(
             [p for p in all_players if p.tier == t],
@@ -21,14 +24,30 @@ def optimize(all_players):
     return TieredLineup(lineup_players)
 
 
-def get_all_players(pickem_file_location):
+def get_all_players(
+    pickem_file_location,
+    projection_file,
+    use_averages
+):
     all_players = []
+    if projection_file:
+        projection_map = _get_projection_map(projection_file)
+
     with open(pickem_file_location) as csv_file:
         reader = csv.DictReader(csv_file)
-        player_data = requests.get(
-            'https://mom-api.herokuapp.com/content/players/?league =NBA'
-        ).json()['players']
         for row in reader:
+            if use_averages:
+                proj = float(row['AvgPointsPerGame'])
+            else:
+                try:
+                    proj = float(projection_map[row['Name']])
+                except KeyError:
+                    print(
+                        'No projection provided for {}.'
+                        'Falling back to average.'
+                    ).format(row['Name'])
+                    proj = float(row['AvgPointsPerGame'])
+
             all_players.append(
                 TieredPlayer(
                     cost=0,  # salary not applicable in pickem
@@ -36,21 +55,12 @@ def get_all_players(pickem_file_location):
                     pos=row['Position'],
                     team=row['teamAbbrev'],
                     matchup=row['GameInfo'],
-                    proj=next(
-                        p for p in player_data
-                        if p['name'] == row['Name']
-                    )['proj'],
+                    proj=proj,
                     average_score=float(row['AvgPointsPerGame']),
                     tier=row['Roster_Position']
                 )
             )
     return all_players
-
-
-def run(pickem_file_location):
-    all_players = get_all_players(pickem_file_location)
-    roster = optimize(all_players)
-    print(roster)
 
 
 def upload(pickem_file_location, map_file_location, lineup_nums=10):
@@ -73,6 +83,10 @@ def upload(pickem_file_location, map_file_location, lineup_nums=10):
         )
 
 
+def print_green(txt):
+    return '\x1b[0;32;40m{}\x1b[0m'.format(txt)
+
+
 def review_past(file_loc, banned):
     '''
     Prints out results from a previous slate with variance (numpy.std)
@@ -81,25 +95,54 @@ def review_past(file_loc, banned):
     :param file_loc: Salaries file from already played games
     :param banned: Players to not include (injured or missed game)
     '''
+
+    # FIXME - this will retrieve data from S3 and store in
+    # an in-memory DB. After running this function once on a
+    # given day, the data should persist.
     c = client.DraftKingsHistory()
     c.initialize_nba()
+
     players = get_all_players(file_loc)
-    for t in TIERS:
-        headers = [[
-            'Name',
-            'Actual',
-            'Tier'
-        ]]
+    all_body_data = []
+    headers = [[
+        'Name',
+        'Team',
+        'Actual',
+        'Tier'
+    ]]
+
+    for idx, t in enumerate(TIERS):
         tp = [p for p in players if p.tier == t and p.name not in banned]
         body_data = []
+
         for tpl in tp:
             actual = c.lookup_nba_performances(tpl.name)[0].draft_kings_points
-            body_data += [[tpl.name, actual, tpl.tier]]
+            body_data += [[tpl.name, tpl.team, round(actual, 2), tpl.tier]]
 
-        sorted_body = sorted(body_data, key=lambda x: x[1], reverse=True)
+        sorted_body_data = sorted(body_data, key=lambda x: x[2], reverse=True)
+        if idx % 2 != 0:
+            sorted_body_data = [
+                [print_green(cell) for cell in entry] for
+                entry in sorted_body_data
+            ]
 
-        print(t)
-        print(AsciiTable(headers + sorted_body).table)
-        print('Variance: {}'.format(numpy.std([g[1] for g in body_data])))
-        print('***********')
-        print('')
+        all_body_data += sorted_body_data
+
+    print(' ')
+    print(
+        AsciiTable(headers + all_body_data, title='Pickem Results').table
+    )
+
+
+def _get_projection_map(projection_file):
+    '''
+    Read from passed CSV file and return map of projections with
+    player names as keys.
+    '''
+    projection_map = {}
+    with open(projection_file) as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            projection_map[row['playername']] = row['points']
+
+    return projection_map

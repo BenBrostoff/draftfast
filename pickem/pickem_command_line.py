@@ -2,7 +2,11 @@ import argparse
 import os
 
 OPTIMIZE_COMMAND_LINE = [
+    ['-scrape', 'scrape from data source', None],
+    ['-scrape_source', 'scrape from data source', None],
+    ['-use_averages', 'use averages as projections', False],
     ['-v_avg', 'projections must be within points v avg', 100000],
+    ['-min_avg', 'player must exceed average points', 0],
     ['-lp', 'lowest acceptable projection', 0],
     ['-home', 'only select players playing at home', None],
     ['-locked_teams', 'player must be on specified teams', None],
@@ -17,7 +21,6 @@ OPTIMIZE_COMMAND_LINE = [
     ['-projection_file', 'file location for projections',
      os.getcwd() + '/data/current-projections.csv'],
     ['-randomize_projections', 'use random projection factor', None],
-    ['-min_avg', 'player must exceed average points', 0],
 ]
 
 
