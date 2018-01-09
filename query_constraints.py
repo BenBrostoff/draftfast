@@ -15,6 +15,19 @@ def add_constraints(query_args, remove):
     return filter_fn
 
 
+def add_pickem_contraints(query_args):
+    def filter_fn(player):
+        # TODO - add team banning
+        kwargs = {'player': player, 'query_args': query_args}
+        return _is_above_projected_points(**kwargs) and \
+               not _is_banned_player(**kwargs) and \
+               _is_selected_team(**kwargs) and \
+               _is_within_avg(**kwargs) and \
+               _is_above_min_avg(**kwargs)
+
+    return filter_fn
+
+
 def lock_override(fn):
     def override_fn(**kwargs):
         if kwargs['player'].lock:
