@@ -11,4 +11,5 @@ RENAMES = [
     {'dk_name': 'Kelly Oubre Jr.', 'name': 'Kelly Oubre'},
     {'dk_name': 'Joe Young', 'name': 'Joseph Young'},
     {'dk_name': 'Tomas Satoransky', 'name': 'Tomas Satoransky '},
+    {'dk_name': 'Otto Porter Jr.', 'name': 'Otto Porter'},
 ]
