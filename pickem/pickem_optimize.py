@@ -25,6 +25,7 @@ def optimize(all_players, cmd_args=None):
     if locked:
         for lock in locked:
             player_lock = _get_player(lock, all_players)
+            player_lock.locked = True
             setattr(
                 lineup,
                 player_lock.tier,
@@ -37,6 +38,7 @@ def optimize(all_players, cmd_args=None):
 def get_all_players(
     pickem_file_location,
     projection_file,
+    use_averages=False,
 ):
     all_players = []
     if projection_file:
@@ -45,7 +47,9 @@ def get_all_players(
     with open(pickem_file_location) as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:
-            if projection_file:
+            if use_averages:
+                proj = float(row['AvgPointsPerGame'])
+            elif projection_file:
                 try:
                     proj = float(projection_map[row['Name']])
                 except KeyError:
