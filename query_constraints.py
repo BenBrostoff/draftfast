@@ -24,7 +24,8 @@ def add_pickem_contraints(query_args):
         return (
             _is_above_projected_points(**kwargs) and
             (not _is_banned_player(**kwargs)) and
-            # _is_selected_team(**kwargs) and
+            (not _is_banned_team(**kwargs)) and
+            _is_locked_team(**kwargs) and
             _is_within_avg(**kwargs) and
             _is_above_min_avg(**kwargs)
         )
@@ -112,3 +113,17 @@ def _is_above_min_avg(player, query_args):
     if query_args.min_avg is None:
         return True
     return (player.average_score or 0) > query_args.min_avg
+
+
+@lock_override
+def _is_banned_team(player, query_args):
+    if query_args.banned_teams is None:
+        return False
+    return player.team in query_args.banned_teams
+
+
+@lock_override
+def _is_locked_team(player, query_args):
+    if query_args.locked_teams is None:
+        return True
+    return player.team in query_args.locked_teams

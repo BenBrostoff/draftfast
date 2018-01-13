@@ -11,6 +11,8 @@ args_dict = dict(
     lp=None,
     banned=None,
     locked=None,
+    banned_teams=None,
+    locked_teams=None,
 )
 
 
@@ -27,20 +29,24 @@ def _generate_player(name, proj, tier, **kwargs):
     )
 
 
+_BOS = 'BOS'
+_GS = 'GS'
+
+
 def _generate_test_player_data():
     return [
-        _generate_player('A', 50, pickem_orm.T1),
-        _generate_player('B', 49, pickem_orm.T1),
-        _generate_player('C', 48, pickem_orm.T2),
-        _generate_player('D', 47, pickem_orm.T2),
-        _generate_player('E', 46, pickem_orm.T3),
-        _generate_player('F', 45, pickem_orm.T3),
-        _generate_player('G', 44, pickem_orm.T4),
-        _generate_player('H', 43, pickem_orm.T4),
-        _generate_player('I', 42, pickem_orm.T5),
-        _generate_player('J', 41, pickem_orm.T5),
-        _generate_player('K', 40, pickem_orm.T6),
-        _generate_player('L', 39, pickem_orm.T6),
+        _generate_player('A', 50, pickem_orm.T1, team=_BOS),
+        _generate_player('B', 49, pickem_orm.T1, team=_GS),
+        _generate_player('C', 48, pickem_orm.T2, team=_BOS),
+        _generate_player('D', 47, pickem_orm.T2, team=_GS),
+        _generate_player('E', 46, pickem_orm.T3, team=_BOS),
+        _generate_player('F', 45, pickem_orm.T3, team=_GS),
+        _generate_player('G', 44, pickem_orm.T4, team=_BOS),
+        _generate_player('H', 43, pickem_orm.T4, team=_GS),
+        _generate_player('I', 42, pickem_orm.T5, team=_BOS),
+        _generate_player('J', 41, pickem_orm.T5, team=_GS),
+        _generate_player('K', 40, pickem_orm.T6, team=_BOS),
+        _generate_player('L', 39, pickem_orm.T6, team=_GS),
     ]
 
 
@@ -72,4 +78,26 @@ def test_locked_players():
     ntools.assert_equal(
         optimized.total,
         49 + 47 + 46 + 44 + 42 + 40
+    )
+
+
+def test_banned_teams():
+    players = _generate_test_player_data()
+    test_args = args_dict.copy()
+    test_args['banned_teams'] = [_BOS]
+    optimized = optimize(players, cmd_args=Namespace(**test_args))
+    ntools.assert_equal(
+        optimized.total,
+        49 + 47 + 45 + 43 + 41 + 39
+    )
+
+
+def test_locked_teams():
+    players = _generate_test_player_data()
+    test_args = args_dict.copy()
+    test_args['locked_teams'] = [_GS]
+    optimized = optimize(players, cmd_args=Namespace(**test_args))
+    ntools.assert_equal(
+        optimized.total,
+        49 + 47 + 45 + 43 + 41 + 39
     )
