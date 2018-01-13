@@ -95,7 +95,7 @@ def review_past(file_loc, banned):
     c = client.DraftKingsHistory()
     c.initialize_nba()
 
-    players = get_all_players(file_loc)
+    players = get_all_players(file_loc, None, True)
     all_body_data = []
     headers = [[
         'Name',
