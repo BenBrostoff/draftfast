@@ -120,7 +120,7 @@ class RosterSelect:
         return roster_dict[league]
 
 
-class Player:
+class Player(object):
     _PLAYER_DATA_CACHE = {}
 
     def __init__(
