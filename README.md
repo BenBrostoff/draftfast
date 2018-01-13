@@ -119,3 +119,22 @@ A WNBA option is available, but users must provide their own projection source:
 bash scripts/prepare_nba_contest_data.sh
 python optimize.py -league WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
 ```
+
+## Pick'Em (NEW! January 2018)
+
+Pick'Em contests allow players to pick one player in each of six tiers. After downloading a salaries file:
+
+```
+bash scripts/prepare_nba_contest_data.sh
+python pickem_optimize.py
+```
+
+For a list of available flags and filters:
+
+```
+python pickem_optimize.py --help
+```
+
+You can also automate lineup construction for Pick'Em contests. It is recommended you do this via scripting versus the CLI. An example is shown in `examples/random_pickem_nba.py`.
+
+Note that for all CSV lineup uploads, you need to download the the [template for the day's games here](https://www.draftkings.com/lineup/upload). Make sure to switch the sport to *NBA* and style to *Pick Em*.
