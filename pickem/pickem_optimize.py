@@ -1,10 +1,8 @@
 import csv
-import random
 from terminaltables import AsciiTable
 from draft_kings_db import client
 from query_constraints import add_pickem_contraints
 from pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
-from pickem import pickem_upload
 
 
 def optimize(all_players, cmd_args=None):
@@ -19,15 +17,26 @@ def optimize(all_players, cmd_args=None):
             key=lambda p: p.proj,
             reverse=True,
         )[0]
+
         lineup_players.append(best)
 
-    return TieredLineup(lineup_players)
+    lineup = TieredLineup(lineup_players)
+    locked = cmd_args.locked if cmd_args else None
+    if locked:
+        for lock in locked:
+            player_lock = _get_player(lock, all_players)
+            setattr(
+                lineup,
+                player_lock.tier,
+                player_lock,
+            )
+
+    return lineup
 
 
 def get_all_players(
     pickem_file_location,
     projection_file,
-    use_averages
 ):
     all_players = []
     if projection_file:
@@ -36,9 +45,7 @@ def get_all_players(
     with open(pickem_file_location) as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:
-            if use_averages:
-                proj = float(row['AvgPointsPerGame'])
-            else:
+            if projection_file:
                 try:
                     proj = float(projection_map[row['Name']])
                 except KeyError:
@@ -47,6 +54,8 @@ def get_all_players(
                         'Setting points to 0.'
                     ).format(row['Name'])
                     proj = 0
+            else:
+                proj = float(row['AvgPointsPerGame'])
 
             all_players.append(
                 TieredPlayer(
@@ -61,26 +70,6 @@ def get_all_players(
                 )
             )
     return all_players
-
-
-def upload(pickem_file_location, map_file_location, lineup_nums=10):
-    pickem_upload.create_upload_file()
-    player_map = pickem_upload.map_pids(map_file_location)
-    all_players = get_all_players(pickem_file_location)
-
-    for _ in range(lineup_nums):
-        # TODO - move to example
-        random_lineup = []
-        for t in TIERS:
-            random_lineup.append(
-                random.choice(
-                    [p for p in all_players if p.tier == t]
-                )
-            )
-        pickem_upload.update_upload_csv(
-            player_map,
-            TieredLineup(random_lineup)
-        )
 
 
 def print_green(txt):
@@ -146,3 +135,9 @@ def _get_projection_map(projection_file):
             projection_map[row['playername']] = row['points']
 
     return projection_map
+
+
+def _get_player(name, all_players):
+    return next(
+        p for p in all_players if p.name == name
+    )

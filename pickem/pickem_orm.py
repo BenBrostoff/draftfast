@@ -1,20 +1,20 @@
 from orm import Player
 from terminaltables import AsciiTable
 
-TIER_1 = 'T1'
-TIER_2 = 'T2'
-TIER_3 = 'T3'
-TIER_4 = 'T4'
-TIER_5 = 'T5'
-TIER_6 = 'T6'
+T1 = 'T1'
+T2 = 'T2'
+T3 = 'T3'
+T4 = 'T4'
+T5 = 'T5'
+T6 = 'T6'
 
 TIERS = [
-    TIER_1,
-    TIER_2,
-    TIER_3,
-    TIER_4,
-    TIER_5,
-    TIER_6,
+    T1,
+    T2,
+    T3,
+    T4,
+    T5,
+    T6,
 ]
 
 
@@ -30,14 +30,13 @@ class TieredLineup(object):
                     )
                 )
 
-        self.players = players
         [
-            self.TIER_1,
-            self.TIER_2,
-            self.TIER_3,
-            self.TIER_4,
-            self.TIER_5,
-            self.TIER_6,
+            self.T1,
+            self.T2,
+            self.T3,
+            self.T4,
+            self.T5,
+            self.T6,
         ] = players
 
     def __repr__(self):
@@ -55,6 +54,17 @@ class TieredLineup(object):
             '\n' +
             'Total: {}'.format(self.total)
         )
+
+    @property
+    def players(self):
+        return [
+            self.T1,
+            self.T2,
+            self.T3,
+            self.T4,
+            self.T5,
+            self.T6,
+        ]
 
     @property
     def total(self):

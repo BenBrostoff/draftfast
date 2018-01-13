@@ -36,11 +36,11 @@ def update_upload_csv(player_map, tiered_lineup):
         writer = csv.DictWriter(f, fieldnames=pickem_orm.TIERS)
         writer.writerow(
             {
-                pickem_orm.TIER_1: player_map[tiered_lineup.TIER_1.name],
-                pickem_orm.TIER_2: player_map[tiered_lineup.TIER_2.name],
-                pickem_orm.TIER_3: player_map[tiered_lineup.TIER_3.name],
-                pickem_orm.TIER_4: player_map[tiered_lineup.TIER_4.name],
-                pickem_orm.TIER_5: player_map[tiered_lineup.TIER_5.name],
-                pickem_orm.TIER_6: player_map[tiered_lineup.TIER_6.name],
+                pickem_orm.T1: player_map[tiered_lineup.T1.name],
+                pickem_orm.T2: player_map[tiered_lineup.T2.name],
+                pickem_orm.T3: player_map[tiered_lineup.T3.name],
+                pickem_orm.T4: player_map[tiered_lineup.T4.name],
+                pickem_orm.T5: player_map[tiered_lineup.T5.name],
+                pickem_orm.T6: player_map[tiered_lineup.T6.name],
             }
         )
