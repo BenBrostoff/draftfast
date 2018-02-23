@@ -6,6 +6,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-w', 'current week', None],
     ['-season', 'current season', None],
     ['-historical', 'fetch historical data', 'n'],
+    ['-historical_date', 'day from history to optimize on', None],    
     ['-mp', 'missing players to allow', 100],
     ['-sp', 'salary threshold to ignore', 3000],
     ['-ms', 'max salary for player on roster', 100000],

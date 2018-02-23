@@ -2,6 +2,7 @@ import locale
 from terminaltables import AsciiTable
 import numpy as np
 import NFL_Draftkings as NFLDK
+from draft_kings_db import client
 
 try:
     locale.setlocale(locale.LC_ALL, 'en_US')
@@ -11,6 +12,15 @@ except Exception:
 
 def cs(n):
     return locale.format('%d', n, grouping=True)
+
+def retrieve_historical_performances(date, with_db=False):
+    c = client.DraftKingsHistory()
+    c.initialize_nba()
+    for perf in c.lookup_nba_performances('Kevin Durant'):
+        print('{} {}'.format(
+            perf.matchup,
+            perf.draft_kings_points,
+        ))
 
 
 class Roster:
