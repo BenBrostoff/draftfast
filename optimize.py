@@ -16,10 +16,11 @@ import query_constraints as qc
 import scrapers
 from command_line import get_args
 from csv_upload import nfl_upload, nba_upload
-from orm import RosterSelect, Player
+from orm import RosterSelect, Player, retrieve_all_players_from_history
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
+
 
 def run(league, remove, args):
     solver = pywraplp.Solver(
@@ -69,26 +70,12 @@ def run(league, remove, args):
         )
         return None
 
+
 def retrieve_players(args, remove):
-    all_players = []
     if args.historical_date:
-        from draft_kings_db import client
-        c = client.DraftKingsHistory()
-        # TODO - remove and allow retrieval from DB
-        c.initialize_nba()
-        for perf in c.lookup_nba_performances(by_date=args.historical_date):
-            all_players.append(
-                Player(
-                    perf.position, # TODO - implement,
-                    perf.name,
-                    perf.salary,
-                    team=perf.team,
-                    matchup=perf.matchup,
-                    lock=(args.locked and perf.name in args.locked),
-                    proj=perf.draft_kings_points
-                )
-            )
+        all_players = retrieve_all_players_from_history(args)
     else:
+        all_players = []
         with open(args.salary_file, 'rb') as csv_file:
             csv_data = csv.DictReader(csv_file)
 
@@ -139,8 +126,8 @@ def retrieve_players(args, remove):
                     p.proj = float(row['points'])
                     p.marked = 'Y'
 
-
-    _check_missing_players(all_players, args.sp, args.mp)
+    if not args.historical_date:
+        _check_missing_players(all_players, args.sp, args.mp)
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
@@ -148,6 +135,7 @@ def retrieve_players(args, remove):
         qc.add_constraints(args, remove),
         all_players
     )
+
 
 def run_solver(solver, all_players, args):
     '''
