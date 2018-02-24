@@ -6,6 +6,11 @@ OPTIMIZE_COMMAND_LINE = [
     ['-w', 'current week', None],
     ['-season', 'current season', None],
     ['-historical', 'fetch historical data', 'n'],
+    [
+        '-historical_date',
+        'day from history to optimize on (use YYYY-MM-DD)',
+        None
+    ],
     ['-mp', 'missing players to allow', 100],
     ['-sp', 'salary threshold to ignore', 3000],
     ['-ms', 'max salary for player on roster', 100000],
@@ -32,7 +37,7 @@ OPTIMIZE_COMMAND_LINE = [
      os.getcwd() + '/data/current-projections.csv'],
     ['-flex_position', 'force player to have FLEX position', None],
     ['-randomize_projections', 'use random projection factor', None],
-    ['-min_avg', 'player must exceed average points', 0],
+    ['-min_avg', 'player must exceed average points', None],
 ]
 
 

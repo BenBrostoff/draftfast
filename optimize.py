@@ -1,6 +1,6 @@
 '''
 A huge thanks to @swanson
-this solution is almost wholly based off
+this solution is based off
 https://github.com/swanson/degenerate
 '''
 
@@ -16,7 +16,7 @@ import query_constraints as qc
 import scrapers
 from command_line import get_args
 from csv_upload import nfl_upload, nba_upload
-from orm import RosterSelect, Player
+from orm import RosterSelect, Player, retrieve_all_players_from_history
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -28,66 +28,7 @@ def run(league, remove, args):
         pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
     )
 
-    all_players = []
-
-    with open(args.salary_file, 'rb') as csv_file:
-        csv_data = csv.DictReader(csv_file)
-
-        def generate_player(pos, row):
-            avg = float(row.get('AvgPointsPerGame', 0))
-            player = Player(
-                pos,
-                row['Name'],
-                row['Salary'],
-                possible_positions=row['Position'],
-                multi_position=('/' in row['Position']),
-                team=row['teamAbbrev'],
-                matchup=row['GameInfo'],
-                average_score=avg,
-                lock=(args.locked and row['Name'] in args.locked)
-            )
-            if args.source == _DK_AVG:
-                player.proj = avg
-
-            return player
-
-        for row in csv_data:
-            for pos in row['Position'].split('/'):
-                all_players.append(generate_player(pos, row))
-
-    _set_historical_points(all_players, args)
-    _set_player_ownership(all_players, args)
-
-    if args.source != _DK_AVG:
-        with open(args.projection_file, 'rb') as csvfile:
-            csvdata = csv.DictReader(csvfile)
-
-            # hack for weird defensive formatting
-            def name_match(row):
-                def match_fn(p):
-                    if p.pos == 'DST':
-                        return p.name.strip() in row['playername']
-                    return p.name in row['playername']
-                return match_fn
-
-            for row in csvdata:
-                matching_players = filter(name_match(row), all_players)
-
-                if len(matching_players) == 0:
-                    continue
-
-                for p in matching_players:
-                    p.proj = float(row['points'])
-                    p.marked = 'Y'
-
-    _check_missing_players(all_players, args.sp, args.mp)
-
-    # filter based on criteria and previously optimized
-    # do not include DST or TE projections in min point threshold.
-    all_players = filter(
-        qc.add_constraints(args, remove),
-        all_players
-    )
+    all_players = retrieve_players(args, remove)
 
     flex_args = {}
     if args.no_double_te == _YES:
@@ -115,7 +56,7 @@ def run(league, remove, args):
             if variables[i].solution_value() == 1:
                 roster.add_player(player)
 
-        print('Optimal roster for: %s' % league)
+        print('Optimal roster for: {}'.format(league))
         print(roster)
         print()
 
@@ -128,6 +69,72 @@ def run(league, remove, args):
             '''
         )
         return None
+
+
+def retrieve_players(args, remove):
+    if args.historical_date:
+        all_players = retrieve_all_players_from_history(args)
+    else:
+        all_players = []
+        with open(args.salary_file, 'rb') as csv_file:
+            csv_data = csv.DictReader(csv_file)
+
+            def generate_player(pos, row):
+                avg = float(row.get('AvgPointsPerGame', 0))
+                player = Player(
+                    pos,
+                    row['Name'],
+                    row['Salary'],
+                    possible_positions=row['Position'],
+                    multi_position=('/' in row['Position']),
+                    team=row['teamAbbrev'],
+                    matchup=row['GameInfo'],
+                    average_score=avg,
+                    lock=(args.locked and row['Name'] in args.locked)
+                )
+                if args.source == _DK_AVG:
+                    player.proj = avg
+
+                return player
+
+            for row in csv_data:
+                for pos in row['Position'].split('/'):
+                    all_players.append(generate_player(pos, row))
+
+    _set_historical_points(all_players, args)
+    _set_player_ownership(all_players, args)
+
+    if args.source != _DK_AVG:
+        with open(args.projection_file, 'rb') as csvfile:
+            csvdata = csv.DictReader(csvfile)
+
+            # hack for weird defensive formatting
+            def name_match(row):
+                def match_fn(p):
+                    if p.pos == 'DST':
+                        return p.name.strip() in row['playername']
+                    return p.name in row['playername']
+                return match_fn
+
+            for row in csvdata:
+                matching_players = filter(name_match(row), all_players)
+
+                if len(matching_players) == 0:
+                    continue
+
+                for p in matching_players:
+                    p.proj = float(row['points'])
+                    p.marked = 'Y'
+
+    if not args.historical_date:
+        _check_missing_players(all_players, args.sp, args.mp)
+
+    # filter based on criteria and previously optimized
+    # do not include DST or TE projections in min point threshold.
+    return filter(
+        qc.add_constraints(args, remove),
+        all_players
+    )
 
 
 def run_solver(solver, all_players, args):

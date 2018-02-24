@@ -36,6 +36,7 @@ args_dict = dict(
     projection_file=os.getcwd() + '/test/data/test-projections.csv',
     flex_position=None,
     min_avg=-1,
+    historical_date=None,
 )
 
 
