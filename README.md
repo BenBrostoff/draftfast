@@ -129,6 +129,21 @@ bash scripts/prepare_nba_contest_data.sh
 python pickem_optimize.py
 ```
 
+## Historical Optimization (NEW! February 2018)
+
+Interested in knowing the best possible lineup for a given day? The `-historical_date` flag will allow you
+to experiment with data from previous contests. Example:
+
+```
+python optimize.py -league NBA -historical_date "2018-02-23"
+```
+
+The results can show some amazingly high scores and lead to critical insights about how to structure lineups:
+
+![](marketing/NBA_HISTORICAL_OPTIMIZED.png)
+
+This flag only works for NBA and the data collected from the `draft_kings_nba` module.
+
 For a list of available flags and filters:
 
 ```
