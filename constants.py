@@ -5,6 +5,7 @@ ROSTER_SIZE = {
     'NFL': 9,
     'NBA': 8,
     'WNBA': 6,
+    'MLB': 10,
 }
 
 
@@ -37,7 +38,16 @@ POSITIONS = {
         ['SF', 1, 4],
         ['PF', 1, 4],
     ],
-    'NFL': get_nfl_positions()
+    'NFL': get_nfl_positions(),
+    'MLB': [
+        ['SP', 2, 2],
+        ['C', 1, 1],
+        ['1B', 1, 1],
+        ['2B', 1, 1],
+        ['3B', 1, 1],
+        ['SS', 1, 1],
+        ['OF', 3, 3],
+    ]
 }
 
 NBA_GENERAL_POSITIONS = [

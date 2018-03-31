@@ -124,6 +124,19 @@ class NFLRoster(Roster):
     }
 
 
+class MLBRoster(Roster):
+    POSITION_ORDER = {
+        "SP": 0,
+        "1B": 1,
+        "2B": 2,
+        "3B": 3,
+        "SS": 4,
+        "OF": 5,
+        "RP": 6,
+        "C": 7,
+    }
+
+
 class NBARoster(Roster):
     POSITION_ORDER = {
         "PG": 0,
@@ -150,6 +163,7 @@ class RosterSelect:
             'NBA': NBARoster(),
             'WNBA': WNBARoster(),
             'NFL': NFLRoster(),
+            'MLB': MLBRoster(),
         }
         return roster_dict[league]
 

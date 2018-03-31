@@ -48,7 +48,7 @@ def run(league, remove, args):
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.league)
-        if args.source != _DK_AVG or args.proj:
+        if args.source != _DK_AVG:
             roster.projection_source = \
                 scrapers.scrape_dict[args.source]['readable']
 
@@ -181,6 +181,7 @@ def run_solver(solver, all_players, args):
         size_cap.SetCoefficient(variable, 1)
 
     # set position limit constraint
+    print(cons.POSITIONS[args.league])
     for position, min_limit, max_limit in cons.POSITIONS[args.league]:
         position_cap = solver.Constraint(min_limit, max_limit)
 
@@ -270,10 +271,10 @@ def _check_missing_players(all_players, min_cost, e_raise):
     as names from different data do not match up
     continues or stops based on inputs
     '''
-    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
+    contained_report = len(filter(lambda x: x.proj > 0, all_players))
     total_report = len(all_players)
 
-    missing = filter(lambda x: x.marked != 'Y' and x.cost > min_cost,
+    missing = filter(lambda x: x.proj <= 0,
                      all_players)
     miss_len = len(missing)
     if int(e_raise) < miss_len:
