@@ -16,21 +16,21 @@ def get_nfl_positions(
     te_upper=2
 ):
     return [
-        ["QB", 1, 1],
-        ["RB", rb_min, 3],
-        ["WR", wr_min, 4],
-        ["TE", te_min, te_upper],
-        ["DST", 1, 1]
+        ['QB', 1, 1],
+        ['RB', rb_min, 3],
+        ['WR', wr_min, 4],
+        ['TE', te_min, te_upper],
+        ['DST', 1, 1]
     ]
 
 
 POSITIONS = {
     'NBA': [
-        ["PG", 1, 3],
-        ["SG", 1, 3],
-        ["SF", 1, 3],
-        ["PF", 1, 3],
-        ["C", 1, 2]
+        ['PG', 1, 3],
+        ['SG', 1, 3],
+        ['SF', 1, 3],
+        ['PF', 1, 3],
+        ['C', 1, 2]
       ],
     'WNBA': [
         ['PG', 1, 3],
@@ -63,8 +63,8 @@ WNBA_GENERAL_POSITIONS = [
 
 DUO_TYPE = {
   'wr': [
-    ["QB", 1, 1],
-    ["WR", 1, 1]
+    ['QB', 1, 1],
+    ['WR', 1, 1]
   ],
   'te': [
     ["QB", 1, 1],

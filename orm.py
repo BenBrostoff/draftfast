@@ -127,13 +127,13 @@ class NFLRoster(Roster):
 class MLBRoster(Roster):
     POSITION_ORDER = {
         'SP': 0,
-        '1B': 1,
-        '2B': 2,
-        '3B': 3,
-        'SS': 4,
-        'OF': 5,
-        'RP': 6,
-        'C': 7,
+        'C': 1,
+        '1B': 2,
+        '2B': 3,
+        '3B': 4,
+        'SS': 5,
+        'OF': 6,
+        'RP': 7,
     }
 
 

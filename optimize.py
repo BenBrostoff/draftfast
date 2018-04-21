@@ -80,6 +80,7 @@ def retrieve_players(args, remove):
             csv_data = csv.DictReader(csv_file)
 
             def generate_player(pos, row):
+                # DK has inconsistent CSV formats
                 avg = float(row.get('AvgPointsPerGame', 0))
                 player = Player(
                     pos,
@@ -87,11 +88,12 @@ def retrieve_players(args, remove):
                     row['Salary'],
                     possible_positions=row['Position'],
                     multi_position=('/' in row['Position']),
-                    team=row['teamAbbrev'],
-                    matchup=row['GameInfo'],
+                    team=row.get('teamAbbrev') or row.get('TeamAbbrev'),
+                    matchup=row.get('GameInfo') or row.get('Game Info'),
                     average_score=avg,
                     lock=(args.locked and row['Name'] in args.locked)
                 )
+
                 if args.source == _DK_AVG:
                     player.proj = avg
 
