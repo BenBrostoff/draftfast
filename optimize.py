@@ -129,7 +129,7 @@ def retrieve_players(args, remove):
                     p.marked = 'Y'
 
     if not args.historical_date:
-        _check_missing_players(all_players, args.sp, args.mp)
+        _check_missing_players(all_players, args.mp)
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
@@ -183,7 +183,6 @@ def run_solver(solver, all_players, args):
         size_cap.SetCoefficient(variable, 1)
 
     # set position limit constraint
-    print(cons.POSITIONS[args.league])
     for position, min_limit, max_limit in cons.POSITIONS[args.league]:
         position_cap = solver.Constraint(min_limit, max_limit)
 
@@ -267,18 +266,18 @@ via the mp flag.
 """
 
 
-def _check_missing_players(all_players, min_cost, e_raise):
+def _check_missing_players(all_players, e_raise):
     '''
     Check for significant missing players
     as names from different data do not match up
     continues or stops based on inputs
     '''
-    contained_report = len(filter(lambda x: x.proj > 0, all_players))
+    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
     total_report = len(all_players)
 
-    missing = filter(lambda x: x.proj <= 0,
-                     all_players)
+    missing = filter(lambda x: x.marked != 'Y', all_players)
     miss_len = len(missing)
+
     if int(e_raise) < miss_len:
         print(_MISSING_ERROR) \
             .format(str(contained_report), str(total_report), e_raise)
