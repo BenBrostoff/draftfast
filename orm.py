@@ -118,6 +118,8 @@ class Roster:
 POSITION_ORDER is based on the order
 required by DraftKings' CSV download
 '''
+
+
 class NFLRoster(Roster):
     POSITION_ORDER = {
         'QB': 0,
