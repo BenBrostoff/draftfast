@@ -12,8 +12,8 @@ Pre-reqs:
 
 Example usage:
 ```python
-from examples import balanced_lineups_nba
-balanced_lineups_nba.run()
+from examples import balanced_lineups_mlb
+balanced_lineups_mlb.run()
 ```
 """
 
@@ -23,7 +23,7 @@ from collections import Counter
 from optimize import run as optimizer_run
 from argparse import Namespace
 
-from csv_upload.nba_upload import (
+from csv_upload.mlb_upload import (
     update_upload_csv,
     create_upload_file,
     map_pids,
@@ -34,20 +34,21 @@ DEFAULT_ARGS = dict(
     s='n',
     w=5,
     i=1,
-    league='NBA',
+    league='MLB',
     limit='n',
     lp=0,
-    mp=500,
+    mp=1000,
     ms=100000,
     sp=1000,
     banned=[],
     po=0,
-    pids='data/pid-file-nba.csv',
+    pids='data/pid-file-mlb.csv',
     salary_file='data/current-salaries.csv',
     projection_file='data/current-projections.csv',
+    historical_date=None,
     home=None,
     v_avg=100,
-    source='nba_rotogrinders',
+    source='mlb_rotogrinders',
     no_double_te=None,
     historical=None,
     season=None,
@@ -69,7 +70,7 @@ def is_duplicate(r, rp):
     return rcur in rp
 
 
-def run(lineups=20, exposure=0.4, min_avg=7):
+def run(lineups=20, exposure=0.4, min_avg=1):
     DEFAULT_ARGS['min_avg'] = min_avg
     roster_list, player_list = [], []
     create_upload_file()
@@ -84,7 +85,7 @@ def run(lineups=20, exposure=0.4, min_avg=7):
                 name for name, freq in exposure.items()
                 if freq > max_exposure
             ]
-        roster = optimizer_run('NBA', [], Namespace(**args))
+        roster = optimizer_run('MLB', [], Namespace(**args))
 
         # discard and replace duplicate lineups
         if is_duplicate(roster, roster_list):
@@ -97,10 +98,7 @@ def run(lineups=20, exposure=0.4, min_avg=7):
         roster_list.append(roster)
         player_list += [p.name for p in roster.players]
 
-        update_upload_csv(
-            player_map,
-            roster.sorted_players()[:]
-        )
+        update_upload_csv(player_map, roster)
         exposure = Counter(player_list)
 
     unique = len(set([str(r.players) for r in roster_list]))

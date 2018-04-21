@@ -114,6 +114,10 @@ class Roster:
         )
 
 
+'''
+POSITION_ORDER is based on the order
+required by DraftKings' CSV download
+'''
 class NFLRoster(Roster):
     POSITION_ORDER = {
         'QB': 0,
@@ -139,20 +143,20 @@ class MLBRoster(Roster):
 
 class NBARoster(Roster):
     POSITION_ORDER = {
-        "PG": 0,
-        "SG": 1,
-        "SF": 2,
-        "PF": 3,
-        "C": 4
+        'PG': 0,
+        'SG': 1,
+        'SF': 2,
+        'PF': 3,
+        'C': 4
     }
 
 
 class WNBARoster(Roster):
     POSITION_ORDER = {
-        "PG": 0,
-        "SG": 1,
-        "SF": 2,
-        "PF": 3,
+        'PG': 0,
+        'SG': 1,
+        'SF': 2,
+        'PF': 3,
     }
 
 
