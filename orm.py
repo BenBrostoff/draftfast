@@ -116,24 +116,24 @@ class Roster:
 
 class NFLRoster(Roster):
     POSITION_ORDER = {
-        "QB": 0,
-        "RB": 1,
-        "WR": 2,
-        "TE": 3,
-        "DST": 4
+        'QB': 0,
+        'RB': 1,
+        'WR': 2,
+        'TE': 3,
+        'DST': 4
     }
 
 
 class MLBRoster(Roster):
     POSITION_ORDER = {
-        "SP": 0,
-        "1B": 1,
-        "2B": 2,
-        "3B": 3,
-        "SS": 4,
-        "OF": 5,
-        "RP": 6,
-        "C": 7,
+        'SP': 0,
+        '1B': 1,
+        '2B': 2,
+        '3B': 3,
+        'SS': 4,
+        'OF': 5,
+        'RP': 6,
+        'C': 7,
     }
 
 
