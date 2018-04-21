@@ -96,12 +96,26 @@ Projected ownership percentages as of this writing could be downloaded from [DFS
 python optimize.py -po_location 'data/ownership.csv' -po 15
 ```
 
+## MLB (NEW! April 2018)
+
+After downloading the DraftKings salaries for a contest:
+
+```
+bash scripts/prepare_contest_data.sh
+```
+
+Currently, Rotogrinders is the only available datasource that can be scraped:
+
+```
+python optimize.py -league MLB -source mlb_rotogrinders
+```
+
 ## NBA
 
 An NBA option exists for NBA contests. After downloading the DraftKings salaries for a contest:
 
 ```
-bash scripts/prepare_nba_contest_data.sh
+bash scripts/prepare_contest_data.sh
 ```
 
 Currently, Rotogrinders and Numberfire are the only available datasources:
@@ -116,7 +130,7 @@ python optimize.py -league NBA -source nba_number_fire
 A WNBA option is available, but users must provide their own projection source:
 
 ```
-bash scripts/prepare_nba_contest_data.sh
+bash scripts/prepare_contest_data.sh
 python optimize.py -league WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
 ```
 
@@ -125,7 +139,7 @@ python optimize.py -league WNBA -projection_file "/Users/benbrostoff/Downloads/m
 Pick'Em contests allow players to pick one player in each of six tiers. After downloading a salaries file:
 
 ```
-bash scripts/prepare_nba_contest_data.sh
+bash scripts/prepare_contest_data.sh
 python pickem_optimize.py
 ```
 

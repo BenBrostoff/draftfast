@@ -48,7 +48,7 @@ def run(league, remove, args):
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.league)
-        if args.source != _DK_AVG or args.proj:
+        if args.source != _DK_AVG:
             roster.projection_source = \
                 scrapers.scrape_dict[args.source]['readable']
 
@@ -80,6 +80,7 @@ def retrieve_players(args, remove):
             csv_data = csv.DictReader(csv_file)
 
             def generate_player(pos, row):
+                # DK has inconsistent CSV formats
                 avg = float(row.get('AvgPointsPerGame', 0))
                 player = Player(
                     pos,
@@ -87,11 +88,12 @@ def retrieve_players(args, remove):
                     row['Salary'],
                     possible_positions=row['Position'],
                     multi_position=('/' in row['Position']),
-                    team=row['teamAbbrev'],
-                    matchup=row['GameInfo'],
+                    team=row.get('teamAbbrev') or row.get('TeamAbbrev'),
+                    matchup=row.get('GameInfo') or row.get('Game Info'),
                     average_score=avg,
                     lock=(args.locked and row['Name'] in args.locked)
                 )
+
                 if args.source == _DK_AVG:
                     player.proj = avg
 
@@ -127,7 +129,7 @@ def retrieve_players(args, remove):
                     p.marked = 'Y'
 
     if not args.historical_date:
-        _check_missing_players(all_players, args.sp, args.mp)
+        _check_missing_players(all_players, args.mp)
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
@@ -264,7 +266,7 @@ via the mp flag.
 """
 
 
-def _check_missing_players(all_players, min_cost, e_raise):
+def _check_missing_players(all_players, e_raise):
     '''
     Check for significant missing players
     as names from different data do not match up
@@ -273,9 +275,9 @@ def _check_missing_players(all_players, min_cost, e_raise):
     contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
     total_report = len(all_players)
 
-    missing = filter(lambda x: x.marked != 'Y' and x.cost > min_cost,
-                     all_players)
+    missing = filter(lambda x: x.marked != 'Y', all_players)
     miss_len = len(missing)
+
     if int(e_raise) < miss_len:
         print(_MISSING_ERROR) \
             .format(str(contained_report), str(total_report), e_raise)
