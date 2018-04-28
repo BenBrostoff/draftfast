@@ -6,7 +6,7 @@ from nba.data_cleaning_constants import RENAMES
 def scrape(cmd_args):
     roto_grinders = ''.join([
         'https://rotogrinders.com',
-        '/projected-stats/nba-player.csv?site={}'.format(game)
+        '/projected-stats/nba-player.csv?site={}'.format(cmd_args.game)
     ])
 
     hold = [['playername', 'points']]
