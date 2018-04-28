@@ -132,6 +132,7 @@ class NFLRoster(Roster):
 
 class MLBRoster(Roster):
     POSITION_ORDER = {
+        'P': 0,
         'SP': 0,
         'C': 1,
         '1B': 2,

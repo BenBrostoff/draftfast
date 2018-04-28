@@ -10,14 +10,13 @@ def scrape(game='draftkings'):
 
     hold = [['playername', 'points']]
     for pos in ['hitter', 'pitcher']:
-        content = requests.get(
-            roto_grinders.format(game, pos)
-        ).content.decode('utf-8')
+        url = roto_grinders.format(pos, game)
+        content = requests.get(url).content.decode('utf-8')
         cr = csv.reader(content.splitlines(), delimiter=',')
         for p in list(cr):
             if len(p):
                 hold.append([p[0], p[-1]])
 
-    with open('data/cur rent-projections.csv', 'w') as fp:
+    with open('data/current-projections.csv', 'w') as fp:
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)

@@ -22,7 +22,12 @@ from csv_parse.salary_download import generate_player
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
 
-_GAMES = ['draftkings', 'fanduel']
+_GAMES = [
+    'draftkings',
+    'fanduel',
+    cons.DRAFT_KINGS,
+    cons.FAN_DUEL
+]
 
 
 def run(league, remove, args):

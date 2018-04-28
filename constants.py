@@ -1,5 +1,5 @@
 DRAFT_KINGS = 'DRAFT_KINGS'
-FAN_DUEL = 'FAL_DUEL'
+FAN_DUEL = 'FAN_DUEL'
 
 SALARY_CAP = {
     'NBA': {
@@ -29,6 +29,7 @@ ROSTER_SIZE = {
     },
     FAN_DUEL: {
         'NBA': 9,
+        'MLB': 9,
     }
 }
 
@@ -83,13 +84,12 @@ POSITIONS = {
             ['C', 1, 1],
         ],
         'MLB': [
-            ['SP', 1, 1],
-            ['C', 1, 1],
-            ['1B', 1, 1],
-            ['2B', 1, 1],
-            ['3B', 1, 1],
-            ['SS', 1, 1],
-            ['OF', 3, 3],
+            ['P', 1, 1],
+            ['1B', 1, 2],  # TODO - allow C or 1B
+            ['2B', 1, 2],
+            ['3B', 1, 2],
+            ['SS', 1, 2],
+            ['OF', 3, 4],
         ]
     }
 }
