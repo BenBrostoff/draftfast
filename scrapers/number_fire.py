@@ -6,13 +6,16 @@ from nba.data_cleaning_constants import RENAMES
 NUMBER_FIRE_URL = 'http://www.numberfire.com/nba/daily-fantasy/'
 
 
-def scrape(game='draftkings'):
+def scrape(cmd_args):
     playernames = ['playername']
     points = ['points']
 
     s = requests.session()
     s.post('{}set-dfs-site'.format(NUMBER_FIRE_URL), data=dict(site=4))
-    r = s.get('{}daily-basketball-projections'.format(NUMBER_FIRE_URL))
+
+    url = '{}daily-basketball-projections'.format(NUMBER_FIRE_URL)
+
+    r = s.get(url)
 
     soup = BeautifulSoup(r.content, 'html.parser')
 
@@ -32,6 +35,6 @@ def scrape(game='draftkings'):
         points.append(i.get_text().strip())
 
     players = [list(i) for i in zip(playernames, points)]
-    with open('data/current-projections.csv', 'w') as fp:
+    with open(cmd_args.projection_file, 'w') as fp:
         w = csv.writer(fp)
         w.writerows(players)

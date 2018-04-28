@@ -13,7 +13,7 @@ OPTIMIZE_COMMAND_LINE = [
         None
     ],
     ['-mp', 'missing players to allow', 100],
-    ['-sp', 'salary threshold to ignore', 3000],
+    ['-sp', 'salary threshold to ignore', 0],
     ['-ms', 'max salary for player on roster', 100000],
     ['-v_avg', 'projections must be within points v avg', 100000],
     ['-i', 'iterations to run', 1],

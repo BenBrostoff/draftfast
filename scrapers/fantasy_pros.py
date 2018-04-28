@@ -29,9 +29,8 @@ def unicode_normalize(*args):
     return defense
 
 
-def scrape(game='draftkings'):
-    hold = []
-    hold.append(['playername', 'points'])
+def scrape(cmd_args):
+    hold = [['playername', 'points']]
     for page in build_fp_pages():
         r = requests.get(page[0])
         soup = BS(r.text, 'html.parser')
