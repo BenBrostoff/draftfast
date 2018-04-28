@@ -3,7 +3,7 @@ import csv
 
 from nose.tools import assert_equal
 from csv_parse import nba_upload
-from orm import Player
+from orm import NBARoster, Player
 
 players = [
     Player(name='A', cost=1, proj=1, pos='SG'),
@@ -13,7 +13,7 @@ players = [
     Player(name='E', cost=1, proj=1, pos='PF'),
     Player(name='F', cost=1, proj=1, pos='SF'),
     Player(name='G', cost=1, proj=1, pos='C'),
-    Player(name='H', cost=1, proj=1, pos='PF/C')
+    Player(name='H', cost=1, proj=1, pos='PF')
 ]
 
 p_map = {}
@@ -23,8 +23,12 @@ for idx, p in enumerate(players):
 
 
 def test_upload():
+    roster = NBARoster()
+    for p in players:
+        roster.add_player(p)
+
     nba_upload.create_upload_file()
-    nba_upload.update_upload_csv(p_map, players)
+    nba_upload.update_upload_csv(p_map, roster)
     upload = '{}/data/current-upload.csv'.format(os.getcwd())
     with open(upload, 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')

@@ -15,7 +15,7 @@ import dke_exceptions as dke
 import query_constraints as qc
 import scrapers
 from command_line import get_args
-from csv_parse import nfl_upload, nba_upload
+from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
 
@@ -345,7 +345,15 @@ if __name__ == '__main__':
     args = get_args()
     check_validity(args)
 
-    uploader = nba_upload if args.league == 'NBA' else nfl_upload
+    # uploader = nba_upload if args.league == 'NBA' else nfl_upload
+    uploader = None
+    if args.league == 'NBA':
+        uploader = nba_upload
+    elif args.league == 'MLB':
+        uploader = mlb_upload
+    else:
+        uploader = nfl_upload
+
     if not args.keep_pids:
         uploader.create_upload_file()
     if args.pids:
@@ -365,7 +373,7 @@ if __name__ == '__main__':
         rosters.append(run(args.league, remove, args))
         if args.pids:
             uploader.update_upload_csv(
-                player_map, rosters[x].sorted_players()[:])
+                player_map, rosters[x])
         if None not in rosters:
             for roster in rosters:
                 for player in roster.players:

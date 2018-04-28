@@ -41,7 +41,8 @@ def map_pids(pid_file):
     return player_map
 
 
-def update_upload_csv(player_map, players):
+def update_upload_csv(player_map, roster):
+    players = roster.sorted_players()
     with open(upload_file, 'a') as f:
         writer = csv.writer(f)
         player_ids = []
