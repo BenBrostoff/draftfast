@@ -4,4 +4,9 @@
 \current*
 .coverage
 .DS_Store
+
+# for experimentation
 scratch.py
+lineups.sh
+data/df.csv
+data/fd.csv

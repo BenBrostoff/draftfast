@@ -37,7 +37,8 @@ def run(league, remove, args):
             .format(args.game, _GAMES)
         )
 
-    args.game = cons.DRAFT_KINGS if args.game == 'draftkings' \
+    args.game = cons.DRAFT_KINGS \
+        if args.game == 'draftkings' or args.game == cons.DRAFT_KINGS \
         else cons.FAN_DUEL
 
     solver = pywraplp.Solver(
