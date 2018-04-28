@@ -1,3 +1,3 @@
 #/bin/bash
 
-mv ~/Downloads/fd_mlb.csv data/current-salaries.csv
+mv ~/Downloads/DKSalaries.csv data/current-salaries.csv
