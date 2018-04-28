@@ -3,16 +3,15 @@ import requests
 from nba.data_cleaning_constants import RENAMES
 
 
-ROTO_GRINDERS = ''.join([
-    'https://rotogrinders.com',
-    '/projected-stats/nba-player.csv?site=draftkings'
-])
+def scrape(game='draftkings'):
+    roto_grinders = ''.join([
+        'https://rotogrinders.com',
+        '/projected-stats/nba-player.csv?site={}'.format(game)
+    ])
 
-
-def scrape():
     hold = [['playername', 'points']]
     content = requests.get(
-        ROTO_GRINDERS
+        roto_grinders
     ).content.decode('utf-8')
     cr = csv.reader(content.splitlines(), delimiter=',')
     for p in list(cr):

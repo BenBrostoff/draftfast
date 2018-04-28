@@ -9,6 +9,7 @@ from constants import POSITIONS
 
 NFL = 'NFL'
 args_dict = dict(
+    game='draftkings',
     dtype='wr',
     duo='n',
     i=1,

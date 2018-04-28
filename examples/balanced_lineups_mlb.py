@@ -23,7 +23,7 @@ from collections import Counter
 from optimize import run as optimizer_run
 from argparse import Namespace
 
-from csv_upload.mlb_upload import (
+from csv_parse.mlb_upload import (
     update_upload_csv,
     create_upload_file,
     map_pids,

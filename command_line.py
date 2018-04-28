@@ -2,6 +2,7 @@ import argparse
 import os
 
 OPTIMIZE_COMMAND_LINE = [
+    ['-game', 'game to play', 'draftkings'],
     ['-s', 'scrape from data source', 'y'],
     ['-w', 'current week', None],
     ['-season', 'current season', None],
@@ -59,5 +60,6 @@ def get_args():
             opt[0],
             nargs=nargs,
             help=opt[1],
-            default=opt[2])
+            default=opt[2]
+        )
     return PARSER.parse_args()

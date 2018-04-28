@@ -35,5 +35,5 @@ scrape_dict = {
 
 
 @log_scrape_wrapper
-def scrape(source):
-    return scrape_dict[source]['method']()
+def scrape(source, game):
+    return scrape_dict[source]['method'](game)
