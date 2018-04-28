@@ -12,7 +12,7 @@ ROTO_GRINDERS = ''.join([
 pos = ['qb', 'rb', 'wr', 'te', 'defense']
 
 
-def scrape(use='avg'):
+def scrape(game='draftkings', use='avg'):
     hold = [['playername', 'points']]
     for page in pos:
         content = requests.get(

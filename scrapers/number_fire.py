@@ -6,7 +6,7 @@ from nba.data_cleaning_constants import RENAMES
 NUMBER_FIRE_URL = 'http://www.numberfire.com/nba/daily-fantasy/'
 
 
-def scrape():
+def scrape(game='draftkings'):
     playernames = ['playername']
     points = ['points']
 

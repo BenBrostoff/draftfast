@@ -1,11 +1,36 @@
-ALL_POS = ('QB', 'RB', 'WR', 'TE', 'DST')
-SALARY_CAP = 50000
+DRAFT_KINGS = 'DRAFT_KINGS'
+FAN_DUEL = 'FAN_DUEL'
+
+SALARY_CAP = {
+    'NBA': {
+        DRAFT_KINGS: 50000,
+        FAN_DUEL: 60000,
+    },
+    'WNBA': {
+        DRAFT_KINGS: 50000,
+        FAN_DUEL: 60000,
+    },
+    'NFL': {
+        DRAFT_KINGS: 50000,
+        FAN_DUEL: 60000,
+    },
+    'MLB': {
+        DRAFT_KINGS: 50000,
+        FAN_DUEL: 35000,
+    }
+}
 
 ROSTER_SIZE = {
-    'NFL': 9,
-    'NBA': 8,
-    'WNBA': 6,
-    'MLB': 10,
+    DRAFT_KINGS: {
+        'NFL': 9,
+        'NBA': 8,
+        'WNBA': 6,
+        'MLB': 10,
+    },
+    FAN_DUEL: {
+        'NBA': 9,
+        'MLB': 9,
+    }
 }
 
 
@@ -25,29 +50,48 @@ def get_nfl_positions(
 
 
 POSITIONS = {
-    'NBA': [
-        ['PG', 1, 3],
-        ['SG', 1, 3],
-        ['SF', 1, 3],
-        ['PF', 1, 3],
-        ['C', 1, 2]
-      ],
-    'WNBA': [
-        ['PG', 1, 3],
-        ['SG', 1, 3],
-        ['SF', 1, 4],
-        ['PF', 1, 4],
-    ],
-    'NFL': get_nfl_positions(),
-    'MLB': [
-        ['SP', 2, 2],
-        ['C', 1, 1],
-        ['1B', 1, 1],
-        ['2B', 1, 1],
-        ['3B', 1, 1],
-        ['SS', 1, 1],
-        ['OF', 3, 3],
-    ]
+    DRAFT_KINGS: {
+        'NBA': [
+            ['PG', 1, 3],
+            ['SG', 1, 3],
+            ['SF', 1, 3],
+            ['PF', 1, 3],
+            ['C', 1, 2]
+        ],
+        'WNBA': [
+            ['PG', 1, 3],
+            ['SG', 1, 3],
+            ['SF', 1, 4],
+            ['PF', 1, 4],
+        ],
+        'NFL': get_nfl_positions(),
+        'MLB': [
+            ['SP', 2, 2],
+            ['C', 1, 1],
+            ['1B', 1, 1],
+            ['2B', 1, 1],
+            ['3B', 1, 1],
+            ['SS', 1, 1],
+            ['OF', 3, 3],
+        ]
+    },
+    FAN_DUEL: {
+        'NBA': [
+            ['PG', 2, 2],
+            ['SG', 2, 2],
+            ['SF', 2, 2],
+            ['PF', 2, 2],
+            ['C', 1, 1],
+        ],
+        'MLB': [
+            ['P', 1, 1],
+            ['1B', 1, 2],  # TODO - allow C or 1B
+            ['2B', 1, 2],
+            ['3B', 1, 2],
+            ['SS', 1, 2],
+            ['OF', 3, 4],
+        ]
+    }
 }
 
 NBA_GENERAL_POSITIONS = [

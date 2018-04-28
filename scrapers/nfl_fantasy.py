@@ -13,7 +13,11 @@ NFL_FAN_URL = \
 DEFAULT_FILE_PATH = 'data/current-nfl-fan-projections.csv'
 
 
-def scrape(limit=1000, file_path=DEFAULT_FILE_PATH):
+def scrape(
+    game='draftkings',
+    limit=1000,
+    file_path=DEFAULT_FILE_PATH
+):
     hold = scrape_nfl_fan(limit)
     write_to_csv(hold, file_path)
 

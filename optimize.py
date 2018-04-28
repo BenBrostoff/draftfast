@@ -15,14 +15,31 @@ import dke_exceptions as dke
 import query_constraints as qc
 import scrapers
 from command_line import get_args
-from csv_upload import nfl_upload, nba_upload
-from orm import RosterSelect, Player, retrieve_all_players_from_history
+from csv_parse import nfl_upload, nba_upload
+from orm import RosterSelect, retrieve_all_players_from_history
+from csv_parse.salary_download import generate_player
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
 
+_GAMES = [
+    'draftkings',
+    'fanduel',
+    cons.DRAFT_KINGS,
+    cons.FAN_DUEL
+]
+
 
 def run(league, remove, args):
+    if args.game not in _GAMES:
+        raise Exception(
+            'You chose {} as DFS game. Available options are {}'
+            .format(args.game, _GAMES)
+        )
+
+    args.game = cons.DRAFT_KINGS if args.game == 'draftkings' \
+        else cons.FAN_DUEL
+
     solver = pywraplp.Solver(
         'FD',
         pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
@@ -30,15 +47,17 @@ def run(league, remove, args):
 
     all_players = retrieve_players(args, remove)
 
-    flex_args = {}
-    if args.no_double_te == _YES:
-        flex_args['te_upper'] = 1
-    if args.flex_position == 'RB':
-        flex_args['rb_min'] = 3
-    if args.flex_position == 'WR':
-        flex_args['wr_min'] = 4
+    # TODO - add NFL for FanDuel
+    if args.league == 'NFL':
+        flex_args = {}
+        if args.no_double_te == _YES:
+            flex_args['te_upper'] = 1
+        if args.flex_position == 'RB':
+            flex_args['rb_min'] = 3
+        if args.flex_position == 'WR':
+            flex_args['wr_min'] = 4
 
-    cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
+        cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
 
     variables, solution = run_solver(
         solver,
@@ -58,7 +77,6 @@ def run(league, remove, args):
 
         print('Optimal roster for: {}'.format(league))
         print(roster)
-        print()
 
         return roster
     else:
@@ -79,29 +97,11 @@ def retrieve_players(args, remove):
         with open(args.salary_file, 'rb') as csv_file:
             csv_data = csv.DictReader(csv_file)
 
-            def generate_player(pos, row):
-                # DK has inconsistent CSV formats
-                avg = float(row.get('AvgPointsPerGame', 0))
-                player = Player(
-                    pos,
-                    row['Name'],
-                    row['Salary'],
-                    possible_positions=row['Position'],
-                    multi_position=('/' in row['Position']),
-                    team=row.get('teamAbbrev') or row.get('TeamAbbrev'),
-                    matchup=row.get('GameInfo') or row.get('Game Info'),
-                    average_score=avg,
-                    lock=(args.locked and row['Name'] in args.locked)
-                )
-
-                if args.source == _DK_AVG:
-                    player.proj = avg
-
-                return player
-
             for row in csv_data:
                 for pos in row['Position'].split('/'):
-                    all_players.append(generate_player(pos, row))
+                    all_players.append(generate_player(
+                        pos, row, args
+                    ))
 
     _set_historical_points(all_players, args)
     _set_player_ownership(all_players, args)
@@ -172,18 +172,25 @@ def run_solver(solver, all_players, args):
         multi_caps[p.name].SetCoefficient(variables[i], 1)
 
     # set salary cap constraint
-    salary_cap = solver.Constraint(0, cons.SALARY_CAP)
+    salary_cap = solver.Constraint(
+        0,
+        cons.SALARY_CAP[args.league][args.game],
+    )
     for i, player in enumerate(all_players):
         salary_cap.SetCoefficient(variables[i], player.cost)
 
     # set roster size constraint
-    size_cap = solver.Constraint(cons.ROSTER_SIZE[args.league],
-                                 cons.ROSTER_SIZE[args.league])
+    size_cap = solver.Constraint(
+        cons.ROSTER_SIZE[args.game][args.league],
+        cons.ROSTER_SIZE[args.game][args.league]
+    )
+
     for variable in variables:
         size_cap.SetCoefficient(variable, 1)
 
     # set position limit constraint
-    for position, min_limit, max_limit in cons.POSITIONS[args.league]:
+    for position, min_limit, max_limit \
+            in cons.POSITIONS[args.game][args.league]:
         position_cap = solver.Constraint(min_limit, max_limit)
 
         for i, player in enumerate(all_players):
@@ -344,7 +351,7 @@ if __name__ == '__main__':
         player_map = uploader.map_pids(args.pids)
     if args.s == _YES and args.source != 'DK_AVG':
         try:
-            scrapers.scrape(args.source)
+            scrapers.scrape(args.source, args.game)
             if args.randomize_projections:
                 _randomize_projections(args.randomize_projections)
         except KeyError:

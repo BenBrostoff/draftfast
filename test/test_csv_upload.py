@@ -2,7 +2,7 @@ import os
 import csv
 
 from nose.tools import assert_equal
-from csv_upload import nba_upload
+from csv_parse import nba_upload
 from orm import Player
 
 players = [

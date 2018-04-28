@@ -1,18 +1,17 @@
 import csv
 import requests
 
-ROTO_GRINDERS = ''.join([
-    'https://rotogrinders.com',
-    '/projected-stats/mlb-{}.csv?site=draftkings'
-])
 
+def scrape(game='draftkings'):
+    roto_grinders = ''.join([
+        'https://rotogrinders.com',
+        '/projected-stats/mlb-{}.csv?site={}'
+    ])
 
-def scrape():
     hold = [['playername', 'points']]
     for pos in ['hitter', 'pitcher']:
-        content = requests.get(
-            ROTO_GRINDERS.format(pos)
-        ).content.decode('utf-8')
+        url = roto_grinders.format(pos, game)
+        content = requests.get(url).content.decode('utf-8')
         cr = csv.reader(content.splitlines(), delimiter=',')
         for p in list(cr):
             if len(p):

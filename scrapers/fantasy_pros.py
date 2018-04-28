@@ -5,11 +5,11 @@ import unicodedata
 import requests
 from bs4 import BeautifulSoup as BS
 
-from constants import ALL_POS
 from nfl.ppr import calculate_ppr, generate_empty_stat_dict
 from nfl.data_cleaning_constants import RENAMES
 
 FFPRO = 'http://www.fantasypros.com/nfl/projections/'
+ALL_POS = ('QB', 'RB', 'WR', 'TE', 'DST')
 
 
 def build_fp_pages():
@@ -29,7 +29,7 @@ def unicode_normalize(*args):
     return defense
 
 
-def scrape():
+def scrape(game='draftkings'):
     hold = []
     hold.append(['playername', 'points'])
     for page in build_fp_pages():
