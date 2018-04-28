@@ -351,7 +351,7 @@ if __name__ == '__main__':
         player_map = uploader.map_pids(args.pids)
     if args.s == _YES and args.source != 'DK_AVG':
         try:
-            scrapers.scrape(args.source, args.game)
+            scrapers.scrape(args.source, args)
             if args.randomize_projections:
                 _randomize_projections(args.randomize_projections)
         except KeyError:

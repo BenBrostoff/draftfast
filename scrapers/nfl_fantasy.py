@@ -14,7 +14,7 @@ DEFAULT_FILE_PATH = 'data/current-nfl-fan-projections.csv'
 
 
 def scrape(
-    game='draftkings',
+    cmd_args,
     limit=1000,
     file_path=DEFAULT_FILE_PATH
 ):

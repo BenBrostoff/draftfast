@@ -12,7 +12,7 @@ ROTO_GRINDERS = ''.join([
 pos = ['qb', 'rb', 'wr', 'te', 'defense']
 
 
-def scrape(game='draftkings', use='avg'):
+def scrape(cmd_args, use='avg'):
     hold = [['playername', 'points']]
     for page in pos:
         content = requests.get(
@@ -45,6 +45,6 @@ def scrape(game='draftkings', use='avg'):
 
                 hold.append([p[0], proj or p[-1]])
 
-    with open('data/current-projections.csv', 'w') as fp:
+    with open(cmd_args.projection_file, 'w') as fp:
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)

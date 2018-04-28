@@ -3,7 +3,7 @@ import requests
 from nba.data_cleaning_constants import RENAMES
 
 
-def scrape(game='draftkings'):
+def scrape(cmd_args):
     roto_grinders = ''.join([
         'https://rotogrinders.com',
         '/projected-stats/nba-player.csv?site={}'.format(game)
@@ -24,6 +24,6 @@ def scrape(game='draftkings'):
         if len(p):
             hold.append([p[0], p[-1]])
 
-    with open('data/current-projections.csv', 'w') as fp:
+    with open(cmd_args.projection_file, 'w') as fp:
         w = csv.writer(fp, delimiter=',')
         w.writerows(hold)
