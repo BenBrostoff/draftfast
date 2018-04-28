@@ -8,7 +8,7 @@ GAME_KEY_MAP = {
         'team': 'teamAbbrev',
         'team_alt': 'TeamAbbrev',
         'game': 'GameInfo',
-        'game_alt': 'Game info',
+        'game_alt': 'Game Info',
         'avg': 'AvgPointsPerGame',
     },
     FAN_DUEL: {
