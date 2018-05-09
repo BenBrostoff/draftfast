@@ -1,10 +1,8 @@
 ## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/) &middot; [![](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/user?u=8965834)
 
-[*Blog*](https://medium.com/draftfast) &middot; [*Web UI Demo*](https://motm-stats.firebaseapp.com/) &middot; [*Slack Channel*](https://draftfast.herokuapp.com/)
-
 ![](marketing/NBA_OPTIMIZED.png)
 
-This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee.
+This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee. Works for NFL, NBA, WNBA and MLB on either DraftKings or FanDuel.
 
 This project allows you to create an unlimited amount of optimized DraftKings lineups based on any projection source of your choice. You can use this repo as a command line application, or import functionality as needed to build your own scripts to construct thousands of DraftKings lineups each week and upload them in seconds using their [CSV upload tool](https://www.draftkings.com/lineup/upload). Examples of how to do the latter are provided in the `examples` directory.
 
@@ -24,21 +22,19 @@ bash scripts/prepare_nfl_contest_data.sh
 
 Note that this script will error out if the CSV from DraftKings is not in `~/Downloads`.
 
-Next, scrape data from FantasyPros or Rotogrinders and allow for some mismatched data between the two sources:
+To run the optimizer, you must provide a projection CSV with `playername` and `points` fields. Run the optimizer with your projection file:
 
 ```
-python optimize.py -mp 100 -s y -source nfl_rotogrinders
+python optimize.py -mp 100 -projection_file "./data/my_projections.csv"
 ```
 
-Or, use your own projection source:
+Switching to FanDuel is simple - just change the `salaries_file` and `game` flags.
 
 ```
-python optimize.py -mp 100 -s n -projection_file "/Users/benbrostoff/Downloads/my_projections.csv"
+python optimize.py -mp 100 -game fanduel -projection_file "./data/my_projections.csv" -salaries_file "./data/fanduel_salaries.csv"
 ```
 
-Note that any projection file you provide must include `playername` and `points` as header names.
-
-One important note here is that passing in <code>y</code> for the scrape option will create <code>current-projections.csv</code>. However, once you've scraped once, there's no need to do again.
+Note that the default file location for the projection file is `./data/current-projections.csv`, so if you have the file in the default location with the correct name, there's no need to pass the `projection_file` flag. The same is true with `./data/current-salaries.csv` and `salaries_file`.
 
 ## Optimization Options
 
@@ -88,82 +84,20 @@ To use this feature:
 
 One nice workflow is to run the optimizer with the `-keep_pids` flag after you create your CSV; this option will put future optimizations in the same CSV file.
 
-## Projected Ownership Percentages (Experimental)
-
-Projected ownership percentages as of this writing could be downloaded from [DFS Report](https://dfsreport.com/draftkings-ownership-percentages). If you download the CSV, you can filter on projected ownership percentage. For example, only include players below 15% owned.
-
-```
-python optimize.py -po_location 'data/ownership.csv' -po 15
-```
-
-## MLB (NEW! April 2018)
-
-After downloading the DraftKings salaries for a contest:
-
-```
-bash scripts/prepare_contest_data.sh
-```
-
-Currently, Rotogrinders is the only available datasource that can be scraped:
-
-```
-python optimize.py -league MLB -source mlb_rotogrinders
-```
-
 ## NBA
 
-An NBA option exists for NBA contests. After downloading the DraftKings salaries for a contest:
-
 ```
-bash scripts/prepare_contest_data.sh
-```
-
-Currently, Rotogrinders and Numberfire are the only available datasources:
-
-```
-python optimize.py -league NBA -source nba_rotogrinders
-python optimize.py -league NBA -source nba_number_fire
+python optimize.py -l NBA
 ```
 
 ## WNBA
 
-A WNBA option is available, but users must provide their own projection source:
-
 ```
-bash scripts/prepare_contest_data.sh
-python optimize.py -league WNBA -projection_file "/Users/benbrostoff/Downloads/my_projections.csv" -s No
+python optimize.py -l WNBA
 ```
 
-## Pick'Em (NEW! January 2018)
-
-Pick'Em contests allow players to pick one player in each of six tiers. After downloading a salaries file:
+## MLB
 
 ```
-bash scripts/prepare_contest_data.sh
-python pickem_optimize.py
+python optimize.py -l MLB
 ```
-
-## Historical Optimization (NEW! February 2018)
-
-Interested in knowing the best possible lineup for a given day? The `-historical_date` flag will allow you
-to experiment with data from previous contests. Example:
-
-```
-python optimize.py -league NBA -historical_date "2018-02-23"
-```
-
-The results can show some amazingly high scores and lead to critical insights about how to structure lineups:
-
-![](marketing/NBA_HISTORICAL_OPTIMIZED.png)
-
-This flag only works for NBA and the data collected from the `draft_kings_nba` module.
-
-For a list of available flags and filters:
-
-```
-python pickem_optimize.py --help
-```
-
-You can also automate lineup construction for Pick'Em contests. It is recommended you do this via scripting versus the CLI. An example is shown in `examples/random_pickem_nba.py`.
-
-Note that for all CSV lineup uploads, you need to download the the [template for the day's games here](https://www.draftkings.com/lineup/upload). Make sure to switch the sport to *NBA* and style to *Pick Em*.

@@ -4,7 +4,6 @@ from nose import tools as ntools
 from argparse import Namespace
 
 args_dict = dict(
-    scrape_source=None,
     use_averages=None,
     min_avg=None,
     v_avg=None,

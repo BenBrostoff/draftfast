@@ -13,7 +13,6 @@ from ortools.linear_solver import pywraplp
 import constants as cons
 import dke_exceptions as dke
 import query_constraints as qc
-import scrapers
 from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
@@ -68,9 +67,6 @@ def run(league, remove, args):
 
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.league)
-        if args.source != _DK_AVG:
-            roster.projection_source = \
-                scrapers.scrape_dict[args.source]['readable']
 
         for i, player in enumerate(all_players):
             if variables[i].solution_value() == 1:
@@ -264,16 +260,6 @@ def _set_player_ownership(all_players, args):
                     player[0].projected_ownership_pct = float(row['%'])
 
 
-_MISSING_ERROR = """
-Got {} projections out of {} total players.
-
-You are allowing {} players to be missing from your
-projections compared to the total players DraftKings
-will allow you to play. You can change this allowance
-via the mp flag.
-"""
-
-
 def _check_missing_players(all_players, e_raise):
     '''
     Check for significant missing players
@@ -287,7 +273,7 @@ def _check_missing_players(all_players, e_raise):
     miss_len = len(missing)
 
     if int(e_raise) < miss_len:
-        print(_MISSING_ERROR) \
+        print(dke.MISSING_ERROR) \
             .format(str(contained_report), str(total_report), e_raise)
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
@@ -323,29 +309,22 @@ def _randomize_projections(weight):
 
 
 def check_validity(args):
-    if args.s != _YES:
-        with open(args.projection_file, 'rb') as csvfile:
-            csvdata = csv.DictReader(csvfile)
-            fieldnames = csvdata.fieldnames
-            errors = []
-            for f in ['playername', 'points']:
-                if f not in fieldnames:
-                    errors.append(f)
+    with open(args.projection_file, 'rb') as csvfile:
+        csvdata = csv.DictReader(csvfile)
+        fieldnames = csvdata.fieldnames
+        errors = []
+        for f in ['playername', 'points']:
+            if f not in fieldnames:
+                errors.append(f)
 
-            if len(errors) > 0:
-                raise Exception(
-                    '''
-                    If you are choosing to provide your own projection source,
-                    you must provide the following fields: {}
-                    '''.format(errors)
-                )
+        if len(errors) > 0:
+            raise Exception(dke.CSV_ERROR.format(errors))
 
 
 if __name__ == '__main__':
     args = get_args()
     check_validity(args)
 
-    # uploader = nba_upload if args.league == 'NBA' else nfl_upload
     uploader = None
     if args.league == 'NBA':
         uploader = nba_upload
@@ -358,15 +337,6 @@ if __name__ == '__main__':
         uploader.create_upload_file()
     if args.pids:
         player_map = uploader.map_pids(args.pids)
-    if args.s == _YES and args.source != 'DK_AVG':
-        try:
-            scrapers.scrape(args.source, args)
-            if args.randomize_projections:
-                _randomize_projections(args.randomize_projections)
-        except KeyError:
-            raise dke.InvalidProjectionSourceException(
-                'You must choose from the following data sources {}.'
-                .format(scrapers.scrape_dict.keys()))
 
     rosters, remove = [], []
     for x in range(0, int(args.i)):

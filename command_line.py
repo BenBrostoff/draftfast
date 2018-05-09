@@ -3,7 +3,6 @@ import os
 
 OPTIMIZE_COMMAND_LINE = [
     ['-game', 'game to play', 'draftkings'],
-    ['-s', 'scrape from data source', 'y'],
     ['-w', 'current week', None],
     ['-season', 'current season', None],
     ['-historical', 'fetch historical data', 'n'],
