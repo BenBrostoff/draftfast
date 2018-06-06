@@ -103,6 +103,7 @@ def retrieve_players(args, remove):
     _set_historical_points(all_players, args)
     _set_player_ownership(all_players, args)
 
+    print(args.source)
     if args.source != _DK_AVG:
         with open(args.projection_file, 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
@@ -130,10 +131,11 @@ def retrieve_players(args, remove):
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
-    return filter(
-        qc.add_constraints(args, remove),
-        all_players
-    )
+    # return filter(
+    #     qc.add_constraints(args, remove),
+    #     all_players
+    # )
+    return all_players
 
 
 def run_solver(solver, all_players, args):
@@ -143,6 +145,7 @@ def run_solver(solver, all_players, args):
     variables = []
 
     for player in all_players:
+        print(player)
         if player.lock and not player.multi_position:
             variables.append(solver.IntVar(1, 1, player.solver_id))
         else:
@@ -169,6 +172,7 @@ def run_solver(solver, all_players, args):
         multi_caps[p.name].SetCoefficient(variables[i], 1)
 
     # set salary cap constraint
+    print(cons.SALARY_CAP[args.league][args.game])
     salary_cap = solver.Constraint(
         0,
         cons.SALARY_CAP[args.league][args.game],
@@ -177,6 +181,7 @@ def run_solver(solver, all_players, args):
         salary_cap.SetCoefficient(variables[i], player.cost)
 
     # set roster size constraint
+    print(cons.ROSTER_SIZE[args.game][args.league])
     size_cap = solver.Constraint(
         cons.ROSTER_SIZE[args.game][args.league],
         cons.ROSTER_SIZE[args.game][args.league]
@@ -186,6 +191,7 @@ def run_solver(solver, all_players, args):
         size_cap.SetCoefficient(variable, 1)
 
     # set position limit constraint
+    print(cons.POSITIONS[args.game][args.league])
     for position, min_limit, max_limit \
             in cons.POSITIONS[args.game][args.league]:
         position_cap = solver.Constraint(min_limit, max_limit)
@@ -209,6 +215,7 @@ def run_solver(solver, all_players, args):
                     position_cap.SetCoefficient(variables[i], 1)
 
     # max out at one player per team (allow QB combos)
+    # TODO - use for baseball, which imposes max players on team limit
     team_limits = set([(p.team, 0, 1) for p in all_players])
     if args.limit != 'n':
         for team, min_limit, max_limit in team_limits:

@@ -163,6 +163,11 @@ class WNBARoster(Roster):
     }
 
 
+class PGARoster(Roster):
+    POSITION_ORDER = {
+        'G': 0,
+    }
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -171,6 +176,7 @@ class RosterSelect:
             'WNBA': WNBARoster(),
             'NFL': NFLRoster(),
             'MLB': MLBRoster(),
+            'PGA': PGARoster(),
         }
         return roster_dict[league]
 
