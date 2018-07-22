@@ -8,7 +8,7 @@ SALARY_CAP = {
     },
     'WNBA': {
         DRAFT_KINGS: 50000,
-        FAN_DUEL: 60000,
+        FAN_DUEL: 40000,
     },
     'NFL': {
         DRAFT_KINGS: 50000,
@@ -30,6 +30,7 @@ ROSTER_SIZE = {
     FAN_DUEL: {
         'NBA': 9,
         'MLB': 9,
+        'WNBA': 7,
     }
 }
 
@@ -90,6 +91,10 @@ POSITIONS = {
             ['3B', 1, 2],
             ['SS', 1, 2],
             ['OF', 3, 4],
+        ],
+        'WNBA': [
+            ['G', 3, 3],
+            ['F', 4, 4],
         ]
     }
 }

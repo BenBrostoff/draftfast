@@ -103,7 +103,7 @@ def retrieve_players(args, remove):
     _set_historical_points(all_players, args)
     _set_player_ownership(all_players, args)
 
-    if args.source != _DK_AVG:
+    if args.salary_file and args.projection_file:
         with open(args.projection_file, 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
 
@@ -153,7 +153,9 @@ def run_solver(solver, all_players, args):
 
     # optimize on projected points
     for i, player in enumerate(all_players):
-        objective.SetCoefficient(variables[i], player.proj)
+        proj = player.proj if args.projection_file \
+            else player.average_score
+        objective.SetCoefficient(variables[i], proj)
 
     # set multi-player constraint
     multi_caps = {}
@@ -309,16 +311,17 @@ def _randomize_projections(weight):
 
 
 def check_validity(args):
-    with open(args.projection_file, 'rb') as csvfile:
-        csvdata = csv.DictReader(csvfile)
-        fieldnames = csvdata.fieldnames
-        errors = []
-        for f in ['playername', 'points']:
-            if f not in fieldnames:
-                errors.append(f)
+    if args.projection_file:
+        with open(args.projection_file, 'rb') as csvfile:
+            csvdata = csv.DictReader(csvfile)
+            fieldnames = csvdata.fieldnames
+            errors = []
+            for f in ['playername', 'points']:
+                if f not in fieldnames:
+                    errors.append(f)
 
-        if len(errors) > 0:
-            raise Exception(dke.CSV_ERROR.format(errors))
+            if len(errors) > 0:
+                raise Exception(dke.CSV_ERROR.format(errors))
 
 
 if __name__ == '__main__':

@@ -50,7 +50,4 @@ def generate_player(pos, row, args):
         lock=(args.locked and row[name_key] in args.locked)
     )
 
-    if args.source == 'DK_AVG':
-        player.proj = avg
-
     return player

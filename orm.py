@@ -156,10 +156,11 @@ class NBARoster(Roster):
 
 class WNBARoster(Roster):
     POSITION_ORDER = {
-        'PG': 0,
-        'SG': 1,
-        'SF': 2,
-        'PF': 3,
+        'G': 0,
+        'F': 1,
+        'SG': 2,
+        'SF': 3,
+        'PF': 4,
     }
 
 
@@ -271,9 +272,9 @@ class Player(object):
 
     @property
     def nba_general_position(self):
-        if self.pos == 'SG' or self.pos == 'PG':
+        if self.pos == 'SG' or self.pos == 'PG' or self.pos == 'G':
             return 'G'
-        elif self.pos == 'SF' or self.pos == 'PF':
+        elif self.pos == 'SF' or self.pos == 'PF' or self.pos == 'F':
             return 'F'
         return 'C'
 
