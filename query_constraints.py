@@ -76,8 +76,6 @@ def _is_below_proj_ownership_pct(player, query_args):
 
 @lock_override
 def _is_selected_team(player, query_args):
-    if player.team is None:
-        return False
     if not query_args.teams or player.pos in ['DST']:
         return True
 

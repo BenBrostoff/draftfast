@@ -65,6 +65,9 @@ def run(league, remove, args):
         args
     )
 
+    opt_message = 'Optimized over {} players'.format(len(all_players))
+    print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
+
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.league)
 
@@ -103,7 +106,11 @@ def retrieve_players(args, remove):
     _set_historical_points(all_players, args)
     _set_player_ownership(all_players, args)
 
-    if args.salary_file and args.projection_file:
+    if args.__dict__.get('use_average'):
+        for p in all_players:
+            p.proj = p.average_score
+            p.marked = True
+    elif args.salary_file and args.projection_file:
         with open(args.projection_file, 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
 
@@ -123,7 +130,7 @@ def retrieve_players(args, remove):
 
                 for p in matching_players:
                     p.proj = float(row['points'])
-                    p.marked = 'Y'
+                    p.marked = True
 
     if not args.historical_date:
         _check_missing_players(all_players, args.mp)
@@ -268,10 +275,10 @@ def _check_missing_players(all_players, e_raise):
     as names from different data do not match up
     continues or stops based on inputs
     '''
-    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
+    contained_report = len(filter(lambda x: x.marked, all_players))
     total_report = len(all_players)
 
-    missing = filter(lambda x: x.marked != 'Y', all_players)
+    missing = filter(lambda x: not x.marked, all_players)
     miss_len = len(missing)
 
     if int(e_raise) < miss_len:

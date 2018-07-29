@@ -37,6 +37,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-flex_position', 'force player to have FLEX position', None],
     ['-randomize_projections', 'use random projection factor', None],
     ['-min_avg', 'player must exceed average points', None],
+    ['-use_average', 'Use player averages for projections', False],
 ]
 
 
