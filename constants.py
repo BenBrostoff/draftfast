@@ -18,6 +18,9 @@ SALARY_CAP = {
         DRAFT_KINGS: 50000,
         FAN_DUEL: 35000,
     },
+    'PGA': {
+        FAN_DUEL: 60000,
+    },
     'NASCAR': {
         FAN_DUEL: 50000,
     },
@@ -35,6 +38,7 @@ ROSTER_SIZE = {
         'MLB': 9,
         'WNBA': 7,
         'NASCAR': 5,
+        'PGA': 6,
     }
 }
 
@@ -102,7 +106,10 @@ POSITIONS = {
         ],
         'NASCAR': [
             ['D', 5, 5],
-        ]
+        ],
+        'PGA': [
+          ['G', 6, 6],
+        ],
     }
 }
 

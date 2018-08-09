@@ -166,7 +166,13 @@ class WNBARoster(Roster):
 
 class NASCARRoster(Roster):
     POSITION_ORDER = {
-        'D': 1,
+        'D': 0,
+    }
+
+
+class PGARoster(Roster):
+    POSITION_ORDER = {
+        'G': 0,
     }
 
 
@@ -178,6 +184,7 @@ class RosterSelect:
             'WNBA': WNBARoster(),
             'NFL': NFLRoster(),
             'MLB': MLBRoster(),
+            'PGA': PGARoster(),
             'NASCAR': NASCARRoster(),
         }
         return roster_dict[league]
