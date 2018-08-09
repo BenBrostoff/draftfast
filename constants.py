@@ -8,7 +8,7 @@ SALARY_CAP = {
     },
     'WNBA': {
         DRAFT_KINGS: 50000,
-        FAN_DUEL: 60000,
+        FAN_DUEL: 40000,
     },
     'NFL': {
         DRAFT_KINGS: 50000,
@@ -20,6 +20,9 @@ SALARY_CAP = {
     },
     'PGA': {
         FAN_DUEL: 60000,
+    },
+    'NASCAR': {
+        FAN_DUEL: 50000,
     },
 }
 
@@ -33,6 +36,8 @@ ROSTER_SIZE = {
     FAN_DUEL: {
         'NBA': 9,
         'MLB': 9,
+        'WNBA': 7,
+        'NASCAR': 5,
         'PGA': 6,
     }
 }
@@ -94,6 +99,13 @@ POSITIONS = {
             ['3B', 1, 2],
             ['SS', 1, 2],
             ['OF', 3, 4],
+        ],
+        'WNBA': [
+            ['G', 3, 3],
+            ['F', 4, 4],
+        ],
+        'NASCAR': [
+            ['D', 5, 5],
         ],
         'PGA': [
           ['G', 6, 6],

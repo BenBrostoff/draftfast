@@ -47,11 +47,7 @@ def generate_player(pos, row, args):
         team=row.get(team_key) or row.get(team_alt_key),
         matchup=row.get(game_key) or row.get(game_alt_key),
         average_score=avg,
-        proj=avg,
         lock=(args.locked and row[name_key] in args.locked)
     )
-
-    if args.source == 'DK_AVG':
-        player.proj = avg
 
     return player

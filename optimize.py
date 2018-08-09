@@ -65,6 +65,9 @@ def run(league, remove, args):
         args
     )
 
+    opt_message = 'Optimized over {} players'.format(len(all_players))
+    print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
+
     if solution == solver.OPTIMAL:
         roster = RosterSelect().roster_gen(args.league)
 
@@ -103,8 +106,11 @@ def retrieve_players(args, remove):
     _set_historical_points(all_players, args)
     _set_player_ownership(all_players, args)
 
-    print(args.source)
-    if args.source != _DK_AVG:
+    if args.__dict__.get('use_average'):
+        for p in all_players:
+            p.proj = p.average_score
+            p.marked = True
+    elif args.salary_file and args.projection_file:
         with open(args.projection_file, 'rb') as csvfile:
             csvdata = csv.DictReader(csvfile)
 
@@ -124,18 +130,17 @@ def retrieve_players(args, remove):
 
                 for p in matching_players:
                     p.proj = float(row['points'])
-                    p.marked = 'Y'
+                    p.marked = True
 
     if not args.historical_date:
         _check_missing_players(all_players, args.mp)
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
-    # return filter(
-    #     qc.add_constraints(args, remove),
-    #     all_players
-    # )
-    return all_players
+    return filter(
+        qc.add_constraints(args, remove),
+        all_players
+    )
 
 
 def run_solver(solver, all_players, args):
@@ -145,7 +150,6 @@ def run_solver(solver, all_players, args):
     variables = []
 
     for player in all_players:
-        print(player)
         if player.lock and not player.multi_position:
             variables.append(solver.IntVar(1, 1, player.solver_id))
         else:
@@ -156,7 +160,9 @@ def run_solver(solver, all_players, args):
 
     # optimize on projected points
     for i, player in enumerate(all_players):
-        objective.SetCoefficient(variables[i], player.proj)
+        proj = player.proj if args.projection_file \
+            else player.average_score
+        objective.SetCoefficient(variables[i], proj)
 
     # set multi-player constraint
     multi_caps = {}
@@ -172,7 +178,6 @@ def run_solver(solver, all_players, args):
         multi_caps[p.name].SetCoefficient(variables[i], 1)
 
     # set salary cap constraint
-    print(cons.SALARY_CAP[args.league][args.game])
     salary_cap = solver.Constraint(
         0,
         cons.SALARY_CAP[args.league][args.game],
@@ -181,7 +186,6 @@ def run_solver(solver, all_players, args):
         salary_cap.SetCoefficient(variables[i], player.cost)
 
     # set roster size constraint
-    print(cons.ROSTER_SIZE[args.game][args.league])
     size_cap = solver.Constraint(
         cons.ROSTER_SIZE[args.game][args.league],
         cons.ROSTER_SIZE[args.game][args.league]
@@ -191,7 +195,6 @@ def run_solver(solver, all_players, args):
         size_cap.SetCoefficient(variable, 1)
 
     # set position limit constraint
-    print(cons.POSITIONS[args.game][args.league])
     for position, min_limit, max_limit \
             in cons.POSITIONS[args.game][args.league]:
         position_cap = solver.Constraint(min_limit, max_limit)
@@ -215,7 +218,6 @@ def run_solver(solver, all_players, args):
                     position_cap.SetCoefficient(variables[i], 1)
 
     # max out at one player per team (allow QB combos)
-    # TODO - use for baseball, which imposes max players on team limit
     team_limits = set([(p.team, 0, 1) for p in all_players])
     if args.limit != 'n':
         for team, min_limit, max_limit in team_limits:
@@ -273,10 +275,10 @@ def _check_missing_players(all_players, e_raise):
     as names from different data do not match up
     continues or stops based on inputs
     '''
-    contained_report = len(filter(lambda x: x.marked == 'Y', all_players))
+    contained_report = len(filter(lambda x: x.marked, all_players))
     total_report = len(all_players)
 
-    missing = filter(lambda x: x.marked != 'Y', all_players)
+    missing = filter(lambda x: not x.marked, all_players)
     miss_len = len(missing)
 
     if int(e_raise) < miss_len:
@@ -316,16 +318,17 @@ def _randomize_projections(weight):
 
 
 def check_validity(args):
-    with open(args.projection_file, 'rb') as csvfile:
-        csvdata = csv.DictReader(csvfile)
-        fieldnames = csvdata.fieldnames
-        errors = []
-        for f in ['playername', 'points']:
-            if f not in fieldnames:
-                errors.append(f)
+    if args.projection_file:
+        with open(args.projection_file, 'rb') as csvfile:
+            csvdata = csv.DictReader(csvfile)
+            fieldnames = csvdata.fieldnames
+            errors = []
+            for f in ['playername', 'points']:
+                if f not in fieldnames:
+                    errors.append(f)
 
-        if len(errors) > 0:
-            raise Exception(dke.CSV_ERROR.format(errors))
+            if len(errors) > 0:
+                raise Exception(dke.CSV_ERROR.format(errors))
 
 
 if __name__ == '__main__':

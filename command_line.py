@@ -26,7 +26,6 @@ OPTIMIZE_COMMAND_LINE = [
     ['-locked', 'player must be in final lineup', None],
     ['-banned', 'player cannot be named players', None],
     ['-dtype', 'specify WR or TE in combo', 'wr'],
-    ['-source', 'data source to use', 'nfl_rotogrinders'],
     ['-league', 'league', 'NFL'],
     ['-pids', 'player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
@@ -38,6 +37,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-flex_position', 'force player to have FLEX position', None],
     ['-randomize_projections', 'use random projection factor', None],
     ['-min_avg', 'player must exceed average points', None],
+    ['-use_average', 'Use player averages for projections', False],
 ]
 
 
