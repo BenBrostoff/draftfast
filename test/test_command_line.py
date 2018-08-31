@@ -1,11 +1,8 @@
 import os
-
 from nose import tools as ntools
 from optimize import run
 from argparse import Namespace
 from collections import Counter
-from orm import NFLRoster, Player
-from constants import POSITIONS
 
 NFL = 'NFL'
 args_dict = dict(
@@ -43,14 +40,14 @@ args_dict = dict(
 
 def test_default_constraints():
     args = Namespace(**args_dict)
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     assert roster
 
 
 def test_multi_position():
     args = Namespace(**args_dict)
     args.locked = ['Eli Manning']
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     multi_pos = [p for p in roster.players if p.name == 'Eli Manning']
     ntools.assert_equal(len(multi_pos), 1)
     ntools.assert_equal(multi_pos[0].pos, 'TE')
@@ -59,7 +56,7 @@ def test_multi_position():
 def test_is_home():
     args = Namespace(**args_dict)
     args.home = True
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     for p in roster.players:
         ntools.assert_true(p.is_home)
 
@@ -68,7 +65,7 @@ def test_within_avg():
     args = Namespace(**args_dict)
     avg_test_val = 3
     args.v_avg = avg_test_val
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     for player in roster.players:
         ntools.assert_less(abs(player.v_avg), avg_test_val)
 
@@ -76,7 +73,7 @@ def test_within_avg():
 def test_duo_constraint():
     args = Namespace(**args_dict)
     args.duo = 'NE'
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     team_instances = Counter([p.team for p in roster.players]).values()
     ntools.assert_in(2, team_instances)
 
@@ -84,7 +81,7 @@ def test_duo_constraint():
 def test_min_salary():
     args = Namespace(**args_dict)
     args.sp = 3500
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     for p in roster.players:
         ntools.assert_true(p.cost >= 3500)
 
@@ -92,7 +89,7 @@ def test_min_salary():
 def test_teams_constraint():
     args = Namespace(**args_dict)
     args.teams = ['NE', 'Dal']
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     for p in roster.players:
         if p.pos == 'DST':
             continue
@@ -104,7 +101,7 @@ def test_banned_constraint():
     jg = 'Jimmy Garoppolo'
     args.teams = ['NE', 'Dal']
     args.banned = [jg]
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     ntools.assert_not_in(jg, [p.name for p in roster.players])
 
 
@@ -114,7 +111,7 @@ def test_locked_constraint():
     args.teams = ['NE', 'Dal']
     args.banned = []
     args.locked = [jb]
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     ntools.assert_true([p for p in roster.players if p.name == jb][0].lock)
 
 
@@ -123,7 +120,7 @@ def test_lock_overrides():
     args.teams = ['NE', 'Dal']
     args.v_avg = 1
     args.locked = ['Eli Manning']
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     ntools.assert_true(
         [
             p for p in roster.players
@@ -135,21 +132,12 @@ def test_lock_overrides():
 def test_bad_constraints():
     args = Namespace(**args_dict)
     args.lp = 1000
-    roster = run(NFL, [], args)
+    roster = run(NFL, args)
     ntools.assert_equal(roster, None)
 
 
-def test_same_roster():
-    roster_one = NFLRoster()
-    roster_two = NFLRoster()
-    for pos in POSITIONS['NFL']:
-        for x in range(0, pos[1]):
-            roster_one.add_player(Player(pos[0], 'Kacper{}'.format(x), 4000))
-            roster_two.add_player(Player(pos[0], 'Kacper{}'.format(x), 4000))
-    roster_one.add_player(Player('WR', 'Kacper8'.format(x), 4000))
-    roster_two.add_player(Player('WR', 'Kacper8'.format(x), 4000))
-    ntools.assert_equal(roster_one, roster_two)
-    roster_one.players.pop()
-    ntools.assert_false(roster_one == roster_two)
-    roster_one.players.append(Player('WR', 'Kacper8'.format(x), 6000))
-    ntools.assert_false(roster_one == roster_two)
+def test_multi_roster():
+    args = Namespace(**args_dict)
+    roster = run(NFL, args)
+    second_roster = run(NFL, args, [roster])
+    ntools.assert_not_equals(roster == second_roster, True)

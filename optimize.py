@@ -29,7 +29,7 @@ _GAMES = [
 ]
 
 
-def run(league, remove, args):
+def run(league, args, existing_rosters=None):
     if args.game not in _GAMES:
         raise Exception(
             'You chose {} as DFS game. Available options are {}'
@@ -45,7 +45,7 @@ def run(league, remove, args):
         pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
     )
 
-    all_players = retrieve_players(args, remove)
+    all_players = retrieve_players(args)
 
     # TODO - add NFL for FanDuel
     if args.league == 'NFL':
@@ -62,7 +62,8 @@ def run(league, remove, args):
     variables, solution = run_solver(
         solver,
         all_players,
-        args
+        args,
+        existing_rosters or [],
     )
 
     opt_message = 'Optimized over {} players'.format(len(all_players))
@@ -89,7 +90,7 @@ def run(league, remove, args):
         return None
 
 
-def retrieve_players(args, remove):
+def retrieve_players(args):
     if args.historical_date:
         all_players = retrieve_all_players_from_history(args)
     else:
@@ -138,22 +139,26 @@ def retrieve_players(args, remove):
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
     return filter(
-        qc.add_constraints(args, remove),
+        qc.add_constraints(args),
         all_players
     )
 
 
-def run_solver(solver, all_players, args):
+def run_solver(solver, all_players, args, existing_rosters):
     '''
     Set objective and constraints, then optimize
     '''
+    roster_size = cons.ROSTER_SIZE[args.game][args.league]
+    player_to_idx_map = {}
     variables = []
 
-    for player in all_players:
+    for idx, player in enumerate(all_players):
         if player.lock and not player.multi_position:
             variables.append(solver.IntVar(1, 1, player.solver_id))
         else:
             variables.append(solver.IntVar(0, 1, player.solver_id))
+
+        player_to_idx_map[player.solver_id] = idx
 
     objective = solver.Objective()
     objective.SetMaximization()
@@ -163,6 +168,14 @@ def run_solver(solver, all_players, args):
         proj = player.proj if args.projection_file \
             else player.average_score
         objective.SetCoefficient(variables[i], proj)
+
+    # set previously optimized lineup constraint
+    for roster in existing_rosters:
+        unique_players = solver.Constraint(0, roster_size - 1)
+
+        for player in roster.sorted_players():
+            i = player_to_idx_map[player.solver_id]
+            unique_players.SetCoefficient(variables[i], 1)
 
     # set multi-player constraint
     multi_caps = {}
@@ -186,10 +199,7 @@ def run_solver(solver, all_players, args):
         salary_cap.SetCoefficient(variables[i], player.cost)
 
     # set roster size constraint
-    size_cap = solver.Constraint(
-        cons.ROSTER_SIZE[args.game][args.league],
-        cons.ROSTER_SIZE[args.game][args.league]
-    )
+    size_cap = solver.Constraint(roster_size, roster_size)
 
     for variable in variables:
         size_cap.SetCoefficient(variable, 1)
@@ -348,16 +358,16 @@ if __name__ == '__main__':
     if args.pids:
         player_map = uploader.map_pids(args.pids)
 
-    rosters, remove = [], []
+    rosters, existing_rosters = [], []
     for x in range(0, int(args.i)):
-        rosters.append(run(args.league, remove, args))
+        rosters.append(run(args.league, args, existing_rosters))
         if args.pids:
             uploader.update_upload_csv(
-                player_map, rosters[x])
+                player_map, rosters[x]
+            )
         if None not in rosters:
             for roster in rosters:
-                for player in roster.players:
-                    remove.append(player.name)
+                existing_rosters.append(roster)
         else:
             exit()
 
