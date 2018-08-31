@@ -1,8 +1,7 @@
-def add_constraints(query_args, remove):
+def add_constraints(query_args):
     def filter_fn(player):
         kwargs = {'player': player, 'query_args': query_args}
-        return _is_not_selected(player, remove) and \
-            _is_above_projected_points(**kwargs) and \
+        return _is_above_projected_points(**kwargs) and \
             _is_below_cost(**kwargs) and \
             _is_above_min_cost(**kwargs) and \
             _is_below_proj_ownership_pct(**kwargs) and \

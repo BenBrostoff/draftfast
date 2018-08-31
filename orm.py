@@ -79,13 +79,9 @@ class Roster:
         return table + aggregate_info + source
 
     def __eq__(self, roster):
-        if self.__class__ == roster.__class__ and \
-           len(self.players) == 9 and len(roster.players) == 9:
-            for p in self.players:
-                if not any(filter(lambda x: x == p, roster.players)):
-                    return False
-            return True
-        return False
+        player_set_a = [a.solver_id for a in self.sorted_players()]
+        player_set_b = [b.solver_id for b in roster.sorted_players()]
+        return player_set_a == player_set_b
 
     @property
     def projection_source(self):

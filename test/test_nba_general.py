@@ -55,7 +55,7 @@ def test_optimize_with_general():
         min_avg=-1,
         historical_date=None,
     )
-    roster = run('NBA', [], run_args)
+    roster = run('NBA', run_args)
 
     def get_player_count_at_pos(pos):
         return len([
