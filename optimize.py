@@ -256,6 +256,14 @@ def run_solver(solver, all_players, args, existing_rosters):
                           player.team.upper() == args.duo.upper():
                     position_cap.SetCoefficient(variables[i], 1)
 
+    # set stacks
+    if args.__dict__.get('stack') and args.__dict__.get('stack_count'):
+        position_cap = solver.Constraint(args.stack_count, args.stack_count)
+
+        for i, player in enumerate(all_players):
+            if args.stack == player.team:
+                position_cap.SetCoefficient(variables[i], 1)
+
     return variables, solver.Solve()
 
 
