@@ -141,3 +141,15 @@ def test_multi_roster():
     roster = run(NFL, args)
     second_roster = run(NFL, args, [roster])
     ntools.assert_not_equals(roster == second_roster, True)
+
+
+def test_stack():
+    args = Namespace(**args_dict)
+    args.stack = 'NE'
+    args.stack_count = 5
+    roster = run(NFL, args)
+    ne_players_count = len([
+        p for p in roster.sorted_players()
+        if p.team == 'NE'
+    ])
+    ntools.assert_equals(5, ne_players_count)

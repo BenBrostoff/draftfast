@@ -38,6 +38,8 @@ OPTIMIZE_COMMAND_LINE = [
     ['-randomize_projections', 'use random projection factor', None],
     ['-min_avg', 'player must exceed average points', None],
     ['-use_average', 'Use player averages for projections', False],
+    ['-stack', 'Team to stack', None],
+    ['-stack_count', 'Total players to stack', 4],
 ]
 
 
