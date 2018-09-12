@@ -264,6 +264,20 @@ def run_solver(solver, all_players, args, existing_rosters):
             if args.stack == player.team:
                 position_cap.SetCoefficient(variables[i], 1)
 
+    # force QB / WR combo
+    if args.__dict__.get('force_combo'):
+        teams = set(p.team for p in all_players)
+        for team in teams:
+            wrs_on_team = [
+                variables[i] for i, p in enumerate(all_players)
+                if p.team == team and p.pos == 'WR'
+            ]
+            qbs_on_team = [
+                variables[i] for i, p in enumerate(all_players)
+                if p.team == team and p.pos == 'QB'
+            ]
+            solver.Add(solver.Sum(wrs_on_team) >= solver.Sum(qbs_on_team))
+
     return variables, solver.Solve()
 
 

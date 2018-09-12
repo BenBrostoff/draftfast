@@ -40,6 +40,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-use_average', 'Use player averages for projections', False],
     ['-stack', 'Team to stack', None],
     ['-stack_count', 'Total players to stack', 4],
+    ['-force_combo', 'force a WR and QB combo', None],
 ]
 
 

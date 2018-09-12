@@ -153,3 +153,26 @@ def test_stack():
         if p.team == 'NE'
     ])
     ntools.assert_equals(5, ne_players_count)
+
+
+def test_force_combo():
+    args = Namespace(**args_dict)
+    roster = run(NFL, args)
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    team_count = len([
+        x for x in roster.sorted_players()
+        if x.team == qb.team
+    ])
+    ntools.assert_equals(team_count, 1)
+
+    args = Namespace(**args_dict)
+    args.force_combo = True
+    roster = run(NFL, args)
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    team_count = len([
+        x for x in roster.sorted_players()
+        if x.team == qb.team
+    ])
+    ntools.assert_equals(team_count, 2)
