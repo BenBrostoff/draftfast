@@ -73,23 +73,12 @@ class Roster:
             self.projected(),
             cs(self.spent()))
 
-        source = '\nProjection Source: {}'.format(
-            getattr(self, 'projection_source', None))
-
-        return table + aggregate_info + source
+        return table + aggregate_info
 
     def __eq__(self, roster):
         player_set_a = [a.solver_id for a in self.sorted_players()]
         player_set_b = [b.solver_id for b in roster.sorted_players()]
         return player_set_a == player_set_b
-
-    @property
-    def projection_source(self):
-        return self._source
-
-    @projection_source.setter
-    def projection_source(self, source):
-        self._source = source
 
     def add_player(self, player):
         self.players.append(player)

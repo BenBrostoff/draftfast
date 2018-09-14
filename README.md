@@ -1,6 +1,6 @@
 ## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/) &middot; [![](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/user?u=8965834)
 
-![](marketing/NBA_OPTIMIZED.png)
+![](marketing/NFL_OPTIMIZED.png)
 
 This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee. Works for NFL, NBA, WNBA and MLB on either DraftKings or FanDuel.
 
