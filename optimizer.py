@@ -9,6 +9,7 @@ class Optimizer(object):
         salary,
         roster_size,
         position_limits,
+        general_position_limits,
         settings,
     ):
         self.solver = pywraplp.Solver(
@@ -21,6 +22,7 @@ class Optimizer(object):
         self.salary = salary
         self.roster_size = roster_size
         self.position_limits = position_limits
+        self.general_position_limits = general_position_limits
         self.settings = settings
 
         self.player_to_idx_map = {}
@@ -46,7 +48,9 @@ class Optimizer(object):
         self._optimize_on_projected_points()
         self._set_salary_cap()
         self._set_roster_size()
+        self._set_no_multi_player()
         self._set_positions()
+        self._set_general_positions()
         self._set_stack()
         self._set_combo()
         self._set_no_duplicate_lineups()
@@ -81,6 +85,23 @@ class Optimizer(object):
 
         for variable in self.variables:
             size_cap.SetCoefficient(variable, 1)
+
+    def _set_no_multi_player(self):
+        multi_caps = {}
+        for i, p in self.enumerated_players:
+            if not p.multi_position:
+                continue
+
+            if p.name not in multi_caps:
+                if p.lock:
+                    multi_caps[p.name] = self.solver.Constraint(1, 1)
+                else:
+                    multi_caps[p.name] = self.solver.Constraint(0, 1)
+
+            multi_caps[p.name].SetCoefficient(
+                self.variables[i],
+                1
+            )
 
     def _set_stack(self):
         stack = self.settings.__dict__.get('stack')
@@ -129,6 +150,18 @@ class Optimizer(object):
             for i, player in self.enumerated_players:
                 if position == player.pos:
                     position_cap.SetCoefficient(self.variables[i], 1)
+
+    def _set_general_positions(self):
+        for general_position, min_limit, max_limit in \
+                self.general_position_limits:
+            position_cap = self.solver.Constraint(min_limit, max_limit)
+
+            for i, player in self.enumerated_players:
+                if general_position == player.nba_general_position:
+                    position_cap.SetCoefficient(
+                        self.variables[i],
+                        1
+                    )
 
     def _set_no_duplicate_lineups(self):
         for roster in self.existing_rosters:

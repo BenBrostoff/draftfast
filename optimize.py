@@ -31,7 +31,8 @@ def run(league, args, existing_rosters=None):
     all_players = retrieve_players(args)
     salary = _get_salary(args)
     roster_size = _get_roster_size(args)
-    position_limit = _get_position_limit(args)
+    position_limits = _get_position_limits(args)
+    general_position_limits = _get_general_position_limits(args)
 
     optimizer = Optimizer(
         players=all_players,
@@ -39,7 +40,8 @@ def run(league, args, existing_rosters=None):
         settings=args,
         salary=salary,
         roster_size=roster_size,
-        position_limits=position_limit,
+        position_limits=position_limits,
+        general_position_limits=general_position_limits,
     )
     variables = optimizer.variables
 
@@ -143,7 +145,7 @@ def _get_roster_size(settings):
     return cons.ROSTER_SIZE[settings.game][settings.league]
 
 
-def _get_position_limit(settings):
+def _get_position_limits(settings):
     if settings.league == 'NFL':
         flex_args = {}
         if settings.no_double_te == _YES:
@@ -156,6 +158,16 @@ def _get_position_limit(settings):
         cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
 
     return cons.POSITIONS[settings.game][settings.league]
+
+
+def _get_general_position_limits(settings):
+    if settings.league in ['NBA', 'WNBA']:
+        return {
+            'NBA': cons.NBA_GENERAL_POSITIONS,
+            'WNBA': cons.WNBA_GENERAL_POSITIONS,
+        }[settings.league]
+
+    return []
 
 
 def _set_historical_points(all_players, args):
