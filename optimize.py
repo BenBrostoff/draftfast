@@ -27,37 +27,19 @@ _GAMES = [
 
 
 def run(league, args, existing_rosters=None):
-    if args.game not in _GAMES:
-        raise Exception(
-            'You chose {} as DFS game. Available options are {}'
-            .format(args.game, _GAMES)
-        )
-
-    args.game = cons.DRAFT_KINGS \
-        if args.game == 'draftkings' or args.game == cons.DRAFT_KINGS \
-        else cons.FAN_DUEL
-
+    args.game = _get_game(args)
     all_players = retrieve_players(args)
-
-    # TODO - add NFL for FanDuel
-    if args.league == 'NFL':
-        flex_args = {}
-        if args.no_double_te == _YES:
-            flex_args['te_upper'] = 1
-        if args.flex_position == 'RB':
-            flex_args['rb_min'] = 3
-        if args.flex_position == 'WR':
-            flex_args['wr_min'] = 4
-
-        cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
+    salary = _get_salary(args)
+    roster_size = _get_roster_size(args)
+    position_limit = _get_position_limit(args)
 
     optimizer = Optimizer(
         players=all_players,
         existing_rosters=existing_rosters,
         settings=args,
-        salary=50000,
-        roster_size=9,
-        position_limits=cons.get_nfl_positions(),
+        salary=salary,
+        roster_size=roster_size,
+        position_limits=position_limit,
     )
     variables = optimizer.variables
 
@@ -137,6 +119,43 @@ def retrieve_players(args):
         qc.add_constraints(args),
         all_players
     )
+
+
+def _get_game(settings):
+    if settings.game not in _GAMES:
+        raise Exception(
+            'You chose {} as DFS game. Available options are {}'
+            .format(settings.game, _GAMES)
+        )
+
+    game = cons.DRAFT_KINGS \
+        if settings.game == 'draftkings' or settings.game == cons.DRAFT_KINGS \
+        else cons.FAN_DUEL
+
+    return game
+
+
+def _get_salary(settings):
+    return cons.SALARY_CAP[settings.league][settings.game]
+
+
+def _get_roster_size(settings):
+    return cons.ROSTER_SIZE[settings.game][settings.league]
+
+
+def _get_position_limit(settings):
+    if settings.league == 'NFL':
+        flex_args = {}
+        if settings.no_double_te == _YES:
+            flex_args['te_upper'] = 1
+        if settings.flex_position == 'RB':
+            flex_args['rb_min'] = 3
+        if settings.flex_position == 'WR':
+            flex_args['wr_min'] = 4
+
+        cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
+
+    return cons.POSITIONS[settings.game][settings.league]
 
 
 def _set_historical_points(all_players, args):
