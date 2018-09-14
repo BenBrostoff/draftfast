@@ -380,16 +380,16 @@ if __name__ == '__main__':
     if args.pids:
         player_map = uploader.map_pids(args.pids)
 
-    rosters, existing_rosters = [], []
-    for x in range(0, int(args.i)):
-        rosters.append(run(args.league, args, existing_rosters))
-        if args.pids:
-            uploader.update_upload_csv(
-                player_map, rosters[x]
-            )
-        if None not in rosters:
-            for roster in rosters:
-                existing_rosters.append(roster)
+    rosters = []
+    for _ in range(0, int(args.i)):
+        roster = run(args.league, args, rosters)
+
+        if roster:
+            rosters.append(roster)
+            if args.pids:
+                uploader.update_upload_csv(
+                    player_map, roster
+                )
         else:
             exit()
 
