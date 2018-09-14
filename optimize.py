@@ -5,11 +5,7 @@ https://github.com/swanson/degenerate
 '''
 
 import csv
-import random
 from sys import exit
-
-from ortools.linear_solver import pywraplp
-
 import constants as cons
 import dke_exceptions as dke
 import query_constraints as qc
@@ -17,6 +13,7 @@ from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
+from optimizer import Optimizer
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -40,11 +37,6 @@ def run(league, args, existing_rosters=None):
         if args.game == 'draftkings' or args.game == cons.DRAFT_KINGS \
         else cons.FAN_DUEL
 
-    solver = pywraplp.Solver(
-        'FD',
-        pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
-    )
-
     all_players = retrieve_players(args)
 
     # TODO - add NFL for FanDuel
@@ -59,17 +51,20 @@ def run(league, args, existing_rosters=None):
 
         cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
 
-    variables, solution = run_solver(
-        solver,
-        all_players,
-        args,
-        existing_rosters or [],
+    optimizer = Optimizer(
+        players=all_players,
+        existing_rosters=existing_rosters,
+        settings=args,
+        salary=50000,
+        roster_size=9,
+        position_limits=cons.get_nfl_positions(),
     )
+    variables = optimizer.variables
 
     opt_message = 'Optimized over {} players'.format(len(all_players))
     print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
 
-    if solution == solver.OPTIMAL:
+    if optimizer.solve():
         roster = RosterSelect().roster_gen(args.league)
 
         for i, player in enumerate(all_players):
@@ -144,143 +139,6 @@ def retrieve_players(args):
     )
 
 
-def run_solver(solver, all_players, args, existing_rosters):
-    '''
-    Set objective and constraints, then optimize
-    '''
-    roster_size = cons.ROSTER_SIZE[args.game][args.league]
-    player_to_idx_map = {}
-    variables = []
-
-    for idx, player in enumerate(all_players):
-        if player.lock and not player.multi_position:
-            variables.append(solver.IntVar(1, 1, player.solver_id))
-        else:
-            variables.append(solver.IntVar(0, 1, player.solver_id))
-
-        player_to_idx_map[player.solver_id] = idx
-
-    objective = solver.Objective()
-    objective.SetMaximization()
-
-    # optimize on projected points
-    for i, player in enumerate(all_players):
-        proj = player.proj if args.projection_file \
-            else player.average_score
-        objective.SetCoefficient(variables[i], proj)
-
-    # set previously optimized lineup constraint
-    for roster in existing_rosters:
-        unique_players = solver.Constraint(0, roster_size - 1)
-
-        for player in roster.sorted_players():
-            i = player_to_idx_map[player.solver_id]
-            unique_players.SetCoefficient(variables[i], 1)
-
-    # set multi-player constraint
-    multi_caps = {}
-    for i, p in enumerate(all_players):
-        if not p.multi_position:
-            continue
-
-        if p.name not in multi_caps:
-            if p.lock:
-                multi_caps[p.name] = solver.Constraint(1, 1)
-            else:
-                multi_caps[p.name] = solver.Constraint(0, 1)
-        multi_caps[p.name].SetCoefficient(variables[i], 1)
-
-    # set salary cap constraint
-    salary_cap = solver.Constraint(
-        0,
-        cons.SALARY_CAP[args.league][args.game],
-    )
-    for i, player in enumerate(all_players):
-        salary_cap.SetCoefficient(variables[i], player.cost)
-
-    # set roster size constraint
-    size_cap = solver.Constraint(roster_size, roster_size)
-
-    for variable in variables:
-        size_cap.SetCoefficient(variable, 1)
-
-    # set position limit constraint
-    for position, min_limit, max_limit \
-            in cons.POSITIONS[args.game][args.league]:
-        position_cap = solver.Constraint(min_limit, max_limit)
-
-        for i, player in enumerate(all_players):
-            if position == player.pos:
-                position_cap.SetCoefficient(variables[i], 1)
-
-    # set G / F NBA position limits
-    if args.league in ['NBA', 'WNBA']:
-        general_positions = {
-            'NBA': cons.NBA_GENERAL_POSITIONS,
-            'WNBA': cons.WNBA_GENERAL_POSITIONS,
-        }[args.league]
-        for general_position, min_limit, max_limit in \
-                general_positions:
-            position_cap = solver.Constraint(min_limit, max_limit)
-
-            for i, player in enumerate(all_players):
-                if general_position == player.nba_general_position:
-                    position_cap.SetCoefficient(variables[i], 1)
-
-    # max out at one player per team (allow QB combos)
-    team_limits = set([(p.team, 0, 1) for p in all_players])
-    if args.limit != 'n':
-        for team, min_limit, max_limit in team_limits:
-            team_cap = solver.Constraint(min_limit, max_limit)
-
-            for i, player in enumerate(all_players):
-                if team.upper() == player.team.upper() and \
-                        player.pos != 'QB':
-                    team_cap.SetCoefficient(variables[i], 1)
-
-    # force QB / WR or QB / TE combo on specified team
-    if args.duo != 'n':
-        all_teams = set(p.team for p in all_players)
-        if args.duo.upper() not in all_teams:
-            raise dke.InvalidNFLTeamException(
-                'You need to pass in a valid NFL team ' +
-                'abbreviation to use this option. ' +
-                'See valid team abbreviations here: '
-                + str(all_teams)
-            )
-        for pos, min_limit, max_limit in cons.DUO_TYPE[args.dtype.lower()]:
-            position_cap = solver.Constraint(min_limit, max_limit)
-
-            for i, player in enumerate(all_players):
-                if pos == player.pos and \
-                          player.team.upper() == args.duo.upper():
-                    position_cap.SetCoefficient(variables[i], 1)
-
-    # set stacks
-    if args.__dict__.get('stack') and args.__dict__.get('stack_count'):
-        position_cap = solver.Constraint(args.stack_count, args.stack_count)
-
-        for i, player in enumerate(all_players):
-            if args.stack == player.team:
-                position_cap.SetCoefficient(variables[i], 1)
-
-    # force QB / WR combo
-    if args.__dict__.get('force_combo'):
-        teams = set(p.team for p in all_players)
-        for team in teams:
-            wrs_on_team = [
-                variables[i] for i, p in enumerate(all_players)
-                if p.team == team and p.pos == 'WR'
-            ]
-            qbs_on_team = [
-                variables[i] for i, p in enumerate(all_players)
-                if p.team == team and p.pos == 'QB'
-            ]
-            solver.Add(solver.Sum(wrs_on_team) >= solver.Sum(qbs_on_team))
-
-    return variables, solver.Solve()
-
-
 def _set_historical_points(all_players, args):
     if args.w and args.season and args.historical == _YES:
         print('Fetching {} season data for all players...'.format(args.season))
@@ -318,35 +176,6 @@ def _check_missing_players(all_players, e_raise):
             .format(str(contained_report), str(total_report), e_raise)
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
-
-
-def _randomize_projections(weight):
-    '''
-    Iterate through projections and multiply by a factor
-    between (1-x) and (1+x).
-
-    This can occasionally be useful for breaking patterns where a certain
-    value group of players always show up in lineup results and you do not
-    want to ban any of them, or to just see how slight changes in projections
-    can impact optimization.
-    '''
-    hold = []
-    proj_file = 'data/current-projections.csv'
-    with open(proj_file) as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            hold.append(row)
-
-    with open(proj_file, 'w') as csvfile:
-        fieldnames = ['playername', 'points']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for row in hold:
-            factor = 1 + random.uniform(-float(weight), float(weight))
-            row['points'] = float(row['points']) * factor
-            writer.writerow(row)
-
-    print('Rewrite complete with weighted factor {}'.format(weight))
 
 
 def check_validity(args):
