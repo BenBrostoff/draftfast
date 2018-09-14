@@ -17,7 +17,7 @@ class Optimizer(object):
         )
         self.players = players
         self.enumerated_players = list(enumerate(players))
-        self.existing_rosters = existing_rosters
+        self.existing_rosters = existing_rosters or []
         self.salary = salary
         self.roster_size = roster_size
         self.position_limits = position_limits
@@ -49,6 +49,7 @@ class Optimizer(object):
         self._set_positions()
         self._set_stack()
         self._set_combo()
+        self._set_no_duplicate_lineups()
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
 
@@ -128,3 +129,14 @@ class Optimizer(object):
             for i, player in self.enumerated_players:
                 if position == player.pos:
                     position_cap.SetCoefficient(self.variables[i], 1)
+
+    def _set_no_duplicate_lineups(self):
+        for roster in self.existing_rosters:
+            unique_players = self.solver.Constraint(
+                0,
+                self.roster_size - 1
+            )
+
+            for player in roster.sorted_players():
+                i = self.player_to_idx_map[player.solver_id]
+                unique_players.SetCoefficient(self.variables[i], 1)
