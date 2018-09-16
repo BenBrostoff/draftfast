@@ -155,7 +155,8 @@ def _get_position_limits(settings):
         if settings.flex_position == 'WR':
             flex_args['wr_min'] = 4
 
-        cons.POSITIONS['NFL'] = cons.get_nfl_positions(**flex_args)
+        cons.POSITIONS[settings.game]['NFL'] = \
+            cons.get_nfl_positions(**flex_args)
 
     return cons.POSITIONS[settings.game][settings.league]
 

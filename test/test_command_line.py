@@ -176,3 +176,26 @@ def test_force_combo():
         if x.team == qb.team
     ])
     ntools.assert_equals(team_count, 2)
+
+
+def test_no_double_te():
+    args = Namespace(**args_dict)
+    args.locked = ['Rob Gronkowski']
+    roster = run(NFL, args)
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    te_count = len([
+        x for x in roster.sorted_players()
+        if x.pos == 'TE'
+    ])
+    ntools.assert_equals(te_count, 2)
+
+    args.no_double_te = 'y'
+    roster = run(NFL, args)
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    te_count = len([
+        x for x in roster.sorted_players()
+        if x.pos == 'TE'
+    ])
+    ntools.assert_equals(te_count, 1)
