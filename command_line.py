@@ -41,6 +41,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-stack', 'Team to stack', None],
     ['-stack_count', 'Total players to stack', 4],
     ['-force_combo', 'force a WR and QB combo', None],
+    ['-exposure_limit_file', 'Exposure limit file. Must include playername, min and max.'],
 ]
 
 

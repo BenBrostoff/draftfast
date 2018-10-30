@@ -6,6 +6,7 @@ https://github.com/swanson/degenerate
 
 import csv
 from sys import exit
+from collections import Counter
 import constants as cons
 import dke_exceptions as dke
 import query_constraints as qc
@@ -236,6 +237,7 @@ if __name__ == '__main__':
     else:
         uploader = nfl_upload
 
+    player_map = None
     if not args.keep_pids:
         uploader.create_upload_file()
     if args.pids:
@@ -243,6 +245,7 @@ if __name__ == '__main__':
 
     rosters = []
     for _ in range(0, int(args.i)):
+        # TODO - manage exposure here
         roster = run(args.league, args, rosters)
 
         if roster:
