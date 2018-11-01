@@ -1,8 +1,6 @@
 import locale
 from datetime import datetime, date
 from terminaltables import AsciiTable
-import numpy as np
-import NFL_Draftkings as NFLDK
 
 try:
     locale.setlocale(locale.LC_ALL, 'en_US')
@@ -276,35 +274,6 @@ class Player(object):
         elif self.pos == 'SF' or self.pos == 'PF' or self.pos == 'F':
             return 'F'
         return 'C'
-
-    def set_historical(self, week, season):
-        if self.name in self._PLAYER_DATA_CACHE:
-            self.__set_from_data_cache(
-                self._PLAYER_DATA_CACHE[self.name])
-            return
-        try:
-            scores = NFLDK.get_weekly_scores(
-                name=self.name,
-                weeks=range(1, week),
-                season=season
-            )
-            scores = [
-                s.get('stats', 0) for s in scores
-            ]
-            self.all_scores = scores
-            self.last_score = scores[-1]
-            self.max_score = max(scores)
-            self.min_score = min(scores)
-            self.average_score = min(scores)
-            self.median_score = np.median(scores)
-            self.stdev_score = np.std(scores)
-
-            self.__set_data_cache()
-
-            print('Fetched player data for {}'.format(self.name))
-        except Exception:
-            self._PLAYER_DATA_CACHE[self.name] = None
-            print('Failed to fetch player data for {}'.format(self.name))
 
     def __set_data_cache(self):
         self._PLAYER_DATA_CACHE[self.name] = {
