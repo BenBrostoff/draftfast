@@ -74,7 +74,7 @@ def test_duo_constraint():
     args = Namespace(**args_dict)
     args.duo = 'NE'
     roster = run(NFL, args)
-    team_instances = Counter([p.team for p in roster.players]).values()
+    team_instances = list(Counter([p.team for p in roster.players]).values())
     ntools.assert_in(2, team_instances)
 
 

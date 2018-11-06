@@ -103,7 +103,7 @@ def retrieve_players(args):
                 return match_fn
 
             for row in csvdata:
-                matching_players = filter(name_match(row), all_players)
+                matching_players = list(filter(name_match(row), all_players))
 
                 if len(matching_players) == 0:
                     continue
@@ -117,10 +117,10 @@ def retrieve_players(args):
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
-    return filter(
+    return list(filter(
         qc.add_constraints(args),
         all_players
-    )
+    ))
 
 
 def _get_game(settings):
@@ -183,10 +183,7 @@ def _set_player_ownership(all_players, args):
         with open(args.po_location, 'rb') as csv_file:
             csv_data = csv.DictReader(csv_file)
             for row in csv_data:
-                player = filter(
-                    lambda p: p.name in row['Name'],
-                    all_players
-                )
+                 player = [p for p in all_players if p.name in row['Name']]
                 if player:
                     player[0].projected_ownership_pct = float(row['%'])
 
@@ -197,10 +194,10 @@ def _check_missing_players(all_players, e_raise):
     as names from different data do not match up
     continues or stops based on inputs
     '''
-    contained_report = len(filter(lambda x: x.marked, all_players))
+    contained_report = len([x for x in all_players if x.marked])
     total_report = len(all_players)
 
-    missing = filter(lambda x: not x.marked, all_players)
+    missing = [x for x in all_players if not x.marked]
     miss_len = len(missing)
 
     if int(e_raise) < miss_len:

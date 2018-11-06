@@ -7,10 +7,10 @@ from pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
 
 def optimize(all_players, cmd_args=None):
     lineup_players = []
-    all_players = filter(
+    all_players = list(filter(
         add_pickem_contraints(cmd_args),
         all_players
-    )
+    ))
     for t in TIERS:
         best = sorted(
             [p for p in all_players if p.tier == t],

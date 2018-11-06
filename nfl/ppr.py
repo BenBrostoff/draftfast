@@ -81,11 +81,11 @@ def offensive_conditional_points(stat_dict):
 def calculate_ppr(pos, stat_dict):
     projected_points = 0
     if pos.upper() in ('QB', 'RB', 'WR', 'TE'):
-        for key, val in stat_dict.items():
+        for key, val in list(stat_dict.items()):
             projected_points += val * DK_OFF_SCORING_MULTIPLIERS[key]
         projected_points += offensive_conditional_points(stat_dict)
     else:
-        for key, val in stat_dict.items():
+        for key, val in list(stat_dict.items()):
             if key != 'POINTS_ALLOWED':
                 projected_points += val * DK_DEF_SCORING_MULTIPLIERS[key]
         projected_points += points_allowed_score(stat_dict['POINTS_ALLOWED'])

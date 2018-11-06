@@ -84,10 +84,10 @@ class Roster:
         self.players.append(player)
 
     def spent(self):
-        return sum(map(lambda x: x.cost, self.players))
+        return sum([x.proj for x in self.players])
 
     def projected(self):
-        return sum(map(lambda x: x.proj, self.players))
+        return sum([x.proj for x in self.players])
 
     def position_order(self, player):
         return self.POSITION_ORDER[player.pos]
@@ -285,7 +285,7 @@ class Player(object):
         try:
             scores = NFLDK.get_weekly_scores(
                 name=self.name,
-                weeks=range(1, week),
+                weeks=list(range(1, week)),
                 season=season
             )
             scores = [
@@ -320,7 +320,7 @@ class Player(object):
     def __set_from_data_cache(self, player_data):
         if player_data is None:
             return
-        for k, v in player_data.items():
+        for k, v in list(player_data.items()):
             setattr(self, k, v)
 
     def __format_v_avg(self):
