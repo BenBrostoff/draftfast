@@ -7,7 +7,7 @@ class Optimizer(object):
         players,
         existing_rosters,
         salary_min,
-        salary_max
+        salary_max,
         roster_size,
         position_limits,
         general_position_limits,
