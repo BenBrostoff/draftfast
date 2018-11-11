@@ -50,7 +50,6 @@ DEFAULT_ARGS = dict(
     v_avg=100,
     source='mlb_rotogrinders',
     no_double_te=None,
-    historical=None,
     season=None,
     dtype=None,
     flex_position=None,

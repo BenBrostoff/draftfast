@@ -35,7 +35,6 @@ DEFAULT_ARGS = dict(
     s='n',
     w=5,
     season=2017,
-    historical='n',
     i=1,
     league='NFL',
     limit='n',
