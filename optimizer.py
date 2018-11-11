@@ -6,7 +6,8 @@ class Optimizer(object):
         self,
         players,
         existing_rosters,
-        salary,
+        salary_min,
+        salary_max
         roster_size,
         position_limits,
         general_position_limits,
@@ -19,7 +20,8 @@ class Optimizer(object):
         self.players = players
         self.enumerated_players = list(enumerate(players))
         self.existing_rosters = existing_rosters or []
-        self.salary = salary
+        self.salary_min = salary_min
+        self.salary_max = salary_max
         self.roster_size = roster_size
         self.position_limits = position_limits
         self.general_position_limits = general_position_limits
@@ -46,7 +48,7 @@ class Optimizer(object):
 
     def solve(self):
         self._optimize_on_projected_points()
-        self._set_salary_cap()
+        self._set_salary_range()
         self._set_roster_size()
         self._set_no_multi_player()
         self._set_positions()
@@ -66,10 +68,10 @@ class Optimizer(object):
                 proj
             )
 
-    def _set_salary_cap(self):
+    def _set_salary_range(self):
         salary_cap = self.solver.Constraint(
-            0,
-            self.salary,
+            self.salary_min,
+            self.salary_max,
         )
         for i, player in self.enumerated_players:
             salary_cap.SetCoefficient(
