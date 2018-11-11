@@ -65,16 +65,13 @@ class Roster:
         for p in self.sorted_players():
             table_data.append(p.to_table_row())
 
-        table = AsciiTable(table_data)
-        table.justify_columns[4] = 'right'
-        table.justify_columns[5] = 'right'
-        table.justify_columns[6] = 'right'
+        table = AsciiTable(table_data).table
 
-        aggregate_info = '\n\nProjected Score: {:0.2f} \t Cost: ${}'.format(
+        aggregate_info = '\n\nProjected Score: {} \t Cost: ${}'.format(
             self.projected(),
             cs(self.spent()))
 
-        return table.table + aggregate_info
+        return table + aggregate_info
 
     def __eq__(self, roster):
         player_set_a = [a.solver_id for a in self.sorted_players()]
@@ -297,8 +294,8 @@ class Player(object):
 
     def __format_v_avg(self):
         if self.v_avg > 0:
-            return '\x1b[0;32;40m{:0.2f}\x1b[0m'.format(self.v_avg)
-        return '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(self.v_avg)
+            return '\x1b[0;32;40m{}\x1b[0m'.format(self.v_avg)
+        return '\x1b[0;31;40m{}\x1b[0m'.format(self.v_avg)
 
 
 class Game:
