@@ -85,7 +85,7 @@ class Roster:
         self.players.append(player)
 
     def spent(self):
-        return sum([x.proj for x in self.players])
+        return sum([x.cost for x in self.players])
 
     def projected(self):
         return sum([x.proj for x in self.players])
