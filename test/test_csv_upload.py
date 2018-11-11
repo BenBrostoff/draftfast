@@ -30,7 +30,7 @@ def test_upload():
     nba_upload.create_upload_file()
     nba_upload.update_upload_csv(p_map, roster)
     upload = '{}/data/current-upload.csv'.format(os.getcwd())
-    with open(upload, 'rb') as csvfile:
+    with open(upload, 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for idx, row in enumerate(reader):
             if idx == 0:
