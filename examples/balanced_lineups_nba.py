@@ -81,7 +81,7 @@ def run(lineups=20, exposure=0.4, min_avg=7):
         args = DEFAULT_ARGS.copy()
         if exposure:
             args['banned'] = DEFAULT_ARGS['banned'] + [
-                name for name, freq in exposure.items()
+                name for name, freq in list(exposure.items())
                 if freq > max_exposure
             ]
         roster = optimizer_run('NBA', [], Namespace(**args))
