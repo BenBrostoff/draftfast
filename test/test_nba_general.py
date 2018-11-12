@@ -32,7 +32,6 @@ def test_optimize_with_general():
         i=1,
         season=2016,
         w=1,
-        historical='n',
         league='NBA',
         limit='n',
         lp=0,

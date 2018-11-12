@@ -84,7 +84,6 @@ def retrieve_players(args):
                         pos, row, args
                     ))
 
-    _set_historical_points(all_players, args)
     _set_player_ownership(all_players, args)
 
     if args.__dict__.get('use_average'):
@@ -170,13 +169,6 @@ def _get_general_position_limits(settings):
         }[settings.league]
 
     return []
-
-
-def _set_historical_points(all_players, args):
-    if args.w and args.season and args.historical == _YES:
-        print('Fetching {} season data for all players...'.format(args.season))
-        for p in all_players:
-            p.set_historical(int(args.w), int(args.season))
 
 
 def _set_player_ownership(all_players, args):

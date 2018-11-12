@@ -5,7 +5,6 @@ OPTIMIZE_COMMAND_LINE = [
     ['-game', 'game to play', 'draftkings'],
     ['-w', 'current week', None],
     ['-season', 'current season', None],
-    ['-historical', 'fetch historical data', 'n'],
     [
         '-historical_date',
         'day from history to optimize on (use YYYY-MM-DD)',
