@@ -6,7 +6,6 @@ https://github.com/swanson/degenerate
 
 import csv
 from sys import exit
-from collections import Counter
 import constants as cons
 import dke_exceptions as dke
 import query_constraints as qc
@@ -14,6 +13,7 @@ from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
+from exposure import parse_exposure_file, get_exposure_args
 from optimizer import Optimizer
 
 _YES = 'y'
@@ -28,6 +28,16 @@ _GAMES = [
 
 
 def run(league, args, existing_rosters=None):
+    exposure_limit_file = args.__dict__.get('exposure_limit_file')
+    if exposure_limit_file:
+        exposure_bounds = parse_exposure_file(exposure_limit_file)
+        exposure_args = get_exposure_args(
+            existing_rosters=existing_rosters,
+            exposure_bounds=exposure_bounds,
+        )
+        args.locked = exposure_args['locked']
+        args.banned = exposure_args['banned']
+
     args.game = _get_game(args)
     all_players = retrieve_players(args)
     salary = _get_salary(args)
@@ -237,7 +247,6 @@ if __name__ == '__main__':
 
     rosters = []
     for _ in range(0, int(args.i)):
-        # TODO - manage exposure here
         roster = run(args.league, args, rosters)
 
         if roster:

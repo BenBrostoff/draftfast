@@ -28,7 +28,6 @@ args_dict = dict(
     po_location=None,
     v_avg=10000,
     test_mode=True,
-    source='nfl_rotogrinders',
     salary_file=os.getcwd() + '/test/data/test-salaries.csv',
     projection_file=os.getcwd() + '/test/data/test-projections.csv',
     flex_position=None,
@@ -198,3 +197,19 @@ def test_no_double_te():
         if x.pos == 'TE'
     ])
     ntools.assert_equals(te_count, 1)
+
+
+def test_exposure_limits():
+    args = Namespace(**args_dict)
+    args.exposure_limit_file = \
+        '{}/test/data/exposures.csv' \
+        .format(os.getcwd())
+    roster = run(NFL, args, existing_rosters=[])
+    players = [p.name for p in roster.players]
+    ntools.assert_true('Tom Brady' in players)
+    ntools.assert_true('Lamar Miller' in players)
+
+    next_roster = run(NFL, args, existing_rosters=[roster])
+    next_players = [p.name for p in next_roster.players]
+    ntools.assert_true('Tom Brady' not in next_players)
+    ntools.assert_true('Lamar Miller' in next_players)
