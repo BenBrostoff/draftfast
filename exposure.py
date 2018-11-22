@@ -1,6 +1,6 @@
 import math
 import csv
-from collections import Counter
+import random
 
 def parse_exposure_file(file_location):
     """
@@ -29,34 +29,50 @@ def parse_exposure_file(file_location):
     return exposures
 
 
-def get_exposure_args(existing_rosters, exposure_bounds):
-    names = []
+def get_exposure_args(existing_rosters, exposure_bounds, N, seed):
+    random.seed(seed)
+    exposures = {}
     for r in existing_rosters:
         for p in r.players:
-            names.append(p.name)
+            exposures[p.name] = exposures.get(p.name, 0) + 1
 
     banned = []
     locked = []
-    exposures = Counter(names)
-    exposure_dict = {}
-    for name, total in exposures.items():
-        exposure_dict[name] = total
 
     for bound in exposure_bounds:
         name = bound['name']
 
-        total = float(len(existing_rosters) + 1)
-        min_lines = bound['min'] * total
-        max_lines = math.floor(bound['max'] * total)
-        lineups = exposure_dict.get(name, 0)
-
-        if lineups < min_lines:
-            # TODO - downsize locked so solution is not impossible
-            locked.append(name)
-        elif lineups >= max_lines:
+        # exclude players who have met max exposure
+        if exposures.get(name, 0) >= N * bound['max']:
             banned.append(name)
+            continue
+
+        # ramdomly lock in players based on the desired exposure
+        # TODO - downsize locked so solution is not impossible
+        if random.random() <= bound['max']:
+            locked.append(name)
 
     return {
         'banned': banned,
         'locked': locked,
     }
+
+
+def check_exposure(rosters, bounds):
+    exposures = {}
+    for r in rosters:
+        for p in r.players:
+            exposures[p.name] = exposures.get(p.name, 0) + 1
+
+    exposure_diffs = {}
+
+    for bound in bounds:
+        name = bound['name']
+        exposure = exposures.get(name, 0)
+
+        if exposure > len(rosters) * bound['max']:
+            exposure_diffs[name] = exposure - len(rosters) * bound['max']
+        elif exposure < len(rosters) * bound['min']:
+            exposure_diffs[name] = exposure - len(rosters) * bound['min']
+
+    return exposure_diffs

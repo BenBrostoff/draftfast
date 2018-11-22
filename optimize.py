@@ -13,7 +13,7 @@ from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
-from exposure import parse_exposure_file, get_exposure_args
+from exposure import parse_exposure_file, get_exposure_args, check_exposure
 from optimizer import Optimizer
 
 _YES = 'y'
@@ -27,19 +27,20 @@ _GAMES = [
 ]
 
 
-def run(league, args, existing_rosters=None):
-    exposure_limit_file = args.__dict__.get('exposure_limit_file')
-    if exposure_limit_file:
-        exposure_bounds = parse_exposure_file(exposure_limit_file)
+def run(league, args, existing_rosters=None, exposure_bounds=None):
+    if exposure_bounds:
         exposure_args = get_exposure_args(
             existing_rosters=existing_rosters,
             exposure_bounds=exposure_bounds,
+            N=args.i,
+            seed=args.random_seed,
         )
         args.locked = exposure_args['locked']
         args.banned = exposure_args['banned']
 
     args.game = _get_game(args)
     all_players = retrieve_players(args)
+
     salary_max = _get_salary(args)
     salary_min = 0
     roster_size = _get_roster_size(args)
@@ -59,7 +60,7 @@ def run(league, args, existing_rosters=None):
     variables = optimizer.variables
 
     opt_message = 'Optimized over {} players'.format(len(all_players))
-    print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
+    #print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
 
     if optimizer.solve():
         roster = RosterSelect().roster_gen(args.league)
@@ -68,8 +69,9 @@ def run(league, args, existing_rosters=None):
             if variables[i].solution_value() == 1:
                 roster.add_player(player)
 
-        print('Optimal roster for: {}'.format(league))
-        print(roster)
+        #print('Optimal roster for: {}'.format(league))
+        #print(roster)
+        #print()
 
         return roster
     else:
@@ -80,6 +82,38 @@ def run(league, args, existing_rosters=None):
             '''
         )
         return None
+
+
+def run_multi(args):
+    exposure_bounds = None
+    exposure_limit_file = args.__dict__.get('exposure_limit_file')
+    if exposure_limit_file:
+        exposure_bounds = parse_exposure_file(exposure_limit_file)
+
+    rosters = []
+    for _ in range(0, int(args.i)):
+        roster = run(args.league, args, rosters, exposure_bounds)
+
+        if roster:
+            rosters.append(roster)
+            if args.pids:
+                uploader.update_upload_csv(
+                    player_map, roster
+                )
+        else:
+            break
+
+    exposure_diffs = {}
+
+    if rosters:
+        exposure_diffs = check_exposure(rosters, exposure_bounds)
+        for n, d in exposure_diffs.items():
+            if d < 0:
+                print('{} is UNDER exposure by {} lineups'.format(n, d))
+            else:
+                print('{} is OVER exposure by {} lineups'.format(n, d))
+
+    return rosters, exposure_diffs
 
 
 def retrieve_players(args):
@@ -244,18 +278,7 @@ if __name__ == '__main__':
     if args.pids:
         player_map = uploader.map_pids(args.pids)
 
-    rosters = []
-    for _ in range(0, int(args.i)):
-        roster = run(args.league, args, rosters)
-
-        if roster:
-            rosters.append(roster)
-            if args.pids:
-                uploader.update_upload_csv(
-                    player_map, roster
-                )
-        else:
-            exit()
+    rosters, _ = run_multi(args)
 
     if args.pids and len(rosters) > 0:
         print(

@@ -1,6 +1,6 @@
 import os
 from nose import tools as ntools
-from optimize import run
+from optimize import run, run_multi
 from argparse import Namespace
 
 
@@ -31,6 +31,7 @@ args_dict = dict(
     flex_position=None,
     min_avg=-1,
     historical_date=None,
+    pids=None,
 )
 
 
@@ -193,7 +194,7 @@ def test_te_combo():
         x for x in roster.sorted_players()
         if x.team == qb.team and x.pos == 'TE'
     ])
-    ntools.assert_equals(team_count, 2)
+    ntools.assert_equals(team_count, 1)
 
 
 def test_no_double_te():
@@ -220,15 +221,11 @@ def test_no_double_te():
 
 def test_exposure_limits():
     args = Namespace(**args_dict)
+    args.i = 100
+    args.random_seed = 42
     args.exposure_limit_file = \
         '{}/test/data/exposures.csv' \
         .format(os.getcwd())
-    roster = run(NFL, args, existing_rosters=[])
-    players = [p.name for p in roster.players]
-    ntools.assert_true('Tom Brady' in players)
-    ntools.assert_true('Lamar Miller' in players)
-
-    next_roster = run(NFL, args, existing_rosters=[roster])
-    next_players = [p.name for p in next_roster.players]
-    ntools.assert_true('Tom Brady' not in next_players)
-    ntools.assert_true('Lamar Miller' in next_players)
+    rosters, exposure_diffs = run_multi(args)
+    ntools.assert_equal(len(rosters), args.i)
+    ntools.assert_equal(len(exposure_diffs), 0)

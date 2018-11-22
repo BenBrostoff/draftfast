@@ -37,8 +37,9 @@ OPTIMIZE_COMMAND_LINE = [
     ['-stack', 'Team to stack', None],
     ['-stack_count', 'Total players to stack', 4],
     ['-force_combo', 'Force a WR and QB combo', None],
-    ['-combo_allow_te', 'Allow TE in combo', None]
+    ['-combo_allow_te', 'Allow TE in combo', None],
     ['-exposure_limit_file', 'Exposure limit file. Must include playername, min and max.'],
+    ['-random_seed', 'Seed for RNG (used for exposures)'],
 ]
 
 
