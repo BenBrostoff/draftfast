@@ -30,7 +30,6 @@ from csv_parse.nba_upload import (
 )
 
 DEFAULT_ARGS = dict(
-    duo='n',
     s='n',
     w=5,
     i=1,
@@ -51,7 +50,6 @@ DEFAULT_ARGS = dict(
     no_double_te=None,
     historical=None,
     season=None,
-    dtype=None,
     flex_position=None,
     locked=None,
     teams=None,

@@ -30,8 +30,6 @@ from csv_parse.nfl_upload import (
 )
 
 DEFAULT_ARGS = dict(
-    dtype='wr',
-    duo='n',
     s='n',
     w=5,
     season=2017,

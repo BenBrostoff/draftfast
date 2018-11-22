@@ -124,6 +124,12 @@ class Optimizer(object):
 
     def _set_combo(self):
         combo = self.settings.__dict__.get('force_combo')
+        combo_allow_te = self.settings.__dict__.get('combo_allow_te')
+
+        combo_skill_type = ['WR']
+        if combo_allow_te:
+            combo_skill_type.append('TE')
+
         if combo:
             teams = set([p.team for p in self.players])
             enumerated_players = self.enumerated_players
@@ -131,7 +137,7 @@ class Optimizer(object):
             for team in teams:
                 wrs_on_team = [
                     self.variables[i] for i, p in enumerated_players
-                    if p.team == team and p.pos == 'WR'
+                    if p.team == team and p.pos in combo_skill_type
                 ]
                 qbs_on_team = [
                     self.variables[i] for i, p in enumerated_players

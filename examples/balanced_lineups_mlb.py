@@ -30,7 +30,6 @@ from csv_parse.mlb_upload import (
 )
 
 DEFAULT_ARGS = dict(
-    duo='n',
     s='n',
     w=5,
     i=1,
@@ -51,7 +50,6 @@ DEFAULT_ARGS = dict(
     source='mlb_rotogrinders',
     no_double_te=None,
     season=None,
-    dtype=None,
     flex_position=None,
     locked=None,
     teams=None,
