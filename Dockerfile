@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends vim
 
 RUN mkdir /dk
 COPY . /dk
-RUN cd dk && ls && pip install -r requirements.txt
 WORKDIR /dk
+RUN pip install -r requirements.txt
 
 CMD ["/bin/bash"]

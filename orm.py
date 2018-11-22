@@ -77,6 +77,9 @@ class Roster:
         return table.table + aggregate_info
 
     def __eq__(self, roster):
+        if not roster:
+            return False
+        
         player_set_a = [a.solver_id for a in self.sorted_players()]
         player_set_b = [b.solver_id for b in roster.sorted_players()]
         return player_set_a == player_set_b

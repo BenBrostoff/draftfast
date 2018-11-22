@@ -71,10 +71,11 @@ def test_within_avg():
 
 def test_duo_constraint():
     args = Namespace(**args_dict)
-    args.duo = 'NE'
+    team = 'NE'
+    args.duo = team
     roster = run(NFL, args)
     team_instances = Counter([p.team for p in roster.players])
-    ntools.assert_equal(team_instances['NE'], 2)
+    ntools.assert_equal(team_instances[team], 2)
 
 
 def test_min_salary():
@@ -120,6 +121,7 @@ def test_lock_overrides():
     args.v_avg = 1
     args.locked = ['Eli Manning']
     roster = run(NFL, args)
+    ntools.assert_not_equals(roster, None)
     ntools.assert_true(
         [
             p for p in roster.players
