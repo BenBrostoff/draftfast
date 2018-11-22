@@ -4,6 +4,7 @@ from optimize import run
 from argparse import Namespace
 from collections import Counter
 
+
 NFL = 'NFL'
 args_dict = dict(
     game='draftkings',
@@ -65,6 +66,7 @@ def test_within_avg():
     roster = run(NFL, args)
     for player in roster.players:
         ntools.assert_less(abs(player.v_avg), avg_test_val)
+
 
 def test_min_salary():
     args = Namespace(**args_dict)
