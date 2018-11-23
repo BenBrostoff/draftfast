@@ -1,18 +1,10 @@
-FROM python:3.6
+FROM ubuntu:16.04
 
-RUN apt-get update && apt-get install -y --no-install-recommends vim
-
-#RUN wget https://github.com/google/or-tools/releases/download/v4.3/or-tools.python.examples_4.3.3805.tar.gz && \
-#  tar -xzf or-tools.python.examples_4.3.3805.tar.gz && \
-#  cd ortools_examples && \
-#  python setup.py install --user && \
-#  cd .. && \
-#  rm -R ortools_examples && \
-#  rm or-tools.python.examples_4.3.3805.tar.gz
+RUN apt-get update && apt-get install -y python3 python3-pip python3-wheel python3-six python3-pip
 
 RUN mkdir /dk
 COPY . /dk
 WORKDIR /dk
-RUN pip install -r requirements.txt
+RUN python -m pip install -r requirements.txt
 
 CMD ["/bin/bash"]
