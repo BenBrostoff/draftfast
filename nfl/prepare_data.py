@@ -4,7 +4,7 @@ import data_cleaning_constants as cons
 new_rows = []
 dk_csv = 'data/current-salaries.csv'
 
-with open(dk_csv, 'rb') as f:
+with open(dk_csv, 'r') as f:
     reader = csv.reader(f)
     for idx, row in enumerate(reader):
         new_row = row
@@ -20,6 +20,6 @@ with open(dk_csv, 'rb') as f:
             new_rows.append(new_row)
 
 
-with open(dk_csv, 'wb') as f:
+with open(dk_csv, 'w') as f:
     writer = csv.writer(f)
     writer.writerows(new_rows)

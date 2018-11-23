@@ -30,7 +30,6 @@ from csv_parse.mlb_upload import (
 )
 
 DEFAULT_ARGS = dict(
-    duo='n',
     s='n',
     w=5,
     i=1,
@@ -51,7 +50,6 @@ DEFAULT_ARGS = dict(
     source='mlb_rotogrinders',
     no_double_te=None,
     season=None,
-    dtype=None,
     flex_position=None,
     locked=None,
     teams=None,
@@ -81,7 +79,7 @@ def run(lineups=20, exposure=0.4, min_avg=1):
         args = DEFAULT_ARGS.copy()
         if exposure:
             args['banned'] = DEFAULT_ARGS['banned'] + [
-                name for name, freq in exposure.items()
+                name for name, freq in list(exposure.items())
                 if freq > max_exposure
             ]
         roster = optimizer_run('MLB', [], Namespace(**args))

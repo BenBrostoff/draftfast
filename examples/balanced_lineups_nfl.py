@@ -30,8 +30,6 @@ from csv_parse.nfl_upload import (
 )
 
 DEFAULT_ARGS = dict(
-    dtype='wr',
-    duo='n',
     s='n',
     w=5,
     season=2017,
@@ -80,7 +78,7 @@ def run(lineups=20, exposure=0.4, min_avg=7):
         args = DEFAULT_ARGS.copy()
         if exposure:
             args['banned'] = DEFAULT_ARGS['banned'] + [
-                name for name, freq in exposure.items()
+                name for name, freq in list(exposure.items())
                 if freq > max_exposure
             ]
         roster = optimizer_run('NFL', [], Namespace(**args))

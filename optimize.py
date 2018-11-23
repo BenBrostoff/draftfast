@@ -29,7 +29,8 @@ _GAMES = [
 def run(league, args, existing_rosters=None):
     args.game = _get_game(args)
     all_players = retrieve_players(args)
-    salary = _get_salary(args)
+    salary_max = _get_salary(args)
+    salary_min = 0
     roster_size = _get_roster_size(args)
     position_limits = _get_position_limits(args)
     general_position_limits = _get_general_position_limits(args)
@@ -38,7 +39,8 @@ def run(league, args, existing_rosters=None):
         players=all_players,
         existing_rosters=existing_rosters,
         settings=args,
-        salary=salary,
+        salary_min=salary_min,
+        salary_max=salary_max,
         roster_size=roster_size,
         position_limits=position_limits,
         general_position_limits=general_position_limits,
@@ -74,7 +76,7 @@ def retrieve_players(args):
         all_players = retrieve_all_players_from_history(args)
     else:
         all_players = []
-        with open(args.salary_file, 'rb') as csv_file:
+        with open(args.salary_file, 'r') as csv_file:
             csv_data = csv.DictReader(csv_file)
 
             for row in csv_data:
@@ -90,7 +92,7 @@ def retrieve_players(args):
             p.proj = p.average_score
             p.marked = True
     elif args.salary_file and args.projection_file:
-        with open(args.projection_file, 'rb') as csvfile:
+        with open(args.projection_file, 'r') as csvfile:
             csvdata = csv.DictReader(csvfile)
 
             # hack for weird defensive formatting
@@ -102,7 +104,7 @@ def retrieve_players(args):
                 return match_fn
 
             for row in csvdata:
-                matching_players = filter(name_match(row), all_players)
+                matching_players = list(filter(name_match(row), all_players))
 
                 if len(matching_players) == 0:
                     continue
@@ -116,10 +118,10 @@ def retrieve_players(args):
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.
-    return filter(
+    return list(filter(
         qc.add_constraints(args),
         all_players
-    )
+    ))
 
 
 def _get_game(settings):
@@ -172,13 +174,10 @@ def _get_general_position_limits(settings):
 
 def _set_player_ownership(all_players, args):
     if args.po_location and args.po:
-        with open(args.po_location, 'rb') as csv_file:
+        with open(args.po_location, 'r') as csv_file:
             csv_data = csv.DictReader(csv_file)
             for row in csv_data:
-                player = filter(
-                    lambda p: p.name in row['Name'],
-                    all_players
-                )
+                player = [p for p in all_players if p.name in row['Name']]
                 if player:
                     player[0].projected_ownership_pct = float(row['%'])
 
@@ -189,22 +188,22 @@ def _check_missing_players(all_players, e_raise):
     as names from different data do not match up
     continues or stops based on inputs
     '''
-    contained_report = len(filter(lambda x: x.marked, all_players))
+    contained_report = len([x for x in all_players if x.marked])
     total_report = len(all_players)
 
-    missing = filter(lambda x: not x.marked, all_players)
+    missing = [x for x in all_players if not x.marked]
     miss_len = len(missing)
 
     if int(e_raise) < miss_len:
-        print(dke.MISSING_ERROR) \
-            .format(str(contained_report), str(total_report), e_raise)
+        print(dke.MISSING_ERROR
+              .format(str(contained_report), str(total_report), e_raise))
         raise dke.MissingPlayersException(
             'Total missing players at price point: ' + str(miss_len))
 
 
 def check_validity(args):
     if args.projection_file:
-        with open(args.projection_file, 'rb') as csvfile:
+        with open(args.projection_file, 'r') as csvfile:
             csvdata = csv.DictReader(csvfile)
             fieldnames = csvdata.fieldnames
             errors = []

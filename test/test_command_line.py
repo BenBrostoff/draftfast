@@ -2,13 +2,11 @@ import os
 from nose import tools as ntools
 from optimize import run
 from argparse import Namespace
-from collections import Counter
+
 
 NFL = 'NFL'
 args_dict = dict(
     game='draftkings',
-    dtype='wr',
-    duo='n',
     i=1,
     season=2016,
     w=1,
@@ -69,14 +67,6 @@ def test_within_avg():
         ntools.assert_less(abs(player.v_avg), avg_test_val)
 
 
-def test_duo_constraint():
-    args = Namespace(**args_dict)
-    args.duo = 'NE'
-    roster = run(NFL, args)
-    team_instances = Counter([p.team for p in roster.players]).values()
-    ntools.assert_in(2, team_instances)
-
-
 def test_min_salary():
     args = Namespace(**args_dict)
     args.sp = 3500
@@ -120,6 +110,7 @@ def test_lock_overrides():
     args.v_avg = 1
     args.locked = ['Eli Manning']
     roster = run(NFL, args)
+    ntools.assert_not_equals(roster, None)
     ntools.assert_true(
         [
             p for p in roster.players
@@ -155,6 +146,7 @@ def test_stack():
 
 
 def test_force_combo():
+    # no combo
     args = Namespace(**args_dict)
     roster = run(NFL, args)
     qb = roster.sorted_players()[0]
@@ -165,6 +157,7 @@ def test_force_combo():
     ])
     ntools.assert_equals(team_count, 1)
 
+    # qb/wr combo
     args = Namespace(**args_dict)
     args.force_combo = True
     roster = run(NFL, args)
@@ -175,6 +168,33 @@ def test_force_combo():
         if x.team == qb.team
     ])
     ntools.assert_equals(team_count, 2)
+
+
+def test_te_combo():
+    # wr combo
+    args = Namespace(**args_dict)
+    args.force_combo = True
+    args.banned = ['Eli Manning']
+
+    roster = run(NFL, args)
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    team_count = len([
+        x for x in roster.sorted_players()
+        if x.team == qb.team
+    ])
+    ntools.assert_equals(team_count, 2)
+
+    # qb/te combo
+    args.combo_allow_te = True
+    roster = run(NFL, args)
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    team_count = len([
+        x for x in roster.sorted_players()
+        if x.team == qb.team and x.pos == 'TE'
+    ])
+    ntools.assert_equals(team_count, 1)
 
 
 def test_no_double_te():
@@ -188,7 +208,6 @@ def test_no_double_te():
         if x.pos == 'TE'
     ])
     ntools.assert_equals(te_count, 2)
-
     args.no_double_te = 'y'
     roster = run(NFL, args)
     qb = roster.sorted_players()[0]

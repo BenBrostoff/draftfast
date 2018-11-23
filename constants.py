@@ -124,17 +124,6 @@ WNBA_GENERAL_POSITIONS = [
     ['F', 3, 4],
 ]
 
-DUO_TYPE = {
-  'wr': [
-    ['QB', 1, 1],
-    ['WR', 1, 1]
-  ],
-  'te': [
-    ["QB", 1, 1],
-    ["TE", 1, 1]
-  ]
-}
-
 DK_TO_NFL_DRAFTKINGS = {
     'Panthers': 'Carolina Panthers',
     'Buccaneers': 'Tampa Bay Buccaneers',

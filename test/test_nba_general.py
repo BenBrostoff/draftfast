@@ -27,8 +27,6 @@ def test_general_center():
 def test_optimize_with_general():
     run_args = Namespace(
         game='draftkings',
-        dtype='wr',
-        duo='n',
         i=1,
         season=2016,
         w=1,

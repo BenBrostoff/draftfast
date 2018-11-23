@@ -65,15 +65,21 @@ class Roster:
         for p in self.sorted_players():
             table_data.append(p.to_table_row())
 
-        table = AsciiTable(table_data).table
+        table = AsciiTable(table_data)
+        table.justify_columns[4] = 'right'
+        table.justify_columns[5] = 'right'
+        table.justify_columns[6] = 'right'
 
-        aggregate_info = '\n\nProjected Score: {} \t Cost: ${}'.format(
+        aggregate_info = '\n\nProjected Score: {:0.2f} \t Cost: ${}'.format(
             self.projected(),
             cs(self.spent()))
 
-        return table + aggregate_info
+        return table.table + aggregate_info
 
     def __eq__(self, roster):
+        if not roster:
+            return False
+
         player_set_a = [a.solver_id for a in self.sorted_players()]
         player_set_b = [b.solver_id for b in roster.sorted_players()]
         return player_set_a == player_set_b
@@ -82,10 +88,10 @@ class Roster:
         self.players.append(player)
 
     def spent(self):
-        return sum(map(lambda x: x.cost, self.players))
+        return sum([x.cost for x in self.players])
 
     def projected(self):
-        return sum(map(lambda x: x.proj, self.players))
+        return sum([x.proj for x in self.players])
 
     def position_order(self, player):
         return self.POSITION_ORDER[player.pos]
@@ -289,13 +295,13 @@ class Player(object):
     def __set_from_data_cache(self, player_data):
         if player_data is None:
             return
-        for k, v in player_data.items():
+        for k, v in list(player_data.items()):
             setattr(self, k, v)
 
     def __format_v_avg(self):
         if self.v_avg > 0:
-            return '\x1b[0;32;40m{}\x1b[0m'.format(self.v_avg)
-        return '\x1b[0;31;40m{}\x1b[0m'.format(self.v_avg)
+            return '\x1b[0;32;40m{:0.2f}\x1b[0m'.format(self.v_avg)
+        return '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(self.v_avg)
 
 
 class Game:

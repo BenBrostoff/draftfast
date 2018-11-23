@@ -11,3 +11,7 @@ lineups.sh
 data/df.csv
 data/fd.csv
 experimental/
+
+.spyproject
+.vscode
+start_container.bat
