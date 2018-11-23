@@ -19,6 +19,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-po', 'highest acceptable ownership', 100],
     ['-limit', 'disallow more than 1 player per team sans QB', 'n'],
     ['-home', 'only select players playing at home', None],
+    ['-no_double_te', 'disallow two tight end lineups', 'n'],
     ['-teams', 'player must be on specified teams', None],
     ['-locked', 'player must be in final lineup', None],
     ['-banned', 'player cannot be named players', None],
@@ -38,8 +39,8 @@ OPTIMIZE_COMMAND_LINE = [
     ['-stack_count', 'Total players to stack', 4],
     ['-force_combo', 'Force a WR and QB combo', None],
     ['-combo_allow_te', 'Allow TE in combo', None],
-    ['-exposure_limit_file', 'Exposure limit file. Must include playername, min and max.'],
-    ['-random_seed', 'Seed for RNG (used for exposures)'],
+    ['-exposure_limit_file', 'Exposure limit file. Must include playername, min and max.', None],
+    ['-random_seed', 'Seed for RNG (used for exposures)', None],
 ]
 
 

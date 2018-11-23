@@ -60,7 +60,7 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
     variables = optimizer.variables
 
     opt_message = 'Optimized over {} players'.format(len(all_players))
-    #print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
+    print('\x1b[0;32;40m{}\x1b[0m'.format(opt_message))
 
     if optimizer.solve():
         roster = RosterSelect().roster_gen(args.league)
@@ -69,9 +69,9 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
             if variables[i].solution_value() == 1:
                 roster.add_player(player)
 
-        #print('Optimal roster for: {}'.format(league))
-        #print(roster)
-        #print()
+        print('Optimal roster for: {}'.format(league))
+        print(roster)
+        print()
 
         return roster
     else:
