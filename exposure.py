@@ -61,6 +61,9 @@ def get_exposure_args(existing_rosters, exposure_bounds, N, seed):
 
 
 def check_exposure(rosters, bounds):
+    if not bounds:
+        return {}
+
     exposures = {}
     for r in rosters:
         for p in r.players:
@@ -101,20 +104,25 @@ def get_exposure_table(rosters, bounds):
         'Min',
         'Max'
     ]
-
+    table_data.append(headers)
+    
     for name, num in exposures.items():
-        table_data.append(headers)
 
-        for bound in bounds:
-            if bound['name'] == name:
-                s_min = bounds['min']
-                s_max = bounds['max']
-                if num > len(rosters) * bound['max']:
-                    s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(bound['max'])
-                elif num < len(rosters) * bound['min']:
-                    s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(bound['min'])
+        s_min = ''
+        s_max = ''
 
-                continue
+        # TODO format min/max as a single string
+        if bounds:
+            for bound in bounds:
+                if bound['name'] == name:
+                    s_min = len(rosters) * bound['min']
+                    s_max = len(rosters) * bound['max']
+                    if num > len(rosters) * bound['max']:
+                        s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(len(rosters) * bound['max'])
+                    elif num < len(rosters) * bound['min']:
+                        s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(len(rosters) * bound['min'])
+
+                    continue
 
         table_data.append(players[name].to_exposure_table_row(num, s_min, s_max))
 
@@ -124,4 +132,4 @@ def get_exposure_table(rosters, bounds):
     table.justify_columns[6] = 'right'
     table.justify_columns[7] = 'right'
 
-    return table.table
+    return 'Roster Exposure:\n' + table.table

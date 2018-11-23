@@ -13,7 +13,7 @@ from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
-from exposure import parse_exposure_file, get_exposure_args, check_exposure
+from exposure import parse_exposure_file, get_exposure_args, check_exposure, get_exposure_table
 from optimizer import Optimizer
 
 _YES = 'y'
@@ -32,7 +32,7 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
         exposure_args = get_exposure_args(
             existing_rosters=existing_rosters,
             exposure_bounds=exposure_bounds,
-            N=args.i,
+            N=int(args.i),
             seed=args.random_seed,
         )
         args.locked = exposure_args['locked']
@@ -106,6 +106,9 @@ def run_multi(args):
     exposure_diffs = {}
 
     if rosters:
+        print(get_exposure_table(rosters, exposure_bounds))
+        print()
+
         exposure_diffs = check_exposure(rosters, exposure_bounds)
         for n, d in exposure_diffs.items():
             if d < 0:
