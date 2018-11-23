@@ -37,7 +37,8 @@ OPTIMIZE_COMMAND_LINE = [
     ['-stack', 'Team to stack', None],
     ['-stack_count', 'Total players to stack', 4],
     ['-force_combo', 'Force a WR and QB combo', None],
-    ['-combo_allow_te', 'Allow TE in combo', None]
+    ['-combo_allow_te', 'Allow TE in combo', None],
+    ['-no_double_te', 'Force RB/WR in FLEX spot', 'n']
 ]
 
 

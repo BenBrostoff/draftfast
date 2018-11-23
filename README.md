@@ -38,21 +38,16 @@ Note that the default file location for the projection file is `./data/current-p
 
 ## Optimization Options
 
-Force a QB/WR or QB/TE combination from a particular team. For instance, if I wanted a guaranteed Cam Newton / Greg Olsen duo:
+Force a QB/WR or QB/TE combination from a particular team:
 
 ```
-python optimize.py -mp 100 -duo CAR -dtype TE
-```
-
-Another example pairing Antonio Brown and Ben Roethlisberger:
-
-```
-python optimize.py -mp 100 -duo PIT -dtype WR
+python optimize.py -mp 100 python optimize.py -mp 500 -force_combo y -locked "Russell Wilson"
 ```
 
 Limit same team representation except for QB / skill player combos. Example:
 
 ```
+
 python optimize.py -mp 100 -limit y
 ```
 
