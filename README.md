@@ -10,8 +10,7 @@ Special thanks to [swanson](https://github.com/swanson/), who authored [this rep
 
 Pre-reqs:
 
-* Python 2 but NOT Python 3 compatible yet (currently working on implementation)
-* [ortools](https://developers.google.com/optimization/install/)
+* Python 3
 * `pip install -r requirements.txt`
 
 To run, download your desired week's salaries on DraftKings, and then run:
