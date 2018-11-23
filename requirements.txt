@@ -6,3 +6,4 @@ numpy==1.10.4
 terminaltables==3.1.0
 draft-kings-db==0.1.2
 ortools==6.7.4973
+coverage==4.5.2
