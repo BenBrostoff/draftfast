@@ -2,7 +2,6 @@ import os
 from nose import tools as ntools
 from optimize import run
 from argparse import Namespace
-from collections import Counter
 
 
 NFL = 'NFL'
