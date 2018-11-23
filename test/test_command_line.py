@@ -195,7 +195,7 @@ def test_te_combo():
         x for x in roster.sorted_players()
         if x.team == qb.team and x.pos == 'TE'
     ])
-    ntools.assert_equals(team_count, 2)
+    ntools.assert_equals(team_count, 1)
 
 
 def test_no_double_te():
