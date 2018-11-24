@@ -4,6 +4,7 @@ import random
 from collections import OrderedDict
 from terminaltables import AsciiTable
 
+
 def parse_exposure_file(file_location):
     """
     :param file: File location
@@ -15,8 +16,8 @@ def parse_exposure_file(file_location):
         reader = csv.DictReader(filename)
         for row in reader:
             if 'name' not in row or \
-                'min' not in row or \
-                'max' not in row:
+               'min' not in row or \
+               'max' not in row:
                 raise Exception('''
                     You must provide a min, max and name
                     for each row - got {}.
@@ -74,7 +75,7 @@ def get_exposure_args_deterministic(exposures, existing_rosters,
 def get_exposure_args_random(exposures, existing_rosters, exposure_bounds, N,
                              random_seed):
     random.seed(random_seed)
-    
+
     banned = []
     locked = []
 
@@ -128,7 +129,9 @@ def get_exposure_table(rosters, bounds):
             exposures[p.name] = exposures.get(p.name, 0) + 1
             players[p.name] = p
 
-    exposures = OrderedDict(sorted(exposures.items(), key=lambda t: t[1], reverse=True))
+    exposures = OrderedDict(sorted(exposures.items(),
+                                   key=lambda t: t[1],
+                                   reverse=True))
 
     table_data = []
     headers = [
@@ -155,15 +158,21 @@ def get_exposure_table(rosters, bounds):
                     s_min = len(rosters) * bound['min']
                     s_max = len(rosters) * bound['max']
                     if num > len(rosters) * bound['max']:
-                        s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(len(rosters) * bound['max'])
+                        s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(
+                                    len(rosters) * bound['max']
+                                    )
                     elif num < len(rosters) * bound['min']:
-                        s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(len(rosters) * bound['min'])
+                        s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(
+                                    len(rosters) * bound['min']
+                                    )
 
                     continue
 
-        table_data.append(players[name].to_exposure_table_row(num, s_min, s_max))
+        table_data.append(players[name].to_exposure_table_row(num,
+                                                              s_min,
+                                                              s_max))
 
-    table = AsciiTable(table_data)        
+    table = AsciiTable(table_data)
     table.justify_columns[4] = 'right'
     table.justify_columns[5] = 'right'
     table.justify_columns[6] = 'right'

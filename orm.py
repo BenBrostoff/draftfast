@@ -79,7 +79,7 @@ class Roster:
     def __eq__(self, roster):
         if not roster:
             return False
-        
+
         player_set_a = [a.solver_id for a in self.sorted_players()]
         player_set_b = [b.solver_id for b in roster.sorted_players()]
         return player_set_a == player_set_b
@@ -226,7 +226,7 @@ class Player(object):
             self.__format_v_avg(),
             'LOCK' if self.lock else ''
         ]
-    
+
     def to_exposure_table_row(self, N, s_min, s_max):
         return [
             self.formatted_position,

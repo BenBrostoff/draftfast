@@ -5,7 +5,6 @@ https://github.com/swanson/degenerate
 '''
 
 import csv
-from sys import exit
 import constants as cons
 import dke_exceptions as dke
 import query_constraints as qc
@@ -13,7 +12,8 @@ from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
-from exposure import parse_exposure_file, get_exposure_args, check_exposure, get_exposure_table
+from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
+                     get_exposure_table
 from optimizer import Optimizer
 
 _YES = 'y'
