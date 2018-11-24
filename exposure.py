@@ -31,13 +31,50 @@ def parse_exposure_file(file_location):
     return exposures
 
 
-def get_exposure_args(existing_rosters, exposure_bounds, N, seed):
-    random.seed(seed)
+def get_exposure_args(existing_rosters, exposure_bounds, N, use_random,
+                      random_seed):
     exposures = {}
     for r in existing_rosters:
         for p in r.players:
             exposures[p.name] = exposures.get(p.name, 0) + 1
 
+    if use_random == 'y':
+        return get_exposure_args_random(exposures, existing_rosters,
+                                        exposure_bounds, N, random_seed)
+
+    return get_exposure_args_deterministic(exposures, existing_rosters,
+                                           exposure_bounds)
+
+
+def get_exposure_args_deterministic(exposures, existing_rosters,
+                                    exposure_bounds):
+    banned = []
+    locked = []
+
+    for bound in exposure_bounds:
+        name = bound['name']
+
+        total = float(len(existing_rosters) + 1)
+        min_lines = bound['min'] * total
+        max_lines = math.floor(bound['max'] * total)
+        lineups = exposures.get(name, 0)
+
+        if lineups < min_lines:
+            # TODO - downsize locked so solution is not impossible
+            locked.append(name)
+        elif lineups >= max_lines:
+            banned.append(name)
+
+    return {
+        'banned': banned,
+        'locked': locked,
+    }
+
+
+def get_exposure_args_random(exposures, existing_rosters, exposure_bounds, N,
+                             random_seed):
+    random.seed(random_seed)
+    
     banned = []
     locked = []
 
@@ -105,7 +142,7 @@ def get_exposure_table(rosters, bounds):
         'Max'
     ]
     table_data.append(headers)
-    
+
     for name, num in exposures.items():
 
         s_min = ''

@@ -32,6 +32,7 @@ args_dict = dict(
     min_avg=-1,
     historical_date=None,
     pids=None,
+    random_exposure='n',
 )
 
 
@@ -219,10 +220,30 @@ def test_no_double_te():
     ntools.assert_equals(te_count, 1)
 
 
-def test_exposure_limits():
+def test_deterministic_exposure_limits():
     args = Namespace(**args_dict)
-    args.i = 100
-    args.random_seed = 42
+    args.i = 2
+    args.exposure_limit_file = \
+        '{}/test/data/exposures.csv' \
+        .format(os.getcwd())
+    rosters, exposure_diffs = run_multi(args)
+    ntools.assert_equal(len(rosters), args.i)
+    ntools.assert_equal(len(exposure_diffs), 0)
+    
+    players = [p.name for p in rosters[0].players]
+    ntools.assert_true('Russell Wilson' in players)
+    ntools.assert_true('Alshon Jeffery' in players)
+
+    players = [p.name for p in rosters[1].players]
+    ntools.assert_true('Russell Wilson' not in players)
+    ntools.assert_true('Alshon Jeffery' in players)
+    
+
+def test_random_exposure_limits():
+    args = Namespace(**args_dict)
+    args.i = 10
+    args.random_exposure = 'y'
+    args.exposure_random_seed = 42
     args.exposure_limit_file = \
         '{}/test/data/exposures.csv' \
         .format(os.getcwd())

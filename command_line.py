@@ -40,7 +40,8 @@ OPTIMIZE_COMMAND_LINE = [
     ['-force_combo', 'Force a WR and QB combo', None],
     ['-combo_allow_te', 'Allow TE in combo', None],
     ['-exposure_limit_file', 'Exposure limit file. Must include playername, min and max.', None],
-    ['-random_seed', 'Seed for RNG (used for exposures)', None],
+    ['-random_exposure', 'Use non-deterministic exposure algorithm', 'n'],
+    ['-random_exposure_seed', 'Seed for RNG (used for exposures)', None],
 ]
 
 

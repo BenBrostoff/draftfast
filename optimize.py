@@ -33,7 +33,8 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
             existing_rosters=existing_rosters,
             exposure_bounds=exposure_bounds,
             N=int(args.i),
-            seed=args.random_seed,
+            use_random=args.random_exposure,
+            random_seed=args.__dict__.get('random_exposure_seed', 0)
         )
         args.locked = exposure_args['locked']
         args.banned = exposure_args['banned']
