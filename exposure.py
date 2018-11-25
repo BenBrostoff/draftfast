@@ -4,6 +4,7 @@ import random
 from collections import OrderedDict
 from terminaltables import AsciiTable
 
+# TODO use exposure objects
 
 def parse_exposure_file(file_location):
     """
