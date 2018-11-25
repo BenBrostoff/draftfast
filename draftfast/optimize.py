@@ -6,14 +6,11 @@ https://github.com/swanson/degenerate
 
 import csv
 from sys import exit
-import constants as cons
-import dke_exceptions as dke
-import query_constraints as qc
-from command_line import get_args
-from csv_parse import nfl_upload, nba_upload, mlb_upload
-from orm import RosterSelect, retrieve_all_players_from_history
-from csv_parse.salary_download import generate_player
-from optimizer import Optimizer
+from draftfast import constants as cons, dke_exceptions as dke, query_constraints as qc
+from draftfast.command_line import get_args
+from draftfast.csv_parse import nfl_upload, mlb_upload, nba_upload, salary_download
+from draftfast.orm import RosterSelect, retrieve_all_players_from_history
+from draftfast.optimizer import Optimizer
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -81,7 +78,7 @@ def retrieve_players(args):
 
             for row in csv_data:
                 for pos in row['Position'].split('/'):
-                    all_players.append(generate_player(
+                    all_players.append(salary_download.generate_player(
                         pos, row, args
                     ))
 

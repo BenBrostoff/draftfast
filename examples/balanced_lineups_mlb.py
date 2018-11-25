@@ -20,10 +20,10 @@ balanced_lineups_mlb.run()
 import random
 import numpy
 from collections import Counter
-from optimize import run as optimizer_run
+from draftfast.optimize import run as optimizer_run
 from argparse import Namespace
 
-from csv_parse.mlb_upload import (
+from draftfast.csv_parse import (
     update_upload_csv,
     create_upload_file,
     map_pids,

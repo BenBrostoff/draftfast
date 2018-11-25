@@ -1,8 +1,8 @@
 import csv
 from terminaltables import AsciiTable
 from draft_kings_db import client
-from query_constraints import add_pickem_contraints
-from pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
+from draftfast.query_constraints import add_pickem_contraints
+from draftfast.pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
 
 
 def optimize(all_players, cmd_args=None):

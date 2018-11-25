@@ -1,7 +1,7 @@
 import os
 from nose import tools as ntools
-from orm import Player
-from optimize import run
+from draftfast.orm import Player
+from draftfast.optimize import run
 from argparse import Namespace
 
 
@@ -45,9 +45,8 @@ def test_optimize_with_general():
         po=0,
         po_location=None,
         v_avg=10000,
-        source='nba_rotogrinders',
-        salary_file=os.getcwd() + '/test/data/nba-test-salaries.csv',
-        projection_file=os.getcwd() + '/test/data/nba-test-projections.csv',
+        salary_file=os.getcwd() + '/draftfast/test/data/nba-test-salaries.csv',
+        projection_file=os.getcwd() + '/draftfast/test/data/nba-test-projections.csv',
         flex_position=None,
         min_avg=-1,
         historical_date=None,

@@ -1,5 +1,5 @@
-from orm import Player
-from constants import DRAFT_KINGS, FAN_DUEL
+from draftfast.orm import Player
+from draftfast.constants import DRAFT_KINGS, FAN_DUEL
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {

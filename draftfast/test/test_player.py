@@ -1,5 +1,5 @@
 from nose import tools as ntools
-from orm import Player
+from draftfast.orm import Player
 
 
 def test_player_value():

@@ -2,8 +2,10 @@ import os
 import csv
 
 from nose.tools import assert_equal
-from csv_parse import nba_upload
-from orm import NBARoster, Player
+from draftfast.csv_parse import nba_upload
+from draftfast.orm import NBARoster, Player
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 players = [
     Player(name='A', cost=1, proj=1, pos='SG'),
@@ -29,7 +31,7 @@ def test_upload():
 
     nba_upload.create_upload_file()
     nba_upload.update_upload_csv(p_map, roster)
-    upload = '{}/data/current-upload.csv'.format(os.getcwd())
+    upload = '{}/data/current-upload.csv'.format(CURRENT_DIR)
     with open(upload, 'r') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for idx, row in enumerate(reader):

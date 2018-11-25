@@ -1,8 +1,9 @@
 import os
 from nose import tools as ntools
-from optimize import run
+from draftfast.optimize import run
 from argparse import Namespace
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 NFL = 'NFL'
 args_dict = dict(
@@ -27,8 +28,8 @@ args_dict = dict(
     v_avg=10000,
     test_mode=True,
     source='nfl_rotogrinders',
-    salary_file=os.getcwd() + '/test/data/test-salaries.csv',
-    projection_file=os.getcwd() + '/test/data/test-projections.csv',
+    salary_file='{}/data/test-salaries.csv'.format(CURRENT_DIR),
+    projection_file='{}/data/test-projections.csv'.format(CURRENT_DIR),
     flex_position=None,
     min_avg=-1,
     historical_date=None,

@@ -3,7 +3,7 @@ import subprocess
 import csv
 from itertools import islice
 
-import dke_exceptions as dke
+from draftfast import dke_exceptions as dke
 
 upload_file = '{}/data/current-upload.csv'.format(os.getcwd())
 
@@ -13,8 +13,18 @@ def create_upload_file():
     with open(upload_file, 'w') as f:
         writer = csv.writer(f)
         writer.writerow(
-            ['PG', 'SG', 'SF',
-             'PF', 'C', 'G', 'F', 'UTIL'])
+            [
+                'P',
+                'P',
+                'C',
+                '1B',
+                '2B',
+                '3B',
+                'SS',
+                'OF',
+                'OF',
+                'OF',
+            ])
 
 
 def map_pids(pid_file):
@@ -35,44 +45,19 @@ def map_pids(pid_file):
                 "https://www.draftkings.com/lineup/upload.")
 
         f.close()
-        f = islice(open(pid_file, "r"), n, None)
+        f = islice(open(pid_file, 'r'), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
-            player_map[line['Name'] + " " + line['Position']] = line['ID']
+            player_map[line['Name'] + ' ' + line['Position']] = line['ID']
 
     return player_map
 
 
 def update_upload_csv(player_map, roster):
-    players = roster.sorted_players()
+    sorted_players = roster.sorted_players()
     with open(upload_file, 'a') as f:
         writer = csv.writer(f)
-        ordered_possible = [
-            _on_position(players, ['PG']),
-            _on_position(players, ['SG']),
-            _on_position(players, ['SF']),
-            _on_position(players, ['PF']),
-            _on_position(players, ['C']),
-            _on_position(players, ['SG', 'PG']),
-            _on_position(players, ['SF', 'PF']),
-            players
-        ]
-
-        ordered_lineup = []
-        counter = 0
-        for ps in ordered_possible:
-            counter += 1
-            not_used_ps = [
-                p for p in ps
-                if p not in ordered_lineup
-            ]
-            ordered_lineup.append(not_used_ps[0])
-
         writer.writerow([
             p.get_player_id(player_map)
-            for p in ordered_lineup
+            for p in sorted_players
         ])
-
-
-def _on_position(players, possible):
-    return [p for p in players if p.pos in possible]

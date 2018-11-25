@@ -1,8 +1,8 @@
 import csv
 from itertools import islice
 
-import dke_exceptions as dke
-from nfl.data_cleaning_constants import RENAMES
+from draftfast import dke_exceptions as dke
+from draftfast.nfl.data_cleaning_constants import RENAMES
 
 upload_file = 'data/current-upload.csv'
 

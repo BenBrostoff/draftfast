@@ -1,4 +1,4 @@
-from orm import Player
+from draftfast.orm import Player
 from terminaltables import AsciiTable
 
 T1 = 'T1'

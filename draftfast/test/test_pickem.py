@@ -1,5 +1,5 @@
-from pickem import pickem_orm
-from pickem.pickem_optimize import optimize
+from draftfast.pickem import pickem_orm
+from draftfast.pickem.pickem_optimize import optimize
 from nose import tools as ntools
 from argparse import Namespace
 
