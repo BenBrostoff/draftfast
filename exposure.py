@@ -173,7 +173,3 @@ def get_exposure_table(rosters, bounds):
     table.justify_columns[8] = 'right'
 
     return 'Roster Exposure:\n' + table.table
-
-
-
-
