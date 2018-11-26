@@ -20,12 +20,21 @@ def test_nba_dk():
     roster = beta_run(
         rule_set=rules.DK_NBA_RULE_SET,
         players=mock_player_pool,
+        verbose=True,
+    )
+    ntools.assert_not_equals(roster, None)
+
+def test_nba_dk_with_csv():
+    roster = beta_run(
+        rule_set=rules.DK_NBA_RULE_SET,
+        players=mock_player_pool,
+        verbose=True,
     )
     ntools.assert_not_equals(roster, None)
 
 def test_nba_fd():
     roster = beta_run(
-        rule_set=rules.DK_NBA_RULE_SET,
+        rule_set=rules.FD_NBA_RULE_SET,
         players=mock_player_pool,
     )
     ntools.assert_not_equals(roster, None)
