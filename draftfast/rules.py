@@ -124,37 +124,26 @@ WNBA_GENERAL_POSITIONS = [
     ['F', 3, 4],
 ]
 
-DK_TO_NFL_DRAFTKINGS = {
-    'Panthers': 'Carolina Panthers',
-    'Buccaneers': 'Tampa Bay Buccaneers',
-    'Dolphins': 'Miami Dolphins',
-    'Bears': 'Chicago Bears',
-    'Raiders': 'Oakland Raiders',
-    'Patriots': 'New England Patriots',
-    'Vikings': 'Minnesota Vikings',
-    'Eagles': 'Philadelphia Eagles',
-    '49ers': 'San Francisco 49ers',
-    'Bengals': 'Cincinnati Bengals',
-    'Bills': 'Buffalo Bills',
-    'Broncos': 'Denver Broncos',
-    'Browns': 'Cleveland Browns',
-    'Cardinals': 'Arizona Cardinals',
-    'Chargers': 'San Diego Chargers',
-    'Chiefs': 'Kansas City Chiefs',
-    'Colts': 'Indianapolis Colts',
-    'Cowboys': 'Dallas Cowboys',
-    'Falcons': 'Atlanta Falcons',
-    'Giants': 'New York Giants',
-    'Jaguars': 'Jacksonville Jaguars',
-    'Jets': 'New York Jets',
-    'Lions': 'Detroit Lions',
-    'Packers': 'Green Bay Packers',
-    'Rams': 'Los Angeles Rams',
-    'Ravens': 'Baltimore Ravens',
-    'Redskins': 'Washington Redskins',
-    'Saints': 'New Orleans Saints',
-    'Seahawks': 'Seattle Seahawks',
-    'Steelers': 'Pittsburgh Steelers',
-    'Texans': 'Houston Texans',
-    'Titans': 'Tennessee Titans'
-}
+
+class RuleSet(object):
+
+    def __init__(self, site, league,
+                 roster_size, position_limits,
+                 salary_max, salary_min=0,
+                 general_position_limits=None):
+        self.site = site
+        self.league = league
+        self.roster_size = roster_size
+        self.position_limits = position_limits
+        self.general_position_limits=general_position_limits
+        self.salary_min = salary_min
+        self.salary_max = salary_max
+
+DK_NBA_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NBA',
+    roster_size=8,
+    position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
+    general_position_limits=NBA_GENERAL_POSITIONS,
+    salary_max=50000,
+)

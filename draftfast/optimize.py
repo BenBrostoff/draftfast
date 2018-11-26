@@ -6,7 +6,7 @@ https://github.com/swanson/degenerate
 
 import csv
 from sys import exit
-from draftfast import constants as cons, dke_exceptions as dke, query_constraints as qc
+from draftfast import rules as cons, dke_exceptions as dke, query_constraints as qc
 from draftfast.command_line import get_args
 from draftfast.csv_parse import nfl_upload, mlb_upload, nba_upload, salary_download
 from draftfast.orm import RosterSelect, retrieve_all_players_from_history
@@ -21,6 +21,44 @@ _GAMES = [
     cons.DRAFT_KINGS,
     cons.FAN_DUEL
 ]
+
+# WIP - convert once structure in place
+def beta_run(rule_set, players, verbose=False):
+    optimizer = Optimizer(
+        players=players,
+        salary_min=rule_set.salary_min,
+        salary_max=rule_set.salary_max,
+        roster_size=rule_set.roster_size,
+        position_limits=rule_set.position_limits,
+        general_position_limits=rule_set.general_position_limits,
+
+        existing_rosters=[],
+        settings=None,
+    )
+    variables = optimizer.variables
+    if optimizer.solve():
+        roster = RosterSelect().roster_gen(rule_set.league)
+
+        for i, player in enumerate(players):
+            if variables[i].solution_value() == 1:
+                roster.add_player(player)
+
+        if verbose:
+            print('Optimal roster for: {}'.format(rule_set.league))
+            print(roster)
+
+        return roster
+
+    if verbose:
+        print(
+            '''
+            No solution found for command line query.
+            Try adjusting your query by taking away constraints.
+
+            Active constraints: {}
+            '''
+        ).format(1) # TODO - add better debugging
+    return None
 
 
 def run(league, args, existing_rosters=None):
