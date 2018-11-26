@@ -3,6 +3,7 @@ import csv
 import random
 from collections import OrderedDict
 from terminaltables import AsciiTable
+import numpy as np
 
 # TODO encapsulate this into an object
 
@@ -175,5 +176,38 @@ def get_exposure_table(rosters, bounds):
     return 'Roster Exposure:\n' + table.table
 
 
+def get_exposure_matrix(rosters, filter=[]):
+    players = set()
+    for r in rosters:
+        for p in r:
+            players.add(p)
+
+    #sorted_names = sorted(list(players), key=lambda x: x.name)
+    sorted_names = sorted(list(players))
+    player_matrix = np.zeros((len(players), len(players)), dtype=int)
+
+    for r in rosters:
+        for i, p1 in enumerate(sorted_names):
+            for j, p2 in enumerate(sorted_names):
+                if p1 in r and p2 in r:
+                    player_matrix[i, j] += 1
+
+    rows = [[''] + sorted_names]
+
+    for i, p in enumerate(sorted_names):
+        rows.append([p] + list(player_matrix[i, :]))
+
+    table = AsciiTable(rows)
+    table.inner_row_border = True
+
+    return table.table
 
 
+if __name__ == '__main__':
+    rosters = [
+               ['a', 'b', 'c', 'd', 'e'],
+               ['a', 'b', 'c', 'f', 'g'],
+               ['a', 'c', 'f', 'h', 'i']
+              ]
+
+    print(get_exposure_matrix(rosters))

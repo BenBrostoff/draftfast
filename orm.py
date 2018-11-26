@@ -84,6 +84,19 @@ class Roster:
         player_set_b = [b.solver_id for b in roster.sorted_players()]
         return player_set_a == player_set_b
 
+    def __contains__(self, player):
+        compare_name = False
+        if isinstance(player, str):
+            compare_name = True
+        elif not isinstance(player, Player):
+            raise NotImplementedError
+
+        for p in self.players:
+            if p == player or (compare_name and p.name == player):
+                return True
+
+        return False
+
     def add_player(self, player):
         self.players.append(player)
 
