@@ -84,7 +84,6 @@ def get_exposure_args_random(exposures, exposure_bounds, n, random_seed):
         # randomly lock in players based on the desired exposure
         # TODO - downsize locked so solution is not impossible
         r = random.random()
-        print('^^^^^^^ {} {}'.format(r, bound['max']))
         if r <= bound['max']:
             locked.append(name)
 
