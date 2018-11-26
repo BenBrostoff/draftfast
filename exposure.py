@@ -137,6 +137,7 @@ def get_exposure_table(rosters, bounds):
         'Team',
         'Matchup',
         'Salary',
+        'Projection',
         '# Lineups',
         'Min',
         'Max'
@@ -169,5 +170,10 @@ def get_exposure_table(rosters, bounds):
     table.justify_columns[5] = 'right'
     table.justify_columns[6] = 'right'
     table.justify_columns[7] = 'right'
+    table.justify_columns[8] = 'right'
 
     return 'Roster Exposure:\n' + table.table
+
+
+
+
