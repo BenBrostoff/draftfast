@@ -5,7 +5,6 @@ https://github.com/swanson/degenerate
 '''
 
 import csv
-from sys import exit
 import constants as cons
 import dke_exceptions as dke
 import query_constraints as qc
@@ -13,7 +12,10 @@ from command_line import get_args
 from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
+from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
+                     get_exposure_table
 from optimizer import Optimizer
+import random
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -26,9 +28,21 @@ _GAMES = [
 ]
 
 
-def run(league, args, existing_rosters=None):
+def run(league, args, existing_rosters=None, exposure_bounds=None):
+    if exposure_bounds:
+        exposure_args = get_exposure_args(
+            existing_rosters=existing_rosters,
+            exposure_bounds=exposure_bounds,
+            n=int(args.i),
+            use_random=args.random_exposure,
+            random_seed=args.__dict__.get('random_exposure_seed', 0)
+        )
+        args.locked = exposure_args['locked']
+        args.banned = exposure_args['banned']
+
     args.game = _get_game(args)
     all_players = retrieve_players(args)
+
     salary_max = _get_salary(args)
     salary_min = 0
     roster_size = _get_roster_size(args)
@@ -59,6 +73,7 @@ def run(league, args, existing_rosters=None):
 
         print('Optimal roster for: {}'.format(league))
         print(roster)
+        print()
 
         return roster
     else:
@@ -69,6 +84,44 @@ def run(league, args, existing_rosters=None):
             '''
         )
         return None
+
+
+def run_multi(args):
+    exposure_bounds = None
+    exposure_limit_file = args.__dict__.get('exposure_limit_file')
+    if exposure_limit_file:
+        exposure_bounds = parse_exposure_file(exposure_limit_file)
+
+    # set the random seed globally for random lineup exposure
+    random.seed(args.__dict__.get('exposure_random_seed'))
+
+    rosters = []
+    for _ in range(0, int(args.i)):
+        roster = run(args.league, args, rosters, exposure_bounds)
+
+        if roster:
+            rosters.append(roster)
+            if args.pids:
+                uploader.update_upload_csv(
+                    player_map, roster
+                )
+        else:
+            break
+
+    exposure_diffs = {}
+
+    if rosters:
+        print(get_exposure_table(rosters, exposure_bounds))
+        print()
+
+        exposure_diffs = check_exposure(rosters, exposure_bounds)
+        for n, d in exposure_diffs.items():
+            if d < 0:
+                print('{} is UNDER exposure by {} lineups'.format(n, d))
+            else:
+                print('{} is OVER exposure by {} lineups'.format(n, d))
+
+    return rosters, exposure_diffs
 
 
 def retrieve_players(args):
@@ -227,23 +280,13 @@ if __name__ == '__main__':
     else:
         uploader = nfl_upload
 
+    player_map = None
     if not args.keep_pids:
         uploader.create_upload_file()
     if args.pids:
         player_map = uploader.map_pids(args.pids)
 
-    rosters = []
-    for _ in range(0, int(args.i)):
-        roster = run(args.league, args, rosters)
-
-        if roster:
-            rosters.append(roster)
-            if args.pids:
-                uploader.update_upload_csv(
-                    player_map, roster
-                )
-        else:
-            exit()
+    rosters, _ = run_multi(args)
 
     if args.pids and len(rosters) > 0:
         print(
