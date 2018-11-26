@@ -44,6 +44,7 @@ OPTIMIZE_COMMAND_LINE = [
      ],
     ['-random_exposure', 'Use non-deterministic exposure algorithm', 'n'],
     ['-random_exposure_seed', 'Seed for RNG (used for exposures)', None],
+    ['-groups_file', 'Player group constraints file', None],
 ]
 
 

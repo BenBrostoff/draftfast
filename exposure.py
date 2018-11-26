@@ -98,7 +98,7 @@ def get_exposure_args_random(exposures, existing_rosters, exposure_bounds, N,
         'locked': locked,
     }
 
-
+# TODO split this up to return total exposures, exposure_diffs
 def check_exposure(rosters, bounds):
     if not bounds:
         return {}

@@ -11,6 +11,7 @@ class Optimizer(object):
         roster_size,
         position_limits,
         general_position_limits,
+        player_groups,
         settings,
     ):
         self.solver = pywraplp.Solver(

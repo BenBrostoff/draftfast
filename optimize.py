@@ -15,6 +15,7 @@ from csv_parse.salary_download import generate_player
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
                      get_exposure_table
 from optimizer import Optimizer
+from groups import PlayerGroups
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -27,6 +28,7 @@ _GAMES = [
 ]
 
 
+# TODO cleanup interfaces between run() and run_multi()
 def run(league, args, existing_rosters=None, exposure_bounds=None):
     if exposure_bounds:
         exposure_args = get_exposure_args(
@@ -36,10 +38,17 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
             use_random=args.random_exposure,
             random_seed=args.__dict__.get('random_exposure_seed', 0)
         )
-        args.locked = exposure_args['locked']
-        args.banned = exposure_args['banned']
+        locked = args.locked + exposure_args['locked']
+        banned = args.banned + exposure_args['banned']
+
+    player_groups = _get_player_groups(args)
+    if player_groups:
+        locked += player_groups.get_locked()
+        locked += player_groups.get_locked()
 
     args.game = _get_game(args)
+
+    # this is where player filtering is done for banned/locked/home
     all_players = retrieve_players(args)
 
     salary_max = _get_salary(args)
@@ -57,6 +66,9 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
         roster_size=roster_size,
         position_limits=position_limits,
         general_position_limits=general_position_limits,
+        player_groups=player_groups,
+        locked=locked,
+        banned=banned,
     )
     variables = optimizer.variables
 
@@ -219,6 +231,14 @@ def _get_general_position_limits(settings):
         }[settings.league]
 
     return []
+
+
+def _get_player_groups(settings):
+    f = settings.__dict__.get('groups_file')
+    if f:
+        return PlayerGroups(f)
+
+    return None
 
 
 def _set_player_ownership(all_players, args):
