@@ -1,6 +1,6 @@
 from nose import tools as ntools
 from draftfast.optimize import beta_run
-from draftfast.rules import DK_NBA_RULE_SET
+from draftfast import rules
 from draftfast.orm import Player
 
 mock_player_pool = [
@@ -16,9 +16,30 @@ mock_player_pool = [
     Player(name='A10', cost=5500, proj=55, pos='C'),
 ]
 
-def test_simple():
+def test_nba_dk():
     roster = beta_run(
-        rule_set=DK_NBA_RULE_SET,
+        rule_set=rules.DK_NBA_RULE_SET,
+        players=mock_player_pool,
+    )
+    ntools.assert_not_equals(roster, None)
+
+def test_nba_fd():
+    roster = beta_run(
+        rule_set=rules.DK_NBA_RULE_SET,
+        players=mock_player_pool,
+    )
+    ntools.assert_not_equals(roster, None)
+
+def test_nfl_dk():
+    roster = beta_run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        players=mock_player_pool,
+    )
+    ntools.assert_not_equals(roster, None)
+
+def test_nfl_fd():
+    roster = beta_run(
+        rule_set=rules.FD_NFL_RULE_SET,
         players=mock_player_pool,
     )
     ntools.assert_not_equals(roster, None)

@@ -22,6 +22,12 @@ GAME_KEY_MAP = {
 }
 
 
+# TODO - return players given two CSV locations and RuleSet
+# The two CSVs here should be 1) the DK / FD salary sheet
+# and 2) player projections
+def generate_players_from_csv():
+    pass
+
 def generate_player(pos, row, args):
     '''
     Parses CSV row for DraftKings or FanDuel

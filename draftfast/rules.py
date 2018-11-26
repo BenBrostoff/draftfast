@@ -34,6 +34,7 @@ ROSTER_SIZE = {
         'MLB': 10,
     },
     FAN_DUEL: {
+        'NFL': 9,
         'NBA': 9,
         'MLB': 9,
         'WNBA': 7,
@@ -47,14 +48,15 @@ def get_nfl_positions(
     rb_min=2,
     wr_min=3,
     te_min=1,
-    te_upper=2
+    te_upper=2,
+    d_abbrev='DST',
 ):
     return [
         ['QB', 1, 1],
         ['RB', rb_min, 3],
         ['WR', wr_min, 4],
         ['TE', te_min, te_upper],
-        ['DST', 1, 1]
+        [d_abbrev, 1, 1]
     ]
 
 
@@ -104,6 +106,7 @@ POSITIONS = {
             ['G', 3, 3],
             ['F', 4, 4],
         ],
+        'NFL': get_nfl_positions(d_abbrev='D'),
         'NASCAR': [
             ['D', 5, 5],
         ],
@@ -143,7 +146,34 @@ DK_NBA_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='NBA',
     roster_size=8,
+    salary_max=50000,
     position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
     general_position_limits=NBA_GENERAL_POSITIONS,
+)
+
+FD_NBA_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='NBA',
+    roster_size=9,
+    salary_max=60000,
+    position_limits=POSITIONS[FAN_DUEL]['NBA'],
+    general_position_limits=NBA_GENERAL_POSITIONS,
+)
+
+DK_NFL_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NFL',
+    roster_size=8,
     salary_max=50000,
+    position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
+    general_position_limits=NBA_GENERAL_POSITIONS,
+)
+
+FD_NFL_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='NFL',
+    roster_size=9,
+    salary_max=60000,
+    position_limits=POSITIONS[FAN_DUEL]['NFL'],
+    general_position_limits=NBA_GENERAL_POSITIONS,
 )
