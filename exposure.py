@@ -156,7 +156,7 @@ def get_exposure_table(rosters, bounds):
                     s_max = len(rosters) * bound['max']
                     if num > s_max:
                         s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(s_max)
-                    elif num < s_max:
+                    elif num < s_min:
                         s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(s_min)
 
                     continue
