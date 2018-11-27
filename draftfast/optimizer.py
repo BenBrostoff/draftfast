@@ -61,8 +61,6 @@ class Optimizer(object):
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:
-            # proj = player.proj if self.settings.projection_file \
-            #     else player.average_score
             self.objective.SetCoefficient(
                 self.variables[i],
                 player.proj,

@@ -23,7 +23,9 @@ _GAMES = [
 ]
 
 # WIP - convert once structure in place
-def beta_run(rule_set, players, verbose=False):
+def beta_run(rule_set, players,
+             optimizer_settings=None, upload_settings=None,
+             verbose=False):
     optimizer = Optimizer(
         players=players,
         salary_min=rule_set.salary_min,
@@ -56,8 +58,9 @@ def beta_run(rule_set, players, verbose=False):
             Try adjusting your query by taking away constraints.
 
             Active constraints: {}
+            Player count: {}
             '''
-        ).format(1) # TODO - add better debugging
+        ).format(1, len(players)) # TODO - add better debugging
     return None
 
 
@@ -173,14 +176,6 @@ def _get_game(settings):
     return game
 
 
-def _get_salary(settings):
-    return cons.SALARY_CAP[settings.league][settings.game]
-
-
-def _get_roster_size(settings):
-    return cons.ROSTER_SIZE[settings.game][settings.league]
-
-
 def _get_position_limits(settings):
     if settings.league == 'NFL':
         flex_args = {}
@@ -205,16 +200,6 @@ def _get_general_position_limits(settings):
         }[settings.league]
 
     return []
-
-
-def _set_player_ownership(all_players, args):
-    if args.po_location and args.po:
-        with open(args.po_location, 'r') as csv_file:
-            csv_data = csv.DictReader(csv_file)
-            for row in csv_data:
-                player = [p for p in all_players if p.name in row['Name']]
-                if player:
-                    player[0].projected_ownership_pct = float(row['%'])
 
 
 def _check_missing_players(all_players, e_raise):
