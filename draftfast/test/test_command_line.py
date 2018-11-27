@@ -1,6 +1,6 @@
 import os
 from nose import tools as ntools
-from draftfast.optimize import run
+from draftfast.optimize import run, run_multi
 from argparse import Namespace
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -27,12 +27,13 @@ args_dict = dict(
     po_location=None,
     v_avg=10000,
     test_mode=True,
-    source='nfl_rotogrinders',
-    salary_file='{}/data/test-salaries.csv'.format(CURRENT_DIR),
+salary_file='{}/data/test-salaries.csv'.format(CURRENT_DIR),
     projection_file='{}/data/test-projections.csv'.format(CURRENT_DIR),
     flex_position=None,
     min_avg=-1,
     historical_date=None,
+    pids=None,
+    random_exposure='n',
 )
 
 
@@ -218,3 +219,35 @@ def test_no_double_te():
         if x.pos == 'TE'
     ])
     ntools.assert_equals(te_count, 1)
+
+
+def test_deterministic_exposure_limits():
+    args = Namespace(**args_dict)
+    args.i = 2
+    args.exposure_limit_file = \
+        '{}/test/data/exposures.csv' \
+        .format(os.getcwd())
+    rosters, exposure_diffs = run_multi(args)
+    ntools.assert_equal(len(rosters), args.i)
+    ntools.assert_equal(len(exposure_diffs), 0)
+
+    players = [p.name for p in rosters[0].players]
+    ntools.assert_true('Andrew Luck' in players)
+    ntools.assert_true('Alshon Jeffery' in players)
+
+    players = [p.name for p in rosters[1].players]
+    ntools.assert_true('Andrew Luck' not in players)
+    ntools.assert_true('Alshon Jeffery' in players)
+
+
+def test_random_exposure_limits():
+    args = Namespace(**args_dict)
+    args.i = 10
+    args.random_exposure = 'y'
+    args.exposure_random_seed = 42
+    args.exposure_limit_file = \
+        '{}/test/data/exposures.csv' \
+        .format(os.getcwd())
+    rosters, exposure_diffs = run_multi(args)
+    ntools.assert_equal(len(rosters), args.i)
+    ntools.assert_equal(len(exposure_diffs), 0)

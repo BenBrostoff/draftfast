@@ -227,6 +227,19 @@ class Player(object):
             'LOCK' if self.lock else ''
         ]
 
+    def to_exposure_table_row(self, n, s_min, s_max):
+        return [
+            self.formatted_position,
+            self.name,
+            self.team,
+            self.matchup,
+            cs(self.cost),
+            self.proj,
+            n,
+            s_min,
+            s_max
+        ]
+
     def __repr__(self):
         v_avg = self.__format_v_avg()
         player_dict = dict(
