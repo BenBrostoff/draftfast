@@ -6,12 +6,11 @@ https://github.com/swanson/degenerate
 
 import csv
 import random
-from draftfast import rules as cons, dke_exceptions as dke, query_constraints as qc
+from draftfast import rules as cons, dke_exceptions as dke, player_pool as pool
 from draftfast.command_line import get_args
 from draftfast.csv_parse import nfl_upload, mlb_upload, nba_upload, salary_download
 from draftfast.orm import RosterSelect, retrieve_all_players_from_history
 from draftfast.optimizer import Optimizer
-import draftfast.query_constraints as qc
 from draftfast.command_line import get_args
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
                      get_exposure_table
@@ -27,21 +26,24 @@ _GAMES = [
 ]
 
 # WIP - convert once structure in place
-def beta_run(rule_set, players,
-             optimizer_settings=None, upload_settings=None,
+def beta_run(rule_set,
+             player_pool,
+             optimizer_settings=None,
+             player_settings=None,
+             upload_settings=None,
              verbose=False):
+    players = pool.filter_pool(
+        player_pool,
+        player_settings,
+    )
     optimizer = Optimizer(
         players=players,
-        salary_min=rule_set.salary_min,
-        salary_max=rule_set.salary_max,
-        roster_size=rule_set.roster_size,
-        position_limits=rule_set.position_limits,
-        general_position_limits=rule_set.general_position_limits,
-
-        existing_rosters=[],
-        settings=None,
+        rule_set=rule_set,
+        settings=optimizer_settings,
     )
+
     variables = optimizer.variables
+
     if optimizer.solve():
         roster = RosterSelect().roster_gen(rule_set.league)
 

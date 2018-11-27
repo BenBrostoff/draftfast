@@ -1,30 +1,27 @@
 from ortools.linear_solver import pywraplp
+from draftfast.settings import OptimizerSettings
 
 
 class Optimizer(object):
     def __init__(
         self,
         players,
-        existing_rosters,
-        salary_min,
-        salary_max,
-        roster_size,
-        position_limits,
-        general_position_limits,
+        rule_set,
         settings,
     ):
+        settings = settings or OptimizerSettings()
         self.solver = pywraplp.Solver(
             'FD',
             pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
         )
         self.players = players
         self.enumerated_players = list(enumerate(players))
-        self.existing_rosters = existing_rosters or []
-        self.salary_min = salary_min
-        self.salary_max = salary_max
-        self.roster_size = roster_size
-        self.position_limits = position_limits
-        self.general_position_limits = general_position_limits
+        self.existing_rosters = settings.existing_rosters or []
+        self.salary_min = rule_set.salary_min
+        self.salary_max = rule_set.salary_max
+        self.roster_size = rule_set.roster_size
+        self.position_limits = rule_set.position_limits
+        self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
 
         self.player_to_idx_map = {}

@@ -38,10 +38,30 @@
 #     ['-combo_allow_te', 'Allow TE in combo', None],
 # ]
 
+class PlayerPoolSettings(object):
+
+    def __init__(self, min_proj=None, max_proj=None,
+                 min_avg=None, max_avg=None, min_salary=None,
+                 max_salary=None, locked=None, banned=None):
+        self.min_proj = min_proj
+        self.max_proj = max_proj
+        self.min_avg = min_avg
+        self.max_avg = max_avg
+        self.min_salary = min_salary
+        self.max_salary = max_salary
+        self.locked = locked
+        self.banned = banned
+
+
 class OptimizerSettings(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, locked=None,
+                 stack_team=None, stack_count=None,
+                 existing_rosters=None):
+        self.locked = locked
+        self.stack_team = None
+        self.stack_count = None
+        self.existing_rosters = existing_rosters
 
 
 class UploadSettings(object):
