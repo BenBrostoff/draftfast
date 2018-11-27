@@ -85,7 +85,6 @@ def get_exposure_args_random(exposures, exposure_bounds, n, random_seed):
         # randomly lock in players based on the desired exposure
         # TODO - downsize locked so solution is not impossible
         r = random.random()
-        print('^^^^^^^ {} {}'.format(r, bound['max']))
         if r <= bound['max']:
             locked.append(name)
 
@@ -176,14 +175,15 @@ def get_exposure_table(rosters, bounds):
     return 'Roster Exposure:\n' + table.table
 
 
-def get_exposure_matrix(rosters, filter=[]):
+def get_exposure_matrix(rosters, exclude=[]):
     players = set()
     for r in rosters:
-        for p in r:
+        for p in r.players:
+            if p in exclude:
+                continue
             players.add(p)
 
-    #sorted_names = sorted(list(players), key=lambda x: x.name)
-    sorted_names = sorted(list(players))
+    sorted_names = sorted([p.short_name for p in players])
     player_matrix = np.zeros((len(players), len(players)), dtype=int)
 
     for r in rosters:
@@ -199,15 +199,6 @@ def get_exposure_matrix(rosters, filter=[]):
 
     table = AsciiTable(rows)
     table.inner_row_border = True
+    table.justify_columns = {i: 'center' for i in range(1,len(sorted_names)+1)}
 
     return table.table
-
-
-if __name__ == '__main__':
-    rosters = [
-               ['a', 'b', 'c', 'd', 'e'],
-               ['a', 'b', 'c', 'f', 'g'],
-               ['a', 'c', 'f', 'h', 'i']
-              ]
-
-    print(get_exposure_matrix(rosters))

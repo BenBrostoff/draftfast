@@ -238,6 +238,7 @@ def test_deterministic_exposure_limits():
     ntools.assert_true('Andrew Luck' not in players)
     ntools.assert_true('Alshon Jeffery' in players)
 
+    ntools.assert_true(False)
 
 def test_random_exposure_limits():
     args = Namespace(**args_dict)

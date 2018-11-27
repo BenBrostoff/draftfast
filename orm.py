@@ -1,6 +1,8 @@
 import locale
 from datetime import datetime, date
 from terminaltables import AsciiTable
+from functools import total_ordering
+import re
 
 try:
     locale.setlocale(locale.LC_ALL, 'en_US')
@@ -85,15 +87,14 @@ class Roster:
         return player_set_a == player_set_b
 
     def __contains__(self, player):
-        compare_name = False
         if isinstance(player, str):
-            compare_name = True
-        elif not isinstance(player, Player):
+            for p in self.players:
+                if p.name == player or p.short_name == player:
+                    return True
+        elif isinstance(player, Player):
+            return p in self.players
+        else:
             raise NotImplementedError
-
-        for p in self.players:
-            if p == player or (compare_name and p.name == player):
-                return True
 
         return False
 
@@ -192,6 +193,7 @@ class RosterSelect:
         return roster_dict[league]
 
 
+@total_ordering
 class Player(object):
     _PLAYER_DATA_CACHE = {}
 
@@ -276,6 +278,14 @@ class Player(object):
                self.cost == player.cost and \
                self.team == player.team
 
+    def __hash__(self):
+        return hash((self.pos, self.name, self.cost, self.team))
+
+    def __lt__(self, player):
+        if self.cost == player.cost:
+            return self.name < player.name
+        return self.cost < player.cost
+
     @property
     def value(self):
         return round(self.proj / (self.cost / 1000), 2)
@@ -306,6 +316,20 @@ class Player(object):
         elif self.pos == 'SF' or self.pos == 'PF' or self.pos == 'F':
             return 'F'
         return 'C'
+
+    @property
+    def short_name(self):
+        s = self.name.split()
+
+        # DST
+        if len(s) == 1:
+            return self.name
+
+        # like "AJ McCarron"
+        if re.match(r'^[A-Z]{2}$', s[0]):
+            return s
+
+        return '{}. {}'.format(s[0][0], s[1])
 
     def __set_data_cache(self):
         self._PLAYER_DATA_CACHE[self.name] = {
