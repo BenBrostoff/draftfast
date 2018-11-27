@@ -13,7 +13,7 @@ from draftfast.orm import RosterSelect, retrieve_all_players_from_history
 from draftfast.optimizer import Optimizer
 from draftfast.command_line import get_args
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
-                     get_exposure_table
+    get_exposure_table
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -26,6 +26,8 @@ _GAMES = [
 ]
 
 # WIP - convert once structure in place
+
+
 def beta_run(rule_set,
              player_pool,
              optimizer_settings=None,
@@ -66,7 +68,7 @@ def beta_run(rule_set,
             Active constraints: {}
             Player count: {}
             '''
-        ).format(1, len(players)) # TODO - add better debugging
+        ).format(1, len(players))  # TODO - add better debugging
     return None
 
 

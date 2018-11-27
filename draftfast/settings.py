@@ -38,6 +38,7 @@
 #     ['-combo_allow_te', 'Allow TE in combo', None],
 # ]
 
+
 class PlayerPoolSettings(object):
 
     def __init__(self, min_proj=None, max_proj=None,
@@ -57,11 +58,14 @@ class OptimizerSettings(object):
 
     def __init__(self, locked=None,
                  stack_team=None, stack_count=None,
-                 existing_rosters=None):
+                 existing_rosters=None, force_combo=None,
+                 combo_allow_te=None):
         self.locked = locked
-        self.stack_team = None
-        self.stack_count = None
+        self.stack_team = stack_team
+        self.stack_count = stack_count
         self.existing_rosters = existing_rosters
+        self.force_combo = force_combo
+        self.combo_allow_te = combo_allow_te
 
 
 class UploadSettings(object):

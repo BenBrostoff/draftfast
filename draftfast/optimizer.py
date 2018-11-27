@@ -102,8 +102,8 @@ class Optimizer(object):
 
     def _set_stack(self):
         if self.settings:
-            stack = self.settings.__dict__.get('stack')
-            stack_count = self.settings.__dict__.get('stack_count')
+            stack = self.settings.stack_team
+            stack_count = self.settings.stack_count
 
             if stack and stack_count:
                 position_cap = self.solver.Constraint(
@@ -112,7 +112,7 @@ class Optimizer(object):
                 )
 
                 for i, player in self.enumerated_players:
-                    if self.settings.stack == player.team:
+                    if stack == player.team:
                         position_cap.SetCoefficient(
                             self.variables[i],
                             1
@@ -120,8 +120,8 @@ class Optimizer(object):
 
     def _set_combo(self):
         if self.settings:
-            combo = self.settings.__dict__.get('force_combo')
-            combo_allow_te = self.settings.__dict__.get('combo_allow_te')
+            combo = self.settings.force_combo
+            combo_allow_te = self.settings.combo_allow_te
 
             combo_skill_type = ['WR']
             if combo_allow_te:

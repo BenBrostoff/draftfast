@@ -255,13 +255,13 @@ class Player(object):
 
         return "[{pos: <2}] {name: <20} {team} {match} " \
                "(${cost}, {proj} ({v_avg})), {lock}".format(
-                **player_dict)
+                   **player_dict)
 
     def __eq__(self, player):
         return self.pos == player.pos and \
-               self.name == player.name and \
-               self.cost == player.cost and \
-               self.team == player.team
+            self.name == player.name and \
+            self.cost == player.cost and \
+            self.team == player.team
 
     @property
     def value(self):

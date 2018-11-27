@@ -111,7 +111,7 @@ POSITIONS = {
             ['D', 5, 5],
         ],
         'PGA': [
-          ['G', 6, 6],
+            ['G', 6, 6],
         ],
     }
 }
@@ -138,15 +138,16 @@ class RuleSet(object):
         self.league = league
         self.roster_size = roster_size
         self.position_limits = position_limits
-        self.general_position_limits=general_position_limits
+        self.general_position_limits = general_position_limits
         self.salary_min = salary_min
         self.salary_max = salary_max
+
 
 DK_NBA_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='NBA',
     roster_size=8,
-    salary_max=50000,
+    salary_max=50_000,
     position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
     general_position_limits=NBA_GENERAL_POSITIONS,
 )
@@ -155,7 +156,7 @@ FD_NBA_RULE_SET = RuleSet(
     site=FAN_DUEL,
     league='NBA',
     roster_size=9,
-    salary_max=60000,
+    salary_max=60_000,
     position_limits=POSITIONS[FAN_DUEL]['NBA'],
     general_position_limits=NBA_GENERAL_POSITIONS,
 )
@@ -163,17 +164,17 @@ FD_NBA_RULE_SET = RuleSet(
 DK_NFL_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='NFL',
-    roster_size=8,
-    salary_max=50000,
+    roster_size=9,
+    salary_max=50_000,
     position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
-    general_position_limits=NBA_GENERAL_POSITIONS,
+    general_position_limits=[],
 )
 
 FD_NFL_RULE_SET = RuleSet(
     site=FAN_DUEL,
     league='NFL',
     roster_size=9,
-    salary_max=60000,
+    salary_max=60_000,
     position_limits=POSITIONS[FAN_DUEL]['NFL'],
-    general_position_limits=NBA_GENERAL_POSITIONS,
+    general_position_limits=[],
 )
