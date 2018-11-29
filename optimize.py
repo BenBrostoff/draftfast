@@ -15,7 +15,7 @@ from csv_parse.salary_download import generate_player
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
                      get_exposure_table
 from optimizer import Optimizer
-from groups import PlayerGroups
+import random
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -34,7 +34,7 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
         exposure_args = get_exposure_args(
             existing_rosters=existing_rosters,
             exposure_bounds=exposure_bounds,
-            N=int(args.i),
+            n=int(args.i),
             use_random=args.random_exposure,
             random_seed=args.__dict__.get('random_exposure_seed', 0)
         )
@@ -102,6 +102,9 @@ def run_multi(args):
     exposure_limit_file = args.__dict__.get('exposure_limit_file')
     if exposure_limit_file:
         exposure_bounds = parse_exposure_file(exposure_limit_file)
+
+    # set the random seed globally for random lineup exposure
+    random.seed(args.__dict__.get('exposure_random_seed'))
 
     rosters = []
     for _ in range(0, int(args.i)):
