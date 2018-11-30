@@ -12,7 +12,7 @@ class RuleSet(object):
         return RulesIterator(self.rules)
 
     def __repr__(self):
-        return '[' + ', '.join([repr(r) for r in self.rules]) + ']'
+        return '<RuleSet: ' + ', '.join([repr(r) for r in self.rules]) + '>'
 
     def __str__(self):
         return '\n'.join(str(r) for r in self.rules)
@@ -41,6 +41,15 @@ class RuleSet(object):
                                                         'cannot be both ' +
                                                         'banned and locked')
 
+        if isinstance(rule, PlayerGroupRule):
+            for r in self.rules:
+                if isinstance(r, (PlayerBanRule, PlayerLockRule)):
+                    for p in rule.players:
+                        if p in r.players:
+                            raise RuleConflictException('Ban or lock rule ' +
+                                                        'for {} '.format(p) +
+                                                        'exists')
+
     def _add_rule(self, rule):
         self._check_rule_conflicts(rule)
 
@@ -51,23 +60,15 @@ class RuleSet(object):
         if len(players) != len(set(players)):
             raise RuleException('Duplicate player in group')
 
-        if isinstance(use, (tuple, list)):
-            if len(use) != 2:
-                raise RuleException('Group rule use must be int or length 2')
-
+        if isinstance(use, (tuple, list)) and len(use) == 2:
             lo = use[0]
             hi = use[1]
 
             if hi == lo:
-                if hi == len(players):
-                    self.add_lock_rule(players)
-                    return
-                if hi == 0:
-                    self.add_ban_rule(players)
-                    return
+                raise RuleException('Tuple must have range > 0')
 
             self._add_rule(PlayerGroupRule(players, lo, hi))
-            return
+
         elif isinstance(use, int):
             if use == 0:
                 self.add_ban_rule(players)
@@ -77,7 +78,10 @@ class RuleSet(object):
                 self.add_lock_rule(players)
                 return
 
-            self._add_rule(PlayerGroupRule(players, use, use, exact=True))
+            self._add_rule(PlayerGroupRule(players, use, use))
+
+        else:
+            raise RuleException('Group rule use must be int or length 2')
 
     def add_ban_rule(self, players):
         self._add_rule(PlayerBanRule(players))
@@ -163,15 +167,16 @@ class PlayerRule(AbstractRule):
 
 
 class PlayerGroupRule(PlayerRule):
-    def __init__(self, players, lo, hi, exact=False):
+    def __init__(self, players, lo, hi):
         super().__init__(players)
         self.lo = lo
         self.hi = hi
-        self.exact = exact
+        self.exact = (lo == hi)
         self._sanity_check()
 
     def __repr__(self):
-        return '[{} of {}]'.format(self._bounds_str, self.players)
+        return '<PlayerGroupRule: {} of {}>'.format(self._bounds_str,
+                                                    self.players)
 
     def __str__(self):
         ls = ['Using {} of:'.format(self._bounds_str)] + \
@@ -211,7 +216,7 @@ class PlayerGroupRule(PlayerRule):
 
 class PlayerLockRule(PlayerRule):
     def __repr__(self):
-        return '[LOCKED: {}]'.format(self.players)
+        return '<PlayerLockRule: {}>'.format(self.players)
 
     def __str__(self):
         ls = ['Locking:'] + ['\t'+p for p in self.players]
@@ -223,7 +228,7 @@ class PlayerLockRule(PlayerRule):
 
 class PlayerBanRule(PlayerRule):
     def __repr__(self):
-        return '[BANNED: {}]'.format(self.players)
+        return '<PlayerBanRule: {}>'.format(self.players)
 
     def __str__(self):
         ls = ['Banning:'] + ['\t'+p for p in self.players]

@@ -6,6 +6,7 @@ from terminaltables import AsciiTable
 
 # TODO encapsulate this into an object
 
+
 def parse_exposure_file(file_location):
     """
     :param file: File location
