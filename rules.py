@@ -5,6 +5,9 @@ class RuleSet(object):
     def __init__(self):
         self.rules = []
 
+    def __len__(self):
+        return len(self.rules)
+
     def __iter__(self):
         return RulesIterator(self.rules)
 
@@ -20,12 +23,26 @@ class RuleSet(object):
 
         return set(self.rules) == set(ruleset)
 
-    def _check_rule_conflicts(self):
-        pass
-        # raise RuleConflictException
+    def _check_rule_conflicts(self, rule):
+        if isinstance(rule, PlayerBanRule):
+            for r in self.rules:
+                if isinstance(r, PlayerLockRule):
+                    for p in rule.players:
+                        if p in r.players:
+                            raise RuleConflictException('{} '.format(p) +
+                                                        'cannot be both ' +
+                                                        'banned and locked')
+        if isinstance(rule, PlayerLockRule):
+            for r in self.rules:
+                if isinstance(r, PlayerBanRule):
+                    for p in rule.players:
+                        if p in r.players:
+                            raise RuleConflictException('{} '.format(p) +
+                                                        'cannot be both ' +
+                                                        'banned and locked')
 
     def _add_rule(self, rule):
-        self._check_rule_conflicts()
+        self._check_rule_conflicts(rule)
 
         if rule not in self.rules:
             self.rules.append(rule)
@@ -108,6 +125,10 @@ class AbstractRule(ABC):
     def __hash__(self):
         pass
 
+    @abstractmethod
+    def apply(self):
+        pass
+
 
 class RuleException(Exception):
     pass
@@ -136,6 +157,9 @@ class PlayerRule(AbstractRule):
 
     def __hash__(self):
         return hash(''.join(sorted(self.players)))
+
+    def apply(self):
+        pass
 
 
 class PlayerGroupRule(PlayerRule):
@@ -181,6 +205,9 @@ class PlayerGroupRule(PlayerRule):
             raise RuleException('Bound for {!r} cannot be '.format(self) +
                                 'greater than number of players in group')
 
+    def apply(self):
+        pass
+
 
 class PlayerLockRule(PlayerRule):
     def __repr__(self):
@@ -189,6 +216,9 @@ class PlayerLockRule(PlayerRule):
     def __str__(self):
         ls = ['Locking:'] + ['\t'+p for p in self.players]
         return '\n'.join(ls)
+
+    def apply(self):
+        pass
 
 
 class PlayerBanRule(PlayerRule):
@@ -199,39 +229,5 @@ class PlayerBanRule(PlayerRule):
         ls = ['Banning:'] + ['\t'+p for p in self.players]
         return '\n'.join(ls)
 
-
-if __name__ == '__main__':
-    rs1 = RuleSet()
-    rs1.add_group_rule(['Eli Manning', 'Russell Wilson', 'Doug Martin'], (1, 3))
-    rs1.add_group_rule(['Will Fuller'], 1)
-    rs1.add_group_rule(['Spencer Ware', 'Amari Cooper'], 1)
-    rs1.add_group_rule(['Packers'], 0)
-
-    print(repr(rs1))
-    print(rs1)
-    print()
-
-    rs2 = RuleSet()
-    rs2.add_group_rule(['Spencer Ware', 'Amari Cooper'], 1)
-    rs2.add_ban_rule(['Packers'])
-    rs2.add_group_rule(['Eli Manning', 'Russell Wilson', 'Doug Martin'], (1, 3))
-    rs2.add_lock_rule(['Will Fuller'])
-    rs2 = RuleSet()
-    rs2.add_group_rule(['Eli Manning', 'Russell Wilson', 'Doug Martin'], (1, 3))
-    rs2.add_lock_rule(['Will Fuller'])
-    rs2.add_group_rule(['Spencer Ware', 'Amari Cooper'], 1)
-    rs2.add_ban_rule(['Packers'])
-    rs2.add_group_rule(['Eli Manning', 'Russell Wilson', 'Doug Martin'], (1, 3))
-    rs2.add_group_rule(['Will Fuller'], 1)
-    rs2.add_group_rule(['Spencer Ware', 'Amari Cooper'], 1)
-    rs2.add_group_rule(['Packers'], 0)
-    rs2.add_group_rule(['Eli Manning', 'Doug Martin', 'Russell Wilson'], (1, 3))
-
-    print(repr(rs2))
-    print(rs2)
-    print()
-
-    if rs1 == rs2:
-        print('PASS')
-    else:
-        print('FAIL')
+    def apply(self):
+        pass
