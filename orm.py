@@ -227,14 +227,15 @@ class Player(object):
             'LOCK' if self.lock else ''
         ]
 
-    def to_exposure_table_row(self, N, s_min, s_max):
+    def to_exposure_table_row(self, n, s_min, s_max):
         return [
             self.formatted_position,
             self.name,
             self.team,
             self.matchup,
             cs(self.cost),
-            N,
+            self.proj,
+            n,
             s_min,
             s_max
         ]

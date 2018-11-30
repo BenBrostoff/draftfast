@@ -231,11 +231,11 @@ def test_deterministic_exposure_limits():
     ntools.assert_equal(len(exposure_diffs), 0)
 
     players = [p.name for p in rosters[0].players]
-    ntools.assert_true('Russell Wilson' in players)
+    ntools.assert_true('Andrew Luck' in players)
     ntools.assert_true('Alshon Jeffery' in players)
 
     players = [p.name for p in rosters[1].players]
-    ntools.assert_true('Russell Wilson' not in players)
+    ntools.assert_true('Andrew Luck' not in players)
     ntools.assert_true('Alshon Jeffery' in players)
 
 

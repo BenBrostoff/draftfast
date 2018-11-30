@@ -4,7 +4,7 @@ import random
 from collections import OrderedDict
 from terminaltables import AsciiTable
 
-# TODO use exposure objects
+# TODO encapsulate this into an object
 
 def parse_exposure_file(file_location):
     """
@@ -33,7 +33,7 @@ def parse_exposure_file(file_location):
     return exposures
 
 
-def get_exposure_args(existing_rosters, exposure_bounds, N, use_random,
+def get_exposure_args(existing_rosters, exposure_bounds, n, use_random,
                       random_seed):
     exposures = {}
     for r in existing_rosters:
@@ -41,8 +41,8 @@ def get_exposure_args(existing_rosters, exposure_bounds, N, use_random,
             exposures[p.name] = exposures.get(p.name, 0) + 1
 
     if use_random == 'y':
-        return get_exposure_args_random(exposures, existing_rosters,
-                                        exposure_bounds, N, random_seed)
+        return get_exposure_args_random(exposures, exposure_bounds, n,
+                                        random_seed)
 
     return get_exposure_args_deterministic(exposures, existing_rosters,
                                            exposure_bounds)
@@ -73,30 +73,24 @@ def get_exposure_args_deterministic(exposures, existing_rosters,
     }
 
 
-def get_exposure_args_random(exposures, existing_rosters, exposure_bounds, N,
-                             random_seed):
-    random.seed(random_seed)
-
-    banned = []
+def get_exposure_args_random(exposures, exposure_bounds, n, random_seed):
     locked = []
 
     for bound in exposure_bounds:
         name = bound['name']
 
-        # exclude players who have met max exposure
-        if exposures.get(name, 0) >= N * bound['max']:
-            banned.append(name)
-            continue
-
-        # ramdomly lock in players based on the desired exposure
+        # TODO: maybe exclude players who have met max exposure?
+        # randomly lock in players based on the desired exposure
         # TODO - downsize locked so solution is not impossible
-        if random.random() <= bound['max']:
+        r = random.random()
+        if r <= bound['max']:
             locked.append(name)
 
     return {
-        'banned': banned,
+        'banned': [],
         'locked': locked,
     }
+
 
 # TODO split this up to return total exposures, exposure_diffs
 def check_exposure(rosters, bounds):
@@ -141,6 +135,7 @@ def get_exposure_table(rosters, bounds):
         'Team',
         'Matchup',
         'Salary',
+        'Projection',
         '# Lineups',
         'Min',
         'Max'
@@ -148,7 +143,6 @@ def get_exposure_table(rosters, bounds):
     table_data.append(headers)
 
     for name, num in exposures.items():
-
         s_min = ''
         s_max = ''
 
@@ -158,14 +152,10 @@ def get_exposure_table(rosters, bounds):
                 if bound['name'] == name:
                     s_min = len(rosters) * bound['min']
                     s_max = len(rosters) * bound['max']
-                    if num > len(rosters) * bound['max']:
-                        s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(
-                                    len(rosters) * bound['max']
-                                    )
-                    elif num < len(rosters) * bound['min']:
-                        s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(
-                                    len(rosters) * bound['min']
-                                    )
+                    if num > s_max:
+                        s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(s_max)
+                    elif num < s_max:
+                        s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(s_min)
 
                     continue
 
@@ -178,5 +168,6 @@ def get_exposure_table(rosters, bounds):
     table.justify_columns[5] = 'right'
     table.justify_columns[6] = 'right'
     table.justify_columns[7] = 'right'
+    table.justify_columns[8] = 'right'
 
     return 'Roster Exposure:\n' + table.table
