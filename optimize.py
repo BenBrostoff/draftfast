@@ -13,7 +13,7 @@ from csv_parse import nfl_upload, nba_upload, mlb_upload
 from orm import RosterSelect, retrieve_all_players_from_history
 from csv_parse.salary_download import generate_player
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
-                     get_exposure_table
+                     get_exposure_table, get_exposure_matrix
 from optimizer import Optimizer
 import random
 
@@ -112,6 +112,8 @@ def run_multi(args):
 
     if rosters:
         print(get_exposure_table(rosters, exposure_bounds))
+        print()
+        print(get_exposure_matrix(rosters))
         print()
 
         exposure_diffs = check_exposure(rosters, exposure_bounds)
