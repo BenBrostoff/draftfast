@@ -31,8 +31,6 @@ _GAMES = [
 
 # TODO cleanup interfaces between run() and run_multi()
 def run(league, args, existing_rosters=None, exposure_bounds=None):
-    locked = args.__dict__.get('locked', [])
-    banned = args.__dict__.get('banned', [])
     if exposure_bounds:
         exposure_args = get_exposure_args(
             existing_rosters=existing_rosters,
@@ -41,8 +39,9 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
             use_random=args.random_exposure,
             random_seed=args.__dict__.get('random_exposure_seed', 0)
         )
-        locked = locked + exposure_args['locked']
-        banned = banned + exposure_args['banned']
+
+        args.locked = exposure_args['locked']
+        args.banned = exposure_args['banned']
 
     args.game = _get_game(args)
 
@@ -64,8 +63,6 @@ def run(league, args, existing_rosters=None, exposure_bounds=None):
         roster_size=roster_size,
         position_limits=position_limits,
         general_position_limits=general_position_limits,
-        locked=locked,
-        banned=banned,
     )
     variables = optimizer.variables
 
