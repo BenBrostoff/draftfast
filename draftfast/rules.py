@@ -147,7 +147,7 @@ DK_NBA_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='NBA',
     roster_size=8,
-    salary_max=50_000,
+    salary_max=50000,
     position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
     general_position_limits=NBA_GENERAL_POSITIONS,
 )
@@ -156,7 +156,7 @@ FD_NBA_RULE_SET = RuleSet(
     site=FAN_DUEL,
     league='NBA',
     roster_size=9,
-    salary_max=60_000,
+    salary_max=60000,
     position_limits=POSITIONS[FAN_DUEL]['NBA'],
     general_position_limits=NBA_GENERAL_POSITIONS,
 )
@@ -165,7 +165,7 @@ DK_NFL_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='NFL',
     roster_size=9,
-    salary_max=50_000,
+    salary_max=50000,
     position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
     general_position_limits=[],
 )
@@ -174,7 +174,7 @@ FD_NFL_RULE_SET = RuleSet(
     site=FAN_DUEL,
     league='NFL',
     roster_size=9,
-    salary_max=60_000,
+    salary_max=60000,
     position_limits=POSITIONS[FAN_DUEL]['NFL'],
     general_position_limits=[],
 )
