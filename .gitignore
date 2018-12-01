@@ -18,3 +18,4 @@ start_container.batch
 
 dist/
 draftfast.egg-info/
+start_container.bat

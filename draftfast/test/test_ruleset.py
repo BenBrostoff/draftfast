@@ -1,4 +1,4 @@
-from rules import RuleSet, RuleConflictException, RuleException
+from draftfast.ruleset import RuleSet, RuleConflictException, RuleException
 from nose import tools as ntool
 
 
