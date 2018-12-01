@@ -34,6 +34,7 @@ ROSTER_SIZE = {
         'MLB': 10,
     },
     FAN_DUEL: {
+        'NFL': 9,
         'NBA': 9,
         'MLB': 9,
         'WNBA': 7,
@@ -47,14 +48,15 @@ def get_nfl_positions(
     rb_min=2,
     wr_min=3,
     te_min=1,
-    te_upper=2
+    te_upper=2,
+    d_abbrev='DST',
 ):
     return [
         ['QB', 1, 1],
         ['RB', rb_min, 3],
         ['WR', wr_min, 4],
         ['TE', te_min, te_upper],
-        ['DST', 1, 1]
+        [d_abbrev, 1, 1]
     ]
 
 
@@ -104,11 +106,12 @@ POSITIONS = {
             ['G', 3, 3],
             ['F', 4, 4],
         ],
+        'NFL': get_nfl_positions(d_abbrev='D'),
         'NASCAR': [
             ['D', 5, 5],
         ],
         'PGA': [
-          ['G', 6, 6],
+            ['G', 6, 6],
         ],
     }
 }
@@ -124,37 +127,54 @@ WNBA_GENERAL_POSITIONS = [
     ['F', 3, 4],
 ]
 
-DK_TO_NFL_DRAFTKINGS = {
-    'Panthers': 'Carolina Panthers',
-    'Buccaneers': 'Tampa Bay Buccaneers',
-    'Dolphins': 'Miami Dolphins',
-    'Bears': 'Chicago Bears',
-    'Raiders': 'Oakland Raiders',
-    'Patriots': 'New England Patriots',
-    'Vikings': 'Minnesota Vikings',
-    'Eagles': 'Philadelphia Eagles',
-    '49ers': 'San Francisco 49ers',
-    'Bengals': 'Cincinnati Bengals',
-    'Bills': 'Buffalo Bills',
-    'Broncos': 'Denver Broncos',
-    'Browns': 'Cleveland Browns',
-    'Cardinals': 'Arizona Cardinals',
-    'Chargers': 'San Diego Chargers',
-    'Chiefs': 'Kansas City Chiefs',
-    'Colts': 'Indianapolis Colts',
-    'Cowboys': 'Dallas Cowboys',
-    'Falcons': 'Atlanta Falcons',
-    'Giants': 'New York Giants',
-    'Jaguars': 'Jacksonville Jaguars',
-    'Jets': 'New York Jets',
-    'Lions': 'Detroit Lions',
-    'Packers': 'Green Bay Packers',
-    'Rams': 'Los Angeles Rams',
-    'Ravens': 'Baltimore Ravens',
-    'Redskins': 'Washington Redskins',
-    'Saints': 'New Orleans Saints',
-    'Seahawks': 'Seattle Seahawks',
-    'Steelers': 'Pittsburgh Steelers',
-    'Texans': 'Houston Texans',
-    'Titans': 'Tennessee Titans'
-}
+
+class RuleSet(object):
+
+    def __init__(self, site, league,
+                 roster_size, position_limits,
+                 salary_max, salary_min=0,
+                 general_position_limits=None):
+        self.site = site
+        self.league = league
+        self.roster_size = roster_size
+        self.position_limits = position_limits
+        self.general_position_limits = general_position_limits
+        self.salary_min = salary_min
+        self.salary_max = salary_max
+
+
+DK_NBA_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NBA',
+    roster_size=8,
+    salary_max=50000,
+    position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
+    general_position_limits=NBA_GENERAL_POSITIONS,
+)
+
+FD_NBA_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='NBA',
+    roster_size=9,
+    salary_max=60000,
+    position_limits=POSITIONS[FAN_DUEL]['NBA'],
+    general_position_limits=NBA_GENERAL_POSITIONS,
+)
+
+DK_NFL_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NFL',
+    roster_size=9,
+    salary_max=50000,
+    position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
+    general_position_limits=[],
+)
+
+FD_NFL_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='NFL',
+    roster_size=9,
+    salary_max=60000,
+    position_limits=POSITIONS[FAN_DUEL]['NFL'],
+    general_position_limits=[],
+)

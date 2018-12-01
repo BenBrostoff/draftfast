@@ -1,30 +1,27 @@
 from ortools.linear_solver import pywraplp
+from draftfast.settings import OptimizerSettings
 
 
 class Optimizer(object):
     def __init__(
         self,
         players,
-        existing_rosters,
-        salary_min,
-        salary_max,
-        roster_size,
-        position_limits,
-        general_position_limits,
+        rule_set,
         settings,
     ):
+        settings = settings or OptimizerSettings()
         self.solver = pywraplp.Solver(
             'FD',
             pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
         )
         self.players = players
         self.enumerated_players = list(enumerate(players))
-        self.existing_rosters = existing_rosters or []
-        self.salary_min = salary_min
-        self.salary_max = salary_max
-        self.roster_size = roster_size
-        self.position_limits = position_limits
-        self.general_position_limits = general_position_limits
+        self.existing_rosters = settings.existing_rosters or []
+        self.salary_min = rule_set.salary_min
+        self.salary_max = rule_set.salary_max
+        self.roster_size = rule_set.roster_size
+        self.position_limits = rule_set.position_limits
+        self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
 
         self.player_to_idx_map = {}
@@ -61,11 +58,9 @@ class Optimizer(object):
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:
-            proj = player.proj if self.settings.projection_file \
-                else player.average_score
             self.objective.SetCoefficient(
                 self.variables[i],
-                proj
+                player.proj,
             )
 
     def _set_salary_range(self):
@@ -106,47 +101,49 @@ class Optimizer(object):
             )
 
     def _set_stack(self):
-        stack = self.settings.__dict__.get('stack')
-        stack_count = self.settings.__dict__.get('stack_count')
+        if self.settings:
+            stack = self.settings.stack_team
+            stack_count = self.settings.stack_count
 
-        if stack and stack_count:
-            position_cap = self.solver.Constraint(
-                stack_count,
-                stack_count,
-            )
+            if stack and stack_count:
+                position_cap = self.solver.Constraint(
+                    stack_count,
+                    stack_count,
+                )
 
-            for i, player in self.enumerated_players:
-                if self.settings.stack == player.team:
-                    position_cap.SetCoefficient(
-                        self.variables[i],
-                        1
-                    )
+                for i, player in self.enumerated_players:
+                    if stack == player.team:
+                        position_cap.SetCoefficient(
+                            self.variables[i],
+                            1
+                        )
 
     def _set_combo(self):
-        combo = self.settings.__dict__.get('force_combo')
-        combo_allow_te = self.settings.__dict__.get('combo_allow_te')
+        if self.settings:
+            combo = self.settings.force_combo
+            combo_allow_te = self.settings.combo_allow_te
 
-        combo_skill_type = ['WR']
-        if combo_allow_te:
-            combo_skill_type.append('TE')
+            combo_skill_type = ['WR']
+            if combo_allow_te:
+                combo_skill_type.append('TE')
 
-        if combo:
-            teams = set([p.team for p in self.players])
-            enumerated_players = self.enumerated_players
+            if combo:
+                teams = set([p.team for p in self.players])
+                enumerated_players = self.enumerated_players
 
-            for team in teams:
-                wrs_on_team = [
-                    self.variables[i] for i, p in enumerated_players
-                    if p.team == team and p.pos in combo_skill_type
-                ]
-                qbs_on_team = [
-                    self.variables[i] for i, p in enumerated_players
-                    if p.team == team and p.pos == 'QB'
-                ]
-                self.solver.Add(
-                    self.solver.Sum(wrs_on_team) >=
-                    self.solver.Sum(qbs_on_team)
-                )
+                for team in teams:
+                    wrs_on_team = [
+                        self.variables[i] for i, p in enumerated_players
+                        if p.team == team and p.pos in combo_skill_type
+                    ]
+                    qbs_on_team = [
+                        self.variables[i] for i, p in enumerated_players
+                        if p.team == team and p.pos == 'QB'
+                    ]
+                    self.solver.Add(
+                        self.solver.Sum(wrs_on_team) >=
+                        self.solver.Sum(qbs_on_team)
+                    )
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:

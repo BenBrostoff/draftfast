@@ -1,4 +1,4 @@
-from orm import NFLRoster, Player
+from draftfast.orm import NFLRoster, Player
 from nose import tools as ntool
 
 

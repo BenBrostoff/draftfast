@@ -1,8 +1,9 @@
 import os
 from nose import tools as ntools
-from optimize import run, run_multi
+from draftfast.optimize import run, run_multi
 from argparse import Namespace
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 NFL = 'NFL'
 args_dict = dict(
@@ -26,8 +27,8 @@ args_dict = dict(
     po_location=None,
     v_avg=10000,
     test_mode=True,
-    salary_file=os.getcwd() + '/test/data/test-salaries.csv',
-    projection_file=os.getcwd() + '/test/data/test-projections.csv',
+salary_file='{}/data/test-salaries.csv'.format(CURRENT_DIR),
+    projection_file='{}/data/test-projections.csv'.format(CURRENT_DIR),
     flex_position=None,
     min_avg=-1,
     historical_date=None,
@@ -125,100 +126,6 @@ def test_bad_constraints():
     args.lp = 1000
     roster = run(NFL, args)
     ntools.assert_equal(roster, None)
-
-
-def test_multi_roster():
-    args = Namespace(**args_dict)
-    roster = run(NFL, args)
-    second_roster = run(NFL, args, [roster])
-    ntools.assert_not_equals(roster == second_roster, True)
-
-
-def test_stack():
-    args = Namespace(**args_dict)
-    args.stack = 'NE'
-    args.stack_count = 5
-    roster = run(NFL, args)
-    ne_players_count = len([
-        p for p in roster.sorted_players()
-        if p.team == 'NE'
-    ])
-    ntools.assert_equals(5, ne_players_count)
-
-
-def test_force_combo():
-    # no combo
-    args = Namespace(**args_dict)
-    roster = run(NFL, args)
-    qb = roster.sorted_players()[0]
-    ntools.assert_equal(qb.pos, 'QB')
-    team_count = len([
-        x for x in roster.sorted_players()
-        if x.team == qb.team
-    ])
-    ntools.assert_equals(team_count, 1)
-
-    # qb/wr combo
-    args = Namespace(**args_dict)
-    args.force_combo = True
-    roster = run(NFL, args)
-    qb = roster.sorted_players()[0]
-    ntools.assert_equal(qb.pos, 'QB')
-    team_count = len([
-        x for x in roster.sorted_players()
-        if x.team == qb.team
-    ])
-    ntools.assert_equals(team_count, 2)
-
-
-def test_te_combo():
-    # wr combo
-    args = Namespace(**args_dict)
-    args.force_combo = True
-    args.banned = ['Eli Manning']
-
-    roster = run(NFL, args)
-    qb = roster.sorted_players()[0]
-    ntools.assert_equal(qb.pos, 'QB')
-    team_count = len([
-        x for x in roster.sorted_players()
-        if x.team == qb.team
-    ])
-    ntools.assert_equals(team_count, 2)
-
-    # qb/te combo
-    args.combo_allow_te = True
-    roster = run(NFL, args)
-    qb = roster.sorted_players()[0]
-    ntools.assert_equal(qb.pos, 'QB')
-    team_count = len([
-        x for x in roster.sorted_players()
-        if x.team == qb.team and x.pos == 'TE'
-    ])
-    ntools.assert_equals(team_count, 1)
-
-
-def test_no_double_te():
-    args = Namespace(**args_dict)
-    args.locked = ['Rob Gronkowski']
-    roster = run(NFL, args)
-    qb = roster.sorted_players()[0]
-    ntools.assert_equal(qb.pos, 'QB')
-    te_count = len([
-        x for x in roster.sorted_players()
-        if x.pos == 'TE'
-    ])
-    ntools.assert_equals(te_count, 2)
-    args.no_double_te = 'y'
-    roster = run(NFL, args)
-    qb = roster.sorted_players()[0]
-    ntools.assert_equal(qb.pos, 'QB')
-    te_count = len([
-        x for x in roster.sorted_players()
-        if x.pos == 'TE'
-    ])
-    ntools.assert_equals(te_count, 1)
-
 
 def test_deterministic_exposure_limits():
     args = Namespace(**args_dict)

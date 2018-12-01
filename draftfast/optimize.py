@@ -5,17 +5,15 @@ https://github.com/swanson/degenerate
 '''
 
 import csv
-import constants as cons
-import dke_exceptions as dke
-import query_constraints as qc
-from command_line import get_args
-from csv_parse import nfl_upload, nba_upload, mlb_upload
-from orm import RosterSelect, retrieve_all_players_from_history
-from csv_parse.salary_download import generate_player
-from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
-                     get_exposure_table
-from optimizer import Optimizer
 import random
+from draftfast import rules as cons, dke_exceptions as dke, player_pool as pool
+from draftfast.command_line import get_args
+from draftfast.csv_parse import nfl_upload, mlb_upload, nba_upload, salary_download
+from draftfast.orm import RosterSelect, retrieve_all_players_from_history
+from draftfast.optimizer import Optimizer
+from draftfast.command_line import get_args
+from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
+    get_exposure_table
 
 
 _YES = 'y'
@@ -27,6 +25,52 @@ _GAMES = [
     cons.DRAFT_KINGS,
     cons.FAN_DUEL
 ]
+
+# WIP - convert once structure in place
+
+
+def beta_run(rule_set,
+             player_pool,
+             optimizer_settings=None,
+             player_settings=None,
+             upload_settings=None,
+             verbose=False):
+    players = pool.filter_pool(
+        player_pool,
+        player_settings,
+    )
+    optimizer = Optimizer(
+        players=players,
+        rule_set=rule_set,
+        settings=optimizer_settings,
+    )
+
+    variables = optimizer.variables
+
+    if optimizer.solve():
+        roster = RosterSelect().roster_gen(rule_set.league)
+
+        for i, player in enumerate(players):
+            if variables[i].solution_value() == 1:
+                roster.add_player(player)
+
+        if verbose:
+            print('Optimal roster for: {}'.format(rule_set.league))
+            print(roster)
+
+        return roster
+
+    if verbose:
+        print(
+            '''
+            No solution found for command line query.
+            Try adjusting your query by taking away constraints.
+
+            Active constraints: {}
+            Player count: {}
+            '''
+        ).format(1, len(players))  # TODO - add better debugging
+    return None
 
 
 # TODO cleanup interfaces between run() and run_multi()
@@ -139,11 +183,9 @@ def retrieve_players(args):
 
             for row in csv_data:
                 for pos in row['Position'].split('/'):
-                    all_players.append(generate_player(
+                    all_players.append(salary_download.generate_player(
                         pos, row, args
                     ))
-
-    _set_player_ownership(all_players, args)
 
     if args.__dict__.get('use_average'):
         for p in all_players:
@@ -180,121 +222,3 @@ def retrieve_players(args):
         qc.add_constraints(args),
         all_players
     ))
-
-
-def _get_game(settings):
-    if settings.game not in _GAMES:
-        raise Exception(
-            'You chose {} as DFS game. Available options are {}'
-            .format(settings.game, _GAMES)
-        )
-
-    game = cons.DRAFT_KINGS \
-        if settings.game == 'draftkings' or settings.game == cons.DRAFT_KINGS \
-        else cons.FAN_DUEL
-
-    return game
-
-
-def _get_salary(settings):
-    return cons.SALARY_CAP[settings.league][settings.game]
-
-
-def _get_roster_size(settings):
-    return cons.ROSTER_SIZE[settings.game][settings.league]
-
-
-def _get_position_limits(settings):
-    if settings.league == 'NFL':
-        flex_args = {}
-        if settings.no_double_te == _YES:
-            flex_args['te_upper'] = 1
-        if settings.flex_position == 'RB':
-            flex_args['rb_min'] = 3
-        if settings.flex_position == 'WR':
-            flex_args['wr_min'] = 4
-
-        cons.POSITIONS[settings.game]['NFL'] = \
-            cons.get_nfl_positions(**flex_args)
-
-    return cons.POSITIONS[settings.game][settings.league]
-
-
-def _get_general_position_limits(settings):
-    if settings.league in ['NBA', 'WNBA']:
-        return {
-            'NBA': cons.NBA_GENERAL_POSITIONS,
-            'WNBA': cons.WNBA_GENERAL_POSITIONS,
-        }[settings.league]
-
-    return []
-
-
-def _set_player_ownership(all_players, args):
-    if args.po_location and args.po:
-        with open(args.po_location, 'r') as csv_file:
-            csv_data = csv.DictReader(csv_file)
-            for row in csv_data:
-                player = [p for p in all_players if p.name in row['Name']]
-                if player:
-                    player[0].projected_ownership_pct = float(row['%'])
-
-
-def _check_missing_players(all_players, e_raise):
-    '''
-    Check for significant missing players
-    as names from different data do not match up
-    continues or stops based on inputs
-    '''
-    contained_report = len([x for x in all_players if x.marked])
-    total_report = len(all_players)
-
-    missing = [x for x in all_players if not x.marked]
-    miss_len = len(missing)
-
-    if int(e_raise) < miss_len:
-        print(dke.MISSING_ERROR
-              .format(str(contained_report), str(total_report), e_raise))
-        raise dke.MissingPlayersException(
-            'Total missing players at price point: ' + str(miss_len))
-
-
-def check_validity(args):
-    if args.projection_file:
-        with open(args.projection_file, 'r') as csvfile:
-            csvdata = csv.DictReader(csvfile)
-            fieldnames = csvdata.fieldnames
-            errors = []
-            for f in ['playername', 'points']:
-                if f not in fieldnames:
-                    errors.append(f)
-
-            if len(errors) > 0:
-                raise Exception(dke.CSV_ERROR.format(errors))
-
-
-if __name__ == '__main__':
-    args = get_args()
-    check_validity(args)
-
-    uploader = None
-    if args.league == 'NBA':
-        uploader = nba_upload
-    elif args.league == 'MLB':
-        uploader = mlb_upload
-    else:
-        uploader = nfl_upload
-
-    player_map = None
-    if not args.keep_pids:
-        uploader.create_upload_file()
-    if args.pids:
-        player_map = uploader.map_pids(args.pids)
-
-    rosters, _ = run_multi(args)
-
-    if args.pids and len(rosters) > 0:
-        print(
-            '{} rosters now available for upload in file {}.'
-            .format(len(rosters), uploader.upload_file)
-        )

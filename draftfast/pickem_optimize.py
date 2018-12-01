@@ -1,5 +1,5 @@
-from pickem.pickem_command_line import get_args
-from pickem.pickem_optimize import optimize, get_all_players
+from draftfast.pickem.pickem_command_line import get_args
+from draftfast.pickem.pickem_optimize import optimize, get_all_players
 
 if __name__ == '__main__':
     args = get_args()
