@@ -8,7 +8,7 @@ import random
 from draftfast import player_pool as pool
 from draftfast.orm import RosterSelect
 from draftfast.optimizer import Optimizer
-from exposure import parse_exposure_file, check_exposure, \
+from draftfast.exposure import parse_exposure_file, check_exposure, \
     get_exposure_table, get_exposure_matrix
 
 
