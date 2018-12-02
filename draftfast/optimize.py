@@ -7,11 +7,9 @@ https://github.com/swanson/degenerate
 import csv
 import random
 from draftfast import rules as cons, dke_exceptions as dke, player_pool as pool
-from draftfast.command_line import get_args
 from draftfast.csv_parse import nfl_upload, mlb_upload, nba_upload, salary_download
 from draftfast.orm import RosterSelect, retrieve_all_players_from_history
 from draftfast.optimizer import Optimizer
-from draftfast.command_line import get_args
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
     get_exposure_table
 

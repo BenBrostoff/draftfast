@@ -201,7 +201,7 @@ def test_no_double_te():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         player_settings=PlayerPoolSettings(
-            locked=['Rob Gronkowski']
+            locked=['Rob Gronkowski'],
         )
     )
     qb = roster.sorted_players()[0]

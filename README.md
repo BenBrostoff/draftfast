@@ -21,11 +21,16 @@ pip install draftfast
 
 ## Usage
 
+Example usage ([you can experiment with these examples in repl.it](https://repl.it/@BenBrostoff/AllWarlikeDemoware)):
+
 ```python
 from draftfast import rules
 from draftfast.optimize import beta_run
 from draftfast.orm import Player
+from draftfast.csv_parse import salary_download
 
+
+# Create players
 player_pool = [
     Player(name='A1', cost=5500, proj=55, pos='PG'),
     Player(name='A2', cost=5500, proj=55, pos='PG'),
@@ -42,5 +47,17 @@ player_pool = [
 roster = beta_run(
     rule_set=rules.DK_NBA_RULE_SET,
     players=player_pool,
+)
+
+# Or, alternatively, generate players from a CSV
+players = salary_download.generate_players_from_csvs(
+  salary_file_location='./salaries.csv',
+  game=rules.DRAFT_KINGS,
+)
+
+roster = beta_run(
+  rule_set=rules.DK_NBA_RULE_SET,
+  players=players,
+  verbose=True,
 )
 ```
