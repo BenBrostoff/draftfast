@@ -6,7 +6,7 @@ services:
 before_install:
     - docker build -t draft-kings-fun .
 script:
-    - docker run draft-kings-fun flake8 .
+    - docker run draft-kings-fun flake8 draftfast
     - docker run draft-kings-fun nosetests \
     draftfast.test.test_public_api draftfast.test.test_player_pool draftfast.test.test_csv_parse \
     --with-coverage --cover-package=.
