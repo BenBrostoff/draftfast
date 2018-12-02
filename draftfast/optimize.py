@@ -11,7 +11,7 @@ from draftfast.csv_parse import nfl_upload, mlb_upload, nba_upload, salary_downl
 from draftfast.orm import RosterSelect, retrieve_all_players_from_history
 from draftfast.optimizer import Optimizer
 from exposure import parse_exposure_file, get_exposure_args, check_exposure, \
-    get_exposure_table
+    get_exposure_table, get_exposure_matrix
 
 _YES = 'y'
 _DK_AVG = 'DK_AVG'
@@ -155,6 +155,8 @@ def run_multi(args):
     if rosters:
         print(get_exposure_table(rosters, exposure_bounds))
         print()
+        print(get_exposure_matrix(rosters))
+        print()
 
         exposure_diffs = check_exposure(rosters, exposure_bounds)
         for n, d in exposure_diffs.items():
@@ -205,9 +207,6 @@ def retrieve_players(args):
                 for p in matching_players:
                     p.proj = float(row['points'])
                     p.marked = True
-
-    if not args.historical_date:
-        _check_missing_players(all_players, args.mp)
 
     # filter based on criteria and previously optimized
     # do not include DST or TE projections in min point threshold.

@@ -3,6 +3,7 @@ import csv
 import random
 from collections import OrderedDict
 from terminaltables import AsciiTable
+import numpy as np
 
 # TODO encapsulate this into an object
 
@@ -155,7 +156,7 @@ def get_exposure_table(rosters, bounds):
                     s_max = len(rosters) * bound['max']
                     if num > s_max:
                         s_max = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(s_max)
-                    elif num < s_max:
+                    elif num < s_min:
                         s_min = '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(s_min)
 
                     continue
@@ -172,3 +173,32 @@ def get_exposure_table(rosters, bounds):
     table.justify_columns[8] = 'right'
 
     return 'Roster Exposure:\n' + table.table
+
+
+def get_exposure_matrix(rosters, exclude=[]):
+    players = set()
+    for r in rosters:
+        for p in r.players:
+            if p in exclude:
+                continue
+            players.add(p)
+
+    sorted_names = sorted([p.short_name for p in players])
+    player_matrix = np.zeros((len(players), len(players)), dtype=int)
+
+    for r in rosters:
+        for i, p1 in enumerate(sorted_names):
+            for j, p2 in enumerate(sorted_names):
+                if p1 in r and p2 in r:
+                    player_matrix[i, j] += 1
+
+    rows = [[''] + sorted_names]
+
+    for i, p in enumerate(sorted_names):
+        rows.append([p] + list(player_matrix[i, :]))
+
+    table = AsciiTable(rows)
+    table.inner_row_border = True
+    table.justify_columns = {i+1: 'center' for i in range(len(sorted_names))}
+
+    return table.table
