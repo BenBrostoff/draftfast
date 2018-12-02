@@ -35,11 +35,11 @@ def add_pickem_contraints(settings):
         # TODO - add team banning
         kwargs = {'player': player, 'settings': settings}
         return (
-            _is_above_projected_points(**kwargs) and
+            _is_above_min_proj(**kwargs) and
             (not _is_banned_player(**kwargs)) and
-            (not _is_banned_team(**kwargs)) and
-            _is_locked_team(**kwargs) and
-            _is_within_avg(**kwargs) and
+            # (not _is_banned_team(**kwargs)) and
+            # _is_locked_team(**kwargs) and
+            # _is_within_avg(**kwargs) and
             _is_above_min_avg(**kwargs)
         )
 

@@ -1,6 +1,6 @@
 import os
 from nose import tools as ntools
-from draftfast.optimize import beta_run
+from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
@@ -20,11 +20,12 @@ mock_player_pool = [
 ]
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file='{}/data/test-salaries.csv'.format(CURRENT_DIR)
-projection_file='{}/data/test-projections.csv'.format(CURRENT_DIR)
+salary_file = '{}/data/test-salaries.csv'.format(CURRENT_DIR)
+projection_file = '{}/data/test-projections.csv'.format(CURRENT_DIR)
+
 
 def test_nba_dk():
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
         player_pool=mock_player_pool,
         verbose=True,
@@ -33,7 +34,7 @@ def test_nba_dk():
 
 
 def test_nba_dk_with_csv():
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
         player_pool=mock_player_pool,
         verbose=True,
@@ -42,7 +43,7 @@ def test_nba_dk_with_csv():
 
 
 def test_nba_fd():
-    roster = beta_run(
+    roster = run(
         rule_set=rules.FD_NBA_RULE_SET,
         player_pool=mock_player_pool,
     )
@@ -50,7 +51,7 @@ def test_nba_fd():
 
 
 def test_nfl_dk():
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=mock_player_pool,
     )
@@ -58,7 +59,7 @@ def test_nfl_dk():
 
 
 def test_nfl_fd():
-    roster = beta_run(
+    roster = run(
         rule_set=rules.FD_NFL_RULE_SET,
         player_pool=mock_player_pool,
     )
@@ -71,11 +72,11 @@ def test_multi_roster():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
     )
-    second_roster = beta_run(
+    second_roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
@@ -94,7 +95,7 @@ def test_stack():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
@@ -116,7 +117,7 @@ def test_force_combo():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
@@ -137,7 +138,7 @@ def test_force_combo():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
@@ -159,7 +160,7 @@ def test_te_combo():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
@@ -182,7 +183,7 @@ def test_no_double_te():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         player_settings=PlayerPoolSettings(
@@ -197,7 +198,7 @@ def test_no_double_te():
     ])
     ntools.assert_equals(te_count, 2)
 
-    roster = beta_run(
+    roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         player_settings=PlayerPoolSettings(

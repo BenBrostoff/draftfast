@@ -38,7 +38,10 @@ def test_respects_max_cost():
 
 
 def test_respects_banned():
-    pool = filter_pool(mock_player_pool, PlayerPoolSettings(banned=['A1', 'A2']))
+    pool = filter_pool(
+        mock_player_pool,
+        PlayerPoolSettings(banned=['A1', 'A2'])
+    )
     ntools.assert_equals(pool, [p_c])
 
 

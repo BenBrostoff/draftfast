@@ -4,3 +4,8 @@ from draftfast.csv_parse import (
     nfl_upload,
     salary_download,
 )
+
+assert mlb_upload
+assert nba_upload
+assert nfl_upload
+assert salary_download

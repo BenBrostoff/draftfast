@@ -15,12 +15,14 @@ def test_dk_nba_parse():
     )
     ntools.assert_equals(len(players), 221)
 
+
 def test_dk_nba_use_avg():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=salaries,
         game=DRAFT_KINGS,
     )
     ntools.assert_equals(players[0].proj, 60.462)
+
 
 def test_dk_nba_use_proj():
     players = salary_download.generate_players_from_csvs(

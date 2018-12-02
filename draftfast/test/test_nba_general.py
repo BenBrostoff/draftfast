@@ -46,7 +46,8 @@ def test_optimize_with_general():
         po_location=None,
         v_avg=10000,
         salary_file=os.getcwd() + '/draftfast/test/data/nba-test-salaries.csv',
-        projection_file=os.getcwd() + '/draftfast/test/data/nba-test-projections.csv',
+        projection_file='{}/draftfast/test/data/nba-test-projections.csv'
+        .format(os.getcwd()),
         flex_position=None,
         min_avg=-1,
         historical_date=None,
