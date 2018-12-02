@@ -25,7 +25,7 @@ Example usage ([you can experiment with these examples in repl.it](https://repl.
 
 ```python
 from draftfast import rules
-from draftfast.optimize import beta_run
+from draftfast.optimize import run
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
 
@@ -44,7 +44,7 @@ player_pool = [
     Player(name='A10', cost=5500, proj=55, pos='C'),
 ]
 
-roster = beta_run(
+roster = run(
     rule_set=rules.DK_NBA_RULE_SET,
     players=player_pool,
 )
@@ -55,9 +55,28 @@ players = salary_download.generate_players_from_csvs(
   game=rules.DRAFT_KINGS,
 )
 
-roster = beta_run(
+roster = run(
   rule_set=rules.DK_NBA_RULE_SET,
   players=players,
   verbose=True,
+)
+```
+
+## Custom Game Rules
+
+Optimizing for a particular game is as easy as setting the `RuleSet` (see the example above).
+
+
+Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
+
+```python
+from draftfast import rules
+
+nhl_rules = rules.RuleSet(
+    site=rules.DRAFT_KINGS,
+    league='NHL',
+    roster_size='9',
+    position_limits=[['C', 9, 9]],
+    salary_max=50_000,
 )
 ```
