@@ -4,6 +4,7 @@ from .nba_upload import (
     write_to_csv as dk_nba_write_to_csv,
 )
 
+
 class CSVUploader(object):
 
     def __init__(self, pid_file, upload_file='./upload.csv'):
@@ -14,7 +15,6 @@ class CSVUploader(object):
         raise NotImplementedError('You must implement map_pids')
 
 
-
 class DraftKingsNBAUploader(CSVUploader):
     HEADERS = [
         'PG', 'SG', 'SF',
@@ -22,7 +22,6 @@ class DraftKingsNBAUploader(CSVUploader):
     ]
 
     def write_rosters(self, rosters):
-        # print(self.pid_map)
         with open(self.upload_file, 'w') as f:
             writer = csv.writer(f)
             writer.writerow(self.HEADERS)
@@ -32,7 +31,6 @@ class DraftKingsNBAUploader(CSVUploader):
                     roster=roster,
                     player_map=self.pid_map,
                 )
-
 
     def _map_pids(self, pid_file):
         return dk_nba_map_pids(pid_file)

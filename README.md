@@ -57,7 +57,7 @@ players = salary_download.generate_players_from_csvs(
 
 roster = run(
   rule_set=rules.DK_NBA_RULE_SET,
-  players=players,
+  player_pool=players,
   verbose=True,
 )
 ```
