@@ -2,9 +2,9 @@
 
 ![](marketing/NFL_OPTIMIZED.png)
 
-This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee. Works for NFL, NBA, WNBA and MLB on either DraftKings or FanDuel.
+This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DraftKings or FanDuel contest in the time it takes you to grab a coffee.
 
-This project allows you to create an unlimited amount of optimized DraftKings lineups based on any projection source of your choice. You can use this repo as a command line application, or import functionality as needed to build your own scripts to construct thousands of DraftKings lineups each week and upload them in seconds using their [CSV upload tool](https://www.draftkings.com/lineup/upload). Examples of how to do the latter are provided in the `examples` directory.
+This project allows you to create an unlimited amount of optimized DraftKings lineups based on any projection source of your choice.
 
 Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of.
 
@@ -79,4 +79,16 @@ nhl_rules = rules.RuleSet(
     position_limits=[['C', 9, 9]],
     salary_max=50_000,
 )
+```
+
+## CSV Upload
+
+```python
+from draftfast import uploaders
+
+uploader = uploaders.DraftKingsNBAUploader(
+    pid_file='./pid_file.csv',
+)
+uploader.write_rosters(rosters)
+
 ```
