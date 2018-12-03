@@ -208,3 +208,21 @@ FD_NASCAR_RULE_SET = RuleSet(
     position_limits=POSITIONS[FAN_DUEL]['NASCAR'],
     general_position_limits=[],
 )
+
+DK_MLB_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='MLB',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['MLB'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['MLB'],
+    position_limits=POSITIONS[DRAFT_KINGS]['MLB'],
+    general_position_limits=[],
+)
+
+FD_MLB_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='MLB',
+    roster_size=ROSTER_SIZE[FAN_DUEL]['MLB'],
+    salary_max=SALARY_CAP[FAN_DUEL]['MLB'],
+    position_limits=POSITIONS[FAN_DUEL]['MLB'],
+    general_position_limits=[],
+)

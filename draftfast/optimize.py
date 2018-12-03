@@ -1,9 +1,3 @@
-'''
-A huge thanks to @swanson
-this solution is based off
-https://github.com/swanson/degenerate
-'''
-
 import random
 from draftfast import player_pool as pool
 from draftfast.orm import RosterSelect
