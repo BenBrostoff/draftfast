@@ -2,7 +2,8 @@ import os
 from nose import tools as ntools
 from draftfast.orm import Player
 from draftfast.optimize import run
-from argparse import Namespace
+from draftfast import rules
+from draftfast.csv_parse import salary_download as sd
 
 
 def test_general_guard():
@@ -25,34 +26,16 @@ def test_general_center():
 
 
 def test_optimize_with_general():
-    run_args = Namespace(
-        game='draftkings',
-        i=1,
-        season=2016,
-        w=1,
-        league='NBA',
-        limit='n',
-        lp=0,
-        no_double_te='n',
-        mp=100,
-        ms=10000,
-        s='n',
-        sp=3000,
-        home=None,
-        locked=None,
-        teams=None,
-        banned=None,
-        po=0,
-        po_location=None,
-        v_avg=10000,
-        salary_file=os.getcwd() + '/draftfast/test/data/nba-test-salaries.csv',
-        projection_file='{}/draftfast/test/data/nba-test-projections.csv'
-        .format(os.getcwd()),
-        flex_position=None,
-        min_avg=-1,
-        historical_date=None,
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    players = sd.generate_players_from_csvs(
+        game=rules.DRAFT_KINGS,
+        salary_file_location='{}/data/dk_nba_salaries.csv'.format(current_dir)
     )
-    roster = run('NBA', run_args)
+    roster = run(
+        rule_set=rules.DK_NBA_RULE_SET,
+        player_pool=players,
+        verbose=False,
+    )
 
     def get_player_count_at_pos(pos):
         return len([
@@ -60,6 +43,6 @@ def test_optimize_with_general():
             if p.nba_general_position == pos
         ])
 
-    ntools.assert_equal(4, get_player_count_at_pos('G'))
+    ntools.assert_equal(3, get_player_count_at_pos('G'))
     ntools.assert_equal(3, get_player_count_at_pos('F'))
-    ntools.assert_equal(1, get_player_count_at_pos('C'))
+    ntools.assert_equal(2, get_player_count_at_pos('C'))
