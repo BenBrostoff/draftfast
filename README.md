@@ -1,97 +1,118 @@
-## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draft-kings-fun.svg?branch=master)](https://travis-ci.org/BenBrostoff/draft-kings-fun) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/) &middot; [![](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/user?u=8965834)
+## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draftfast.svg?branch=master)](https://travis-ci.org/BenBrostoff/draftfast) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/) &middot; [![](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/user?u=8965834)
 
 ![](marketing/NFL_OPTIMIZED.png)
 
-This is an incredibly powerful tool that can automate lineup building, allowing you to enter thousands of lineups in any DK contest in the time it takes you to grab a coffee. Works for NFL, NBA, WNBA and MLB on either DraftKings or FanDuel.
+An incredibly powerful tool that automates and optimizes lineup building, allowing you to enter thousands of lineups in any DraftKings or FanDuel contest in the time it takes you to grab a coffee.
 
-This project allows you to create an unlimited amount of optimized DraftKings lineups based on any projection source of your choice. You can use this repo as a command line application, or import functionality as needed to build your own scripts to construct thousands of DraftKings lineups each week and upload them in seconds using their [CSV upload tool](https://www.draftkings.com/lineup/upload). Examples of how to do the latter are provided in the `examples` directory.
+## Installation
 
-Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which mine is heavily based off of.
+Requires Python 3.6.
 
-Pre-reqs:
-
-* Python 3
-* `pip install -r requirements.txt`
-
-To run, download your desired week's salaries on DraftKings, and then run:
-
-```
-bash scripts/prepare_nfl_contest_data.sh
+```bash
+pip install draftfast
 ```
 
-Note that this script will error out if the CSV from DraftKings is not in `~/Downloads`.
+## Usage
 
-To run the optimizer, you must provide a projection CSV with `playername` and `points` fields. Run the optimizer with your projection file:
+Example usage ([you can experiment with these examples in repl.it](https://repl.it/@BenBrostoff/AllWarlikeDemoware)):
 
-```
-python optimize.py -mp 100 -projection_file "./data/my_projections.csv"
-```
+```python
+from draftfast import rules
+from draftfast.optimize import run
+from draftfast.orm import Player
+from draftfast.csv_parse import salary_download
 
-Switching to FanDuel is simple - just change the `salaries_file` and `game` flags.
 
-```
-python optimize.py -mp 100 -game fanduel -projection_file "./data/my_projections.csv" -salaries_file "./data/fanduel_salaries.csv"
-```
+# Create players
+player_pool = [
+    Player(name='A1', cost=5500, proj=55, pos='PG'),
+    Player(name='A2', cost=5500, proj=55, pos='PG'),
+    Player(name='A3', cost=5500, proj=55, pos='SG'),
+    Player(name='A4', cost=5500, proj=55, pos='SG'),
+    Player(name='A5', cost=5500, proj=55, pos='SF'),
+    Player(name='A6', cost=5500, proj=55, pos='SF'),
+    Player(name='A7', cost=5500, proj=55, pos='PF'),
+    Player(name='A8', cost=5500, proj=55, pos='PF'),
+    Player(name='A9', cost=5500, proj=55, pos='C'),
+    Player(name='A10', cost=5500, proj=55, pos='C'),
+]
 
-Note that the default file location for the projection file is `./data/current-projections.csv`, so if you have the file in the default location with the correct name, there's no need to pass the `projection_file` flag. The same is true with `./data/current-salaries.csv` and `salaries_file`.
+roster = run(
+    rule_set=rules.DK_NBA_RULE_SET,
+    player_pool=player_pool,
+)
 
-## Optimization Options
+# Or, alternatively, generate players from a CSV
+players = salary_download.generate_players_from_csvs(
+  salary_file_location='./salaries.csv',
+  game=rules.DRAFT_KINGS,
+)
 
-Force a QB/WR or QB/TE combination from a particular team:
-
-```
-python optimize.py -mp 100 python optimize.py -mp 500 -force_combo y -locked "Russell Wilson"
-```
-
-Limit same team representation except for QB / skill player combos. Example:
-
-```
-
-python optimize.py -mp 100 -limit y
-```
-
-Run the optimizer multiple times and continually eliminate pre-optimized players from the lineup. For instance, to run three different iterations and generate three different sets of players:
-
-```
-python optimize.py -i 3
-```
-
-At any time, you can get a list of all possible options via:
-
-```
-python optimize.py --help
-```
-
-## Generating CSV for uploading multiple lineups to DraftKings
-
-DraftKings allows uploading up to 500 lineups using a single CSV file. [You can learn more about DraftKings' support for lineup uploads here.](https://playbook.draftkings.com/news/draftkings-lineup-upload-tool) This tool supports
-generating an uploadable CSV file containing the generated optimized lineups.
-
-To use this feature:
-
-1. Download the weekly salaries CSV from DraftKings
-(containing player name, DK-estimated points, salary, etc).
-2. Run `bash scripts/prepare_<nba/nfl>_contest_data.sh`.
-3. Download the [CSV upload template](https://www.draftkings.com/lineup/upload) and get the file location (probably something like `~/Downloads/DKSalaries.csv`). *Note - this file has the same name as the weekly salaries CSV when downloaded from DraftKings, which can be confusing.*
-4. Run `python optimize.py -pids <upload_tpl_location>`. Remember to specify league, constraints, number of iterations to run, etc.
-5. Upload the newly generated file to DraftKings from `data/current-upload.csv`.
-
-One nice workflow is to run the optimizer with the `-keep_pids` flag after you create your CSV; this option will put future optimizations in the same CSV file.
-
-## NBA
-
-```
-python optimize.py -l NBA
+roster = run(
+  rule_set=rules.DK_NBA_RULE_SET,
+  player_pool=players,
+  verbose=True,
+)
 ```
 
-## WNBA
+## Game Rules
+
+Optimizing for a particular game is as easy as setting the `RuleSet` (see the example above). Game rules in the library are in the table below:
+
+| League       | Site           | Reference  |
+| ------------- |:-------------:| :-----:|
+| NFL | DraftKings | `DK_NFL_RULE_SET` |
+| NFL | FanDuel | `FD_NFL_RULE_SET` |
+| NBA | DraftKings | `DK_NBA_RULE_SET` |
+| NBA | FanDuel | `FD_NBA_RULE_SET` |
+| MLB | DraftKings | `DK_MLB_RULE_SET` |
+| MLB | FanDuel | `FD_MLB_RULE_SET` |
+| WNBA | DraftKings | `DK_WNBA_RULE_SET` |
+| WNBA | FanDuel | `FD_WNBA_RULE_SET` |
+| PGA | FanDuel | `FD_PGA_RULE_SET` |
+| NASCAR | FanDuel | `FD_NASCAR_RULE_SET` |
+
+
+Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
+
+```python
+from draftfast import rules
+
+nhl_rules = rules.RuleSet(
+    site=rules.DRAFT_KINGS,
+    league='NHL',
+    roster_size='9',
+    position_limits=[['C', 9, 9]],
+    salary_max=50_000,
+)
+```
+
+## CSV Upload
+
+```python
+from draftfast.csv_parse import uploaders
+
+uploader = uploaders.DraftKingsNBAUploader(
+    pid_file='./pid_file.csv',
+)
+uploader.write_rosters(rosters)
 
 ```
-python optimize.py -l WNBA
-```
 
-## MLB
+## Support and Consulting
 
-```
-python optimize.py -l MLB
-```
+DFS optimization is only one part of a sustainable strategy. Long-term DFS winners have the best: 
+
+- Player projections
+- Bankroll management
+- Diversification in contests played
+- Diversification across lineups (see `draftfast.exposure`)
+- Research process
+- 1 hour before gametime lineup changes
+- ...and so much more
+
+DraftFast provides support and consulting services that can help with all of these. [Let's get in touch today](mailto:ben.brostoff@gmail.com).
+
+# Credits
+
+Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which was the inspiration for this one.
