@@ -63,7 +63,7 @@ class OptimizerSettings(object):
         self.locked = locked
         self.stack_team = stack_team
         self.stack_count = stack_count
-        self.existing_rosters = existing_rosters
+        self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo
         self.combo_allow_te = combo_allow_te
 

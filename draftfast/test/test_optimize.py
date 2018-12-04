@@ -250,9 +250,19 @@ def test_no_double_te():
 
 def test_deterministic_exposure_limits():
     iterations = 2
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
     rosters, exposure_diffs = run_multi(
         iterations=2,
-
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        exposure_bounds=[
+            {'name': 'Andrew Luck', 'min': 0.5, 'max': 0.7},
+            {'name': 'Alshon Jeffery', 'min': 1, 'max': 1},
+        ]
     )
     ntools.assert_equal(len(rosters), iterations)
     ntools.assert_equal(len(exposure_diffs), 0)
@@ -268,9 +278,16 @@ def test_deterministic_exposure_limits():
 
 def test_random_exposure_limits():
     iterations = 10
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
     rosters, exposure_diffs = run_multi(
         iterations=iterations,
         exposure_random_seed=42,
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
     )
     ntools.assert_equal(len(rosters), iterations)
     ntools.assert_equal(len(exposure_diffs), 0)

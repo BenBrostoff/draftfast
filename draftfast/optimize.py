@@ -4,8 +4,9 @@ from draftfast import player_pool as pool
 from draftfast.orm import RosterSelect, Roster
 from draftfast.optimizer import Optimizer
 from draftfast.exposure import check_exposure, \
-    get_exposure_table, get_exposure_matrix
+    get_exposure_table, get_exposure_matrix, get_exposure_args
 from draftfast.rules import RuleSet
+from draftfast.settings import PlayerPoolSettings, OptimizerSettings
 
 
 def run(rule_set: RuleSet,
@@ -55,12 +56,12 @@ def run_multi(
     iterations: int,
     rule_set: RuleSet,
     player_pool: list,
-    optimizer_settings=None,
-    player_settings=None,
+    player_settings=PlayerPoolSettings(),
+    optimizer_settings=OptimizerSettings(),
     verbose=False,
     exposure_bounds=None,
     exposure_random_seed=None,
-) -> List[Roster]:
+) -> [List[Roster], list]:
 
     # set the random seed globally for random lineup exposure
     if exposure_random_seed:
@@ -68,6 +69,17 @@ def run_multi(
 
     rosters = []
     for _ in range(0, iterations):
+        if exposure_bounds:
+            exposure_dct = get_exposure_args(
+                existing_rosters=optimizer_settings.existing_rosters,
+                exposure_bounds=exposure_bounds,
+                n=iterations,
+                use_random=bool(exposure_random_seed),
+                random_seed=exposure_random_seed,
+            )
+            player_settings.banned = exposure_dct['banned']
+            player_settings.locked = exposure_dct['locked']
+
         roster = run(
             rule_set=rule_set,
             player_pool=player_pool,
@@ -75,6 +87,8 @@ def run_multi(
             player_settings=player_settings,
             verbose=verbose,
         )
+        if roster:
+            optimizer_settings.existing_rosters += [roster]
 
         if roster:
             rosters.append(roster)
@@ -83,7 +97,7 @@ def run_multi(
 
     exposure_diffs = {}
 
-    if rosters:
+    if rosters and verbose:
         print(get_exposure_table(rosters, exposure_bounds))
         print()
         print(get_exposure_matrix(rosters))
