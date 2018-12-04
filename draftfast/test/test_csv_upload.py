@@ -12,7 +12,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 def test_dk_nba_upload():
     players = salary_download.generate_players_from_csvs(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk_nba_salaries.csv'.format(CURRENT_DIR),
+        salary_file_location='{}/data/dk-nba-salaries.csv'.format(CURRENT_DIR),
     )
     roster = optimize.run(
         rule_set=rules.DK_NBA_RULE_SET,
@@ -21,7 +21,7 @@ def test_dk_nba_upload():
     )
     upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
     uploader = uploaders.DraftKingsNBAUploader(
-        pid_file='{}/data/dk_nba_pids.csv'.format(CURRENT_DIR),
+        pid_file='{}/data/dk-nba-pids.csv'.format(CURRENT_DIR),
         upload_file=upload_file,
     )
     uploader.write_rosters([roster])

@@ -42,7 +42,7 @@ def get_exposure_args(existing_rosters, exposure_bounds, n, use_random,
         for p in r.players:
             exposures[p.name] = exposures.get(p.name, 0) + 1
 
-    if use_random == 'y':
+    if use_random:
         return get_exposure_args_random(exposures, exposure_bounds, n,
                                         random_seed)
 

@@ -29,7 +29,7 @@ def test_optimize_with_general():
     current_dir = os.path.dirname(os.path.abspath(__file__))
     players = sd.generate_players_from_csvs(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk_nba_salaries.csv'.format(current_dir)
+        salary_file_location='{}/data/dk-nba-salaries.csv'.format(current_dir)
     )
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,

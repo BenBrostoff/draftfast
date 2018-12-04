@@ -47,7 +47,6 @@ def generate_players_from_csvs(
                     pos=pos,
                     row=row,
                     game=game,
-                    locked=[],  # TODO - fix locked
                 )
                 if projections:
                     proj = projections.get(player.name)
@@ -65,7 +64,7 @@ def generate_players_from_csvs(
     return players
 
 
-def generate_player(pos, row, game, locked):
+def generate_player(pos, row, game):
     '''
     Parses CSV row for DraftKings or FanDuel
     and returns a player. Note that DraftKings
@@ -86,11 +85,10 @@ def generate_player(pos, row, game, locked):
         row[name_key],
         row['Salary'],
         possible_positions=row['Position'],
-        multi_position=('/' in row['Position']),
+        multi_position='/' in row['Position'],
         team=row.get(team_key) or row.get(team_alt_key),
         matchup=row.get(game_key) or row.get(game_alt_key),
         average_score=avg,
-        lock=(locked and row[name_key] in locked)
     )
 
     return player
