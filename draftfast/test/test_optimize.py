@@ -20,9 +20,9 @@ mock_player_pool = [
 ]
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file = '{}/data/test-salaries.csv'.format(CURRENT_DIR)
+salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
 fd_nfl_salary_file = '{}/data/fd-nfl-salaries.csv'.format(CURRENT_DIR)
-projection_file = '{}/data/test-projections.csv'.format(CURRENT_DIR)
+projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
 
 
 def test_nba_dk():
@@ -149,6 +149,9 @@ def test_force_combo():
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
+        player_settings=PlayerPoolSettings(
+            locked=['Sam Bradford'],
+        ),
         optimizer_settings=OptimizerSettings(
             stack_team='NE',
             stack_count=5,
