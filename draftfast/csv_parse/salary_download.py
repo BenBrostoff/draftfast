@@ -43,7 +43,6 @@ def generate_players_from_csvs(
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
             for pos in row['Position'].split('/'):
-                name_key = GAME_KEY_MAP[game]['name']
                 player = generate_player(
                     pos=pos,
                     row=row,
