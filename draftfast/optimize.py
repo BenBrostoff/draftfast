@@ -60,7 +60,7 @@ def run_multi(
     verbose=False,
     exposure_bounds=None,
     exposure_random_seed=None,
-) -> List(Roster):
+) -> List[Roster]:
 
     # set the random seed globally for random lineup exposure
     if exposure_random_seed:
