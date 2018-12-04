@@ -14,7 +14,7 @@ experimental/
 
 .spyproject
 .vscode
-start_container.batch
+start_container.bat
 
 dist/
 draftfast.egg-info/
