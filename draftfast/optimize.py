@@ -1,17 +1,18 @@
 import random
+from typing import List
 from draftfast import player_pool as pool
-from draftfast.orm import RosterSelect
+from draftfast.orm import RosterSelect, Roster
 from draftfast.optimizer import Optimizer
-from draftfast.exposure import parse_exposure_file, check_exposure, \
+from draftfast.exposure import check_exposure, \
     get_exposure_table, get_exposure_matrix
+from draftfast.rules import RuleSet
 
 
-def run(rule_set,
-        player_pool,
+def run(rule_set: RuleSet,
+        player_pool: list,
         optimizer_settings=None,
         player_settings=None,
-        upload_settings=None,
-        verbose=False):
+        verbose=False) -> Roster:
     players = pool.filter_pool(
         player_pool,
         player_settings,
@@ -51,21 +52,29 @@ def run(rule_set,
 
 
 def run_multi(
-    args,
-    exposure_limit_file,
-    exposure_random_seed,
-):
-    exposure_bounds = None
-    if exposure_limit_file:
-        exposure_bounds = parse_exposure_file(exposure_limit_file)
+    iterations: int,
+    rule_set: RuleSet,
+    player_pool: list,
+    optimizer_settings=None,
+    player_settings=None,
+    verbose=False,
+    exposure_bounds=None,
+    exposure_random_seed=None,
+) -> List(Roster):
 
     # set the random seed globally for random lineup exposure
     if exposure_random_seed:
         random.seed(exposure_random_seed)
 
     rosters = []
-    for _ in range(0, int(args.i)):
-        roster = run(args.league, args, rosters, exposure_bounds)
+    for _ in range(0, iterations):
+        roster = run(
+            rule_set=rule_set,
+            player_pool=player_pool,
+            optimizer_settings=optimizer_settings,
+            player_settings=player_settings,
+            verbose=verbose,
+        )
 
         if roster:
             rosters.append(roster)

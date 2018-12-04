@@ -1,6 +1,6 @@
 import os
 from nose import tools as ntools
-from draftfast.optimize import run
+from draftfast.optimize import run, run_multi
 from draftfast import rules
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
@@ -74,6 +74,25 @@ def test_nfl_fd():
         player_pool=players,
     )
     ntools.assert_not_equals(roster, None)
+
+
+def test_multi_position():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        player_settings=PlayerPoolSettings(
+            locked=['Eli Manning'],
+        ),
+    )
+    ntools.assert_not_equals(roster, None)
+    multi_pos = [p for p in roster.players if p.name == 'Eli Manning']
+    ntools.assert_equal(len(multi_pos), 1)
+    ntools.assert_equal(multi_pos[0].pos, 'TE')
 
 
 def test_multi_roster():
@@ -227,3 +246,31 @@ def test_no_double_te():
     #     if x.pos == 'TE'
     # ])
     # ntools.assert_equals(te_count, 1)
+
+
+def test_deterministic_exposure_limits():
+    iterations = 2
+    rosters, exposure_diffs = run_multi(
+        iterations=2,
+
+    )
+    ntools.assert_equal(len(rosters), iterations)
+    ntools.assert_equal(len(exposure_diffs), 0)
+
+    players = [p.name for p in rosters[0].players]
+    ntools.assert_true('Andrew Luck' in players)
+    ntools.assert_true('Alshon Jeffery' in players)
+
+    players = [p.name for p in rosters[1].players]
+    ntools.assert_true('Andrew Luck' not in players)
+    ntools.assert_true('Alshon Jeffery' in players)
+
+
+def test_random_exposure_limits():
+    iterations = 10
+    rosters, exposure_diffs = run_multi(
+        iterations=iterations,
+        exposure_random_seed=42,
+    )
+    ntools.assert_equal(len(rosters), iterations)
+    ntools.assert_equal(len(exposure_diffs), 0)
