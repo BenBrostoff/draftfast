@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:17.10
 
 RUN apt-get update && apt-get install -y python3 python3-pip python3-wheel python3-six python3-pip
 

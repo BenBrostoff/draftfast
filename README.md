@@ -39,7 +39,7 @@ player_pool = [
 
 roster = run(
     rule_set=rules.DK_NBA_RULE_SET,
-    players=player_pool,
+    player_pool=player_pool,
 )
 
 # Or, alternatively, generate players from a CSV
