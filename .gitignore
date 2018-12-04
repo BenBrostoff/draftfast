@@ -1,5 +1,6 @@
 *.pyc
 *.sqlite
+*.bat
 .idea/
 \current*
 .coverage
@@ -18,3 +19,4 @@ start_container.bat
 
 dist/
 draftfast.egg-info/
+
