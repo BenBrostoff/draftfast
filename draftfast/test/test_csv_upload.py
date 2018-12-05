@@ -73,13 +73,14 @@ def test_fd_nba_upload():
     assert_equal(
         row,
         [
-            '11743190',
-            '11743146',
-            '11743013',
-            '11743142',
-            '11743007',
-            '11743176',
-            '11743369',
-            '11743024',
+            '30803-9535:Kyle Lowry',
+            '30803-9475:Derrick Rose',
+            '30803-9714:DeMar DeRozan',
+            '30803-40201:Dennis Schroder',
+            '30803-9646:Kevin Durant',
+            '30803-12341:Paul George',
+            '30803-9957:Serge Ibaka',
+            '30803-9874:Kevin Love',
+            '30803-12362:DeMarcus Cousins',
         ]
     )
