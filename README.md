@@ -55,6 +55,8 @@ roster = run(
 )
 ```
 
+You can see more examples in the [`examples` directory](https://github.com/BenBrostoff/draftfast/tree/master/examples).
+
 ## Game Rules
 
 Optimizing for a particular game is as easy as setting the `RuleSet` (see the example above). Game rules in the library are in the table below:
