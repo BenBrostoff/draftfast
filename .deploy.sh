@@ -9,3 +9,6 @@ fi
 
 python setup.py sdist
 twine upload "dist/draftfast-${1}.tar.gz"
+
+git tag $1
+git push origin --tags
