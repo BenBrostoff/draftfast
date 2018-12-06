@@ -1,3 +1,4 @@
+from random import uniform as runiform
 from draftfast.settings import PlayerPoolSettings
 
 
@@ -7,6 +8,13 @@ def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> list:
             if player_settings.locked \
                     and player.name in player_settings.locked:
                 player.lock = True
+            if player_settings.randomize:
+                factor = 1 + runiform(
+                    -player_settings.randomize,
+                    player_settings.randomize
+                )
+                player.proj = player.proj * factor
+
         return list(filter(
             add_filters(player_settings),
             pool,

@@ -43,7 +43,8 @@ class PlayerPoolSettings(object):
 
     def __init__(self, min_proj=None, max_proj=None,
                  min_avg=None, max_avg=None, min_salary=None,
-                 max_salary=None, locked=None, banned=None):
+                 max_salary=None, locked=None, banned=None,
+                 randomize=None):
         self.min_proj = min_proj
         self.max_proj = max_proj
         self.min_avg = min_avg
@@ -52,6 +53,7 @@ class PlayerPoolSettings(object):
         self.max_salary = max_salary
         self.locked = locked
         self.banned = banned
+        self.randomize = randomize
 
 
 class OptimizerSettings(object):
