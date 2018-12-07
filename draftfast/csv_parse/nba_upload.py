@@ -1,30 +1,40 @@
 import os
-import subprocess
 import csv
 from itertools import islice
-
+from draftfast.rules import DRAFT_KINGS, FAN_DUEL
 from draftfast import dke_exceptions as dke
 
 upload_file = '{}/data/current-upload.csv'.format(os.getcwd())
 
+NAME_MAP = {
+    DRAFT_KINGS: {
+        'start': 'TeamAbbrev',
+        'name': 'Name',
+        'position': 'Position',
+        'id': 'ID',
+    },
+    FAN_DUEL: {
+        'start': '"Nickname"',
+        'name': '"Nickname"',
+        'position': '"Position"',
+        'id': '"Player ID + Player Name"',
+    },
+}
 
-def create_upload_file():
-    subprocess.call(['touch', upload_file])
-    with open(upload_file, 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(
-            ['PG', 'SG', 'SF',
-             'PF', 'C', 'G', 'F', 'UTIL'])
 
+def map_pids(pid_file, game=DRAFT_KINGS):
+    start = NAME_MAP.get(game).get('start')
+    name = NAME_MAP.get(game).get('name')
+    position = NAME_MAP.get(game).get('position')
+    p_id = NAME_MAP.get(game).get('id')
 
-def map_pids(pid_file):
     player_map = {}
     with open(pid_file, 'r') as f:
         n = 0
         fields = None
         for line in f.readlines():
             n += 1
-            if 'TeamAbbrev' in line:  # line with field names was found
+            if start in line:  # line with field names was found
                 fields = line.split(',')
                 break
 
@@ -38,23 +48,38 @@ def map_pids(pid_file):
         f = islice(open(pid_file, "r"), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
-            player_map[line['Name'] + " " + line['Position']] = line['ID']
+            player_map[line[name] + " " + line[position]] = line[p_id]
 
     return player_map
 
 
-def write_to_csv(writer, player_map, roster):
+def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS):
     players = roster.sorted_players()
-    ordered_possible = [
-        _on_position(players, ['PG']),
-        _on_position(players, ['SG']),
-        _on_position(players, ['SF']),
-        _on_position(players, ['PF']),
-        _on_position(players, ['C']),
-        _on_position(players, ['SG', 'PG']),
-        _on_position(players, ['SF', 'PF']),
-        players
-    ]
+
+    ordered_possible = []
+    if game == DRAFT_KINGS:
+        ordered_possible = [
+            _on_position(players, ['PG']),
+            _on_position(players, ['SG']),
+            _on_position(players, ['SF']),
+            _on_position(players, ['PF']),
+            _on_position(players, ['C']),
+            _on_position(players, ['SG', 'PG']),
+            _on_position(players, ['SF', 'PF']),
+            players
+        ]
+    elif game == FAN_DUEL:
+        ordered_possible = [
+            _on_position(players, ['PG']),
+            _on_position(players, ['PG']),
+            _on_position(players, ['SG']),
+            _on_position(players, ['SG']),
+            _on_position(players, ['SF']),
+            _on_position(players, ['SF']),
+            _on_position(players, ['PF']),
+            _on_position(players, ['PF']),
+            _on_position(players, ['C']),
+        ]
 
     ordered_lineup = []
     counter = 0

@@ -1,3 +1,4 @@
+import random
 from nose import tools as ntools
 from draftfast.player_pool import filter_pool
 from draftfast.orm import Player
@@ -51,3 +52,14 @@ def test_respects_locked():
         min_proj=31,
     ))
     ntools.assert_equals(pool, [p_b, p_c])
+
+
+def test_randomize():
+    random.seed(1)
+    pool = filter_pool(mock_player_pool, PlayerPoolSettings(
+        randomize=0.1,
+    ))
+    ntools.assert_equals(
+        pool[0].proj,
+        18.537456976449604
+    )
