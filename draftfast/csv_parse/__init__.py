@@ -1,4 +1,4 @@
-from draftfast.csv_parse import (
+from . import (
     mlb_upload,
     nba_upload,
     nfl_upload,
