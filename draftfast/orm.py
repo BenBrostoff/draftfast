@@ -129,7 +129,8 @@ class NFLRoster(Roster):
         'RB': 1,
         'WR': 2,
         'TE': 3,
-        'DST': 4
+        'DST': 4,
+        'D': 5,
     }
 
 
