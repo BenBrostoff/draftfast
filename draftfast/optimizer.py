@@ -174,8 +174,7 @@ class Optimizer(object):
                 0,
                 self.roster_size - 1
             )
-
             for player in roster.sorted_players():
                 i = self.player_to_idx_map.get(player.solver_id)
-                if i:
+                if i is not None:
                     unique_players.SetCoefficient(self.variables[i], 1)

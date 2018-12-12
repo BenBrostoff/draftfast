@@ -95,7 +95,7 @@ def test_multi_position():
     ntools.assert_equal(multi_pos[0].pos, 'TE')
 
 
-def test_multi_roster():
+def test_multi_roster_nfl():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=salary_file,
         projection_file_location=projection_file,
@@ -108,6 +108,24 @@ def test_multi_roster():
     second_roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            existing_rosters=[roster],
+        ),
+    )
+
+    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equals(second_roster, None)
+    ntools.assert_not_equals(roster == second_roster, True)
+
+
+def test_multi_roster_nba():
+    roster = run(
+        rule_set=rules.DK_NBA_RULE_SET,
+        player_pool=mock_player_pool,
+    )
+    second_roster = run(
+        rule_set=rules.DK_NBA_RULE_SET,
+        player_pool=mock_player_pool,
         optimizer_settings=OptimizerSettings(
             existing_rosters=[roster],
         ),
