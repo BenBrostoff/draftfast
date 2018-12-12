@@ -180,6 +180,22 @@ class PGARoster(Roster):
     }
 
 
+class SoccerRoster(Roster):
+    POSITION_ORDER = {
+        'F': 0,
+        'M': 1,
+        'D': 2,
+        'GK': 3,
+    }
+
+
+class ELRoster(Roster):
+    POSITION_ORDER = {
+        'G': 0,
+        'F': 1,
+    }
+
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -190,14 +206,14 @@ class RosterSelect:
             'MLB': MLBRoster(),
             'PGA': PGARoster(),
             'NASCAR': NASCARRoster(),
+            'SOCCER': SoccerRoster(),
+            'EL': ELRoster(),
         }
         return roster_dict[league]
 
 
 @total_ordering
 class Player(object):
-    _PLAYER_DATA_CACHE = {}
-
     def __init__(
         self,
         pos,
@@ -331,17 +347,6 @@ class Player(object):
             return s
 
         return '{}. {}'.format(s[0][0], s[1])
-
-    def __set_data_cache(self):
-        self._PLAYER_DATA_CACHE[self.name] = {
-            'all_scores': self.all_scores,
-            'last_score': self.last_score,
-            'max_score': self.max_score,
-            'min_score': self.min_score,
-            'average_score': self.average_score,
-            'median_score': self.median_score,
-            'std_score': self.stdev_score,
-        }
 
     def __set_from_data_cache(self, player_data):
         if player_data is None:

@@ -73,6 +73,8 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | WNBA | FanDuel | `FD_WNBA_RULE_SET` |
 | PGA | FanDuel | `FD_PGA_RULE_SET` |
 | NASCAR | FanDuel | `FD_NASCAR_RULE_SET` |
+| SOCCER | DraftKings | `DK_SOCCER_RULE_SET` |
+| EuroLeague | DraftKings | `DK_EURO_LEAGUE_RULE_SET` |
 
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
