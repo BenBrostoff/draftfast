@@ -8,6 +8,8 @@ ROSTER_SIZE = {
         'NBA': 8,
         'WNBA': 6,
         'MLB': 10,
+        'SOCCER': 8,
+        'EL': 6,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -26,6 +28,8 @@ SALARY_CAP = {
         'NBA': 50_000,
         'WNBA': 50_000,
         'MLB': 50_000,
+        'SOCCER': 50_000,
+        'EL': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -78,6 +82,12 @@ POSITIONS = {
             ['3B', 1, 1],
             ['SS', 1, 1],
             ['OF', 3, 3],
+        ],
+        'SOCCER': [
+            ['F', 2, 3],
+            ['M', 2, 3],
+            ['D', 2, 3],
+            ['GK', 1, 2],
         ]
     },
     FAN_DUEL: {
@@ -224,5 +234,23 @@ FD_MLB_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['MLB'],
     salary_max=SALARY_CAP[FAN_DUEL]['MLB'],
     position_limits=POSITIONS[FAN_DUEL]['MLB'],
+    general_position_limits=[],
+)
+
+DK_SOCCER_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='SOCCER',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['SOCCER'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['SOCCER'],
+    position_limits=POSITIONS[DRAFT_KINGS]['SOCCER'],
+    general_position_limits=[],
+)
+
+DK_EURO_LEAGUE_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='EL',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['EL'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['EL'],
+    position_limits=POSITIONS[DRAFT_KINGS]['EL'],
     general_position_limits=[],
 )
