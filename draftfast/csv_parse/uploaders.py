@@ -37,6 +37,27 @@ class DraftKingsNBAUploader(CSVUploader):
         return map_pids(pid_file, game=DRAFT_KINGS)
 
 
+class DraftKingsELUploader(CSVUploader):
+    HEADERS = [
+        'G', 'G', 'F', 'F', 'F', 'UTIL',
+    ]
+
+    def write_rosters(self, rosters):
+        with open(self.upload_file, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.HEADERS)
+            for roster in rosters:
+                write_to_csv(
+                    writer=writer,
+                    roster=roster,
+                    player_map=self.pid_map,
+                    league='EL',
+                )
+
+    def _map_pids(self, pid_file):
+        return map_pids(pid_file, game=DRAFT_KINGS)
+
+
 class DraftKingsNFLUploader(CSVUploader):
     pass
 
