@@ -56,6 +56,31 @@ def test_dk_el_upload():
     )
 
 
+def test_dk_soccer_upload():
+    row = _get_first_written_row(
+        game=rules.DRAFT_KINGS,
+        salary_file_location='{}/data/dk-soccer-salaries.csv'.format(
+            CURRENT_DIR
+        ),
+        rule_set=rules.DK_SOCCER_RULE_SET,
+        pid_file='{}/data/dk-soccer-pids.csv'.format(CURRENT_DIR),
+        Uploader=uploaders.DraftKingsSoccerUploader,
+    )
+    assert_equal(
+        row,
+        [
+            '11801828',
+            '11801837',
+            '11801757',
+            '11801761',
+            '11801685',
+            '11801733',
+            '11801676',
+            '11801778',
+        ],
+    )
+
+
 def test_fd_nba_upload():
     row = _get_first_written_row(
         game=rules.FAN_DUEL,
