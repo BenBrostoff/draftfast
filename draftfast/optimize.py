@@ -48,7 +48,7 @@ def run(rule_set: RuleSet,
             Active constraints: {}
             Player count: {}
             '''
-        ).format(optimizer_settings, len(players))
+        ).format(optimizer_settings, len(players or []))
     return None
 
 
