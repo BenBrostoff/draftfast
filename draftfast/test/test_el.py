@@ -8,7 +8,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-euro-league-salaries.csv'.format(CURRENT_DIR)
 
 
-def test_soccer_dk():
+def test_el_dk():
     player_pool = salary_download.generate_players_from_csvs(
         salary_file_location=salary_file,
         game=rules.DRAFT_KINGS,
