@@ -53,11 +53,32 @@ def map_pids(pid_file, game=DRAFT_KINGS):
     return player_map
 
 
-def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS):
+def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS,
+                 league='NBA'):
     players = roster.sorted_players()
 
     ordered_possible = []
-    if game == DRAFT_KINGS:
+    if game == DRAFT_KINGS and league == 'EL':
+        ordered_possible = [
+            _on_position(players, ['G']),
+            _on_position(players, ['G']),
+            _on_position(players, ['F']),
+            _on_position(players, ['F']),
+            _on_position(players, ['F']),
+            players
+        ]
+    elif game == DRAFT_KINGS and league == 'SOCCER':
+        ordered_possible = [
+            _on_position(players, ['F']),
+            _on_position(players, ['F']),
+            _on_position(players, ['M']),
+            _on_position(players, ['M']),
+            _on_position(players, ['D']),
+            _on_position(players, ['D']),
+            _on_position(players, ['GK']),
+            players
+        ]
+    elif game == DRAFT_KINGS:
         ordered_possible = [
             _on_position(players, ['PG']),
             _on_position(players, ['SG']),
@@ -83,6 +104,7 @@ def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS):
 
     ordered_lineup = []
     counter = 0
+    print(ordered_possible)
     for ps in ordered_possible:
         counter += 1
         not_used_ps = [
