@@ -45,7 +45,8 @@ def map_pids(pid_file, encoding, errors, game=DRAFT_KINGS):
                 "https://www.draftkings.com/lineup/upload.")
 
         f.close()
-        f = islice(open(pid_file, 'r', encoding=encoding, errors=errors), n, None)
+        f = islice(open(pid_file, 'r',
+                        encoding=encoding, errors=errors), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
             player_map[line[name] + " " + line[position]] = line[p_id]

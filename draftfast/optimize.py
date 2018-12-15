@@ -13,6 +13,7 @@ def run(rule_set: RuleSet,
         player_pool: list,
         optimizer_settings=None,
         player_settings=None,
+        roster_gen=None,
         verbose=False) -> Roster:
     players = pool.filter_pool(
         player_pool,
@@ -27,7 +28,11 @@ def run(rule_set: RuleSet,
     variables = optimizer.variables
 
     if optimizer.solve():
-        roster = RosterSelect().roster_gen(rule_set.league)
+        roster = None
+        if roster_gen:
+            roster = roster_gen()
+        else:
+            roster = RosterSelect().roster_gen(rule_set.league)
 
         for i, player in enumerate(players):
             if variables[i].solution_value() == 1:
@@ -48,7 +53,8 @@ def run(rule_set: RuleSet,
             Active constraints: {}
             Player count: {}
             '''
-        ).format(optimizer_settings, len(players or []))
+            .format(optimizer_settings, len(players or []))
+        )
     return None
 
 
