@@ -21,6 +21,8 @@ class Optimizer(object):
         self.salary_max = rule_set.salary_max
         self.roster_size = rule_set.roster_size
         self.position_limits = rule_set.position_limits
+        self.offensive_positions = rule_set.offensive_positions
+        self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
 
@@ -53,6 +55,7 @@ class Optimizer(object):
         self._set_stack()
         self._set_combo()
         self._set_no_duplicate_lineups()
+        self._set_no_opp_defense()
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
 
@@ -144,6 +147,30 @@ class Optimizer(object):
                         self.solver.Sum(wrs_on_team) >=
                         self.solver.Sum(qbs_on_team)
                     )
+
+    def _set_no_opp_defense(self):
+        offensive_pos = self.offensive_positions
+        defensive_pos = self.defensive_positions
+
+        if offensive_pos and defensive_pos \
+                and self.settings.no_offense_against_defense:
+            teams = set([p.team for p in self.players])
+            enumerated_players = self.enumerated_players
+
+            for team in teams:
+                offensive_against = [
+                    self.variables[i] for i, p in enumerated_players
+                    if p.pos in offensive_pos and
+                    p.is_opposing_team_in_match_up(team)
+                ]
+                defensive = [
+                    self.variables[i] for i, p in enumerated_players
+                    if p.team == team and p.pos in defensive_pos
+                ]
+
+                for p in offensive_against:
+                    for d in defensive:
+                        self.solver.Add(p <= 1 - d)
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:

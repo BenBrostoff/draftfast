@@ -141,7 +141,8 @@ class RuleSet(object):
     def __init__(self, site, league,
                  roster_size, position_limits,
                  salary_max, salary_min=0,
-                 general_position_limits=None):
+                 general_position_limits=None,
+                 offensive_positions=None, defensive_positions=None):
         self.site = site
         self.league = league
         self.roster_size = roster_size
@@ -149,6 +150,8 @@ class RuleSet(object):
         self.general_position_limits = general_position_limits
         self.salary_min = salary_min
         self.salary_max = salary_max
+        self.offensive_positions = offensive_positions
+        self.defensive_positions = defensive_positions
 
 
 DK_NBA_RULE_SET = RuleSet(
@@ -247,6 +250,8 @@ DK_SOCCER_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['SOCCER'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['SOCCER'],
     position_limits=POSITIONS[DRAFT_KINGS]['SOCCER'],
+    offensive_positions=['M', 'F'],
+    defensive_positions=['GK', 'D'],
     general_position_limits=[],
 )
 

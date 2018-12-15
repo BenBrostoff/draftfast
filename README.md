@@ -91,6 +91,39 @@ nhl_rules = rules.RuleSet(
 )
 ```
 
+## Settings
+
+Usage example:
+
+```python
+roster = run(
+    rule_set=rules.DK_SOCCER_RULE_SET,
+    player_pool=player_pool,
+    player_settings=PlayerPoolSettings(
+        locked=['Maxi Gomez'],
+    ),
+    optimizer_settings=OptimizerSettings(
+        no_offense_against_defense=True,
+    ),
+    verbose=True,
+)
+```
+
+`PlayerPoolSettings`
+
+- `locked` - list of players to lock
+- `banned` - list of players to ban
+- `min_proj`
+- `max_proj`
+- `min_salary`
+- `max_salary`
+- `min_avg`
+- `max_avg`
+
+`OptimizerSettings`
+
+- `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer (PRs welcome!)
+
 ## CSV Upload
 
 ```python

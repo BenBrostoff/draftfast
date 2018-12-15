@@ -61,7 +61,8 @@ class OptimizerSettings(object):
     def __init__(self, locked=None,
                  stack_team=None, stack_count=None,
                  existing_rosters=None, force_combo=None,
-                 combo_allow_te=None, uniques=None):
+                 combo_allow_te=None, uniques=None,
+                 no_offense_against_defense=None):
         self.locked = locked
         self.stack_team = stack_team
         self.stack_count = stack_count
@@ -69,6 +70,7 @@ class OptimizerSettings(object):
         self.force_combo = force_combo
         self.combo_allow_te = combo_allow_te
         self.uniques = uniques
+        self.no_offense_against_defense = no_offense_against_defense
 
 
 class UploadSettings(object):
