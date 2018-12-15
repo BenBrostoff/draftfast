@@ -104,7 +104,6 @@ def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS,
 
     ordered_lineup = []
     counter = 0
-    print(ordered_possible)
     for ps in ordered_possible:
         counter += 1
         not_used_ps = [
