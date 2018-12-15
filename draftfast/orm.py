@@ -272,6 +272,9 @@ class Player(object):
             s_max
         ]
 
+    def is_opposing_team_in_match_up(self, team):
+        return (team != self.team) and (team in self.matchup)
+
     def __repr__(self):
         v_avg = self.__format_v_avg()
         player_dict = dict(
