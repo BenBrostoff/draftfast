@@ -11,7 +11,7 @@ requires = [
 
 setuptools.setup(
     name='draftfast',
-    version='2.0.1',
+    version='2.0.2',
     author='Ben Brostoff',
     author_email='ben.brostoff@gmail.com',
     description='A tool to automate and optimize DraftKings and FanDuel lineup construction.',
