@@ -52,6 +52,9 @@ def test_soccer_dk_no_opp_d():
     roster = run(
         rule_set=rules.DK_SOCCER_RULE_SET,
         player_pool=player_pool,
+        player_settings=PlayerPoolSettings(
+            locked=['Maxi Gomez'],
+        ),
         optimizer_settings=OptimizerSettings(
             no_offense_against_defense=True,
         ),
