@@ -170,12 +170,17 @@ class Optimizer(object):
 
     def _set_no_duplicate_lineups(self):
         for roster in self.existing_rosters:
-            unique_players = self.solver.Constraint(
+            max_repeats = self.roster_size - 1
+            if self.settings.uniques:
+                max_repeats = max(
+                    self.roster_size - self.settings.uniques,
+                    1
+                )
+            repeated_players = self.solver.Constraint(
                 0,
-                self.roster_size - 1
+                max_repeats
             )
-
             for player in roster.sorted_players():
                 i = self.player_to_idx_map.get(player.solver_id)
-                if i:
-                    unique_players.SetCoefficient(self.variables[i], 1)
+                if i is not None:
+                    repeated_players.SetCoefficient(self.variables[i], 1)
