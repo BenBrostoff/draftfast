@@ -8,8 +8,11 @@ from draftfast.rules import DRAFT_KINGS, FAN_DUEL
 
 class CSVUploader(object):
 
-    def __init__(self, pid_file, upload_file='./upload.csv'):
+    def __init__(self, pid_file, upload_file='./upload.csv',
+                 encoding='utf-8', errors='replace'):
         self.upload_file = upload_file
+        self.encoding = encoding
+        self.errors = errors
         self.pid_map = self._map_pids(pid_file)
 
     def _map_pids(self, pid_file):
@@ -34,7 +37,12 @@ class DraftKingsNBAUploader(CSVUploader):
                 )
 
     def _map_pids(self, pid_file):
-        return map_pids(pid_file, game=DRAFT_KINGS)
+        return map_pids(
+            pid_file,
+            game=DRAFT_KINGS,
+            encoding=self.encoding,
+            errors=self.errors,
+        )
 
 
 class DraftKingsELUploader(CSVUploader):
@@ -55,7 +63,12 @@ class DraftKingsELUploader(CSVUploader):
                 )
 
     def _map_pids(self, pid_file):
-        return map_pids(pid_file, game=DRAFT_KINGS)
+        return map_pids(
+            pid_file,
+            game=DRAFT_KINGS,
+            encoding=self.encoding,
+            errors=self.errors,
+        )
 
 
 class DraftKingsSoccerUploader(CSVUploader):
@@ -76,7 +89,12 @@ class DraftKingsSoccerUploader(CSVUploader):
                 )
 
     def _map_pids(self, pid_file):
-        return map_pids(pid_file, game=DRAFT_KINGS)
+        return map_pids(
+            pid_file,
+            game=DRAFT_KINGS,
+            encoding=self.encoding,
+            errors=self.errors,
+        )
 
 
 class DraftKingsNFLUploader(CSVUploader):
@@ -102,7 +120,12 @@ class FanDuelNBAUploader(CSVUploader):
                 )
 
     def _map_pids(self, pid_file):
-        return map_pids(pid_file, game=FAN_DUEL)
+        return map_pids(
+            pid_file,
+            game=FAN_DUEL,
+            encoding=self.encoding,
+            errors=self.errors,
+        )
 
 
 class FanDuelNFLUploader(CSVUploader):

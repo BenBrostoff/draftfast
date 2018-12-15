@@ -31,15 +31,20 @@ def generate_players_from_csvs(
     game: str,
     projection_file_location='',
     verbose=False,
+    encoding='utf-8',
+    errors='replace',
 ) -> list:
     players = []
     projections = None
     if projection_file_location:
         projections = _generate_projection_dict(
-            projection_file_location
+            projection_file_location,
+            encoding,
+            errors,
         )
 
-    with open(salary_file_location, 'r') as csv_file:
+    with open(salary_file_location, 'r',
+              encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
             for pos in row['Position'].split('/'):
@@ -94,9 +99,12 @@ def generate_player(pos, row, game):
     return player
 
 
-def _generate_projection_dict(projection_file_location: str) -> dict:
+def _generate_projection_dict(projection_file_location: str,
+                              encoding: str,
+                              errors: str) -> dict:
     projections = {}
-    with open(projection_file_location, 'r') as csv_file:
+    with open(projection_file_location, 'r',
+              encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
             projections[row.get('playername')] = float(row.get('points'))

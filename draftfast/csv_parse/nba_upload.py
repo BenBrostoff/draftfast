@@ -22,7 +22,7 @@ NAME_MAP = {
 }
 
 
-def map_pids(pid_file, game=DRAFT_KINGS):
+def map_pids(pid_file, encoding, errors, game=DRAFT_KINGS):
     start = NAME_MAP.get(game).get('start')
     name = NAME_MAP.get(game).get('name')
     position = NAME_MAP.get(game).get('position')
@@ -45,7 +45,7 @@ def map_pids(pid_file, game=DRAFT_KINGS):
                 "https://www.draftkings.com/lineup/upload.")
 
         f.close()
-        f = islice(open(pid_file, "r"), n, None)
+        f = islice(open(pid_file, 'r', encoding=encoding, errors=errors), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
             player_map[line[name] + " " + line[position]] = line[p_id]
