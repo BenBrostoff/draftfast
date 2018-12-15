@@ -96,16 +96,39 @@ nhl_rules = rules.RuleSet(
 Usage example:
 
 ```python
+class Showdown(Roster):
+    POSITION_ORDER = {
+        'M': 0,
+        'F': 1,
+        'D': 2,
+        'GK': 3,
+    }
+
+
+showdown_limits = [
+    ['M', 0, 6],
+    ['F', 0, 6],
+    ['D', 0, 6],
+    ['GK', 0, 6],
+]
+
+soccer_rules = rules.RuleSet(
+    site=rules.DRAFT_KINGS,
+    league='SOCCER_SHOWDOWN',
+    roster_size=6,
+    position_limits=showdown_limits,
+    salary_max=50_000,
+    general_position_limits=[],
+)
+player_pool = salary_download.generate_players_from_csvs(
+    salary_file_location=salary_file,
+    game=rules.DRAFT_KINGS,
+)
 roster = run(
-    rule_set=rules.DK_SOCCER_RULE_SET,
+    rule_set=soccer_rules,
     player_pool=player_pool,
-    player_settings=PlayerPoolSettings(
-        locked=['Maxi Gomez'],
-    ),
-    optimizer_settings=OptimizerSettings(
-        no_offense_against_defense=True,
-    ),
     verbose=True,
+    roster_gen=Showdown,
 )
 ```
 
