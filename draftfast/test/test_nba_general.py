@@ -44,5 +44,5 @@ def test_optimize_with_general():
         ])
 
     ntools.assert_equal(3, get_player_count_at_pos('G'))
-    ntools.assert_equal(3, get_player_count_at_pos('F'))
-    ntools.assert_equal(2, get_player_count_at_pos('C'))
+    ntools.assert_equal(4, get_player_count_at_pos('F'))
+    ntools.assert_equal(1, get_player_count_at_pos('C'))

@@ -42,6 +42,7 @@ class Optimizer(object):
 
             self.player_to_idx_map[player.solver_id] = idx
 
+        self.teams = set([p.team for p in self.players])
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
 
@@ -56,6 +57,7 @@ class Optimizer(object):
         self._set_combo()
         self._set_no_duplicate_lineups()
         self._set_no_opp_defense()
+        self._set_min_teams()
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
 
@@ -154,10 +156,9 @@ class Optimizer(object):
 
         if offensive_pos and defensive_pos \
                 and self.settings.no_offense_against_defense:
-            teams = set([p.team for p in self.players])
             enumerated_players = self.enumerated_players
 
-            for team in teams:
+            for team in self.teams:
                 offensive_against = [
                     self.variables[i] for i, p in enumerated_players
                     if p.pos in offensive_pos and
@@ -211,3 +212,20 @@ class Optimizer(object):
                 i = self.player_to_idx_map.get(player.solver_id)
                 if i is not None:
                     repeated_players.SetCoefficient(self.variables[i], 1)
+
+    def _set_min_teams(self):
+        teams = []
+        for team in self.teams:
+            if team:
+                constraint = self.solver.IntVar(0, 1, team)
+                teams.append(constraint)
+                players_on_team = [
+                    self.variables[i] for i, p
+                    in self.enumerated_players if p.team == team
+                ]
+                self.solver.Add(constraint <= self.solver.Sum(players_on_team))
+
+        # TODO - add constraint of max players per team per sport
+        # Make min teams parameter and not hard-coded 2
+        if len(teams) > 0:
+            self.solver.Add(self.solver.Sum(teams) >= 2)
