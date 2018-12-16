@@ -226,6 +226,7 @@ class Optimizer(object):
                 self.solver.Add(constraint <= self.solver.Sum(players_on_team))
 
         # TODO - add constraint of max players per team per sport
-        # Make min teams parameter and not hard-coded 2
         if len(teams) > 0:
-            self.solver.Add(self.solver.Sum(teams) >= 2)
+            self.solver.Add(
+                self.solver.Sum(teams) >= self.settings.min_teams
+            )

@@ -62,7 +62,8 @@ class OptimizerSettings(object):
                  stack_team=None, stack_count=None,
                  existing_rosters=None, force_combo=None,
                  combo_allow_te=None, uniques=None,
-                 no_offense_against_defense=None):
+                 no_offense_against_defense=None,
+                 min_teams=2):
         self.locked = locked
         self.stack_team = stack_team
         self.stack_count = stack_count
@@ -71,6 +72,7 @@ class OptimizerSettings(object):
         self.combo_allow_te = combo_allow_te
         self.uniques = uniques
         self.no_offense_against_defense = no_offense_against_defense
+        self.min_teams = min_teams
 
 
 class UploadSettings(object):
