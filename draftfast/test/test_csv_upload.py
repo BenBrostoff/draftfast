@@ -19,17 +19,17 @@ def test_dk_nba_upload():
         Uploader=uploaders.DraftKingsNBAUploader,
     )
     assert_equal(
-        row,
-        [
+        sorted(row),
+        sorted([
             '11743190',
             '11743146',
             '11743013',
-            '11743142',
             '11743007',
+            '11743024',
             '11743176',
             '11743369',
-            '11743024',
-        ]
+            '11743142',
+        ]),
     )
 
 
