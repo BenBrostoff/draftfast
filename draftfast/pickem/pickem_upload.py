@@ -2,8 +2,6 @@ import csv
 from itertools import islice
 from draftfast.pickem import pickem_orm
 
-upload_file = 'data/current-upload.csv'
-
 
 def map_pids(pid_file):
     player_map = {}
@@ -34,5 +32,4 @@ def write_to_csv(player_map, roster, writer):
             pickem_orm.T5: player_map[roster.T5.name],
             pickem_orm.T6: player_map[roster.T6.name],
     }
-    print(row, '!!!!!')
     writer.writerow(row)

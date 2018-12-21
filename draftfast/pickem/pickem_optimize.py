@@ -62,7 +62,6 @@ def get_all_players(
             else:
                 proj = float(row['AvgPointsPerGame'])
 
-            print(row)
             all_players.append(
                 TieredPlayer(
                     cost=0,  # salary not applicable in pickem
