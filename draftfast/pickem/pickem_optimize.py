@@ -3,12 +3,13 @@ from terminaltables import AsciiTable
 from draft_kings_db import client
 from draftfast.player_pool import add_pickem_contraints
 from draftfast.pickem.pickem_orm import TieredLineup, TieredPlayer, TIERS
+from draftfast.settings import PickemSettings, PlayerPoolSettings
 
 
-def optimize(all_players, cmd_args=None):
+def optimize(all_players, player_settings=PlayerPoolSettings(), pickem_settings=PickemSettings()):
     lineup_players = []
     all_players = list(filter(
-        add_pickem_contraints(cmd_args),
+        add_pickem_contraints(player_settings),
         all_players
     ))
     for t in TIERS:
@@ -21,7 +22,7 @@ def optimize(all_players, cmd_args=None):
         lineup_players.append(best)
 
     lineup = TieredLineup(lineup_players)
-    locked = cmd_args.locked if cmd_args else None
+    locked = pickem_settings.locked
     if locked:
         for lock in locked:
             player_lock = _get_player(lock, all_players)
@@ -37,7 +38,7 @@ def optimize(all_players, cmd_args=None):
 
 def get_all_players(
     pickem_file_location,
-    projection_file,
+    projection_file=None,
     use_averages=False,
 ):
     all_players = []
@@ -61,16 +62,17 @@ def get_all_players(
             else:
                 proj = float(row['AvgPointsPerGame'])
 
+            print(row)
             all_players.append(
                 TieredPlayer(
                     cost=0,  # salary not applicable in pickem
                     name=row['Name'],
                     pos=row['Position'],
-                    team=row['teamAbbrev'],
-                    matchup=row['GameInfo'],
+                    team=row['TeamAbbrev'],
+                    matchup=row['Game Info'],
                     proj=proj,
                     average_score=float(row['AvgPointsPerGame']),
-                    tier=row['Roster_Position']
+                    tier=row['Roster Position']
                 )
             )
     return all_players

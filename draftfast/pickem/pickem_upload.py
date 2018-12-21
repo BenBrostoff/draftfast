@@ -1,14 +1,8 @@
 import csv
-from pickem import pickem_orm
 from itertools import islice
+from draftfast.pickem import pickem_orm
 
 upload_file = 'data/current-upload.csv'
-
-
-def create_upload_file():
-    with open(upload_file, 'w') as f:
-        writer = csv.DictWriter(f, fieldnames=pickem_orm.TIERS)
-        writer.writeheader()
 
 
 def map_pids(pid_file):
@@ -31,16 +25,14 @@ def map_pids(pid_file):
     return player_map
 
 
-def update_upload_csv(player_map, tiered_lineup):
-    with open(upload_file, 'a') as f:
-        writer = csv.DictWriter(f, fieldnames=pickem_orm.TIERS)
-        writer.writerow(
-            {
-                pickem_orm.T1: player_map[tiered_lineup.T1.name],
-                pickem_orm.T2: player_map[tiered_lineup.T2.name],
-                pickem_orm.T3: player_map[tiered_lineup.T3.name],
-                pickem_orm.T4: player_map[tiered_lineup.T4.name],
-                pickem_orm.T5: player_map[tiered_lineup.T5.name],
-                pickem_orm.T6: player_map[tiered_lineup.T6.name],
-            }
-        )
+def write_to_csv(player_map, roster, writer):
+    row ={
+            pickem_orm.T1: player_map[roster.T1.name],
+            pickem_orm.T2: player_map[roster.T2.name],
+            pickem_orm.T3: player_map[roster.T3.name],
+            pickem_orm.T4: player_map[roster.T4.name],
+            pickem_orm.T5: player_map[roster.T5.name],
+            pickem_orm.T6: player_map[roster.T6.name],
+    }
+    print(row, '!!!!!')
+    writer.writerow(row)
