@@ -73,6 +73,18 @@ class OptimizerSettings(object):
         self.no_offense_against_defense = no_offense_against_defense
         self.min_teams = min_teams
 
+    def __repr__(self):
+        return """
+        Locked: {}
+        Stacks: {}
+        Min teams: {}
+        No offense against D: {}
+        """.format(
+            self.locked,
+            [x.team for x in self.stacks],
+            self.min_teams,
+            self.no_offense_against_defense,
+        )
 
 class PickemSettings(object):
 

@@ -202,7 +202,6 @@ class NHLRoster(Roster):
         'W': 1,
         'D': 2,
         'G': 3,
-        'UTIL': 4,
     }
 
 

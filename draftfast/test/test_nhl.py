@@ -35,17 +35,18 @@ def test_triple_stack():
         verbose=True,
         optimizer_settings=OptimizerSettings(
             stacks=[
-                Stack(team='PHI', count=3),
-                Stack(team='FLA', count=3),
-                Stack(team='NSH', count=2),
+                Stack(team='TOR', count=3),
+                Stack(team='COL', count=3),
+                Stack(team='VAN', count=2),
             ]
         )
     )
+    print(roster)
     players = roster.sorted_players()
 
-    phi_players = [x for x in players if x.team == 'PHI']
-    fla_players = [x for x in players if x.team == 'FLA']
-    nsh_players = [x for x in players if x.team == 'NSH']
+    phi_players = [x for x in players if x.team == 'TOR']
+    fla_players = [x for x in players if x.team == 'COL']
+    nsh_players = [x for x in players if x.team == 'VAN']
     ntools.assert_equal(len(phi_players), 3)
     ntools.assert_equal(len(fla_players), 3)
     ntools.assert_equal(len(nsh_players), 2)
