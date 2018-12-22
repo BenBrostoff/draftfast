@@ -47,4 +47,4 @@ def test_optimize_with_general():
     # same players are produced with different positions
     ntools.assert_true(get_player_count_at_pos('G') in [3, 4])
     ntools.assert_true(get_player_count_at_pos('F') in [3, 4])
-    ntools.assert_equal(get_player_count_at_pos('C') in [1, 2])
+    ntools.assert_true(get_player_count_at_pos('C') in [1, 2])
