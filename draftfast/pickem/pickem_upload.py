@@ -24,12 +24,12 @@ def map_pids(pid_file):
 
 
 def write_to_csv(player_map, roster, writer):
-    row ={
-            pickem_orm.T1: player_map[roster.T1.name],
-            pickem_orm.T2: player_map[roster.T2.name],
-            pickem_orm.T3: player_map[roster.T3.name],
-            pickem_orm.T4: player_map[roster.T4.name],
-            pickem_orm.T5: player_map[roster.T5.name],
-            pickem_orm.T6: player_map[roster.T6.name],
+    row = {
+        pickem_orm.T1: player_map[roster.T1.name],
+        pickem_orm.T2: player_map[roster.T2.name],
+        pickem_orm.T3: player_map[roster.T3.name],
+        pickem_orm.T4: player_map[roster.T4.name],
+        pickem_orm.T5: player_map[roster.T5.name],
+        pickem_orm.T6: player_map[roster.T6.name],
     }
     writer.writerow(row)

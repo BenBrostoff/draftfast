@@ -5,8 +5,10 @@ from nose.tools import assert_equal
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
-from draftfast.pickem_optimize import get_all_players, optimize as p_optimize
-# from draftfast.csv_parse import uploaders
+from draftfast.pickem.pickem_optimize import (
+    optimize as p_optimize
+)
+
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -107,8 +109,13 @@ def test_fd_nba_upload():
 
 
 def test_pickem_nba_upload():
-    players = get_all_players(
-        pickem_file_location='{}/data/dk-nba-pickem-salaries.csv'.format(CURRENT_DIR),
+    salary_file_location = '{}/data/dk-nba-pickem-salaries.csv'.format(
+        CURRENT_DIR
+    )
+    players = salary_download.generate_players_from_csvs(
+        game=rules.DRAFT_KINGS,
+        salary_file_location=salary_file_location,
+        is_pickem=True,
     )
     rosters = [p_optimize(
         all_players=players,

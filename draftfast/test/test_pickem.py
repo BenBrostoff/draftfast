@@ -1,8 +1,8 @@
 from nose import tools as ntools
-from argparse import Namespace
 from draftfast.pickem import pickem_orm
 from draftfast.pickem.pickem_optimize import optimize
 from draftfast.settings import PlayerPoolSettings, PickemSettings
+
 
 def _generate_player(name, proj, tier, **kwargs):
     return pickem_orm.TieredPlayer(

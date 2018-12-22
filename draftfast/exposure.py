@@ -199,6 +199,6 @@ def get_exposure_matrix(rosters, exclude=[]):
 
     table = AsciiTable(rows)
     table.inner_row_border = True
-    table.justify_columns = {i+1: 'center' for i in range(len(sorted_names))}
+    table.justify_columns = {i + 1: 'center' for i in range(len(sorted_names))}
 
     return table.table
