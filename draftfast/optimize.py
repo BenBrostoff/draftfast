@@ -7,13 +7,23 @@ from draftfast.exposure import check_exposure, \
     get_exposure_table, get_exposure_matrix, get_exposure_args
 from draftfast.rules import RuleSet
 from draftfast.settings import PlayerPoolSettings, OptimizerSettings
-
+from draftfast.lineup_contraints import LineupConstraints
 
 def run(rule_set: RuleSet,
         player_pool: list,
         optimizer_settings=None,
         player_settings=None,
         verbose=False) -> Roster:
+    constraints = LineupConstraints()
+
+    if player_settings and player_settings.banned:
+        for name in player_settings.banned:
+            constraints.ban(name)
+
+    if player_settings and player_settings.locked:
+        for name in player_settings.locked:
+            constraints.lock(name)
+
     players = pool.filter_pool(
         player_pool,
         player_settings,
@@ -22,6 +32,7 @@ def run(rule_set: RuleSet,
         players=players,
         rule_set=rule_set,
         settings=optimizer_settings,
+        constraints=constraints,
     )
 
     variables = optimizer.variables

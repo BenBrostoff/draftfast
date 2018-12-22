@@ -30,8 +30,7 @@ def add_filters(settings):
             _is_above_min_proj(**kwargs) and \
             _is_below_max_proj(**kwargs) and \
             _is_above_min_avg(**kwargs) and \
-            _is_below_max_avg(**kwargs) and \
-            not _is_banned_player(**kwargs)
+            _is_below_max_avg(**kwargs)
 
     return filter_fn
 

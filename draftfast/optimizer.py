@@ -8,6 +8,7 @@ class Optimizer(object):
         players,
         rule_set,
         settings,
+        constraints,
     ):
         settings = settings or OptimizerSettings()
         self.solver = pywraplp.Solver(
@@ -23,20 +24,14 @@ class Optimizer(object):
         self.position_limits = rule_set.position_limits
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
+        self.constraints = constraints
 
         self.player_to_idx_map = {}
         self.variables = []
         for idx, player in self.enumerated_players:
-            if player.lock and not player.multi_position:
-                self.variables.append(
-                    self.solver.IntVar(
-                        1, 1, player.solver_id
-                    )
-                )
-            else:
-                self.variables.append(
-                    self.solver.IntVar(0, 1, player.solver_id)
-                )
+            self.variables.append(
+                self.solver.IntVar(0, 1, player.solver_id)
+            )
 
             self.player_to_idx_map[player.solver_id] = idx
 
@@ -44,10 +39,10 @@ class Optimizer(object):
         self.objective.SetMaximization()
 
     def solve(self):
+        self._set_player_constraints()
         self._optimize_on_projected_points()
         self._set_salary_range()
         self._set_roster_size()
-        self._set_no_multi_player()
         self._set_positions()
         self._set_general_positions()
         self._set_stack()
@@ -55,6 +50,22 @@ class Optimizer(object):
         self._set_no_duplicate_lineups()
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
+
+    def _set_player_constraints(self):
+        for i, p in self.enumerated_players:
+            if self.constraints.is_locked(p.name):
+                upper = lower = 1
+                p.lock = True
+            elif self.constraints.is_banned(p.name):
+                upper = lower = 0
+            elif p.multi_position:
+                upper = 1
+                lower = 0
+            else:
+                continue
+
+            constraint = self.solver.Constraint(lower, upper)
+            constraint.SetCoefficient(self.variables[i], 1)
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:
@@ -83,22 +94,6 @@ class Optimizer(object):
         for variable in self.variables:
             size_cap.SetCoefficient(variable, 1)
 
-    def _set_no_multi_player(self):
-        multi_caps = {}
-        for i, p in self.enumerated_players:
-            if not p.multi_position:
-                continue
-
-            if p.name not in multi_caps:
-                if p.lock:
-                    multi_caps[p.name] = self.solver.Constraint(1, 1)
-                else:
-                    multi_caps[p.name] = self.solver.Constraint(0, 1)
-
-            multi_caps[p.name].SetCoefficient(
-                self.variables[i],
-                1
-            )
 
     def _set_stack(self):
         if self.settings:

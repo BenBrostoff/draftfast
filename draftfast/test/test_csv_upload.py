@@ -1,7 +1,7 @@
 import os
 import csv
 from typing import Type
-from nose.tools import assert_equal
+from nose.tools import assert_equal, set_trace
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
