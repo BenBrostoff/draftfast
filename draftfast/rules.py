@@ -150,7 +150,8 @@ class RuleSet(object):
                  roster_size, position_limits,
                  salary_max, salary_min=0,
                  general_position_limits=None,
-                 offensive_positions=None, defensive_positions=None):
+                 offensive_positions=None, defensive_positions=None,
+                 game_type='classic'):
         self.site = site
         self.league = league
         self.roster_size = roster_size
@@ -160,6 +161,7 @@ class RuleSet(object):
         self.salary_max = salary_max
         self.offensive_positions = offensive_positions
         self.defensive_positions = defensive_positions
+        self.game_type = game_type
 
 
 DK_NBA_RULE_SET = RuleSet(
@@ -281,4 +283,13 @@ DK_NHL_RULE_SET = RuleSet(
     offensive_positions=['C', 'W'],
     defensive_positions=['G', 'D'],
     general_position_limits=[],
+)
+
+DK_NBA_PICKEM_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NBA',
+    roster_size=6,
+    salary_max=None,
+    position_limits=None,
+    game_type='pickem',
 )

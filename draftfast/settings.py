@@ -59,13 +59,12 @@ class PlayerPoolSettings(object):
 class OptimizerSettings(object):
 
     def __init__(self, locked=None,
-                 stack_team=None, stacks=None,
+                 stacks=None,
                  existing_rosters=None, force_combo=None,
                  combo_allow_te=None, uniques=None,
                  no_offense_against_defense=None,
                  min_teams=2):
         self.locked = locked
-        self.stack_team = stack_team
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo

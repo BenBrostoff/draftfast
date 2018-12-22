@@ -115,7 +115,7 @@ def test_pickem_nba_upload():
     players = salary_download.generate_players_from_csvs(
         game=rules.DRAFT_KINGS,
         salary_file_location=salary_file_location,
-        is_pickem=True,
+        ruleset=rules.DK_NBA_PICKEM_RULE_SET,
     )
     rosters = [p_optimize(
         all_players=players,
