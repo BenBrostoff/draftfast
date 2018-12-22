@@ -43,6 +43,9 @@ def test_optimize_with_general():
             if p.nba_general_position == pos
         ])
 
-    ntools.assert_equal(3, get_player_count_at_pos('G'))
-    ntools.assert_equal(4, get_player_count_at_pos('F'))
+    # (Possibly) due to how ortools works,
+    # G / F switches between 3 / 4, which are both valid lineups
+    ntools.assert_true(get_player_count_at_pos('G') in [3, 4])
+    ntools.assert_true(get_player_count_at_pos('F') in [3, 4])
+
     ntools.assert_equal(1, get_player_count_at_pos('C'))
