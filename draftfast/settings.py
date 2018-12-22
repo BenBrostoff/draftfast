@@ -75,6 +75,12 @@ class OptimizerSettings(object):
         self.min_teams = min_teams
 
 
+class PickemSettings(object):
+
+    def __init__(self, locked=None):
+        self.locked = locked
+
+
 class UploadSettings(object):
 
     def __init__(self, pid_file, upload_file,

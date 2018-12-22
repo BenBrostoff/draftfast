@@ -5,6 +5,9 @@ from nose.tools import assert_equal
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
+from draftfast.pickem.pickem_optimize import (
+    optimize as p_optimize
+)
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -101,6 +104,46 @@ def test_fd_nba_upload():
             '30803-9957:Serge Ibaka',
             '30803-9874:Kevin Love',
             '30803-12362:DeMarcus Cousins',
+        ]
+    )
+
+
+def test_pickem_nba_upload():
+    salary_file_location = '{}/data/dk-nba-pickem-salaries.csv'.format(
+        CURRENT_DIR
+    )
+    players = salary_download.generate_players_from_csvs(
+        game=rules.DRAFT_KINGS,
+        salary_file_location=salary_file_location,
+        is_pickem=True,
+    )
+    rosters = [p_optimize(
+        all_players=players,
+    )]
+
+    pid_file = '{}/data/dk-nba-pickem-pids.csv'.format(CURRENT_DIR)
+    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    uploader = uploaders.DraftKingsNBAPickemUploader(
+        pid_file=pid_file,
+        upload_file=upload_file,
+    )
+    uploader.write_rosters(rosters)
+
+    row = None
+    with open(upload_file, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for idx, row in enumerate(reader):
+            if idx == 0:
+                continue
+    assert_equal(
+        row,
+        [
+            '11839390',
+            '11839397',
+            '11839400',
+            '11839405',
+            '11839420',
+            '11839422',
         ]
     )
 

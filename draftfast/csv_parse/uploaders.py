@@ -4,6 +4,7 @@ from .nba_upload import (
     write_to_csv,
 )
 from draftfast.rules import DRAFT_KINGS, FAN_DUEL
+from draftfast.pickem import pickem_orm, pickem_upload
 
 
 class CSVUploader(object):
@@ -130,3 +131,20 @@ class FanDuelNBAUploader(CSVUploader):
 
 class FanDuelNFLUploader(CSVUploader):
     pass
+
+
+class DraftKingsNBAPickemUploader(CSVUploader):
+
+    def write_rosters(self, rosters):
+        with open(self.upload_file, 'w') as f:
+            writer = csv.DictWriter(f, fieldnames=pickem_orm.TIERS)
+            writer.writeheader()
+            for roster in rosters:
+                pickem_upload.write_to_csv(
+                    writer=writer,
+                    roster=roster,
+                    player_map=self.pid_map,
+                )
+
+    def _map_pids(self, pid_file):
+        return pickem_upload.map_pids(pid_file)
