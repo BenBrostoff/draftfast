@@ -10,6 +10,7 @@ ROSTER_SIZE = {
         'MLB': 10,
         'SOCCER': 8,
         'EL': 6,
+        'NHL': 9,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -30,6 +31,7 @@ SALARY_CAP = {
         'MLB': 50_000,
         'SOCCER': 50_000,
         'EL': 50_000,
+        'NHL': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -92,6 +94,12 @@ POSITIONS = {
         'EL': [
             ['G', 2, 3],
             ['F', 3, 4],
+        ],
+        'NHL': [
+            ['C', 2, 3],
+            ['W', 3, 4],
+            ['D', 2, 3],
+            ['G', 1, 1],
         ]
     },
     FAN_DUEL: {
@@ -261,5 +269,16 @@ DK_EURO_LEAGUE_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['EL'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['EL'],
     position_limits=POSITIONS[DRAFT_KINGS]['EL'],
+    general_position_limits=[],
+)
+
+DK_NHL_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NHL',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['NHL'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['NHL'],
+    position_limits=POSITIONS[DRAFT_KINGS]['NHL'],
+    offensive_positions=['C', 'W'],
+    defensive_positions=['G', 'D'],
     general_position_limits=[],
 )

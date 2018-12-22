@@ -35,6 +35,7 @@ def generate_players_from_csvs(
     encoding='utf-8',
     errors='replace',
     is_pickem=False,
+    league=None,
 ) -> list:
     players = []
     projections = None
@@ -66,7 +67,11 @@ def generate_players_from_csvs(
                 )
                 players.append(player)
             else:
-                for pos in row['Position'].split('/'):
+                pos_key = 'Position'
+                if league == 'NHL':
+                    pos_key = 'Roster Position'
+
+                for pos in row[pos_key].split('/'):
                     player = generate_player(
                         pos=pos,
                         row=row,

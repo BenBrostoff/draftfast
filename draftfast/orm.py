@@ -196,6 +196,16 @@ class ELRoster(Roster):
     }
 
 
+class NHLRoster(Roster):
+    POSITION_ORDER = {
+        'C': 0,
+        'W': 1,
+        'D': 2,
+        'G': 3,
+        'UTIL': 4,
+    }
+
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -208,6 +218,7 @@ class RosterSelect:
             'NASCAR': NASCARRoster(),
             'SOCCER': SoccerRoster(),
             'EL': ELRoster(),
+            'NHL': NHLRoster(),
         }
         return roster_dict[league]
 
