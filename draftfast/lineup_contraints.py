@@ -59,7 +59,7 @@ class LineupConstraints(object):
     def _check_conflicts(self, constraint):
         if isinstance(constraint, PlayerGroupConstraint):
             for p in constraint.players:
-                if p in self._locked or p in self._banned:
+                if self.is_locked(p) or self.is_banned(p):
                     raise ConstraintConflictException('Ban/lock constraint ' +
                                                       'for {} '.format(p) +
                                                       'already exists')
@@ -72,6 +72,12 @@ class LineupConstraints(object):
         else:
             raise ConstraintConflictException('Duplicate constraint')
 
+    def is_banned(self, player):
+        return player in self._banned
+
+    def is_locked(self, player):
+        return player in self._locked
+
     def add_group_constraint(self, players, bound):
         self._add(PlayerGroupConstraint(players, bound))
 
@@ -81,8 +87,8 @@ class LineupConstraints(object):
 
         for p in players:
             if p in self:
-                raise ConstraintConflictException('{}'.format(p) + 'exists in' +
-                                                  'another constraint')
+                raise ConstraintConflictException('{}'.format(p) + 'exists ' +
+                                                  'in another constraint')
 
         self._banned.update(players)
 
@@ -92,8 +98,8 @@ class LineupConstraints(object):
 
         for p in players:
             if p in self:
-                raise ConstraintConflictException('{}'.format(p) + 'exists in' +
-                                                  'another constraint')
+                raise ConstraintConflictException('{}'.format(p) + 'exists ' +
+                                                  'in another constraint')
         self._locked.update(players)
 
 
@@ -178,7 +184,7 @@ class PlayerGroupConstraint(PlayerConstraint):
         self.lo = None
         self.hi = None
 
-        if isinstance(bound, (list,tuple)) and len(bound) == 2:
+        if isinstance(bound, (list, tuple)) and len(bound) == 2:
             self.lo = bound[0]
             self.hi = bound[1]
             self._hi_lo_bounds_sanity_check()

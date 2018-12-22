@@ -11,10 +11,11 @@ requires = [
 
 setuptools.setup(
     name='draftfast',
-    version='1.1.8',
+    version='1.1.9',
     author='Ben Brostoff',
     author_email='ben.brostoff@gmail.com',
-    description='A tool to automate and optimize DraftKings and FanDuel lineup construction.',
+    description='A tool to automate and optimize DraftKings and'
+                ' FanDuel lineup construction.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/BenBrostoff/draft-kings-fun',
