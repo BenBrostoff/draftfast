@@ -107,21 +107,23 @@ class Optimizer(object):
 
     def _set_stack(self):
         if self.settings:
-            stack = self.settings.stack_team
-            stack_count = self.settings.stack_count
+            stacks = self.settings.stacks
 
-            if stack and stack_count:
-                position_cap = self.solver.Constraint(
-                    stack_count,
-                    stack_count,
-                )
+            if stacks:
+                for stack in stacks:
+                    stack_team = stack.team
+                    stack_count = stack.count
+                    stack_cap = self.solver.Constraint(
+                        stack_count,
+                        stack_count,
+                    )
 
-                for i, player in self.enumerated_players:
-                    if stack == player.team:
-                        position_cap.SetCoefficient(
-                            self.variables[i],
-                            1
-                        )
+                    for i, player in self.enumerated_players:
+                        if stack_team == player.team:
+                            stack_cap.SetCoefficient(
+                                self.variables[i],
+                                1
+                            )
 
     def _set_combo(self):
         if self.settings:
