@@ -86,6 +86,7 @@ class OptimizerSettings(object):
             self.no_offense_against_defense,
         )
 
+
 class PickemSettings(object):
 
     def __init__(self, locked=None):

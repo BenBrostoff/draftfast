@@ -148,3 +148,30 @@ class DraftKingsNBAPickemUploader(CSVUploader):
 
     def _map_pids(self, pid_file):
         return pickem_upload.map_pids(pid_file)
+
+
+class DraftKingsNHLUploader(CSVUploader):
+    HEADERS = [
+        'C', 'C', 'W', 'W', 'W', 'D',
+        'D', 'G', 'UTIL',
+    ]
+
+    def write_rosters(self, rosters):
+        with open(self.upload_file, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.HEADERS)
+            for roster in rosters:
+                write_to_csv(
+                    writer=writer,
+                    roster=roster,
+                    player_map=self.pid_map,
+                    league='NHL',
+                )
+
+    def _map_pids(self, pid_file):
+        return map_pids(
+            pid_file,
+            game=DRAFT_KINGS,
+            encoding=self.encoding,
+            errors=self.errors,
+        )

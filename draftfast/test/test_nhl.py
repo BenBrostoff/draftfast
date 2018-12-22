@@ -41,7 +41,6 @@ def test_triple_stack():
             ]
         )
     )
-    print(roster)
     players = roster.sorted_players()
 
     phi_players = [x for x in players if x.team == 'TOR']
