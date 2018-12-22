@@ -140,8 +140,6 @@ class DraftKingsNBAPickemUploader(CSVUploader):
             writer = csv.DictWriter(f, fieldnames=pickem_orm.TIERS)
             writer.writeheader()
             for roster in rosters:
-                print(roster)
-                print(self.pid_map)
                 pickem_upload.write_to_csv(
                     writer=writer,
                     roster=roster,
