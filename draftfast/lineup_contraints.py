@@ -196,13 +196,13 @@ class PlayerGroupConstraint(PlayerConstraint):
     def __init__(self, players, bound):
         super().__init__(players)
         self.exact = None
-        self.lo = None
-        self.hi = None
+        self.lb = None
+        self.ub = None
 
         if isinstance(bound, (list, tuple)) and len(bound) == 2:
-            self.lo = bound[0]
-            self.hi = bound[1]
-            self._hi_lo_bounds_sanity_check()
+            self.lb = bound[0]
+            self.ub = bound[1]
+            self._ub_lb_bounds_sanity_check()
         elif isinstance(bound, int):
             self.exact = bound
             self._exact_bounds_sanity_check()
@@ -220,17 +220,17 @@ class PlayerGroupConstraint(PlayerConstraint):
 
     def __eq__(self, constraint):
         return super().__eq__(constraint) and self.exact == constraint.exact \
-               and self.lo == constraint.lo and self.hi == constraint.hi
+               and self.lb == constraint.lb and self.ub == constraint.ub
 
     def __hash__(self):
-        return hash((super().__hash__(), self.exact, self.lo, self.hi))
+        return hash((super().__hash__(), self.exact, self.lb, self.ub))
 
     @property
     def _bounds_str(self):
         if self.exact:
             return '{0.exact}'.format(self)
 
-        return '{0.lo} to {0.hi}'.format(self)
+        return '{0.lb} to {0.ub}'.format(self)
 
     def _exact_bounds_sanity_check(self):
         if self.exact <= 0:
@@ -243,21 +243,21 @@ class PlayerGroupConstraint(PlayerConstraint):
                 'of players in group'
             )
 
-    def _hi_lo_bounds_sanity_check(self):
-        if self.lo < 1:
+    def _ub_lb_bounds_sanity_check(self):
+        if self.lb < 1:
             raise ConstraintException(
                 'Lower bound for {!r} cannot be less than 1'.format(self)
             )
-        if self.hi == self.lo:
+        if self.ub == self.lb:
             raise ConstraintException(
                 'Lower bound for {!r} cannot equal upper bound'.format(self)
             )
-        if self.hi < self.lo:
+        if self.ub < self.lb:
             raise ConstraintException(
                 'Upper bound for {!r} cannot be less than lower bound.'
                 .format(self)
             )
-        if self.hi > len(self.players) or self.lo > len(self.players):
+        if self.ub > len(self.players) or self.lb > len(self.players):
             raise ConstraintException(
                 'Bound for {!r} cannot be greater than number of players '
                 'group'.format(self)

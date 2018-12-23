@@ -38,6 +38,7 @@ class Optimizer(object):
             self.locked_for_exposure = []
 
         self.player_to_idx_map = {}
+        self.name_to_idx_map = {}
         self.variables = []
         for idx, player in self.enumerated_players:
             self.variables.append(
@@ -45,6 +46,7 @@ class Optimizer(object):
             )
 
             self.player_to_idx_map[player.solver_id] = idx
+            self.name_to_idx_map[player.name] = idx
 
             if self._is_locked(player):
                 player.lock = True
@@ -105,8 +107,16 @@ class Optimizer(object):
 
     def _set_player_group_constraints(self):
         for group_constraint in self.lineup_constraints:
+            if group_constraint.exact:
+                lb = ub = group_constraint.exact
+            else:
+                lb = group_constraint.lb
+                ub = group_constraint.ub
+
+            constraint = self.solver.Constraint(lb, ub)
             for name in group_constraint.players:
-                pass
+                idx = self.name_to_idx_map[name]
+                constraint.SetCoefficient(self.variables[idx], 1)
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:

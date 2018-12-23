@@ -6,5 +6,6 @@ RUN mkdir /dk
 COPY . /dk
 WORKDIR /dk
 RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip install autopep8
 
 CMD ["/bin/bash"]
