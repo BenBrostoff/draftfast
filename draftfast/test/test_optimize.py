@@ -34,7 +34,7 @@ def test_nba_dk():
         player_pool=mock_player_pool,
         verbose=True,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_nba_dk_with_csv():
@@ -43,7 +43,7 @@ def test_nba_dk_with_csv():
         player_pool=mock_player_pool,
         verbose=True,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_nba_fd():
@@ -51,7 +51,7 @@ def test_nba_fd():
         rule_set=rules.FD_NBA_RULE_SET,
         player_pool=mock_player_pool,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_nfl_dk():
@@ -64,7 +64,7 @@ def test_nfl_dk():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_nfl_fd():
@@ -76,7 +76,7 @@ def test_nfl_fd():
         rule_set=rules.FD_NFL_RULE_SET,
         player_pool=players,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_multi_position():
@@ -92,7 +92,7 @@ def test_multi_position():
             locked=['Eli Manning'],
         ),
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
     multi_pos = [p for p in roster.players if p.name == 'Eli Manning']
     ntools.assert_equal(len(multi_pos), 1)
     ntools.assert_equal(multi_pos[0].pos, 'TE')
@@ -116,9 +116,9 @@ def test_multi_roster_nfl():
         ),
     )
 
-    ntools.assert_not_equals(roster, None)
-    ntools.assert_not_equals(second_roster, None)
-    ntools.assert_not_equals(roster == second_roster, True)
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_not_equal(second_roster, None)
+    ntools.assert_not_equal(roster == second_roster, True)
 
 
 def test_multi_roster_nba():
@@ -134,9 +134,9 @@ def test_multi_roster_nba():
         ),
     )
 
-    ntools.assert_not_equals(roster, None)
-    ntools.assert_not_equals(second_roster, None)
-    ntools.assert_not_equals(roster == second_roster, True)
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_not_equal(second_roster, None)
+    ntools.assert_not_equal(roster == second_roster, True)
 
 
 def test_uniques_nba():
@@ -213,7 +213,7 @@ def test_respect_ban():
         verbose=True
     )
     for player in roster.sorted_players():
-        ntools.assert_not_equals(player.name, 'Eli Manning')
+        ntools.assert_not_equal(player.name, 'Eli Manning')
 
 
 def test_stack():

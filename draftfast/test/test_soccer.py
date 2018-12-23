@@ -19,7 +19,7 @@ def test_soccer_dk():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_soccer_dk_no_opp_d():

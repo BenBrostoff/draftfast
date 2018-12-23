@@ -161,10 +161,6 @@ class AbstractConstraint(ABC):
     def __contains__(self, player):
         pass
 
-    @abstractmethod
-    def apply(self):
-        pass
-
 
 class ConstraintException(Exception):
     pass
