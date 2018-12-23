@@ -35,7 +35,7 @@ def run(rule_set: RuleSet,
         players=players,
         rule_set=rule_set,
         settings=optimizer_settings,
-        constraints=constraints,
+        lineup_constraints=constraints,
         exposure_dct=exposure_dct
     )
 
@@ -133,8 +133,8 @@ def run_multi(
 
     return rosters, exposure_diffs
 
+
 def reset_player_ban_lock(player_pool):
     for p in player_pool:
         p.ban = False
         p.lock = False
-        

@@ -262,6 +262,3 @@ class PlayerGroupConstraint(PlayerConstraint):
                 'Bound for {!r} cannot be greater than number of players '
                 'group'.format(self)
             )
-
-    def apply(self):
-        pass

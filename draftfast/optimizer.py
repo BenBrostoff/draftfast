@@ -10,7 +10,7 @@ class Optimizer(object):
         players,
         rule_set,
         settings,
-        constraints,
+        lineup_constraints,
         exposure_dct
     ):
         settings = settings or OptimizerSettings()
@@ -29,7 +29,7 @@ class Optimizer(object):
         self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
-        self.constraints = constraints
+        self.lineup_constraints = lineup_constraints
         if exposure_dct:
             self.banned_for_exposure = exposure_dct['banned']
             self.locked_for_exposure = exposure_dct['locked']
@@ -59,17 +59,18 @@ class Optimizer(object):
         self.objective.SetMaximization()
 
     def _is_locked(self, p):
-        return self.constraints.is_locked(p.name) or \
+        return self.lineup_constraints.is_locked(p.name) or \
                p.name in self.locked_for_exposure or \
                p.lock
 
     def _is_banned(self, p):
-        return self.constraints.is_banned(p.name) or \
+        return self.lineup_constraints.is_banned(p.name) or \
                p.name in self.banned_for_exposure or \
                p.ban
 
     def solve(self):
         self._set_player_constraints()
+        self._set_player_group_constraints()
         self._optimize_on_projected_points()
         self._set_salary_range()
         self._set_roster_size()
@@ -101,6 +102,11 @@ class Optimizer(object):
                 constraint = self.solver.Constraint(lb, ub)
 
             constraint.SetCoefficient(self.variables[i], 1)
+
+    def _set_player_group_constraints(self):
+        for group_constraint in self.lineup_constraints:
+            for name in group_constraint.players:
+                pass
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:
