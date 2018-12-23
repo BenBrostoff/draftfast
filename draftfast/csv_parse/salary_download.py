@@ -34,7 +34,7 @@ def generate_players_from_csvs(
     verbose=False,
     encoding='utf-8',
     errors='replace',
-    is_pickem=False,
+    ruleset=None,
 ) -> list:
     players = []
     projections = None
@@ -49,7 +49,7 @@ def generate_players_from_csvs(
               encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
-            if is_pickem:
+            if ruleset and ruleset.game_type == 'pickem':
                 player = TieredPlayer(
                     cost=0,  # salary not applicable in pickem
                     name=row['Name'],
@@ -66,7 +66,14 @@ def generate_players_from_csvs(
                 )
                 players.append(player)
             else:
-                for pos in row['Position'].split('/'):
+                pos_key = 'Position'
+                is_nhl = ruleset and ruleset.league == 'NHL'
+                if is_nhl:
+                    pos_key = 'Roster Position'
+
+                for pos in row[pos_key].split('/'):
+                    if is_nhl and pos == 'UTIL':
+                        continue
                     player = generate_player(
                         pos=pos,
                         row=row,

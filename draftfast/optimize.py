@@ -28,7 +28,6 @@ def run(rule_set: RuleSet,
     variables = optimizer.variables
 
     if optimizer.solve():
-        roster = None
         if roster_gen:
             roster = roster_gen()
         else:

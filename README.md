@@ -75,7 +75,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | NASCAR | FanDuel | `FD_NASCAR_RULE_SET` |
 | SOCCER | DraftKings | `DK_SOCCER_RULE_SET` |
 | EuroLeague | DraftKings | `DK_EURO_LEAGUE_RULE_SET` |
-
+| NHL | DraftKings | `DK_NHL_RULE_SET` |
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 
@@ -144,6 +144,23 @@ roster = run(
 - `max_avg`
 
 `OptimizerSettings`
+
+- `stacks` - A list of `Stack` objects. Example:
+
+```python
+roster = run(
+    rule_set=rules.DK_NHL_RULE_SET,
+    player_pool=player_pool,
+    verbose=True,
+    optimizer_settings=OptimizerSettings(
+        stacks=[
+            Stack(team='PHI', count=3),
+            Stack(team='FLA', count=3),
+            Stack(team='NSH', count=2),
+        ]
+    )
+)
+```
 
 - `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer (PRs welcome!)
 

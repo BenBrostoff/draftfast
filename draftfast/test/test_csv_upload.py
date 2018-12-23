@@ -108,6 +108,30 @@ def test_fd_nba_upload():
     )
 
 
+def test_dk_nhl_uploader():
+    row = _get_first_written_row(
+        game=rules.DRAFT_KINGS,
+        salary_file_location='{}/data/dk-nhl-salaries.csv'.format(CURRENT_DIR),
+        rule_set=rules.DK_NHL_RULE_SET,
+        pid_file='{}/data/dk-nhl-pids.csv'.format(CURRENT_DIR),
+        Uploader=uploaders.DraftKingsNHLUploader,
+    )
+    assert_equal(
+        sorted(row),
+        sorted([
+            '11845288',
+            '11845290',
+            '11845526',
+            '11845550',
+            '11845942',
+            '11845960',
+            '11846094',
+            '11846329',
+            '11845460',
+        ]),
+    )
+
+
 def test_pickem_nba_upload():
     salary_file_location = '{}/data/dk-nba-pickem-salaries.csv'.format(
         CURRENT_DIR
@@ -115,7 +139,7 @@ def test_pickem_nba_upload():
     players = salary_download.generate_players_from_csvs(
         game=rules.DRAFT_KINGS,
         salary_file_location=salary_file_location,
-        is_pickem=True,
+        ruleset=rules.DK_NBA_PICKEM_RULE_SET,
     )
     rosters = [p_optimize(
         all_players=players,
@@ -158,6 +182,7 @@ def _get_first_written_row(
     players = salary_download.generate_players_from_csvs(
         game=game,
         salary_file_location=salary_file_location,
+        ruleset=rule_set,
     )
     roster = optimize.run(
         rule_set=rule_set,

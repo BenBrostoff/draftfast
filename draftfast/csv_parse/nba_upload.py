@@ -79,6 +79,18 @@ def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS,
             _on_position(players, ['GK']),
             players
         ]
+    elif game == DRAFT_KINGS and league == 'NHL':
+        ordered_possible = [
+            _on_position(players, ['C']),
+            _on_position(players, ['C']),
+            _on_position(players, ['W']),
+            _on_position(players, ['W']),
+            _on_position(players, ['W']),
+            _on_position(players, ['D']),
+            _on_position(players, ['D']),
+            _on_position(players, ['G']),
+            players
+        ]
     elif game == DRAFT_KINGS:
         ordered_possible = [
             _on_position(players, ['PG']),
