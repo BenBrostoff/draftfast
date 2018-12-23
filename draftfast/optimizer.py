@@ -1,6 +1,7 @@
 from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
-from draftfast.dke_exceptions import InvalidBoundsException
+from draftfast.dke_exceptions import (InvalidBoundsException,
+                                      PlayerBanAndLockException)
 
 
 class Optimizer(object):
@@ -10,6 +11,7 @@ class Optimizer(object):
         rule_set,
         settings,
         constraints,
+        exposure_dct
     ):
         settings = settings or OptimizerSettings()
         self.solver = pywraplp.Solver(
@@ -26,6 +28,12 @@ class Optimizer(object):
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
         self.constraints = constraints
+        if exposure_dct:
+            self.banned_for_exposure = exposure_dct['banned']
+            self.locked_for_exposure = exposure_dct['locked']
+        else:
+            self.banned_for_exposure = []
+            self.locked_for_exposure = []
 
         self.player_to_idx_map = {}
         self.variables = []
@@ -36,8 +44,26 @@ class Optimizer(object):
 
             self.player_to_idx_map[player.solver_id] = idx
 
+            if self._is_locked(player):
+                player.lock = True
+            if self._is_banned(player):
+                player.ban = True
+
+            if player.lock and player.ban:
+                raise PlayerBanAndLockException(player.name)
+
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
+
+    def _is_locked(self, p):
+        return self.constraints.is_locked(p.name) or \
+               p.name in self.locked_for_exposure or \
+               p.lock
+
+    def _is_banned(self, p):
+        return self.constraints.is_banned(p.name) or \
+               p.name in self.banned_for_exposure or \
+               p.ban
 
     def solve(self):
         self._set_player_constraints()
@@ -56,8 +82,8 @@ class Optimizer(object):
         multi_constraints = dict()
 
         for i, p in self.enumerated_players:
-            lb = 1 if self.constraints.is_locked(p.name) else 0
-            ub = 0 if self.constraints.is_banned(p.name) else 1
+            lb = 1 if p.lock else 0
+            ub = 0 if p.ban else 1
 
             if lb > ub:
                 raise InvalidBoundsException

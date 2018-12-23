@@ -228,6 +228,7 @@ class Player(object):
         marked=None,
         possible_positions=None,
         lock=False,
+        ban=False,
         multi_position=False
     ):
         self.pos = pos
@@ -241,6 +242,7 @@ class Player(object):
         self.lineup_count = lineup_count
         self.marked = marked
         self.lock = lock
+        self.ban = ban
         self.multi_position = multi_position
         self.possible_positions = possible_positions
 

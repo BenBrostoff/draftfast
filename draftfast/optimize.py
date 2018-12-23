@@ -18,12 +18,6 @@ def run(rule_set: RuleSet,
         verbose=False) -> Roster:
     constraints = LineupConstraints()
 
-    if exposure_dct:
-        for name in exposure_dct['banned']:
-            constraints.ban(name, for_exposure=True)
-        for name in exposure_dct['locked']:
-            constraints.lock(name, for_exposure=True)
-
     if player_settings and player_settings.banned:
         for name in player_settings.banned:
             constraints.ban(name)
@@ -41,6 +35,7 @@ def run(rule_set: RuleSet,
         rule_set=rule_set,
         settings=optimizer_settings,
         constraints=constraints,
+        exposure_dct=exposure_dct
     )
 
     variables = optimizer.variables
@@ -114,6 +109,9 @@ def run_multi(
         else:
             break
 
+        # clear ban/lock to reset exposure between iterations
+        reset_player_ban_lock(player_pool)
+
     exposure_diffs = {}
 
     if rosters and verbose:
@@ -130,3 +128,9 @@ def run_multi(
                 print('{} is OVER exposure by {} lineups'.format(n, d))
 
     return rosters, exposure_diffs
+
+def reset_player_ban_lock(player_pool):
+    for p in player_pool:
+        p.ban = False
+        p.lock = False
+        
