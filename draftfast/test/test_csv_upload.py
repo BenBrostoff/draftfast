@@ -8,6 +8,7 @@ from draftfast.csv_parse import uploaders, salary_download
 from draftfast.pickem.pickem_optimize import (
     optimize as p_optimize
 )
+from draftfast.lineup_contraints import LineupConstraints
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -188,6 +189,7 @@ def _get_first_written_row(
     )
     roster = optimize.run(
         rule_set=rule_set,
+        constraints=LineupConstraints(),
         player_pool=players,
         verbose=True,
     )

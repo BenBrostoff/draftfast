@@ -12,6 +12,7 @@ from draftfast.lineup_contraints import LineupConstraints
 
 def run(rule_set: RuleSet,
         player_pool: list,
+        constraints: LineupConstraints,
         optimizer_settings=None,
         player_settings=None,
         exposure_dct=None,
@@ -74,6 +75,7 @@ def run_multi(
     iterations: int,
     rule_set: RuleSet,
     player_pool: list,
+    constraints: LineupConstraints,
     player_settings=PlayerPoolSettings(),
     optimizer_settings=OptimizerSettings(),
     verbose=False,
@@ -103,6 +105,7 @@ def run_multi(
             optimizer_settings=optimizer_settings,
             player_settings=player_settings,
             exposure_dct=exposure_dct,
+            constraints=constraints,
             verbose=verbose,
         )
         if roster:

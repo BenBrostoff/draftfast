@@ -4,6 +4,8 @@ from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
 from draftfast.orm import Roster
+from draftfast.lineup_contraints import LineupConstraints
+
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/soccer-showdown.csv'.format(CURRENT_DIR)
@@ -42,6 +44,7 @@ def test_el_dk():
     roster = run(
         rule_set=soccer_rules,
         player_pool=player_pool,
+        constraints=LineupConstraints(),
         verbose=True,
         roster_gen=Showdown,
     )
