@@ -1,5 +1,6 @@
 import csv
 from draftfast.orm import Player
+from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.rules import DRAFT_KINGS, FAN_DUEL
 
 GAME_KEY_MAP = {
@@ -31,35 +32,59 @@ def generate_players_from_csvs(
     game: str,
     projection_file_location='',
     verbose=False,
+    encoding='utf-8',
+    errors='replace',
+    ruleset=None,
 ) -> list:
     players = []
     projections = None
     if projection_file_location:
         projections = _generate_projection_dict(
-            projection_file_location
+            projection_file_location,
+            encoding,
+            errors,
         )
 
-    with open(salary_file_location, 'r') as csv_file:
+    with open(salary_file_location, 'r',
+              encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
-            for pos in row['Position'].split('/'):
-                player = generate_player(
-                    pos=pos,
-                    row=row,
-                    game=game,
+            if ruleset and ruleset.game_type == 'pickem':
+                player = TieredPlayer(
+                    cost=0,  # salary not applicable in pickem
+                    name=row['Name'],
+                    pos=row['Position'],
+                    team=row['TeamAbbrev'],
+                    matchup=row['Game Info'],
+                    average_score=float(row['AvgPointsPerGame']),
+                    tier=row['Roster Position'],
                 )
-                if projections:
-                    proj = projections.get(player.name)
-                    if proj is None:
-                        if verbose:
-                            print('No projection for {}'.format(player.name))
-                        player.proj = 0
-                    else:
-                        player.proj = proj
-                else:
-                    player.proj = player.average_score
-
+                _set_projections(
+                    projections,
+                    player,
+                    verbose,
+                )
                 players.append(player)
+            else:
+                pos_key = 'Position'
+                is_nhl = ruleset and ruleset.league == 'NHL'
+                if is_nhl:
+                    pos_key = 'Roster Position'
+
+                for pos in row[pos_key].split('/'):
+                    if is_nhl and pos == 'UTIL':
+                        continue
+                    player = generate_player(
+                        pos=pos,
+                        row=row,
+                        game=game,
+                    )
+                    _set_projections(
+                        projections,
+                        player,
+                        verbose,
+                    )
+                    players.append(player)
 
     return players
 
@@ -94,11 +119,27 @@ def generate_player(pos, row, game):
     return player
 
 
-def _generate_projection_dict(projection_file_location: str) -> dict:
+def _generate_projection_dict(projection_file_location: str,
+                              encoding: str,
+                              errors: str) -> dict:
     projections = {}
-    with open(projection_file_location, 'r') as csv_file:
+    with open(projection_file_location, 'r',
+              encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
             projections[row.get('playername')] = float(row.get('points'))
 
     return projections
+
+
+def _set_projections(projections, player, verbose):
+    if projections:
+        proj = projections.get(player.name)
+        if proj is None:
+            if verbose:
+                print('No projection for {}'.format(player.name))
+            player.proj = 0
+        else:
+            player.proj = proj
+    else:
+        player.proj = player.average_score

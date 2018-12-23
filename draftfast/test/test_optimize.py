@@ -4,7 +4,9 @@ from draftfast.optimize import run, run_multi
 from draftfast import rules
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
-from draftfast.settings import OptimizerSettings, PlayerPoolSettings
+from draftfast.settings import (
+    OptimizerSettings, PlayerPoolSettings, Stack
+)
 
 mock_player_pool = [
     Player(name='A1', cost=5500, proj=40, pos='PG'),
@@ -224,8 +226,9 @@ def test_stack():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
-            stack_team='NE',
-            stack_count=5,
+            stacks=[
+                Stack(team='NE', count=5)
+            ]
         )
     )
     ne_players_count = len([
@@ -249,10 +252,10 @@ def test_force_combo():
             locked=['Sam Bradford'],
         ),
         optimizer_settings=OptimizerSettings(
-            stack_team='NE',
-            stack_count=5,
-        ),
-        verbose=True
+            stacks=[
+                Stack(team='NE', count=5)
+            ]
+        )
     )
     qb = roster.sorted_players()[0]
     team_count = len([

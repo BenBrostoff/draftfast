@@ -25,6 +25,8 @@ class Optimizer(object):
         self.salary_max = rule_set.salary_max
         self.roster_size = rule_set.roster_size
         self.position_limits = rule_set.position_limits
+        self.offensive_positions = rule_set.offensive_positions
+        self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
         self.constraints = constraints
@@ -52,6 +54,7 @@ class Optimizer(object):
             if player.lock and player.ban:
                 raise PlayerBanAndLockException(player.name)
 
+        self.teams = set([p.team for p in self.players])
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
 
@@ -75,6 +78,8 @@ class Optimizer(object):
         self._set_stack()
         self._set_combo()
         self._set_no_duplicate_lineups()
+        self._set_no_opp_defense()
+        self._set_min_teams()
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
 
@@ -126,21 +131,23 @@ class Optimizer(object):
 
     def _set_stack(self):
         if self.settings:
-            stack = self.settings.stack_team
-            stack_count = self.settings.stack_count
+            stacks = self.settings.stacks
 
-            if stack and stack_count:
-                position_cap = self.solver.Constraint(
-                    stack_count,
-                    stack_count,
-                )
+            if stacks:
+                for stack in stacks:
+                    stack_team = stack.team
+                    stack_count = stack.count
+                    stack_cap = self.solver.Constraint(
+                        stack_count,
+                        stack_count,
+                    )
 
-                for i, player in self.enumerated_players:
-                    if stack == player.team:
-                        position_cap.SetCoefficient(
-                            self.variables[i],
-                            1
-                        )
+                    for i, player in self.enumerated_players:
+                        if stack_team == player.team:
+                            stack_cap.SetCoefficient(
+                                self.variables[i],
+                                1
+                            )
 
     def _set_combo(self):
         if self.settings:
@@ -168,6 +175,29 @@ class Optimizer(object):
                         self.solver.Sum(skillplayers_on_team) >=
                         self.solver.Sum(qbs_on_team)
                     )
+
+    def _set_no_opp_defense(self):
+        offensive_pos = self.offensive_positions
+        defensive_pos = self.defensive_positions
+
+        if offensive_pos and defensive_pos \
+                and self.settings.no_offense_against_defense:
+            enumerated_players = self.enumerated_players
+
+            for team in self.teams:
+                offensive_against = [
+                    self.variables[i] for i, p in enumerated_players
+                    if p.pos in offensive_pos and
+                    p.is_opposing_team_in_match_up(team)
+                ]
+                defensive = [
+                    self.variables[i] for i, p in enumerated_players
+                    if p.team == team and p.pos in defensive_pos
+                ]
+
+                for p in offensive_against:
+                    for d in defensive:
+                        self.solver.Add(p <= 1 - d)
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:
@@ -208,3 +238,21 @@ class Optimizer(object):
                 i = self.player_to_idx_map.get(player.solver_id)
                 if i is not None:
                     repeated_players.SetCoefficient(self.variables[i], 1)
+
+    def _set_min_teams(self):
+        teams = []
+        for team in self.teams:
+            if team:
+                constraint = self.solver.IntVar(0, 1, team)
+                teams.append(constraint)
+                players_on_team = [
+                    self.variables[i] for i, p
+                    in self.enumerated_players if p.team == team
+                ]
+                self.solver.Add(constraint <= self.solver.Sum(players_on_team))
+
+        # TODO - add constraint of max players per team per sport
+        if len(teams) > 0:
+            self.solver.Add(
+                self.solver.Sum(teams) >= self.settings.min_teams
+            )

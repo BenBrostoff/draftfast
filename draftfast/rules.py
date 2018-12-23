@@ -10,6 +10,7 @@ ROSTER_SIZE = {
         'MLB': 10,
         'SOCCER': 8,
         'EL': 6,
+        'NHL': 9,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -30,6 +31,7 @@ SALARY_CAP = {
         'MLB': 50_000,
         'SOCCER': 50_000,
         'EL': 50_000,
+        'NHL': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -92,6 +94,12 @@ POSITIONS = {
         'EL': [
             ['G', 2, 3],
             ['F', 3, 4],
+        ],
+        'NHL': [
+            ['C', 2, 3],
+            ['W', 3, 4],
+            ['D', 2, 3],
+            ['G', 1, 1],
         ]
     },
     FAN_DUEL: {
@@ -141,7 +149,9 @@ class RuleSet(object):
     def __init__(self, site, league,
                  roster_size, position_limits,
                  salary_max, salary_min=0,
-                 general_position_limits=None):
+                 general_position_limits=None,
+                 offensive_positions=None, defensive_positions=None,
+                 game_type='classic'):
         self.site = site
         self.league = league
         self.roster_size = roster_size
@@ -149,6 +159,9 @@ class RuleSet(object):
         self.general_position_limits = general_position_limits
         self.salary_min = salary_min
         self.salary_max = salary_max
+        self.offensive_positions = offensive_positions
+        self.defensive_positions = defensive_positions
+        self.game_type = game_type
 
 
 DK_NBA_RULE_SET = RuleSet(
@@ -247,6 +260,8 @@ DK_SOCCER_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['SOCCER'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['SOCCER'],
     position_limits=POSITIONS[DRAFT_KINGS]['SOCCER'],
+    offensive_positions=['M', 'F'],
+    defensive_positions=['GK', 'D'],
     general_position_limits=[],
 )
 
@@ -257,4 +272,24 @@ DK_EURO_LEAGUE_RULE_SET = RuleSet(
     salary_max=SALARY_CAP[DRAFT_KINGS]['EL'],
     position_limits=POSITIONS[DRAFT_KINGS]['EL'],
     general_position_limits=[],
+)
+
+DK_NHL_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NHL',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['NHL'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['NHL'],
+    position_limits=POSITIONS[DRAFT_KINGS]['NHL'],
+    offensive_positions=['C', 'W'],
+    defensive_positions=['G', 'D'],
+    general_position_limits=[],
+)
+
+DK_NBA_PICKEM_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NBA',
+    roster_size=6,
+    salary_max=None,
+    position_limits=None,
+    game_type='pickem',
 )

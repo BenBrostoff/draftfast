@@ -1,0 +1,47 @@
+T1,T2,T3,T4,T5,T6,,Instructions
+,,,,,,,1. Locate the player you want to select in the list below 
+,,,,,,,2. Copy the ID of your player (you can use the Name + ID column or the ID column) 
+,,,,,,,3. Paste the ID into the roster position desired 
+,,,,,,,4. You must include an ID for each player; you cannot use just the player's name 
+,,,,,,,5. You can create up to 500 lineups per file 
+ 
+,,,,,,,Position,Name + ID,Name,ID,Roster Position,Game Info,TeamAbbrev,AvgPointsPerGame
+,,,,,,,PF/C,Anthony Davis (11839390),Anthony Davis,11839390,T1,NO@LAL 12/21/2018 10:30PM ET,NO,59.90
+,,,,,,,SF/PF,LeBron James (11839392),LeBron James,11839392,T1,NO@LAL 12/21/2018 10:30PM ET,LAL,52.56
+,,,,,,,SF/PF,Giannis Antetokounmpo (11839391),Giannis Antetokounmpo,11839391,T1,MIL@BOS 12/21/2018 08:00PM ET,MIL,56.62
+,,,,,,,C,Nikola Vucevic (11839394),Nikola Vucevic,11839394,T2,ORL@CHI 12/21/2018 08:00PM ET,ORL,45.52
+,,,,,,,PG/SG,Jrue Holiday (11839395),Jrue Holiday,11839395,T2,NO@LAL 12/21/2018 10:30PM ET,NO,43.88
+,,,,,,,PG,Damian Lillard (11839397),Damian Lillard,11839397,T2,UTA@POR 12/21/2018 10:00PM ET,POR,45.58
+,,,,,,,PG,Kyrie Irving (11839396),Kyrie Irving,11839396,T2,MIL@BOS 12/21/2018 08:00PM ET,BOS,43.23
+,,,,,,,C,Karl-Anthony Towns (11839393),Karl-Anthony Towns,11839393,T2,MIN@SA 12/21/2018 08:30PM ET,MIN,45.38
+,,,,,,,C,Rudy Gobert (11839404),Rudy Gobert,11839404,T3,UTA@POR 12/21/2018 10:00PM ET,UTA,39.33
+,,,,,,,PG/SG,Victor Oladipo (11839399),Victor Oladipo,11839399,T3,IND@BKN 12/21/2018 07:30PM ET,IND,40.14
+,,,,,,,PF/C,John Collins (11839402),John Collins,11839402,T3,ATL@NY 12/21/2018 07:30PM ET,ATL,35.22
+,,,,,,,PG,Mike Conley (11839401),Mike Conley,11839401,T3,MEM@SAC 12/21/2018 10:00PM ET,MEM,38.21
+,,,,,,,C,Marc Gasol (11839403),Marc Gasol,11839403,T3,MEM@SAC 12/21/2018 10:00PM ET,MEM,39.27
+,,,,,,,PF/C,LaMarcus Aldridge (11839398),LaMarcus Aldridge,11839398,T3,MIN@SA 12/21/2018 08:30PM ET,SA,36.88
+,,,,,,,SG/SF,DeMar DeRozan (11839400),DeMar DeRozan,11839400,T3,MIN@SA 12/21/2018 08:30PM ET,SA,41.32
+,,,,,,,PG/SG,Kris Dunn (11839407),Kris Dunn,11839407,T4,ORL@CHI 12/21/2018 08:00PM ET,CHI,27.33
+,,,,,,,SF/PF,Kyle Kuzma (11839410),Kyle Kuzma,11839410,T4,NO@LAL 12/21/2018 10:30PM ET,LAL,31.30
+,,,,,,,PG/SG,Donovan Mitchell (11839411),Donovan Mitchell,11839411,T4,UTA@POR 12/21/2018 10:00PM ET,UTA,33.66
+,,,,,,,C,Myles Turner (11839408),Myles Turner,11839408,T4,IND@BKN 12/21/2018 07:30PM ET,IND,29.94
+,,,,,,,SG/SF,Tim Hardaway Jr. (11839406),Tim Hardaway Jr.,11839406,T4,ATL@NY 12/21/2018 07:30PM ET,NY,32.35
+,,,,,,,C,Enes Kanter (11839412),Enes Kanter,11839412,T4,ATL@NY 12/21/2018 07:30PM ET,NY,33.86
+,,,,,,,PG,De'Aaron Fox (11839405),De'Aaron Fox,11839405,T4,MEM@SAC 12/21/2018 10:00PM ET,SAC,37.40
+,,,,,,,PG/SG,Derrick Rose (11839409),Derrick Rose,11839409,T4,MIN@SA 12/21/2018 08:30PM ET,MIN,31.40
+,,,,,,,PF,Lauri Markkanen (11839413),Lauri Markkanen,11839413,T5,ORL@CHI 12/21/2018 08:00PM ET,CHI,29.89
+,,,,,,,SF/PF,Aaron Gordon (11839418),Aaron Gordon,11839418,T5,ORL@CHI 12/21/2018 08:00PM ET,ORL,32.89
+,,,,,,,PG,Lonzo Ball (11839416),Lonzo Ball,11839416,T5,NO@LAL 12/21/2018 10:30PM ET,LAL,26.65
+,,,,,,,C,Jusuf Nurkic (11839420),Jusuf Nurkic,11839420,T5,UTA@POR 12/21/2018 10:00PM ET,POR,35.26
+,,,,,,,PG/SG,D'Angelo Russell (11839414),D'Angelo Russell,11839414,T5,IND@BKN 12/21/2018 07:30PM ET,BKN,34.73
+,,,,,,,PG/SG,Spencer Dinwiddie (11839415),Spencer Dinwiddie,11839415,T5,IND@BKN 12/21/2018 07:30PM ET,BKN,29.89
+,,,,,,,PG/SG,Eric Bledsoe (11839419),Eric Bledsoe,11839419,T5,MIL@BOS 12/21/2018 08:00PM ET,MIL,33.87
+,,,,,,,SG/SF,Buddy Hield (11839417),Buddy Hield,11839417,T5,MEM@SAC 12/21/2018 10:00PM ET,SAC,32.27
+,,,,,,,PF/C,Domantas Sabonis (11839421),Domantas Sabonis,11839421,T6,IND@BKN 12/21/2018 07:30PM ET,IND,32.72
+,,,,,,,SG/SF,Khris Middleton (11839422),Khris Middleton,11839422,T6,MIL@BOS 12/21/2018 08:00PM ET,MIL,33.37
+,,,,,,,SF/PF,Jayson Tatum (11839427),Jayson Tatum,11839427,T6,MIL@BOS 12/21/2018 08:00PM ET,BOS,30.95
+,,,,,,,SG/SF,Kent Bazemore (11839423),Kent Bazemore,11839423,T6,ATL@NY 12/21/2018 07:30PM ET,ATL,27.07
+,,,,,,,PG,Trae Young (11839424),Trae Young,11839424,T6,ATL@NY 12/21/2018 07:30PM ET,ATL,30.91
+,,,,,,,PG,Emmanuel Mudiay (11839425),Emmanuel Mudiay,11839425,T6,ATL@NY 12/21/2018 07:30PM ET,NY,24.91
+,,,,,,,SF/PF,Kevin Knox (11839428),Kevin Knox,11839428,T6,ATL@NY 12/21/2018 07:30PM ET,NY,19.55
+,,,,,,,SF/PF,Rudy Gay (11839426),Rudy Gay,11839426,T6,MIN@SA 12/21/2018 08:30PM ET,SA,29.31

@@ -5,6 +5,9 @@ from nose.tools import assert_equal
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
+from draftfast.pickem.pickem_optimize import (
+    optimize as p_optimize
+)
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -107,6 +110,70 @@ def test_fd_nba_upload():
     )
 
 
+def test_dk_nhl_uploader():
+    row = _get_first_written_row(
+        game=rules.DRAFT_KINGS,
+        salary_file_location='{}/data/dk-nhl-salaries.csv'.format(CURRENT_DIR),
+        rule_set=rules.DK_NHL_RULE_SET,
+        pid_file='{}/data/dk-nhl-pids.csv'.format(CURRENT_DIR),
+        Uploader=uploaders.DraftKingsNHLUploader,
+    )
+    assert_equal(
+        sorted(row),
+        sorted([
+            '11845288',
+            '11845290',
+            '11845526',
+            '11845550',
+            '11845942',
+            '11845960',
+            '11846094',
+            '11846329',
+            '11845460',
+        ]),
+    )
+
+
+def test_pickem_nba_upload():
+    salary_file_location = '{}/data/dk-nba-pickem-salaries.csv'.format(
+        CURRENT_DIR
+    )
+    players = salary_download.generate_players_from_csvs(
+        game=rules.DRAFT_KINGS,
+        salary_file_location=salary_file_location,
+        ruleset=rules.DK_NBA_PICKEM_RULE_SET,
+    )
+    rosters = [p_optimize(
+        all_players=players,
+    )]
+
+    pid_file = '{}/data/dk-nba-pickem-pids.csv'.format(CURRENT_DIR)
+    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    uploader = uploaders.DraftKingsNBAPickemUploader(
+        pid_file=pid_file,
+        upload_file=upload_file,
+    )
+    uploader.write_rosters(rosters)
+
+    row = None
+    with open(upload_file, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for idx, row in enumerate(reader):
+            if idx == 0:
+                continue
+    assert_equal(
+        row,
+        [
+            '11839390',
+            '11839397',
+            '11839400',
+            '11839405',
+            '11839420',
+            '11839422',
+        ]
+    )
+
+
 def _get_first_written_row(
         game: str,
         salary_file_location: str,
@@ -117,6 +184,7 @@ def _get_first_written_row(
     players = salary_download.generate_players_from_csvs(
         game=game,
         salary_file_location=salary_file_location,
+        ruleset=rule_set,
     )
     roster = optimize.run(
         rule_set=rule_set,

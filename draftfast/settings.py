@@ -59,16 +59,38 @@ class PlayerPoolSettings(object):
 class OptimizerSettings(object):
 
     def __init__(self, locked=None,
-                 stack_team=None, stack_count=None,
+                 stacks=None,
                  existing_rosters=None, force_combo=None,
-                 combo_allow_te=None, uniques=None):
+                 combo_allow_te=None, uniques=None,
+                 no_offense_against_defense=None,
+                 min_teams=2):
         self.locked = locked
-        self.stack_team = stack_team
-        self.stack_count = stack_count
+        self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo
         self.combo_allow_te = combo_allow_te
         self.uniques = uniques
+        self.no_offense_against_defense = no_offense_against_defense
+        self.min_teams = min_teams
+
+    def __repr__(self):
+        return """
+        Locked: {}
+        Stacks: {}
+        Min teams: {}
+        No offense against D: {}
+        """.format(
+            self.locked,
+            [x.team for x in self.stacks],
+            self.min_teams,
+            self.no_offense_against_defense,
+        )
+
+
+class PickemSettings(object):
+
+    def __init__(self, locked=None):
+        self.locked = locked
 
 
 class UploadSettings(object):
@@ -79,3 +101,9 @@ class UploadSettings(object):
         self.upload_file = upload_file
         self.rule_set = rule_set
         self.rosters = rosters
+
+
+class Stack(object):
+    def __init__(self, team: str, count: int):
+        self.team = team
+        self.count = count

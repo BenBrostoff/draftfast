@@ -196,6 +196,15 @@ class ELRoster(Roster):
     }
 
 
+class NHLRoster(Roster):
+    POSITION_ORDER = {
+        'C': 0,
+        'W': 1,
+        'D': 2,
+        'G': 3,
+    }
+
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -208,6 +217,7 @@ class RosterSelect:
             'NASCAR': NASCARRoster(),
             'SOCCER': SoccerRoster(),
             'EL': ELRoster(),
+            'NHL': NHLRoster(),
         }
         return roster_dict[league]
 
@@ -273,6 +283,9 @@ class Player(object):
             s_min,
             s_max
         ]
+
+    def is_opposing_team_in_match_up(self, team):
+        return (team != self.team) and (team in self.matchup)
 
     def __repr__(self):
         v_avg = self.__format_v_avg()

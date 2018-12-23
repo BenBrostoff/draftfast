@@ -75,7 +75,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | NASCAR | FanDuel | `FD_NASCAR_RULE_SET` |
 | SOCCER | DraftKings | `DK_SOCCER_RULE_SET` |
 | EuroLeague | DraftKings | `DK_EURO_LEAGUE_RULE_SET` |
-
+| NHL | DraftKings | `DK_NHL_RULE_SET` |
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 
@@ -90,6 +90,79 @@ nhl_rules = rules.RuleSet(
     salary_max=50_000,
 )
 ```
+
+## Settings
+
+Usage example:
+
+```python
+class Showdown(Roster):
+    POSITION_ORDER = {
+        'M': 0,
+        'F': 1,
+        'D': 2,
+        'GK': 3,
+    }
+
+
+showdown_limits = [
+    ['M', 0, 6],
+    ['F', 0, 6],
+    ['D', 0, 6],
+    ['GK', 0, 6],
+]
+
+soccer_rules = rules.RuleSet(
+    site=rules.DRAFT_KINGS,
+    league='SOCCER_SHOWDOWN',
+    roster_size=6,
+    position_limits=showdown_limits,
+    salary_max=50_000,
+    general_position_limits=[],
+)
+player_pool = salary_download.generate_players_from_csvs(
+    salary_file_location=salary_file,
+    game=rules.DRAFT_KINGS,
+)
+roster = run(
+    rule_set=soccer_rules,
+    player_pool=player_pool,
+    verbose=True,
+    roster_gen=Showdown,
+)
+```
+
+`PlayerPoolSettings`
+
+- `locked` - list of players to lock
+- `banned` - list of players to ban
+- `min_proj`
+- `max_proj`
+- `min_salary`
+- `max_salary`
+- `min_avg`
+- `max_avg`
+
+`OptimizerSettings`
+
+- `stacks` - A list of `Stack` objects. Example:
+
+```python
+roster = run(
+    rule_set=rules.DK_NHL_RULE_SET,
+    player_pool=player_pool,
+    verbose=True,
+    optimizer_settings=OptimizerSettings(
+        stacks=[
+            Stack(team='PHI', count=3),
+            Stack(team='FLA', count=3),
+            Stack(team='NSH', count=2),
+        ]
+    )
+)
+```
+
+- `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer (PRs welcome!)
 
 ## CSV Upload
 
