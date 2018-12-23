@@ -10,6 +10,10 @@ class InvalidCSVUploadFileException(Exception):
     pass
 
 
+class InvalidBoundsException(Exception):
+    pass
+
+
 MISSING_ERROR = """
 Got {} projections out of {} total players.
 

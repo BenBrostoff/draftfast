@@ -1,5 +1,6 @@
 from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
+from draftfast.dke_exceptions import InvalidBoundsException
 
 
 class Optimizer(object):
@@ -52,19 +53,22 @@ class Optimizer(object):
         return solution == self.solver.OPTIMAL
 
     def _set_player_constraints(self):
-        for i, p in self.enumerated_players:
-            if self.constraints.is_locked(p.name):
-                upper = lower = 1
-                p.lock = True
-            elif self.constraints.is_banned(p.name):
-                upper = lower = 0
-            elif p.multi_position:
-                upper = 1
-                lower = 0
-            else:
-                continue
+        multi_constraints = dict()
 
-            constraint = self.solver.Constraint(lower, upper)
+        for i, p in self.enumerated_players:
+            lb = 1 if self.constraints.is_locked(p.name) else 0
+            ub = 0 if self.constraints.is_banned(p.name) else 1
+
+            if lb > ub:
+                raise InvalidBoundsException
+
+            if p.multi_position:
+                if p.name not in multi_constraints.keys():
+                    multi_constraints[p.name] = self.solver.Constraint(lb,ub)
+                constraint = multi_constraints[p.name]
+            else:
+                constraint = self.solver.Constraint(lb, ub)
+
             constraint.SetCoefficient(self.variables[i], 1)
 
     def _optimize_on_projected_points(self):
