@@ -6,6 +6,8 @@ class LineupConstraints(object):
         self._constraints = []
         self._banned = set()
         self._locked = set()
+        self._banned_for_exposure = set()
+        self._locked_for_exposure = set()
 
     def __iter__(self):
         return ConstraintIterator(self._constraints)
@@ -59,10 +61,10 @@ class LineupConstraints(object):
     def _check_conflicts(self, constraint):
         if isinstance(constraint, PlayerGroupConstraint):
             for p in constraint.players:
-                if self.is_locked(p) or self.is_banned(p):
-                    raise ConstraintConflictException('Ban/lock constraint ' +
-                                                      'for {} '.format(p) +
-                                                      'already exists')
+                if p in self._locked or p in self._banned:
+                    raise ConstraintConflictException(
+                        'Ban/lock constraint for {} already exists'.format(p)
+                    )
 
     def _add(self, constraint):
         self._check_conflicts(constraint)
@@ -81,26 +83,33 @@ class LineupConstraints(object):
     def add_group_constraint(self, players, bound):
         self._add(PlayerGroupConstraint(players, bound))
 
-    def ban(self, players):
+    def ban(self, players, for_exposure=False):
         if len(players) == 0:
             raise ConstraintException('Empty ban group')
 
         for p in players:
             if p in self:
-                raise ConstraintConflictException('{}'.format(p) + 'exists ' +
-                                                  'in another constraint')
+                raise ConstraintConflictException(
+                    '{} exists in another constraint'.format(p)
+                )
+        if for_exposure:
+            self._banned_for_exposure.update(players)
+        else:
+            self._banned.update(players)
 
-        self._banned.update(players)
-
-    def lock(self, players):
+    def lock(self, players, for_exposure=False):
         if len(players) == 0:
             raise ConstraintException('Empty lock group')
 
         for p in players:
             if p in self:
-                raise ConstraintConflictException('{}'.format(p) + 'exists ' +
-                                                  'in another constraint')
-        self._locked.update(players)
+                raise ConstraintConflictException(
+                    '{} exists in another constraint'.format(p)
+                )
+        if for_exposure:
+            self._locked_for_exposure.update(players)
+        else:
+            self._locked.update(players)
 
 
 class ConstraintConflictException(Exception):
@@ -219,26 +228,34 @@ class PlayerGroupConstraint(PlayerConstraint):
 
     def _exact_bounds_sanity_check(self):
         if self.exact <= 0:
-            raise ConstraintException('Exact bound may not less than or ' +
-                                      'equal to zero')
+            raise ConstraintException(
+                'Exact bound may not less than or equal to zero'
+            )
         if self.exact >= len(self.players):
-            raise ConstraintException('Exact bound may not be greater than ' +
-                                      'or equal number of players in group')
+            raise ConstraintException(
+                'Exact bound may not be greater than or equal to number '
+                'of players in group'
+            )
 
     def _hi_lo_bounds_sanity_check(self):
         if self.lo < 1:
-            raise ConstraintException('Lower bound for {!r} '.format(self) +
-                                      'cannot be less than 1')
+            raise ConstraintException(
+                'Lower bound for {!r} cannot be less than 1'.format(self)
+            )
         if self.hi == self.lo:
-            raise ConstraintException('Lower bound for {!r} '.format(self) +
-                                      'cannot equal upper bound')
+            raise ConstraintException(
+                'Lower bound for {!r} cannot equal upper bound'.format(self)
+            )
         if self.hi < self.lo:
-            raise ConstraintException('Upper bound for {!r} '.format(self) +
-                                      'cannot be less than lower bound.')
+            raise ConstraintException(
+                'Upper bound for {!r} cannot be less than lower bound.'
+                .format(self)
+            )
         if self.hi > len(self.players) or self.lo > len(self.players):
-            raise ConstraintException('Bound for {!r} cannot '.format(self) +
-                                      'be greater than number of players in ' +
-                                      'group')
+            raise ConstraintException(
+                'Bound for {!r} cannot be greater than number of players '
+                'group'.format(self)
+            )
 
     def apply(self):
         pass

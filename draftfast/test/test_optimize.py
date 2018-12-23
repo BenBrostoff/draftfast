@@ -210,7 +210,8 @@ def test_force_combo():
         optimizer_settings=OptimizerSettings(
             stack_team='NE',
             stack_count=5,
-        )
+        ),
+        verbose=True
     )
     qb = roster.sorted_players()[0]
     team_count = len([
@@ -230,7 +231,8 @@ def test_force_combo():
         player_pool=players,
         optimizer_settings=OptimizerSettings(
             force_combo=True,
-        )
+        ),
+        verbose=True
     )
     qb = roster.sorted_players()[0]
     ntools.assert_equal(qb.pos, 'QB')
@@ -255,7 +257,8 @@ def test_te_combo():
         optimizer_settings=OptimizerSettings(
             force_combo=True,
             combo_allow_te=True,
-        )
+        ),
+        verbose=True
     )
     qb = roster.sorted_players()[0]
     ntools.assert_equal(qb.pos, 'QB')

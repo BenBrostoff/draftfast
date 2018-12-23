@@ -131,7 +131,7 @@ class Optimizer(object):
                 enumerated_players = self.enumerated_players
 
                 for team in teams:
-                    wrs_on_team = [
+                    skillplayers_on_team = [
                         self.variables[i] for i, p in enumerated_players
                         if p.team == team and p.pos in combo_skill_type
                     ]
@@ -140,7 +140,7 @@ class Optimizer(object):
                         if p.team == team and p.pos == 'QB'
                     ]
                     self.solver.Add(
-                        self.solver.Sum(wrs_on_team) >=
+                        self.solver.Sum(skillplayers_on_team) >=
                         self.solver.Sum(qbs_on_team)
                     )
 

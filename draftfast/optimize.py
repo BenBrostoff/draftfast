@@ -13,8 +13,15 @@ def run(rule_set: RuleSet,
         player_pool: list,
         optimizer_settings=None,
         player_settings=None,
+        exposure_dct=None,
         verbose=False) -> Roster:
     constraints = LineupConstraints()
+
+    if exposure_dct:
+        for name in exposure_dct['banned']:
+            constraints.ban(name, for_exposure=True)
+        for name in exposure_dct['locked']:
+            constraints.lock(name, for_exposure=True)
 
     if player_settings and player_settings.banned:
         for name in player_settings.banned:
@@ -80,6 +87,7 @@ def run_multi(
 
     rosters = []
     for _ in range(0, iterations):
+        exposure_dct = None
         if exposure_bounds:
             exposure_dct = get_exposure_args(
                 existing_rosters=optimizer_settings.existing_rosters,
@@ -88,14 +96,13 @@ def run_multi(
                 use_random=bool(exposure_random_seed),
                 random_seed=exposure_random_seed,
             )
-            player_settings.banned = exposure_dct['banned']
-            player_settings.locked = exposure_dct['locked']
 
         roster = run(
             rule_set=rule_set,
             player_pool=player_pool,
             optimizer_settings=optimizer_settings,
             player_settings=player_settings,
+            exposure_dct=exposure_dct,
             verbose=verbose,
         )
         if roster:
