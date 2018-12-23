@@ -9,6 +9,7 @@ from draftfast.rules import RuleSet
 from draftfast.settings import PlayerPoolSettings, OptimizerSettings
 from draftfast.lineup_contraints import LineupConstraints
 
+
 def run(rule_set: RuleSet,
         player_pool: list,
         optimizer_settings=None,

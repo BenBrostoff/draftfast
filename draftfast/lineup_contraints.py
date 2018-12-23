@@ -1,6 +1,12 @@
 from abc import ABC, abstractmethod
 
 
+def _iterableify(x):
+    if isinstance(x, (str)):
+        return [x]
+    return x
+
+
 class LineupConstraints(object):
     def __init__(self):
         self._constraints = []
@@ -13,21 +19,39 @@ class LineupConstraints(object):
         return ConstraintIterator(self._constraints)
 
     def __len__(self):
-        return len(self._constraints)
+        return len(self._constraints) + \
+               len(self._locked) + \
+               len(self._banned) + \
+               len(self._locked_for_exposure) + \
+               len(self._banned_for_exposure)
 
     def __repr__(self):
-        return '<LineupConstraintSet: ' + \
-                ', '.join([repr(c) for c in self._constraints]) + \
-                ', <Banned: {}'.format(repr(self._banned)) + '>' + \
-                ', <Locked: {}'.format(repr(self._locked)) + '>' + \
-                '>'
+        constraints = ', '.join([repr(c) for c in self._constraints])
+        lcs = 'LineupConstraintSet: {}'.format(constraints)
+        b1 = '<Banned: {!r}>'.format(self._banned)
+        l1 = '<Locked: {!r}>'.format(self._locked)
+        b2 = '<Banned for exposure: {!r}>'.format(self._banned_for_exposure)
+        l2 = '<Locked for exposure: {!r}>'.format(self._locked_for_exposure)
+        return '<{}, {}, {}, {}, {}>'.format(lcs, b1, l1, b2, l2)
 
     def __str__(self):
         return '\n'.join(str(c) for c in self._constraints) + \
                'BANNED:\n' + \
-               '\n'.join(['\t{}'.format(str(p) for p in self._banned)]) + \
+               '\n'.join(
+                   ['\t{}'.format(str(p) for p in self._banned)]
+                   ) + \
                'LOCKED:\n' + \
-               '\n'.join(['\t{}'.format(str(p) for p in self._locked)])
+               '\n'.join(
+                   ['\t{}'.format(str(p) for p in self._locked)]
+                   ) + \
+               'BANNED FOR EXPOSURE:\n' + \
+               '\n'.join(
+                   ['\t{}'.format(str(p) for p in self._banned_for_exposure)]
+                   ) + \
+               'LOCKED FOR EXPOSURE:\n' + \
+               '\n'.join(
+                   ['\t{}'.format(str(p) for p in self._locked_for_exposure)]
+                   )
 
     def __eq__(self, constraintset):
         if len(self._constraints) != len(constraintset._constraints):
@@ -42,6 +66,12 @@ class LineupConstraints(object):
         if self._banned != constraintset._banned:
             return False
 
+        if self._locked_for_exposure != constraintset._locked_for_exposure:
+            return False
+
+        if self._banned_for_exposure != constraintset._banned_for_exposure:
+            return False
+
         return True
 
     def __contains__(self, player):
@@ -51,10 +81,18 @@ class LineupConstraints(object):
         if player in self._banned:
             return True
 
+        if player in self._locked_for_exposure:
+            return True
+
+        if player in self._banned_for_exposure:
+            return True
+
         for c in self._constraints:
             if isinstance(c, PlayerGroupConstraint):
                 if player in c.players:
                     return True
+
+        return False
 
     # TODO this will create conflicts with exposure code, maybe create
     # a new class for players locked/banned by the exposure code?
@@ -84,32 +122,42 @@ class LineupConstraints(object):
         self._add(PlayerGroupConstraint(players, bound))
 
     def ban(self, players, for_exposure=False):
-        if len(players) == 0:
+        _players = _iterableify(players)
+
+        if len(_players) == 0:
             raise ConstraintException('Empty ban group')
 
-        for p in players:
+        for p in _players:
             if p in self:
                 raise ConstraintConflictException(
                     '{} exists in another constraint'.format(p)
                 )
+
         if for_exposure:
-            self._banned_for_exposure.update(players)
+            self._banned_for_exposure.update(_players)
         else:
-            self._banned.update(players)
+            self._banned.update(_players)
 
     def lock(self, players, for_exposure=False):
-        if len(players) == 0:
+        _players = _iterableify(players)
+
+        if len(_players) == 0:
             raise ConstraintException('Empty lock group')
 
-        for p in players:
+        for p in _players:
             if p in self:
                 raise ConstraintConflictException(
                     '{} exists in another constraint'.format(p)
                 )
+
         if for_exposure:
-            self._locked_for_exposure.update(players)
+            self._locked_for_exposure.update(_players)
         else:
-            self._locked.update(players)
+            self._locked.update(_players)
+
+    def clear_exposure_constraints(self):
+        self._locked_for_exposure.clear()
+        self._banned_for_exposure.clear()
 
 
 class ConstraintConflictException(Exception):

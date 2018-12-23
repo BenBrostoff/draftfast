@@ -64,7 +64,7 @@ class Optimizer(object):
 
             if p.multi_position:
                 if p.name not in multi_constraints.keys():
-                    multi_constraints[p.name] = self.solver.Constraint(lb,ub)
+                    multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
             else:
                 constraint = self.solver.Constraint(lb, ub)
@@ -97,7 +97,6 @@ class Optimizer(object):
 
         for variable in self.variables:
             size_cap.SetCoefficient(variable, 1)
-
 
     def _set_stack(self):
         if self.settings:

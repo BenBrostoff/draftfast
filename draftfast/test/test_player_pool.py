@@ -38,22 +38,6 @@ def test_respects_max_cost():
     ntools.assert_equals(pool, [p_a, p_b])
 
 
-def test_respects_banned():
-    pool = filter_pool(
-        mock_player_pool,
-        PlayerPoolSettings(banned=['A1', 'A2'])
-    )
-    ntools.assert_equals(pool, [p_c])
-
-
-def test_respects_locked():
-    pool = filter_pool(mock_player_pool, PlayerPoolSettings(
-        locked=['A2'],
-        min_proj=31,
-    ))
-    ntools.assert_equals(pool, [p_b, p_c])
-
-
 def test_randomize():
     random.seed(1)
     pool = filter_pool(mock_player_pool, PlayerPoolSettings(

@@ -173,6 +173,47 @@ def test_uniques_nba():
     )
 
 
+def test_respect_lock():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+
+        player_settings=PlayerPoolSettings(
+            locked=['Andrew Luck'],
+        ),
+        verbose=True
+    )
+    qb = roster.sorted_players()[0]
+    ntools.assert_equal(qb.pos, 'QB')
+    ntools.assert_equal(qb.name, 'Andrew Luck')
+
+
+def test_respect_ban():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+
+        player_settings=PlayerPoolSettings(
+            banned=['Eli Manning'],
+        ),
+        verbose=True
+    )
+    for player in roster.sorted_players():
+        ntools.assert_not_equals(player.name, 'Eli Manning')
+
+
 def test_stack():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=salary_file,
@@ -251,6 +292,7 @@ def test_te_combo():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
+
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
@@ -280,7 +322,8 @@ def test_no_double_te():
         player_pool=players,
         player_settings=PlayerPoolSettings(
             locked=['Rob Gronkowski']
-        )
+        ),
+        verbose=True
     )
     qb = roster.sorted_players()[0]
     ntools.assert_equal(qb.pos, 'QB')
