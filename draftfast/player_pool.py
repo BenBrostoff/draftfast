@@ -1,16 +1,26 @@
 from random import uniform as runiform
 from draftfast.settings import PlayerPoolSettings
+from draftfast.rules import RuleSet
+from draftfast.showdown.orm import ShowdownPlayer
 
 
-def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> list:
-    if player_settings:
+def filter_pool(pool: list,
+                player_settings: PlayerPoolSettings,
+                ruleset: RuleSet=None) -> list:
+    if player_settings and player_settings.randomize:
         for player in pool:
-            if player_settings.randomize:
-                factor = 1 + runiform(
-                    -player_settings.randomize,
-                    player_settings.randomize
-                )
-                player.proj = player.proj * factor
+            factor = 1 + runiform(
+                -player_settings.randomize,
+                player_settings.randomize
+            )
+            player.proj = player.proj * factor
+
+    if ruleset and ruleset.game_type == 'showdown'):
+        pool = [ShowdownPlayer(p) for p in pool]
+        for i in range(len(pool)):
+            rool[i]
+        for player in pool:
+
 
         return list(filter(
             add_filters(player_settings),

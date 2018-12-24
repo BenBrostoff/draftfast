@@ -108,7 +108,9 @@ class Roster:
         return sum([x.proj for x in self.players])
 
     def position_order(self, player):
-        return self.POSITION_ORDER[player.pos]
+        # raises exception in case someone tries to instantiate base class
+        position_order = getattr(self, 'POSITION_ORDER')
+        return (position_order[player.pos], player.cost)
 
     def sorted_players(self):
         return sorted(
@@ -121,6 +123,16 @@ class Roster:
 POSITION_ORDER is based on the order
 required by DraftKings' CSV download
 '''
+
+class ShowdownRoster(Roster):
+    POSITION_ORDER = {
+        'CAPT': 0,
+        'FLEX': 1,
+    }
+
+    def position_order(self, player):
+        captain = getattr(player, 'captain')
+        return (captain, self.POSITION_ORDER[player.pos], player.cost)
 
 
 class NFLRoster(Roster):
@@ -212,6 +224,8 @@ class RosterSelect:
             'NBA': NBARoster(),
             'WNBA': WNBARoster(),
             'NFL': NFLRoster(),
+            'NFL_SHOWDOWN': ShowdownRoster(),
+            'NFL_MVP': ShowdownRoster(),
             'MLB': MLBRoster(),
             'PGA': PGARoster(),
             'NASCAR': NASCARRoster(),
@@ -219,7 +233,7 @@ class RosterSelect:
             'EL': ELRoster(),
             'NHL': NHLRoster(),
         }
-        return roster_dict[league]
+        return roster_dict
 
 
 @total_ordering
