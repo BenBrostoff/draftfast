@@ -54,6 +54,32 @@ def test_nba_fd():
     ntools.assert_not_equals(roster, None)
 
 
+def test_nfl_dk_mock():
+    mock_dk_pool = [
+        Player(name='A1', cost=5500, proj=40, pos='QB'),
+        Player(name='A2', cost=5500, proj=41, pos='QB'),
+        Player(name='A11', cost=5500, proj=50, pos='WR'),
+        Player(name='A3', cost=5500, proj=42, pos='WR'),
+        Player(name='A4', cost=5500, proj=43, pos='WR'),
+        Player(name='A5', cost=5500, proj=44, pos='WR'),
+        Player(name='A6', cost=5500, proj=45, pos='RB'),
+        Player(name='A7', cost=5500, proj=46, pos='RB'),
+        Player(name='A8', cost=5500, proj=47, pos='RB'),
+        Player(name='A9', cost=5500, proj=48, pos='TE'),
+        Player(name='A10', cost=5500, proj=49, pos='TE'),
+        Player(name='A12', cost=5500, proj=51, pos='DST'),
+        Player(name='A13', cost=5500, proj=52, pos='DST'),
+    ]
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=mock_dk_pool,
+    )
+
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 420.0)
+
+
 def test_nfl_dk():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=salary_file,
@@ -64,7 +90,9 @@ def test_nfl_dk():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
     )
-    ntools.assert_not_equals(roster, None)
+
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 117.60)
 
 
 def test_nfl_fd():

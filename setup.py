@@ -14,7 +14,8 @@ setuptools.setup(
     version='2.0.7',
     author='Ben Brostoff',
     author_email='ben.brostoff@gmail.com',
-    description='A tool to automate and optimize DraftKings and FanDuel lineup construction.',
+    description='A tool to automate and optimize DraftKings and FanDuel '
+                'lineup construction.',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/BenBrostoff/draft-kings-fun',
