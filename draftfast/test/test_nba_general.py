@@ -4,7 +4,6 @@ from draftfast.orm import Player
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download as sd
-from draftfast.lineup_contraints import LineupConstraints
 
 
 def test_general_guard():
@@ -34,7 +33,6 @@ def test_optimize_with_general():
     )
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        constraints=LineupConstraints(),
         player_pool=players,
         verbose=False,
     )

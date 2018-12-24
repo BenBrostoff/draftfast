@@ -43,28 +43,24 @@ class PlayerPoolSettings(object):
 
     def __init__(self, min_proj=None, max_proj=None,
                  min_avg=None, max_avg=None, min_salary=None,
-                 max_salary=None, locked=None, banned=None,
-                 randomize=None):
+                 max_salary=None, randomize=None):
         self.min_proj = min_proj
         self.max_proj = max_proj
         self.min_avg = min_avg
         self.max_avg = max_avg
         self.min_salary = min_salary
         self.max_salary = max_salary
-        self.locked = locked
-        self.banned = banned
         self.randomize = randomize
 
 
 class OptimizerSettings(object):
 
-    def __init__(self, locked=None,
+    def __init__(self,
                  stacks=None,
                  existing_rosters=None, force_combo=None,
                  combo_allow_te=None, uniques=None,
                  no_offense_against_defense=None,
                  min_teams=2):
-        self.locked = locked
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo
@@ -75,22 +71,14 @@ class OptimizerSettings(object):
 
     def __repr__(self):
         return """
-        Locked: {}
         Stacks: {}
         Min teams: {}
         No offense against D: {}
         """.format(
-            self.locked,
             [x.team for x in self.stacks],
             self.min_teams,
             self.no_offense_against_defense,
         )
-
-
-class PickemSettings(object):
-
-    def __init__(self, locked=None):
-        self.locked = locked
 
 
 class UploadSettings(object):

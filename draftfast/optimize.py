@@ -12,22 +12,12 @@ from draftfast.lineup_contraints import LineupConstraints
 
 def run(rule_set: RuleSet,
         player_pool: list,
-        constraints: LineupConstraints,
+        constraints: LineupConstraints = LineupConstraints(),
         optimizer_settings=None,
         player_settings=None,
         exposure_dct=None,
         roster_gen=None,
         verbose=False) -> Roster:
-    constraints = LineupConstraints()
-
-    if player_settings and player_settings.banned:
-        for name in player_settings.banned:
-            constraints.ban(name)
-
-    if player_settings and player_settings.locked:
-        for name in player_settings.locked:
-            constraints.lock(name)
-
     players = pool.filter_pool(
         player_pool,
         player_settings,
@@ -75,7 +65,7 @@ def run_multi(
     iterations: int,
     rule_set: RuleSet,
     player_pool: list,
-    constraints: LineupConstraints,
+    constraints: LineupConstraints = LineupConstraints(),
     player_settings=PlayerPoolSettings(),
     optimizer_settings=OptimizerSettings(),
     verbose=False,

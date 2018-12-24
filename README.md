@@ -23,7 +23,6 @@ from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
 from draftfast.lineup_constraints import LineupConstraints
 
-
 # Create players
 player_pool = [
     Player(name='A1', cost=5500, proj=55, pos='PG'),
@@ -41,7 +40,6 @@ player_pool = [
 roster = run(
     rule_set=rules.DK_NBA_RULE_SET,
     player_pool=player_pool,
-    constraints=LineupConstraints(),
     verbose=True,
 )
 
@@ -54,7 +52,6 @@ players = salary_download.generate_players_from_csvs(
 roster = run(
   rule_set=rules.DK_NBA_RULE_SET,
   player_pool=players,
-  constraints=LineupConstraints(),
   verbose=True,
 )
 ```
@@ -131,7 +128,6 @@ player_pool = salary_download.generate_players_from_csvs(
 roster = run(
     rule_set=soccer_rules,
     player_pool=player_pool,
-    constraints=LineupConstraints(),
     verbose=True,
     roster_gen=Showdown,
 )
@@ -139,8 +135,6 @@ roster = run(
 
 `PlayerPoolSettings`
 
-- `locked` - list of players to lock
-- `banned` - list of players to ban
 - `min_proj`
 - `max_proj`
 - `min_salary`
@@ -164,7 +158,28 @@ roster = run(
             Stack(team='NSH', count=2),
         ]
     ),
-    constraints=LineupConstraints(),
+)
+```
+
+`LineupConstraints`
+
+- `locked` - list of players to lock
+- `banned` - list of players to ban
+- `groups` - list of player groups constraints. See below
+
+```python
+roster = run(
+    rule_set=rules.DK_NHL_RULE_SET,
+    player_pool=player_pool,
+    verbose=True,
+    constraints=LineupConstraints(
+        locked=['Rob Gronkowski'],
+        banned=['Mark Ingram', 'Doug Martin'],
+        groups=[
+            [('Todd Gurley', 'Melvin Gordon', 'Christian McCaffrey'), (2, 3)],
+            [('Chris Carson', 'Mike Davis'), 1],
+        ]
+    )
 )
 ```
 

@@ -8,10 +8,22 @@ def _iterableify(x):
 
 
 class LineupConstraints(object):
-    def __init__(self):
+    def __init__(self,
+                 locked: list = [],
+                 banned: list = [],
+                 groups: list = []):
         self._constraints = []
         self._banned = set()
         self._locked = set()
+
+        for name in banned:
+            self.ban(name)
+
+        for name in locked:
+            self.lock(name)
+
+        for group in groups:
+            self.add_group_constraint(group[0], group[1])
 
     def __iter__(self):
         return ConstraintIterator(self._constraints)
@@ -82,11 +94,14 @@ class LineupConstraints(object):
         else:
             raise ConstraintConflictException('Duplicate constraint')
 
-    def is_banned(self, player):
+    def is_banned(self, player: str) -> bool:
         return player in self._banned
 
-    def is_locked(self, player):
+    def is_locked(self, player: str) -> bool:
         return player in self._locked
+
+    def has_group_constraints(self) -> bool:
+        return len(self._constraints) != 0
 
     def add_group_constraint(self, players, bound):
         self._add(PlayerGroupConstraint(players, bound))

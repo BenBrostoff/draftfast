@@ -5,9 +5,6 @@ from draftfast.settings import PlayerPoolSettings
 def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> list:
     if player_settings:
         for player in pool:
-            if player_settings.locked \
-                    and player.name in player_settings.locked:
-                player.lock = True
             if player_settings.randomize:
                 factor = 1 + runiform(
                     -player_settings.randomize,
@@ -43,7 +40,6 @@ def add_pickem_contraints(settings):
         kwargs = {'player': player, 'settings': settings}
         return (
             _is_above_min_proj(**kwargs) and
-            (not _is_banned_player(**kwargs)) and
             # (not _is_banned_team(**kwargs)) and
             # _is_locked_team(**kwargs) and
             # _is_within_avg(**kwargs) and
@@ -102,9 +98,3 @@ def _is_below_max_avg(player, settings):
     if settings.max_avg is None:
         return True
     return player.average_score <= settings.max_avg
-
-
-def _is_banned_player(player, settings):
-    if settings.banned is None:
-        return False
-    return player.name in settings.banned
