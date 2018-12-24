@@ -53,6 +53,7 @@ def test_nba_fd():
     )
     ntools.assert_not_equals(roster, None)
 
+
 def test_nfl_dk_mock():
     mock_dk_pool = [
         Player(name='A1', cost=5500, proj=40, pos='QB'),
@@ -77,6 +78,7 @@ def test_nfl_dk_mock():
 
     ntools.assert_not_equal(roster, None)
     ntools.assert_equal(roster.projected(), 420.0)
+
 
 def test_nfl_dk():
     players = salary_download.generate_players_from_csvs(
