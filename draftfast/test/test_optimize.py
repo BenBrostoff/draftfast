@@ -89,7 +89,8 @@ def test_nfl_dk():
         player_pool=players,
     )
 
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 117.60)
 
 
 def test_nfl_fd():

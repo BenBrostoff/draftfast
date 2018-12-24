@@ -243,7 +243,7 @@ class Player(object):
         self.pos = pos
         self.name = name
         self.cost = float(cost)
-        self.team = team
+        self.team = team.upper() if team else team
         self.matchup = matchup
         self.proj = proj
         self.average_score = average_score

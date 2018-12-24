@@ -127,7 +127,8 @@ def _generate_projection_dict(projection_file_location: str,
               encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
-            projections[row.get('playername')] = float(row.get('points'))
+            name = row.get('playername').strip().rstrip()
+            projections[name] = float(row.get('points'))
 
     return projections
 
@@ -135,6 +136,12 @@ def _generate_projection_dict(projection_file_location: str,
 def _set_projections(projections, player, verbose):
     if projections:
         proj = projections.get(player.name)
+
+        # try to find projection for e.g. 'Andrew Luck IND'
+        if proj is None and player.team is not None:
+            alt_name = '{} {}'.format(player.name, player.team.upper())
+            proj = projections.get(alt_name)
+
         if proj is None:
             if verbose:
                 print('No projection for {}'.format(player.name))
