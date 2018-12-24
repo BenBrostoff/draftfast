@@ -107,7 +107,9 @@ def test_nfl_fd():
         player_pool=players,
         verbose=True
     )
+
     ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 155.0172712846236)
 
 
 def test_multi_position():
