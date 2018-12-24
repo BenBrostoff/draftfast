@@ -250,6 +250,96 @@ def test_respect_ban():
         ntools.assert_not_equal(player.name, 'Eli Manning')
 
 
+def test_respect_group1():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+
+    grouped_players = ('DeAndre Hopkins', 'Amari Cooper', 'Sammy Watkins')
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        verbose=True,
+        constraints=LineupConstraints(
+            groups=[
+                [grouped_players, 2]
+            ],
+        ),
+    )
+
+    group_count = len([
+        x for x in roster.sorted_players() if x.name in grouped_players
+    ])
+    ntools.assert_equal(group_count, 2)
+
+
+def test_respect_group2():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+
+    grouped_players = (
+        'Ryan Fitzpatrick',
+        'Lamar Miller',
+        'DeAndre Hopkins',
+        'Amari Cooper',
+        'Sammy Watkins'
+        )
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        verbose=True,
+        constraints=LineupConstraints(
+            groups=[
+                [grouped_players, (2, 3)]
+            ],
+        ),
+    )
+
+    group_count = len([
+        x for x in roster.sorted_players() if x.name in grouped_players
+    ])
+    ntools.assert_true(group_count >= 2 and group_count <= 3)
+
+
+def test_respect_group3():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+
+    grouped_players = (
+        'Ryan Fitzpatrick',
+        'Lamar Miller',
+        'DeAndre Hopkins',
+        'Amari Cooper',
+        'Sammy Watkins'
+        )
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        verbose=True,
+        constraints=LineupConstraints(
+            groups=[
+                [grouped_players, 1]
+            ],
+        ),
+    )
+
+    group_count = len([
+        x for x in roster.sorted_players() if x.name in grouped_players
+    ])
+    ntools.assert_true(group_count == 1)
+
+
 def test_stack():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=salary_file,
