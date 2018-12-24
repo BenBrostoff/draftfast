@@ -53,9 +53,6 @@ def test_nba_fd():
     )
     ntools.assert_not_equals(roster, None)
 
-
-
-
 def test_nfl_dk_mock():
     mock_dk_pool = [
         Player(name='A1', cost=5500, proj=40, pos='QB'),
