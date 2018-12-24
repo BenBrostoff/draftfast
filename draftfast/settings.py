@@ -59,7 +59,7 @@ class OptimizerSettings(object):
                  stacks=None,
                  existing_rosters=None, force_combo=None,
                  combo_allow_te=None, uniques=None,
-                 no_offense_against_defense=None,
+                 no_offense_against_defense=False,
                  min_teams=2):
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
@@ -75,7 +75,7 @@ class OptimizerSettings(object):
         Min teams: {}
         No offense against D: {}
         """.format(
-            [x.team for x in self.stacks],
+            [x.team for x in self.stacks] if self.stacks else [],
             self.min_teams,
             self.no_offense_against_defense,
         )
