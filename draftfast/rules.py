@@ -66,16 +66,16 @@ def get_nfl_positions(
 
 def get_nfl_showdown_positions(dk: bool=False, fd: bool=False) -> list:
     if dk:
-        ub = 6
-        d_abbrev='DST'
-    elif fd:
         ub = 5
-        d_abbrev='D'
+    elif fd:
+        ub = 4
     else:
         raise NotImplementedError
 
-    positions =  ('QB', 'WR', 'RB', 'TE', d_abbrev, 'K')
-    return [[pos, 0, ub] for pos in positions]
+    return [
+        ['CAPT', 1, 1],
+        ['FLEX', ub, ub]
+    ]
 
 
 POSITIONS = {
