@@ -216,7 +216,7 @@ class Optimizer(object):
                     self.variables[i] for i, p in enumerated_players
                     if p.pos in offensive_pos and
                     p.is_opposing_team_in_match_up(team) and
-                    use_showdown and p.captain
+                    (not use_showdown or use_showdown and p.captain)
                 ]
                 defensive = [
                     self.variables[i] for i, p in enumerated_players

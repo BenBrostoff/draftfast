@@ -32,8 +32,6 @@ def run(rule_set: RuleSet,
 
     variables = optimizer.variables
 
-    from nose.tools import set_trace; set_trace()
-
     if optimizer.solve():
         if roster_gen:
             roster = roster_gen()

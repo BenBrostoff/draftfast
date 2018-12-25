@@ -110,7 +110,9 @@ class Roster:
     def position_order(self, player):
         # raises exception in case someone tries to instantiate base class
         position_order = getattr(self, 'POSITION_ORDER')
-        return (position_order[player.pos], player.cost)
+
+        # default sort order is low->high, so use the negative of cost
+        return (position_order[player.pos], -player.cost)
 
     def sorted_players(self):
         return sorted(
@@ -229,7 +231,7 @@ class RosterSelect:
             'EL': ELRoster(),
             'NHL': NHLRoster(),
         }
-        return roster_dict
+        return roster_dict[league]
 
 
 @total_ordering

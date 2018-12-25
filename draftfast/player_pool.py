@@ -4,23 +4,21 @@ from draftfast.rules import RuleSet
 from draftfast.showdown.orm import ShowdownPlayer
 
 
-def filter_pool(pool: list,
-                player_settings: PlayerPoolSettings,
-                ruleset: RuleSet=None) -> list:
-    if player_settings and player_settings.randomize:
-        for player in pool:
-            factor = 1 + runiform(
-                -player_settings.randomize,
-                player_settings.randomize
-            )
-            player.proj = player.proj * factor
+def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> list:
+    if player_settings:
+        if player_settings.randomize:
+            for player in pool:
+                factor = 1 + runiform(
+                    -player_settings.randomize,
+                    player_settings.randomize
+                )
+                player.proj = player.proj * factor
 
-    return list(filter(
-        add_filters(player_settings),
-        pool,
-    ))
-
-
+        return list(filter(
+            add_filters(player_settings),
+            pool,
+        ))
+    return pool
 
 def add_filters(settings):
     def filter_fn(player):
