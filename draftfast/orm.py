@@ -110,6 +110,8 @@ class Roster:
     def position_order(self, player):
         # raises exception in case someone tries to instantiate base class
         position_order = getattr(self, 'POSITION_ORDER')
+        if hasattr(player, 'showdown_pos'):
+            return (not player.showdown_pos, position_order[player.pos], player.cost)
         return (position_order[player.pos], player.cost)
 
     def sorted_players(self):

@@ -1,6 +1,7 @@
 import csv
 from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
+from draftfast.showdown.orm import ShowdownPlayer
 from draftfast.rules import DRAFT_KINGS, FAN_DUEL
 from copy import deepcopy
 
@@ -85,9 +86,12 @@ def generate_players_from_csvs(
                         player,
                         verbose,
                     )
-                    players.append(player)
-                    if ruleset.game_type == 'showdown':
 
+                    if ruleset.game_type == 'showdown':
+                        players.append(ShowdownPlayer(player))
+                        players.append(ShowdownPlayer(player, captain=True))
+                    else:
+                        players.append(player)
 
     return players
 

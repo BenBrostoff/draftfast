@@ -2,34 +2,33 @@ import os
 from nose import tools as ntools
 from draftfast.optimize import run, run_multi
 from draftfast import rules
-from draftfast.orm import ShowdownPlayer
+from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings, Stack
 from draftfast.lineup_contraints import LineupConstraints
-
+from draftfast.showdown.orm import ShowdownPlayer
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
 fd_nfl_salary_file = '{}/data/fd-nfl-salaries.csv'.format(CURRENT_DIR)
 projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
 
-from draftfast.showdown.orm import ShowdownPlayer
 
 def test_nfl_dk_showdown_mock():
     mock_dk_pool = [
-        ShowdownPlayer(name='A1', cost=5500, proj=40, pos='QB'),
-        ShowdownPlayer(name='A2', cost=5500, proj=41, pos='QB'),
-        ShowdownPlayer(name='A11', cost=5500, proj=50, pos='WR'),
-        ShowdownPlayer(name='A3', cost=5500, proj=42, pos='WR'),
-        ShowdownPlayer(name='A4', cost=5500, proj=43, pos='WR'),
-        ShowdownPlayer(name='A5', cost=5500, proj=44, pos='WR'),
-        ShowdownPlayer(name='A6', cost=5500, proj=45, pos='RB'),
-        ShowdownPlayer(name='A7', cost=5500, proj=46, pos='RB'),
-        ShowdownPlayer(name='A8', cost=5500, proj=47, pos='RB'),
-        ShowdownPlayer(name='A9', cost=5500, proj=48, pos='TE'),
-        ShowdownPlayer(name='A10', cost=5500, proj=49, pos='TE'),
-        ShowdownPlayer(name='A12', cost=5500, proj=51, pos='DST'),
-        ShowdownPlayer(name='A13', cost=5500, proj=52, pos='DST'),
+        Player(name='A1', cost=5500, proj=40, pos='QB'),
+        Player(name='A2', cost=5500, proj=41, pos='QB'),
+        Player(name='A11', cost=5500, proj=50, pos='WR'),
+        Player(name='A3', cost=5500, proj=42, pos='WR'),
+        Player(name='A4', cost=5500, proj=43, pos='WR'),
+        Player(name='A5', cost=5500, proj=44, pos='WR'),
+        Player(name='A6', cost=5500, proj=45, pos='RB'),
+        Player(name='A7', cost=5500, proj=46, pos='RB'),
+        Player(name='A8', cost=5500, proj=47, pos='RB'),
+        Player(name='A9', cost=5500, proj=48, pos='TE'),
+        Player(name='A10', cost=5500, proj=49, pos='TE'),
+        Player(name='A12', cost=5500, proj=51, pos='DST'),
+        Player(name='A13', cost=5500, proj=52, pos='DST'),
     ]
 
     roster = run(
@@ -55,6 +54,3 @@ def test_nfl_dk():
 
     ntools.assert_not_equal(roster, None)
     ntools.assert_equal(roster.projected(), 117.60)
-
-
-test_nfl_dk_mock()
