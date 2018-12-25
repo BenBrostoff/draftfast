@@ -15,18 +15,11 @@ def filter_pool(pool: list,
             )
             player.proj = player.proj * factor
 
-    if ruleset and ruleset.game_type == 'showdown'):
-        pool = [ShowdownPlayer(p) for p in pool]
-        for i in range(len(pool)):
-            rool[i]
-        for player in pool:
+    return list(filter(
+        add_filters(player_settings),
+        pool,
+    ))
 
-
-        return list(filter(
-            add_filters(player_settings),
-            pool,
-        ))
-    return pool
 
 
 def add_filters(settings):

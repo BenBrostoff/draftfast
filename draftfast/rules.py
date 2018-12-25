@@ -66,16 +66,16 @@ def get_nfl_positions(
 
 def get_nfl_showdown_positions(dk: bool=False, fd: bool=False) -> list:
     if dk:
-        ub = 6
-        d_abbrev='DST'
-    elif fd:
         ub = 5
-        d_abbrev='D'
+    elif fd:
+        ub = 4
     else:
         raise NotImplementedError
 
-    positions =  ('QB', 'WR', 'RB', 'TE', d_abbrev, 'K')
-    return [[pos, 0, ub] for pos in positions]
+    return [
+        ['CAPT', 1, 1],
+        ['FLEX', ub, ub]
+    ]
 
 
 POSITIONS = {
@@ -239,7 +239,7 @@ FD_NFL_RULE_SET = RuleSet(
 
 DK_NFL_SHOWDOWN_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
-    league='NFL',
+    league='NFL_SHOWDOWN',
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL_SHOWDOWN'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL_SHOWDOWN'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL_SHOWDOWN'],
@@ -249,7 +249,7 @@ DK_NFL_SHOWDOWN_RULE_SET = RuleSet(
 
 FD_NFL_MVP_RULE_SET = RuleSet(
     site=FAN_DUEL,
-    league='NFL',
+    league='NFL_SHOWDOWN',
     roster_size=ROSTER_SIZE[FAN_DUEL]['NFL_MVP'],
     salary_max=SALARY_CAP[FAN_DUEL]['NFL_MVP'],
     position_limits=POSITIONS[FAN_DUEL]['NFL_MVP'],

@@ -87,7 +87,7 @@ def generate_players_from_csvs(
                         verbose,
                     )
 
-                    if ruleset.game_type == 'showdown':
+                    if ruleset and ruleset.game_type == 'showdown':
                         players.append(ShowdownPlayer(player))
                         players.append(ShowdownPlayer(player, captain=True))
                     else:

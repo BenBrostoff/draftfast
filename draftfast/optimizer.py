@@ -28,6 +28,7 @@ class Optimizer(object):
         self.offensive_positions = rule_set.offensive_positions
         self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
+        self.showdown = rule_set.game_type == 'showdown'
         self.settings = settings
         self.lineup_constraints = lineup_constraints
         if exposure_dct:
@@ -81,8 +82,14 @@ class Optimizer(object):
         self._set_stack()
         self._set_combo()
         self._set_no_duplicate_lineups()
-        self._set_no_opp_defense()
         self._set_min_teams()
+
+        if self.showdown:
+            self._set_single_captain()
+
+        self._set_no_opp_defense()
+
+
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
 
@@ -96,7 +103,7 @@ class Optimizer(object):
             if lb > ub:
                 raise InvalidBoundsException
 
-            if p.multi_position:
+            if p.multi_position or (self.showdown and p.captain):
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
@@ -196,15 +203,20 @@ class Optimizer(object):
         offensive_pos = self.offensive_positions
         defensive_pos = self.defensive_positions
 
-        if offensive_pos and defensive_pos \
-                and self.settings.no_offense_against_defense:
+        use_classic = self.settings.no_offense_against_defense and \
+                        not self.showdown
+        use_showdown = self.settings.no_defense_against_captain and \
+                        self.showdown
+
+        if offensive_pos and defensive_pos and use_classic or use_showdown:
             enumerated_players = self.enumerated_players
 
             for team in self.teams:
                 offensive_against = [
                     self.variables[i] for i, p in enumerated_players
                     if p.pos in offensive_pos and
-                    p.is_opposing_team_in_match_up(team)
+                    p.is_opposing_team_in_match_up(team) and
+                    use_showdown and p.captain
                 ]
                 defensive = [
                     self.variables[i] for i, p in enumerated_players
@@ -272,3 +284,9 @@ class Optimizer(object):
             self.solver.Add(
                 self.solver.Sum(teams) >= self.settings.min_teams
             )
+
+    def _set_single_captain(self):
+        captain_constraint = self.solver.Constraint(1)
+        for i, p in self.enumerated_players:
+            if p.captain:
+                captain_constraint.SetCoefficient(self.variables[i], 1)
