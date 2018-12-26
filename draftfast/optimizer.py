@@ -86,8 +86,9 @@ class Optimizer(object):
 
         if self.showdown:
             self._set_single_captain()
-
-        self._set_no_opp_defense()
+            self._set_no_reuse_captain()
+        else:
+            self._set_no_opp_defense()
 
 
         solution = self.solver.Solve()
@@ -103,7 +104,7 @@ class Optimizer(object):
             if lb > ub:
                 raise InvalidBoundsException
 
-            if p.multi_position or (self.showdown and p.captain):
+            if p.multi_position:
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
@@ -203,20 +204,15 @@ class Optimizer(object):
         offensive_pos = self.offensive_positions
         defensive_pos = self.defensive_positions
 
-        use_classic = self.settings.no_offense_against_defense and \
-                        not self.showdown
-        use_showdown = self.settings.no_defense_against_captain and \
-                        self.showdown
-
-        if offensive_pos and defensive_pos and use_classic or use_showdown:
+        if offensive_pos and defensive_pos \
+                and self.settings.no_offense_against_defense:
             enumerated_players = self.enumerated_players
 
             for team in self.teams:
                 offensive_against = [
                     self.variables[i] for i, p in enumerated_players
                     if p.pos in offensive_pos and
-                    p.is_opposing_team_in_match_up(team) and
-                    (not use_showdown or use_showdown and p.captain)
+                    p.is_opposing_team_in_match_up(team)
                 ]
                 defensive = [
                     self.variables[i] for i, p in enumerated_players
@@ -286,7 +282,33 @@ class Optimizer(object):
             )
 
     def _set_single_captain(self):
-        captain_constraint = self.solver.Constraint(1)
+        captain_constraint = self.solver.Constraint(1, 1)
         for i, p in self.enumerated_players:
             if p.captain:
                 captain_constraint.SetCoefficient(self.variables[i], 1)
+
+    def _set_no_reuse_captain(self):
+        captain_constraints = dict()
+
+        # create the constraints for captains
+        for i, p in self.enumerated_players:
+            lb = 0
+            ub = 1
+            # lb = 1 if p.lock else 0
+            # ub = 0 if p.ban else 1
+
+            # if lb > ub:
+            #     raise InvalidBoundsException
+
+            if p.captain:
+                if p.name not in captain_constraints.keys():
+                    captain_constraints[p.name] = self.solver.Constraint(lb, ub)
+                constraint = captain_constraints[p.name]
+
+                constraint.SetCoefficient(self.variables[i], 1)
+
+        # add non-captain players to the constraint if it exists
+        for i, p in self.enumerated_players:
+            constraint = captain_constraints.get(p.name)
+            if constraint and not p.captain:
+                constraint.SetCoefficient(self.variables[i], 1)

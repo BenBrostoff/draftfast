@@ -22,6 +22,11 @@ def run(rule_set: RuleSet,
         player_pool,
         player_settings,
     )
+
+    if rule_set.game_type == 'showdown' and optimizer_settings and \
+            optimizer_settings.no_defense_against_captain:
+        raise NotImplementedError
+
     optimizer = Optimizer(
         players=players,
         rule_set=rule_set,

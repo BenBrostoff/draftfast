@@ -14,6 +14,7 @@ class ShowdownPlayer(Player):
             self.pos = 'CAPT'
             self.captain = True
             self.proj *= 1.5
+            self.cost *= 1.5
         else:
             self.real_pos = self.pos
             self.pos = 'FLEX'

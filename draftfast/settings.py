@@ -61,6 +61,7 @@ class OptimizerSettings(object):
                  combo_allow_te=None, uniques=None,
                  no_offense_against_defense=False,
                  no_defense_against_captain=False,
+                 showdown_teams=None,
                  min_teams=2):
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []

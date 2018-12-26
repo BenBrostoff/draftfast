@@ -225,6 +225,8 @@ DK_NFL_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
+    offensive_positions=['QB', 'RB', 'WR', 'TE'],
+    defensive_positions=['DST'],
     general_position_limits=[],
 )
 
@@ -234,6 +236,8 @@ FD_NFL_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['NFL'],
     salary_max=SALARY_CAP[FAN_DUEL]['NFL'],
     position_limits=POSITIONS[FAN_DUEL]['NFL'],
+    offensive_positions=['QB', 'RB', 'WR', 'TE'],
+    defensive_positions=['D'],
     general_position_limits=[],
 )
 
@@ -243,6 +247,8 @@ DK_NFL_SHOWDOWN_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL_SHOWDOWN'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL_SHOWDOWN'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL_SHOWDOWN'],
+    offensive_positions=['QB', 'RB', 'WR', 'TE'],
+    defensive_positions=['DST'],
     general_position_limits=[],
     game_type='showdown',
 )
@@ -253,6 +259,8 @@ FD_NFL_MVP_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['NFL_MVP'],
     salary_max=SALARY_CAP[FAN_DUEL]['NFL_MVP'],
     position_limits=POSITIONS[FAN_DUEL]['NFL_MVP'],
+    offensive_positions=['QB', 'RB', 'WR', 'TE'],
+    defensive_positions=['D'],
     general_position_limits=[],
     game_type='showdown',
 )
