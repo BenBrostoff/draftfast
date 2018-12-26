@@ -52,7 +52,11 @@ def test_optimize_with_general():
         # this does appear to be an ortools artifact. Since the lineup produced is
         # correct and optimal either way, i modified the test to account for all
         # possible constructions
-        ntools.assert_equal(roster, prev_roster)
+        if prev_roster:
+            ntools.assert_equal(roster, prev_roster)
+
+        prev_roster = roster
+
         ntools.assert_equal(roster.projected(), 279.53)
         ntools.assert_true(get_player_count_at_pos('G') in [3, 4])
         ntools.assert_true(get_player_count_at_pos('F') in [3, 4])
