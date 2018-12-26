@@ -19,5 +19,7 @@ def test_roster_equality():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
+    ntool.assert_true(roster_a.exact_equal(roster_c))
     ntool.assert_not_equal(roster_a == roster_c, True)
+    ntool.assert_true(roster_a.exact_equal(roster_b))
     ntool.assert_equals(roster_a == roster_b, True)

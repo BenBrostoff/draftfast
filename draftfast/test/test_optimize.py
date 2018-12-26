@@ -7,7 +7,7 @@ from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings, Stack
 from draftfast.lineup_contraints import LineupConstraints
 
-mock_player_pool = [
+mock_nba_pool = [
     Player(name='A1', cost=5500, proj=40, pos='PG'),
     Player(name='A2', cost=5500, proj=41, pos='PG'),
     Player(name='A11', cost=5500, proj=50, pos='PG'),
@@ -21,6 +21,23 @@ mock_player_pool = [
     Player(name='A10', cost=5500, proj=49, pos='C'),
 ]
 
+mock_nfl_pool = [
+    Player(name='A1', cost=5500, proj=40, pos='QB'),
+    Player(name='A2', cost=5500, proj=41, pos='QB'),
+    Player(name='A11', cost=5500, proj=50, pos='WR'),
+    Player(name='A3', cost=5500, proj=42, pos='WR'),
+    Player(name='A4', cost=5500, proj=43, pos='WR'),
+    Player(name='A5', cost=5500, proj=44, pos='WR'),
+    Player(name='A6', cost=5500, proj=45, pos='RB'),
+    Player(name='A7', cost=5500, proj=46, pos='RB'),
+    Player(name='A8', cost=5500, proj=47, pos='RB'),
+    Player(name='A9', cost=5500, proj=48, pos='TE'),
+    Player(name='A10', cost=5500, proj=49, pos='TE'),
+    Player(name='A12', cost=5500, proj=51, pos='DST'),
+    Player(name='A13', cost=5500, proj=52, pos='DST'),
+]
+
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
 fd_nfl_salary_file = '{}/data/fd-nfl-salaries.csv'.format(CURRENT_DIR)
@@ -30,7 +47,7 @@ projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
 def test_nba_dk():
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
         verbose=True,
     )
     ntools.assert_not_equal(roster, None)
@@ -39,7 +56,7 @@ def test_nba_dk():
 def test_nba_dk_with_csv():
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
         verbose=True,
     )
     ntools.assert_not_equal(roster, None)
@@ -48,32 +65,16 @@ def test_nba_dk_with_csv():
 def test_nba_fd():
     roster = run(
         rule_set=rules.FD_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
         verbose=True
     )
     ntools.assert_not_equal(roster, None)
 
 
 def test_nfl_dk_mock():
-    mock_dk_pool = [
-        Player(name='A1', cost=5500, proj=40, pos='QB'),
-        Player(name='A2', cost=5500, proj=41, pos='QB'),
-        Player(name='A11', cost=5500, proj=50, pos='WR'),
-        Player(name='A3', cost=5500, proj=42, pos='WR'),
-        Player(name='A4', cost=5500, proj=43, pos='WR'),
-        Player(name='A5', cost=5500, proj=44, pos='WR'),
-        Player(name='A6', cost=5500, proj=45, pos='RB'),
-        Player(name='A7', cost=5500, proj=46, pos='RB'),
-        Player(name='A8', cost=5500, proj=47, pos='RB'),
-        Player(name='A9', cost=5500, proj=48, pos='TE'),
-        Player(name='A10', cost=5500, proj=49, pos='TE'),
-        Player(name='A12', cost=5500, proj=51, pos='DST'),
-        Player(name='A13', cost=5500, proj=52, pos='DST'),
-    ]
-
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
-        player_pool=mock_dk_pool,
+        player_pool=mock_nfl_pool,
     )
 
     ntools.assert_not_equal(roster, None)
@@ -154,17 +155,17 @@ def test_multi_roster_nfl():
 
     ntools.assert_not_equal(roster, None)
     ntools.assert_not_equal(second_roster, None)
-    ntools.assert_not_equal(roster == second_roster, True)
+    ntools.assert_true(roster.exact_equal(second_roster))
 
 
 def test_multi_roster_nba():
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
     )
     second_roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
         optimizer_settings=OptimizerSettings(
             existing_rosters=[roster],
         ),
@@ -172,24 +173,24 @@ def test_multi_roster_nba():
 
     ntools.assert_not_equal(roster, None)
     ntools.assert_not_equal(second_roster, None)
-    ntools.assert_not_equal(roster == second_roster, True)
+    ntools.assert_true(roster.exact_equal(second_roster))
 
 
 def test_uniques_nba():
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
     )
     second_roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
         optimizer_settings=OptimizerSettings(
             existing_rosters=[roster],
         ),
     )
     third_roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_player_pool,
+        player_pool=mock_nba_pool,
         optimizer_settings=OptimizerSettings(
             existing_rosters=[roster],
             uniques=2,
