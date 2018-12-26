@@ -2,6 +2,7 @@ from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
 from draftfast.dke_exceptions import (InvalidBoundsException,
                                       PlayerBanAndLockException)
+from draftfast.orm import Player
 
 
 class Optimizer(object):
@@ -40,13 +41,15 @@ class Optimizer(object):
         self.player_to_idx_map = {}
         self.name_to_idx_map = {}
         self.variables = []
+        self.name_to_idx_map = dict()
+        self.player_to_idx_map = dict()
+
         for idx, player in self.enumerated_players:
             self.variables.append(
                 self.solver.IntVar(0, 1, player.solver_id)
             )
 
-            self.player_to_idx_map[player.solver_id] = idx
-            self.name_to_idx_map[player.name] = idx
+            self._add_player_to_idx_maps(player, idx)
 
             if self._is_locked(player):
                 player.lock = True
@@ -59,6 +62,13 @@ class Optimizer(object):
         self.teams = set([p.team for p in self.players])
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
+
+    def _add_player_to_idx_maps(self, p:Player, idx:int):
+        self.player_to_idx_map[p.solver_id] = idx
+
+        if p.name not in self.name_to_idx_map.keys():
+            self.name_to_idx_map[p.name] = set()
+        self.name_to_idx_map[p.name].update([idx])
 
     def _is_locked(self, p):
         return self.lineup_constraints.is_locked(p.name) or \
@@ -115,8 +125,8 @@ class Optimizer(object):
 
             constraint = self.solver.Constraint(lb, ub)
             for name in group_constraint.players:
-                idx = self.name_to_idx_map[name]
-                constraint.SetCoefficient(self.variables[idx], 1)
+                for idx in self.name_to_idx_map[name]:
+                    constraint.SetCoefficient(self.variables[idx], 1)
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:
