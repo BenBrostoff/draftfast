@@ -3,9 +3,9 @@ from nose import tools as ntool
 
 
 def test_roster_equality():
-    player_a = Player(pos='RB', name='A', cost=1)
-    player_b = Player(pos='QB', name='B', cost=1)
-    player_c = Player(pos='QB', name='C', cost=1)
+    player_a = Player(pos='RB', name='A', cost=1, team='X')
+    player_b = Player(pos='QB', name='B', cost=1, team = 'X')
+    player_c = Player(pos='QB', name='C', cost=1, team='X')
 
     roster_a = NFLRoster()
     roster_a.add_player(player_a)
@@ -19,7 +19,7 @@ def test_roster_equality():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_true(roster_a.exact_equal(roster_c))
-    ntool.assert_not_equal(roster_a == roster_c, True)
+    ntool.assert_false(roster_a.exact_equal(roster_c))
+    ntool.assert_false(roster_a == roster_c)
     ntool.assert_true(roster_a.exact_equal(roster_b))
-    ntool.assert_equals(roster_a == roster_b, True)
+    ntool.assert_true(roster_a == roster_b)

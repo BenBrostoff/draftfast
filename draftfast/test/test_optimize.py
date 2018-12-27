@@ -95,7 +95,7 @@ def test_nfl_dk():
     )
 
     ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 117.60)
+    ntools.assert_equal(roster.projected(), 124.30)
 
 
 def test_nfl_fd():
@@ -155,7 +155,7 @@ def test_multi_roster_nfl():
 
     ntools.assert_not_equal(roster, None)
     ntools.assert_not_equal(second_roster, None)
-    ntools.assert_true(roster.exact_equal(second_roster))
+    ntools.assert_false(roster.exact_equal(second_roster))
 
 
 def test_multi_roster_nba():
@@ -173,7 +173,7 @@ def test_multi_roster_nba():
 
     ntools.assert_not_equal(roster, None)
     ntools.assert_not_equal(second_roster, None)
-    ntools.assert_true(roster.exact_equal(second_roster))
+    ntools.assert_false(roster.exact_equal(second_roster))
 
 
 def test_uniques_nba():
