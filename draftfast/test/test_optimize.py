@@ -592,3 +592,33 @@ def test_impossible_constraints():
     )
 
     ntools.assert_not_equal(roster, None)
+
+
+# def test_multi_position_group_constraint():
+#     players = [
+#         Player(name='A', cost=5500, proj=400, pos='QB/WR'),
+#         Player(name='B', cost=5500, proj=41, pos='QB'),
+#         Player(name='C', cost=5500, proj=500, pos='WR/RB'),
+#         Player(name='D', cost=5500, proj=42, pos='WR'),
+#         Player(name='E', cost=5500, proj=43, pos='WR'),
+#         Player(name='F', cost=5500, proj=44, pos='WR'),
+#         Player(name='G', cost=5500, proj=45, pos='RB'),
+#         Player(name='H', cost=5500, proj=46, pos='RB'),
+#         Player(name='I', cost=5500, proj=47, pos='RB'),
+#         Player(name='J', cost=5500, proj=480, pos='TE/WR'),
+#         Player(name='K', cost=5500, proj=49, pos='TE'),
+#         Player(name='L', cost=5500, proj=51, pos='DST'),
+#         Player(name='M', cost=5500, proj=52, pos='DST'),
+#     ]
+#     roster = run(
+#         rule_set=rules.DK_NFL_RULE_SET,
+#         player_pool=players,
+#         constraints=LineupConstraints(
+#             groups=[
+#                 [('A', 'C', 'J'), 2],
+#             ]
+#         ),
+#         verbose=True
+#     )
+
+#     ntools.assert_true(False)

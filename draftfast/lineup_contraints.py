@@ -39,11 +39,16 @@ class LineupConstraints(object):
         return '<{}, {}, {}>'.format(lcs, b1, l1)
 
     def __str__(self):
-        banned = ', '.join(p for p in self._banned)
-        locked = ', '.join(p for p in self._locked)
-        return '\n'.join(str(c) for c in self._constraints) + '\n' + \
-               'Banned: {}\n'.format(banned) + \
-               'Locked: {}'.format(locked)
+        lines = [str(c) for c in self._constraints]
+        if len(self._banned):
+            lines.append(', '.join(p for p in self._banned))
+        if len(self._locked):
+            lines.append(', '.join(p for p in self._locked))
+        
+        if len(lines):
+            return '\n'.join(lines)
+        else:
+            return 'None'
 
     def __eq__(self, constraintset):
         if len(self._constraints) != len(constraintset._constraints):
