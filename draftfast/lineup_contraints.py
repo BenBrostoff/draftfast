@@ -44,7 +44,6 @@ class LineupConstraints(object):
             lines.append(', '.join(p for p in self._banned))
         if len(self._locked):
             lines.append(', '.join(p for p in self._locked))
-        
         if len(lines):
             return '\n'.join(lines)
         else:

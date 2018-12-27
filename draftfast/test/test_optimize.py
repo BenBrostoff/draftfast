@@ -596,14 +596,14 @@ def test_impossible_constraints():
 def test_multi_position_group_constraint():
     players = [
         Player(name='A', cost=5500, proj=400, pos='QB',
-            possible_positions='QB/WR', multi_position=True),
+               possible_positions='QB/WR', multi_position=True),
         Player(name='A', cost=5500, proj=400, pos='WR',
-            possible_positions='QB/WR', multi_position=True),
+               possible_positions='QB/WR', multi_position=True),
         Player(name='B', cost=5500, proj=41, pos='QB'),
         Player(name='C', cost=5500, proj=500, pos='WR',
-            possible_positions='RB/WR', multi_position=True),
+               possible_positions='RB/WR', multi_position=True),
         Player(name='C', cost=5500, proj=500, pos='RB',
-            possible_positions='RB/WR', multi_position=True),
+               possible_positions='RB/WR', multi_position=True),
         Player(name='D', cost=5500, proj=42, pos='WR'),
         Player(name='E', cost=5500, proj=43, pos='WR'),
         Player(name='F', cost=5500, proj=44, pos='WR'),
@@ -611,9 +611,9 @@ def test_multi_position_group_constraint():
         Player(name='H', cost=5500, proj=46, pos='RB'),
         Player(name='I', cost=5500, proj=47, pos='RB'),
         Player(name='J', cost=5500, proj=480, pos='TE',
-            possible_positions='TE/WR', multi_position=True),
+               possible_positions='TE/WR', multi_position=True),
         Player(name='J', cost=5500, proj=480, pos='WR',
-            possible_positions='TE/WR', multi_position=True),
+               possible_positions='TE/WR', multi_position=True),
         Player(name='K', cost=5500, proj=49, pos='TE'),
         Player(name='L', cost=5500, proj=51, pos='DST'),
         Player(name='M', cost=5500, proj=52, pos='DST'),
@@ -653,7 +653,7 @@ def test_multi_position_group_constraint2():
         player_pool=players,
         constraints=LineupConstraints(
             groups=[
-                [grouped_players , 2],
+                [grouped_players, 2],
             ]
         ),
         verbose=True
@@ -664,4 +664,3 @@ def test_multi_position_group_constraint2():
     ])
     ntools.assert_equal(group_count, 2)
     ntools.assert_equal(roster.projected(), 120.89999999999999)
-

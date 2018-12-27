@@ -73,7 +73,7 @@ PLAYER COUNT: {}
                 player_settings,
                 len(players or [])
             )
-    )
+        )
     return None
 
 
