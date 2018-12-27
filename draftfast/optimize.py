@@ -51,13 +51,29 @@ def run(rule_set: RuleSet,
     if verbose:
         print(
             '''
-            No solution found for command line query.
-            Try adjusting your query by taking away constraints.
+No solution found.
+Try adjusting your query by taking away constraints.
 
-            Active constraints: {}
-            Player count: {}
-            '''.format(optimizer_settings, len(players or []))
-        )
+OPTIMIZER CONSTRAINTS:
+
+{}
+
+LINEUP CONSTRAINTS:
+
+{}
+
+PLAYER POOL SETTINGS:
+
+{}
+
+PLAYER COUNT: {}
+        '''.format(
+                optimizer_settings,
+                constraints,
+                player_settings,
+                len(players or [])
+            )
+    )
     return None
 
 

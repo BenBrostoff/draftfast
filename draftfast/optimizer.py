@@ -63,7 +63,7 @@ class Optimizer(object):
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
 
-    def _add_player_to_idx_maps(self, p:Player, idx:int):
+    def _add_player_to_idx_maps(self, p: Player, idx: int):
         self.player_to_idx_map[p.solver_id] = idx
 
         if p.name not in self.name_to_idx_map.keys():

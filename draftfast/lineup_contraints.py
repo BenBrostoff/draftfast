@@ -39,15 +39,11 @@ class LineupConstraints(object):
         return '<{}, {}, {}>'.format(lcs, b1, l1)
 
     def __str__(self):
-        return '\n'.join(str(c) for c in self._constraints) + \
-               'Banned:\n' + \
-               '\n'.join(
-                   ['\t{}'.format(str(p) for p in self._banned)]
-                   ) + \
-               'Locked:\n' + \
-               '\n'.join(
-                   ['\t{}'.format(str(p) for p in self._locked)]
-                   )
+        banned = ', '.join(p for p in self._banned)
+        locked = ', '.join(p for p in self._locked)
+        return '\n'.join(str(c) for c in self._constraints) + '\n' + \
+               'Banned: {}\n'.format(banned) + \
+               'Locked: {}'.format(locked)
 
     def __eq__(self, constraintset):
         if len(self._constraints) != len(constraintset._constraints):
@@ -225,9 +221,10 @@ class PlayerGroupConstraint(PlayerConstraint):
                                                           self.players)
 
     def __str__(self):
-        ls = ['Using {} of:'.format(self._bounds_str)] + \
-             ['\t'+p for p in self.players]
-        return '\n'.join(ls)
+        return 'Using {} of: {}'.format(
+            self._bounds_str,
+            ', '.join(p for p in self.players)
+        )
 
     def __eq__(self, constraint):
         return super().__eq__(constraint) and self.exact == constraint.exact \

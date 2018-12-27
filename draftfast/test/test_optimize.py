@@ -562,3 +562,33 @@ def test_random_exposure_limits():
     )
     ntools.assert_equal(len(rosters), iterations)
     ntools.assert_equal(len(exposure_diffs), 0)
+
+
+def test_impossible_constraints():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+
+    )
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            stacks=[
+                Stack(team='NE', count=100)
+            ],
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            banned=['Sammy Watkins', 'Kellen Davis'],
+            locked=['Spencer Ware'],
+            groups=[
+                [('Philip Rivers', 'Sam Bradford', 'Andrew Luck'), 2],
+                [('Saints', 'Alshon Jeffery', 'Lamar Miller'), (1, 3)]
+            ]
+        ),
+        verbose=True
+    )
+
+    ntools.assert_not_equal(roster, None)

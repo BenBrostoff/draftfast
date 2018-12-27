@@ -4,7 +4,7 @@ from nose import tools as ntool
 
 def test_roster_equality():
     player_a = Player(pos='RB', name='A', cost=1, team='X')
-    player_b = Player(pos='QB', name='B', cost=1, team = 'X')
+    player_b = Player(pos='QB', name='B', cost=1, team='X')
     player_c = Player(pos='QB', name='C', cost=1, team='X')
 
     roster_a = NFLRoster()
