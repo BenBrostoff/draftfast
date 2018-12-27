@@ -16,7 +16,7 @@ def run(rule_set: RuleSet,
         optimizer_settings: OptimizerSettings = OptimizerSettings(),
         player_settings: PlayerPoolSettings = PlayerPoolSettings(),
         exposure_dict: dict = dict(),
-        roster_gen=None,
+        roster_gen: Roster = None,
         verbose=False) -> Roster:
     players = pool.filter_pool(
         player_pool,
