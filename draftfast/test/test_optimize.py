@@ -591,7 +591,7 @@ def test_impossible_constraints():
         verbose=True
     )
 
-    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster, None)
 
 
 # def test_multi_position_group_constraint():
