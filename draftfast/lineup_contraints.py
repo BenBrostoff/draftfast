@@ -106,7 +106,7 @@ class LineupConstraints(object):
     def add_group_constraint(self, players, bound):
         self._add(PlayerGroupConstraint(players, bound))
 
-    def ban(self, players, for_exposure=False):
+    def ban(self, players):
         _players = _iterableify(players)
 
         if len(_players) == 0:
@@ -119,7 +119,7 @@ class LineupConstraints(object):
                 )
         self._banned.update(_players)
 
-    def lock(self, players, for_exposure=False):
+    def lock(self, players):
         _players = _iterableify(players)
 
         if len(_players) == 0:
