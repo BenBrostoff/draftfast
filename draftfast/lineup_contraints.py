@@ -22,8 +22,8 @@ class LineupConstraints(object):
         for name in locked:
             self.lock(name)
 
-        for group in groups:
-            self.add_group_constraint(group[0], group[1])
+        for players, bounds in groups:
+            self.add_group_constraint(players, bounds)
 
     def __iter__(self):
         return ConstraintIterator(self._constraints)
@@ -39,15 +39,15 @@ class LineupConstraints(object):
         return '<{}, {}, {}>'.format(lcs, b1, l1)
 
     def __str__(self):
-        return '\n'.join(str(c) for c in self._constraints) + \
-               'Banned:\n' + \
-               '\n'.join(
-                   ['\t{}'.format(str(p) for p in self._banned)]
-                   ) + \
-               'Locked:\n' + \
-               '\n'.join(
-                   ['\t{}'.format(str(p) for p in self._locked)]
-                   )
+        lines = [str(c) for c in self._constraints]
+        if len(self._banned):
+            lines.append(', '.join(p for p in self._banned))
+        if len(self._locked):
+            lines.append(', '.join(p for p in self._locked))
+        if len(lines):
+            return '\n'.join(lines)
+        else:
+            return 'None'
 
     def __eq__(self, constraintset):
         if len(self._constraints) != len(constraintset._constraints):
@@ -106,7 +106,7 @@ class LineupConstraints(object):
     def add_group_constraint(self, players, bound):
         self._add(PlayerGroupConstraint(players, bound))
 
-    def ban(self, players, for_exposure=False):
+    def ban(self, players):
         _players = _iterableify(players)
 
         if len(_players) == 0:
@@ -119,7 +119,7 @@ class LineupConstraints(object):
                 )
         self._banned.update(_players)
 
-    def lock(self, players, for_exposure=False):
+    def lock(self, players):
         _players = _iterableify(players)
 
         if len(_players) == 0:
@@ -225,9 +225,10 @@ class PlayerGroupConstraint(PlayerConstraint):
                                                           self.players)
 
     def __str__(self):
-        ls = ['Using {} of:'.format(self._bounds_str)] + \
-             ['\t'+p for p in self.players]
-        return '\n'.join(ls)
+        return 'Using {} of: {}'.format(
+            self._bounds_str,
+            ', '.join(p for p in self.players)
+        )
 
     def __eq__(self, constraint):
         return super().__eq__(constraint) and self.exact == constraint.exact \

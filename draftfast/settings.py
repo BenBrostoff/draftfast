@@ -52,6 +52,35 @@ class PlayerPoolSettings(object):
         self.max_salary = max_salary
         self.randomize = randomize
 
+    # TODO: format this like a proper repr(), i.e. <PlayerPoolSettings: ...>
+    def __repr__(self):
+        if not str(self):
+            return '<PlayerPoolSettings: None>'
+        else:
+            return str(self)
+
+    def __str__(self):
+        lines = []
+        if self.min_proj:
+            lines.append('Min projection: {}'.format(self.min_proj))
+        if self.max_proj:
+            lines.append('Max projection: {}'.format(self.min_proj))
+        if self.min_avg:
+            lines.append('Min average: {}'.format(self.min_proj))
+        if self.max_avg:
+            lines.append('Max average: {}'.format(self.min_proj))
+        if self.min_salary:
+            lines.append('Min salary: {}'.format(self.min_proj))
+        if self.max_salary:
+            lines.append('Max salary: {}'.format(self.min_proj))
+        if self.randomize:
+            lines.append('Randomization factor: {}'.format(self.min_proj))
+
+        if len(lines):
+            return '\n'.join(lines)
+        else:
+            return 'None'
+
 
 class OptimizerSettings(object):
 
@@ -72,16 +101,32 @@ class OptimizerSettings(object):
         self.no_defense_against_captain = no_defense_against_captain
         self.min_teams = min_teams
 
+    # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
     def __repr__(self):
-        return """
-        Stacks: {}
-        Min teams: {}
-        No offense against D: {}
-        """.format(
-            [x.team for x in self.stacks] if self.stacks else [],
-            self.min_teams,
-            self.no_offense_against_defense,
-        )
+        if not str(self):
+            return '<OptimizerSettings: None>'
+        else:
+            return str(self)
+
+    def __str__(self):
+        lines = []
+        if self.stacks and len(self.stacks):
+            lines.append('Stacks: {}'.format(
+                        [(x.team, x.count) for x in self.stacks]
+                    )
+                )
+        if self.min_teams:
+            lines.append('Min teams: {}'.format(self.min_teams))
+        if self.no_offense_against_defense:
+            lines.append('No offense against D: {}'.format(
+                    self.no_offense_against_defense
+                )
+            )
+
+        if len(lines):
+            return '\n'.join(lines)
+        else:
+            return 'None'
 
 
 class UploadSettings(object):
