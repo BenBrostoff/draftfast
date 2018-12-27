@@ -1,20 +1,22 @@
+from typing import List
 from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
 from draftfast.dke_exceptions import (InvalidBoundsException,
                                       PlayerBanAndLockException)
 from draftfast.orm import Player
+from draftfast.rules import RuleSet
+from draftfast.lineup_contraints import LineupConstraints
 
 
 class Optimizer(object):
     def __init__(
         self,
-        players,
-        rule_set,
-        settings,
-        lineup_constraints,
-        exposure_dct
+        players: List[Player],
+        rule_set: RuleSet,
+        settings: OptimizerSettings,
+        lineup_constraints: LineupConstraints,
+        exposure_dict: dict
     ):
-        settings = settings or OptimizerSettings()
         self.solver = pywraplp.Solver(
             'FD',
             pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
@@ -31,12 +33,8 @@ class Optimizer(object):
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
         self.lineup_constraints = lineup_constraints
-        if exposure_dct:
-            self.banned_for_exposure = exposure_dct['banned']
-            self.locked_for_exposure = exposure_dct['locked']
-        else:
-            self.banned_for_exposure = []
-            self.locked_for_exposure = []
+        self.banned_for_exposure = exposure_dict.get('banned', [])
+        self.locked_for_exposure = exposure_dict.get('locked', [])
 
         self.player_to_idx_map = {}
         self.name_to_idx_map = {}
@@ -56,6 +54,8 @@ class Optimizer(object):
             if self._is_banned(player):
                 player.ban = True
 
+            # TODO: this can only happen because of exposure, but it could be
+            # handled better
             if player.lock and player.ban:
                 raise PlayerBanAndLockException(player.name)
 
@@ -70,17 +70,17 @@ class Optimizer(object):
             self.name_to_idx_map[p.name] = set()
         self.name_to_idx_map[p.name].update([idx])
 
-    def _is_locked(self, p):
+    def _is_locked(self, p: Player):
         return self.lineup_constraints.is_locked(p.name) or \
                p.name in self.locked_for_exposure or \
                p.lock
 
-    def _is_banned(self, p):
+    def _is_banned(self, p: Player):
         return self.lineup_constraints.is_banned(p.name) or \
                p.name in self.banned_for_exposure or \
                p.ban
 
-    def solve(self):
+    def solve(self) -> bool:
         self._set_player_constraints()
         self._set_player_group_constraints()
         self._optimize_on_projected_points()

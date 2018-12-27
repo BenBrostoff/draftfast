@@ -13,9 +13,9 @@ from draftfast.lineup_contraints import LineupConstraints
 def run(rule_set: RuleSet,
         player_pool: list,
         constraints: LineupConstraints = LineupConstraints(),
-        optimizer_settings=None,
-        player_settings=None,
-        exposure_dct=None,
+        optimizer_settings: OptimizerSettings = OptimizerSettings(),
+        player_settings: PlayerPoolSettings = PlayerPoolSettings(),
+        exposure_dict: dict = dict(),
         roster_gen=None,
         verbose=False) -> Roster:
     players = pool.filter_pool(
@@ -27,7 +27,7 @@ def run(rule_set: RuleSet,
         rule_set=rule_set,
         settings=optimizer_settings,
         lineup_constraints=constraints,
-        exposure_dct=exposure_dct
+        exposure_dict=exposure_dict
     )
 
     variables = optimizer.variables
@@ -82,35 +82,34 @@ def run_multi(
     rule_set: RuleSet,
     player_pool: list,
     constraints: LineupConstraints = LineupConstraints(),
-    player_settings=PlayerPoolSettings(),
-    optimizer_settings=OptimizerSettings(),
+    player_settings: PlayerPoolSettings = PlayerPoolSettings(),
+    optimizer_settings: OptimizerSettings = OptimizerSettings(),
     verbose=False,
-    exposure_bounds=None,
+    exposure_bounds: List[dict] = list(),
     exposure_random_seed=None,
 ) -> [List[Roster], list]:
 
     # set the random seed globally for random lineup exposure
-    if exposure_random_seed:
-        random.seed(exposure_random_seed)
+    random.seed(exposure_random_seed)
+
+    print(exposure_random_seed)
 
     rosters = []
     for _ in range(0, iterations):
-        exposure_dct = None
-        if exposure_bounds:
-            exposure_dct = get_exposure_args(
-                existing_rosters=optimizer_settings.existing_rosters,
-                exposure_bounds=exposure_bounds,
-                n=iterations,
-                use_random=bool(exposure_random_seed),
-                random_seed=exposure_random_seed,
-            )
+        exposure_dict = get_exposure_args(
+            existing_rosters=optimizer_settings.existing_rosters,
+            exposure_bounds=exposure_bounds,
+            n=iterations,
+            use_random=bool(exposure_random_seed),
+            random_seed=exposure_random_seed,
+        )
 
         roster = run(
             rule_set=rule_set,
             player_pool=player_pool,
             optimizer_settings=optimizer_settings,
             player_settings=player_settings,
-            exposure_dct=exposure_dct,
+            exposure_dict=exposure_dict,
             constraints=constraints,
             verbose=verbose,
         )
