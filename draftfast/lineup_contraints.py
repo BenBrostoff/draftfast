@@ -22,8 +22,8 @@ class LineupConstraints(object):
         for name in locked:
             self.lock(name)
 
-        for group in groups:
-            self.add_group_constraint(group[0], group[1])
+        for players, bounds in groups:
+            self.add_group_constraint(players, bounds)
 
     def __iter__(self):
         return ConstraintIterator(self._constraints)
