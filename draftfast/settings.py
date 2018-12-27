@@ -43,28 +43,53 @@ class PlayerPoolSettings(object):
 
     def __init__(self, min_proj=None, max_proj=None,
                  min_avg=None, max_avg=None, min_salary=None,
-                 max_salary=None, locked=None, banned=None,
-                 randomize=None):
+                 max_salary=None, randomize=None):
         self.min_proj = min_proj
         self.max_proj = max_proj
         self.min_avg = min_avg
         self.max_avg = max_avg
         self.min_salary = min_salary
         self.max_salary = max_salary
-        self.locked = locked
-        self.banned = banned
         self.randomize = randomize
+
+    # TODO: format this like a proper repr(), i.e. <PlayerPoolSettings: ...>
+    def __repr__(self):
+        if not str(self):
+            return '<PlayerPoolSettings: None>'
+        else:
+            return str(self)
+
+    def __str__(self):
+        lines = []
+        if self.min_proj:
+            lines.append('Min projection: {}'.format(self.min_proj))
+        if self.max_proj:
+            lines.append('Max projection: {}'.format(self.min_proj))
+        if self.min_avg:
+            lines.append('Min average: {}'.format(self.min_proj))
+        if self.max_avg:
+            lines.append('Max average: {}'.format(self.min_proj))
+        if self.min_salary:
+            lines.append('Min salary: {}'.format(self.min_proj))
+        if self.max_salary:
+            lines.append('Max salary: {}'.format(self.min_proj))
+        if self.randomize:
+            lines.append('Randomization factor: {}'.format(self.min_proj))
+
+        if len(lines):
+            return '\n'.join(lines)
+        else:
+            return 'None'
 
 
 class OptimizerSettings(object):
 
-    def __init__(self, locked=None,
+    def __init__(self,
                  stacks=None,
                  existing_rosters=None, force_combo=None,
                  combo_allow_te=None, uniques=None,
-                 no_offense_against_defense=None,
+                 no_offense_against_defense=False,
                  min_teams=2):
-        self.locked = locked
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo
@@ -73,24 +98,32 @@ class OptimizerSettings(object):
         self.no_offense_against_defense = no_offense_against_defense
         self.min_teams = min_teams
 
+    # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
     def __repr__(self):
-        return """
-        Locked: {}
-        Stacks: {}
-        Min teams: {}
-        No offense against D: {}
-        """.format(
-            self.locked,
-            [x.team for x in self.stacks],
-            self.min_teams,
-            self.no_offense_against_defense,
-        )
+        if not str(self):
+            return '<OptimizerSettings: None>'
+        else:
+            return str(self)
 
+    def __str__(self):
+        lines = []
+        if self.stacks and len(self.stacks):
+            lines.append('Stacks: {}'.format(
+                        [(x.team, x.count) for x in self.stacks]
+                    )
+                )
+        if self.min_teams:
+            lines.append('Min teams: {}'.format(self.min_teams))
+        if self.no_offense_against_defense:
+            lines.append('No offense against D: {}'.format(
+                    self.no_offense_against_defense
+                )
+            )
 
-class PickemSettings(object):
-
-    def __init__(self, locked=None):
-        self.locked = locked
+        if len(lines):
+            return '\n'.join(lines)
+        else:
+            return 'None'
 
 
 class UploadSettings(object):

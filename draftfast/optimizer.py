@@ -1,5 +1,8 @@
 from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
+from draftfast.dke_exceptions import (InvalidBoundsException,
+                                      PlayerBanAndLockException)
+from draftfast.orm import Player
 
 
 class Optimizer(object):
@@ -8,6 +11,8 @@ class Optimizer(object):
         players,
         rule_set,
         settings,
+        lineup_constraints,
+        exposure_dct
     ):
         settings = settings or OptimizerSettings()
         self.solver = pywraplp.Solver(
@@ -25,32 +30,62 @@ class Optimizer(object):
         self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
         self.settings = settings
+        self.lineup_constraints = lineup_constraints
+        if exposure_dct:
+            self.banned_for_exposure = exposure_dct['banned']
+            self.locked_for_exposure = exposure_dct['locked']
+        else:
+            self.banned_for_exposure = []
+            self.locked_for_exposure = []
 
         self.player_to_idx_map = {}
+        self.name_to_idx_map = {}
         self.variables = []
-        for idx, player in self.enumerated_players:
-            if player.lock and not player.multi_position:
-                self.variables.append(
-                    self.solver.IntVar(
-                        1, 1, player.solver_id
-                    )
-                )
-            else:
-                self.variables.append(
-                    self.solver.IntVar(0, 1, player.solver_id)
-                )
+        self.name_to_idx_map = dict()
+        self.player_to_idx_map = dict()
 
-            self.player_to_idx_map[player.solver_id] = idx
+        for idx, player in self.enumerated_players:
+            self.variables.append(
+                self.solver.IntVar(0, 1, player.solver_id)
+            )
+
+            self._add_player_to_idx_maps(player, idx)
+
+            if self._is_locked(player):
+                player.lock = True
+            if self._is_banned(player):
+                player.ban = True
+
+            if player.lock and player.ban:
+                raise PlayerBanAndLockException(player.name)
 
         self.teams = set([p.team for p in self.players])
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
 
+    def _add_player_to_idx_maps(self, p: Player, idx: int):
+        self.player_to_idx_map[p.solver_id] = idx
+
+        if p.name not in self.name_to_idx_map.keys():
+            self.name_to_idx_map[p.name] = set()
+        self.name_to_idx_map[p.name].update([idx])
+
+    def _is_locked(self, p):
+        return self.lineup_constraints.is_locked(p.name) or \
+               p.name in self.locked_for_exposure or \
+               p.lock
+
+    def _is_banned(self, p):
+        return self.lineup_constraints.is_banned(p.name) or \
+               p.name in self.banned_for_exposure or \
+               p.ban
+
     def solve(self):
+        self._set_player_constraints()
+        self._set_player_group_constraints()
         self._optimize_on_projected_points()
         self._set_salary_range()
         self._set_roster_size()
-        self._set_no_multi_player()
         self._set_positions()
         self._set_general_positions()
         self._set_stack()
@@ -60,6 +95,38 @@ class Optimizer(object):
         self._set_min_teams()
         solution = self.solver.Solve()
         return solution == self.solver.OPTIMAL
+
+    def _set_player_constraints(self):
+        multi_constraints = dict()
+
+        for i, p in self.enumerated_players:
+            lb = 1 if p.lock else 0
+            ub = 0 if p.ban else 1
+
+            if lb > ub:
+                raise InvalidBoundsException
+
+            if p.multi_position:
+                if p.name not in multi_constraints.keys():
+                    multi_constraints[p.name] = self.solver.Constraint(lb, ub)
+                constraint = multi_constraints[p.name]
+            else:
+                constraint = self.solver.Constraint(lb, ub)
+
+            constraint.SetCoefficient(self.variables[i], 1)
+
+    def _set_player_group_constraints(self):
+        for group_constraint in self.lineup_constraints:
+            if group_constraint.exact:
+                lb = ub = group_constraint.exact
+            else:
+                lb = group_constraint.lb
+                ub = group_constraint.ub
+
+            constraint = self.solver.Constraint(lb, ub)
+            for name in group_constraint.players:
+                for idx in self.name_to_idx_map[name]:
+                    constraint.SetCoefficient(self.variables[idx], 1)
 
     def _optimize_on_projected_points(self):
         for i, player in self.enumerated_players:
@@ -87,23 +154,6 @@ class Optimizer(object):
 
         for variable in self.variables:
             size_cap.SetCoefficient(variable, 1)
-
-    def _set_no_multi_player(self):
-        multi_caps = {}
-        for i, p in self.enumerated_players:
-            if not p.multi_position:
-                continue
-
-            if p.name not in multi_caps:
-                if p.lock:
-                    multi_caps[p.name] = self.solver.Constraint(1, 1)
-                else:
-                    multi_caps[p.name] = self.solver.Constraint(0, 1)
-
-            multi_caps[p.name].SetCoefficient(
-                self.variables[i],
-                1
-            )
 
     def _set_stack(self):
         if self.settings:
@@ -139,7 +189,7 @@ class Optimizer(object):
                 enumerated_players = self.enumerated_players
 
                 for team in teams:
-                    wrs_on_team = [
+                    skillplayers_on_team = [
                         self.variables[i] for i, p in enumerated_players
                         if p.team == team and p.pos in combo_skill_type
                     ]
@@ -148,7 +198,7 @@ class Optimizer(object):
                         if p.team == team and p.pos == 'QB'
                     ]
                     self.solver.Add(
-                        self.solver.Sum(wrs_on_team) >=
+                        self.solver.Sum(skillplayers_on_team) >=
                         self.solver.Sum(qbs_on_team)
                     )
 

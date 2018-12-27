@@ -3,7 +3,8 @@ from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
-from draftfast.settings import OptimizerSettings, PlayerPoolSettings
+from draftfast.settings import OptimizerSettings
+from draftfast.lineup_contraints import LineupConstraints
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-soccer-salaries.csv'.format(CURRENT_DIR)
@@ -19,7 +20,7 @@ def test_soccer_dk():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equals(roster, None)
+    ntools.assert_not_equal(roster, None)
 
 
 def test_soccer_dk_no_opp_d():
@@ -30,7 +31,7 @@ def test_soccer_dk_no_opp_d():
     roster = run(
         rule_set=rules.DK_SOCCER_RULE_SET,
         player_pool=player_pool,
-        player_settings=PlayerPoolSettings(
+        constraints=LineupConstraints(
             locked=['Maxi Gomez'],
         ),
         optimizer_settings=OptimizerSettings(
@@ -52,7 +53,7 @@ def test_soccer_dk_no_opp_d():
     roster = run(
         rule_set=rules.DK_SOCCER_RULE_SET,
         player_pool=player_pool,
-        player_settings=PlayerPoolSettings(
+        constraints=LineupConstraints(
             locked=['Maxi Gomez'],
         ),
         optimizer_settings=OptimizerSettings(

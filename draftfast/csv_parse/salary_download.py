@@ -107,7 +107,7 @@ def generate_player(pos, row, game):
 
     player = Player(
         pos,
-        row[name_key],
+        row[name_key].strip().rstrip(),
         row['Salary'],
         possible_positions=row['Position'],
         multi_position='/' in row['Position'],

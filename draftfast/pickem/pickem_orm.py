@@ -76,7 +76,6 @@ class TieredPlayer(Player):
 
     def __init__(self, tier, **kwargs):
         self.tier = tier
-        self.locked = False
         super(TieredPlayer, self).__init__(
             **kwargs
         )
@@ -88,5 +87,5 @@ class TieredPlayer(Player):
             self.matchup,
             self.proj,
             self.v_avg,
-            'LOCK' if self.locked else '',
+            'LOCK' if self.lock else '',
         ]

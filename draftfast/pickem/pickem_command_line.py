@@ -9,8 +9,6 @@ OPTIMIZE_COMMAND_LINE = [
     ['-home', 'only select players playing at home', None],
     ['-locked_teams', 'player must be on specified teams', None],
     ['-banned_teams', 'player must not be on specified teams', None],
-    ['-locked', 'player must be in final lineup', None],
-    ['-banned', 'player cannot be named players', None],
     ['-source', 'data source to use', 'nfl_rotogrinders'],
     ['-pids', 'player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
@@ -24,8 +22,6 @@ OPTIMIZE_COMMAND_LINE = [
 
 MULTIPLE_ARGS_COMMAND = [
     '-teams',
-    '-banned',
-    '-locked'
 ]
 
 PARSER = argparse.ArgumentParser()

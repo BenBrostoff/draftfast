@@ -7,12 +7,15 @@ from draftfast.exposure import check_exposure, \
     get_exposure_table, get_exposure_matrix, get_exposure_args
 from draftfast.rules import RuleSet
 from draftfast.settings import PlayerPoolSettings, OptimizerSettings
+from draftfast.lineup_contraints import LineupConstraints
 
 
 def run(rule_set: RuleSet,
         player_pool: list,
+        constraints: LineupConstraints = LineupConstraints(),
         optimizer_settings=None,
         player_settings=None,
+        exposure_dct=None,
         roster_gen=None,
         verbose=False) -> Roster:
     players = pool.filter_pool(
@@ -23,6 +26,8 @@ def run(rule_set: RuleSet,
         players=players,
         rule_set=rule_set,
         settings=optimizer_settings,
+        lineup_constraints=constraints,
+        exposure_dct=exposure_dct
     )
 
     variables = optimizer.variables
@@ -46,13 +51,28 @@ def run(rule_set: RuleSet,
     if verbose:
         print(
             '''
-            No solution found for command line query.
-            Try adjusting your query by taking away constraints.
+No solution found.
+Try adjusting your query by taking away constraints.
 
-            Active constraints: {}
-            Player count: {}
-            '''
-            .format(optimizer_settings, len(players or []))
+OPTIMIZER CONSTRAINTS:
+
+{}
+
+LINEUP CONSTRAINTS:
+
+{}
+
+PLAYER POOL SETTINGS:
+
+{}
+
+PLAYER COUNT: {}
+        '''.format(
+                optimizer_settings,
+                constraints,
+                player_settings,
+                len(players or [])
+            )
         )
     return None
 
@@ -61,6 +81,7 @@ def run_multi(
     iterations: int,
     rule_set: RuleSet,
     player_pool: list,
+    constraints: LineupConstraints = LineupConstraints(),
     player_settings=PlayerPoolSettings(),
     optimizer_settings=OptimizerSettings(),
     verbose=False,
@@ -74,6 +95,7 @@ def run_multi(
 
     rosters = []
     for _ in range(0, iterations):
+        exposure_dct = None
         if exposure_bounds:
             exposure_dct = get_exposure_args(
                 existing_rosters=optimizer_settings.existing_rosters,
@@ -82,14 +104,14 @@ def run_multi(
                 use_random=bool(exposure_random_seed),
                 random_seed=exposure_random_seed,
             )
-            player_settings.banned = exposure_dct['banned']
-            player_settings.locked = exposure_dct['locked']
 
         roster = run(
             rule_set=rule_set,
             player_pool=player_pool,
             optimizer_settings=optimizer_settings,
             player_settings=player_settings,
+            exposure_dct=exposure_dct,
+            constraints=constraints,
             verbose=verbose,
         )
         if roster:
@@ -99,6 +121,9 @@ def run_multi(
             rosters.append(roster)
         else:
             break
+
+        # clear ban/lock to reset exposure between iterations
+        reset_player_ban_lock(player_pool)
 
     exposure_diffs = {}
 
@@ -116,3 +141,9 @@ def run_multi(
                 print('{} is OVER exposure by {} lineups'.format(n, d))
 
     return rosters, exposure_diffs
+
+
+def reset_player_ban_lock(player_pool):
+    for p in player_pool:
+        p.ban = False
+        p.lock = False

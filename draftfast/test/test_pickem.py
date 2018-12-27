@@ -1,7 +1,8 @@
 from nose import tools as ntools
 from draftfast.pickem import pickem_orm
 from draftfast.pickem.pickem_optimize import optimize
-from draftfast.settings import PlayerPoolSettings, PickemSettings
+from draftfast.settings import PlayerPoolSettings
+from draftfast.lineup_contraints import LineupConstraints
 
 
 def _generate_player(name, proj, tier, **kwargs):
@@ -49,10 +50,12 @@ def test_default_lineup():
 
 def test_banned_players():
     players = _generate_test_player_data()
-    player_settings = PlayerPoolSettings(
-        banned=['A', 'C'],
+
+    optimized = optimize(
+        players,
+        player_settings=PlayerPoolSettings(),
+        constraints=LineupConstraints(banned=['A', 'C'])
     )
-    optimized = optimize(players, player_settings=player_settings)
     ntools.assert_equal(
         optimized.total,
         49 + 47 + 46 + 44 + 42 + 40
@@ -61,10 +64,11 @@ def test_banned_players():
 
 def test_locked_players():
     players = _generate_test_player_data()
-    pickem_settings = PickemSettings(
-        locked=['B', 'D']
+
+    optimized = optimize(
+        players,
+        constraints=LineupConstraints(locked=['B', 'D'])
     )
-    optimized = optimize(players, pickem_settings=pickem_settings)
     ntools.assert_equal(
         optimized.total,
         49 + 47 + 46 + 44 + 42 + 40
