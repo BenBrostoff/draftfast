@@ -1,26 +1,27 @@
 from random import uniform as runiform
+from typing import List
+from draftfast.orm import Player
 from draftfast.settings import PlayerPoolSettings
 
 
-def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> list:
-    if player_settings:
+def filter_pool(pool: list,
+                player_settings: PlayerPoolSettings) -> List[Player]:
+    if player_settings.randomize:
         for player in pool:
-            if player_settings.randomize:
-                factor = 1 + runiform(
-                    -player_settings.randomize,
-                    player_settings.randomize
-                )
-                player.proj = player.proj * factor
+            factor = 1 + runiform(
+                -player_settings.randomize,
+                player_settings.randomize
+            )
+            player.proj = player.proj * factor
 
-        return list(filter(
-            add_filters(player_settings),
-            pool,
-        ))
-    return pool
+    return list(filter(
+        add_filters(player_settings),
+        pool,
+    ))
 
 
-def add_filters(settings):
-    def filter_fn(player):
+def add_filters(settings: PlayerPoolSettings):
+    def filter_fn(player: Player):
         kwargs = {'player': player, 'settings': settings}
         return _is_above_min_cost(**kwargs) and \
             _is_below_max_cost(**kwargs) and \
@@ -32,10 +33,8 @@ def add_filters(settings):
     return filter_fn
 
 
-def add_pickem_contraints(settings):
-    def filter_fn(player):
-        if not settings:
-            return True
+def add_pickem_contraints(settings: PlayerPoolSettings):
+    def filter_fn(player: Player):
         # TODO - add team banning
         kwargs = {'player': player, 'settings': settings}
         return (
