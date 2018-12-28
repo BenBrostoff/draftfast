@@ -1,4 +1,5 @@
 import os
+from copy import deepcopy
 from nose import tools as ntools
 from draftfast.optimize import run, run_multi
 from draftfast import rules
@@ -664,3 +665,181 @@ def test_multi_position_group_constraint2():
     ])
     ntools.assert_equal(group_count, 2)
     ntools.assert_equal(roster.projected(), 120.89999999999999)
+
+
+def test_no_opposing_def_dk_nfl_mock():
+    mock_pool = [
+        Player(name='A1', cost=5500, proj=40, pos='QB', team='X',
+               matchup='X@Y'),
+        Player(name='A2', cost=5500, proj=41, pos='QB', team='Y',
+               matchup='X@Y'),
+        Player(name='A11', cost=5500, proj=50, pos='WR', team='X',
+               matchup='X@Y'),
+        Player(name='A3', cost=5500, proj=42, pos='WR', team='Y',
+               matchup='X@Y'),
+        Player(name='A4', cost=5500, proj=43, pos='WR', team='X',
+               matchup='X@Y'),
+        Player(name='A5', cost=5500, proj=44, pos='WR', team='Y',
+               matchup='X@Y'),
+        Player(name='A111', cost=5500, proj=50, pos='WR', team='X',
+               matchup='X@Y'),
+        Player(name='A31', cost=5500, proj=42, pos='WR', team='Y',
+               matchup='X@Y'),
+        Player(name='A41', cost=5500, proj=62, pos='WR', team='X',
+               matchup='X@Y'),
+        Player(name='A51', cost=5500, proj=63, pos='WR', team='Y',
+               matchup='X@Y'),
+        Player(name='A6', cost=5500, proj=45, pos='RB', team='X',
+               matchup='X@Y'),
+        Player(name='A7', cost=5500, proj=46, pos='RB', team='Y',
+               matchup='X@Y'),
+        Player(name='A8', cost=5500, proj=47, pos='RB', team='X',
+               matchup='X@Y'),
+        Player(name='A71', cost=5500, proj=46, pos='RB', team='Y',
+               matchup='X@Y'),
+        Player(name='A81', cost=5500, proj=47, pos='RB', team='X',
+               matchup='X@Y'),
+        Player(name='A711', cost=5500, proj=46, pos='RB', team='Y',
+               matchup='X@Y'),
+        Player(name='A9', cost=5500, proj=48, pos='TE', team='X',
+               matchup='X@Y'),
+        Player(name='A10', cost=5500, proj=49, pos='TE', team='Y',
+               matchup='X@Y'),
+        Player(name='A12', cost=5500, proj=51, pos='DST', team='X',
+               matchup='X@Y'),
+        Player(name='A13', cost=5500, proj=500, pos='DST', team='Y',
+               matchup='X@Y'),
+    ]
+
+    # mock pool is constructed such that optimal lineup has qb opposing dst
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=mock_pool,
+        verbose=True
+    )
+
+    ntools.assert_equal(roster.projected(), 909)
+    qb_team = roster.sorted_players()[0].team
+    dst_team = roster.sorted_players()[-1].team
+    ntools.assert_equal(qb_team, dst_team)
+
+    # this will fail to produce a roster because we only have 2 teams (X and Y)
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=mock_pool,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        verbose=True
+    )
+
+    ntools.assert_equal(roster, None)
+
+    # relax min teams
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=mock_pool,
+        optimizer_settings=OptimizerSettings(
+            min_teams=1,
+            no_offense_against_defense=True,
+        ),
+        verbose=True
+    )
+
+    ntools.assert_equal(roster.projected(), 877)
+    ntools.assert_equal(len(set([p.team for p in roster.players])), 1)
+
+    # add a player from a third team, min 2 teams
+    mock_pool.append(Player(
+            name='B2', cost=5500, proj=70, pos='QB', team='Q', matchup='Q@Z'
+        )
+    )
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=deepcopy(mock_pool),
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        verbose=True
+    )
+
+    for p in roster.players:
+        if p.pos in rules.DK_NFL_RULE_SET.offensive_positions:
+            ntools.assert_not_equal(p.team, 'X')
+
+
+def test_no_opposing_def_dk_nfl():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            locked=['Bengals']
+        ),
+        verbose=True
+    )
+
+    for p in roster.players:
+        if p.pos in rules.DK_NFL_RULE_SET.offensive_positions:
+            ntools.assert_not_equal(p.team, 'CIN')
+
+    # force impossible lineup
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            locked=['Bengals', 'Ryan Fitzpatrick']
+        ),
+        verbose=True
+    )
+
+    ntools.assert_equal(roster, None)
+
+def test_no_opposing_def_fd_nfl():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=fd_nfl_salary_file,
+        game=rules.FAN_DUEL,
+    )
+    roster = run(
+        rule_set=rules.FD_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            locked=['Jacksonville Jaguars']
+        ),
+        verbose=True
+    )
+
+    ntools.assert_not_equal(roster, None)
+
+    for p in roster.players:
+        if p.pos in rules.DK_NFL_RULE_SET.offensive_positions:
+            ntools.assert_not_equal(p.team, 'IND')
+
+    # force impossible lineup
+    roster = run(
+        rule_set=rules.FD_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            locked=['Eric Ebron', 'Jacksonville Jaguars']
+        ),
+        verbose=True
+    )
+
+    ntools.assert_equal(roster, None)

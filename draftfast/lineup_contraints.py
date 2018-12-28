@@ -41,9 +41,9 @@ class LineupConstraints(object):
     def __str__(self):
         lines = [str(c) for c in self._constraints]
         if len(self._banned):
-            lines.append(', '.join(p for p in self._banned))
+            lines.append('Banned: ' + ', '.join(p for p in self._banned))
         if len(self._locked):
-            lines.append(', '.join(p for p in self._locked))
+            lines.append('Locked: ' + ', '.join(p for p in self._locked))
         if len(lines):
             return '\n'.join(lines)
         else:

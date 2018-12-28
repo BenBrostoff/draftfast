@@ -94,6 +94,7 @@ class Optimizer(object):
         self._set_no_opp_defense()
         self._set_min_teams()
         solution = self.solver.Solve()
+
         return solution == self.solver.OPTIMAL
 
     def _set_player_constraints(self):
@@ -267,15 +268,16 @@ class Optimizer(object):
 
     def _set_min_teams(self):
         teams = []
+
         for team in self.teams:
             if team:
-                constraint = self.solver.IntVar(0, 1, team)
-                teams.append(constraint)
+                team_var = self.solver.IntVar(0, 1, team)
+                teams.append(team_var)
                 players_on_team = [
                     self.variables[i] for i, p
                     in self.enumerated_players if p.team == team
                 ]
-                self.solver.Add(constraint <= self.solver.Sum(players_on_team))
+                self.solver.Add(team_var <= self.solver.Sum(players_on_team))
 
         # TODO - add constraint of max players per team per sport
         if len(teams) > 0:
