@@ -305,7 +305,8 @@ class Player(object):
         ]
 
     def is_opposing_team_in_match_up(self, team):
-        return (team != self.team) and (team in self.matchup)
+        return (team.upper() != self.team.upper()) and \
+               (team.upper() in self.matchup.upper())
 
     def __repr__(self):
         v_avg = self.__format_v_avg()
