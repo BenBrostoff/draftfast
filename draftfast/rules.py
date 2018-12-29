@@ -228,8 +228,6 @@ DK_NFL_RULE_SET = RuleSet(
     offensive_positions=['QB', 'RB', 'WR', 'TE'],
     defensive_positions=['DST'],
     general_position_limits=[],
-    offensive_positions=['QB', 'RB', 'WR', 'TE'],
-    defensive_positions=['DST'],
 )
 
 FD_NFL_RULE_SET = RuleSet(
