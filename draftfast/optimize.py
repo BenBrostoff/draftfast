@@ -23,16 +23,26 @@ def run(rule_set: RuleSet,
         player_settings,
     )
 
-    if rule_set.game_type == 'showdown' and optimizer_settings and \
-            optimizer_settings.no_defense_against_captain:
-        raise NotImplementedError
+    if rule_set.game_type == 'showdown':
+        if not optimizer_settings.showdown_teams or \
+                len(optimizer_settings.showdown_teams) !=2:
+            raise Exception(
+                'Optimizer settings must specify two teams '
+                'for showdown game types.'
+            )
+
+        if optimizer_settings.no_offense_against_defense:
+            print('WARNING:')
+            print('no_offense_against_defense setting ignored for showdown')
+            print('game types. Use no_defense_against_captain instead.')
+            print()
 
     optimizer = Optimizer(
         players=players,
         rule_set=rule_set,
         settings=optimizer_settings,
         lineup_constraints=constraints,
-        exposure_dict=exposure_dict
+        exposure_dict=exposure_dict,
     )
 
     variables = optimizer.variables

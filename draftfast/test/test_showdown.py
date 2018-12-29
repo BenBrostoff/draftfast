@@ -15,7 +15,7 @@ projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
 
 def _build_mock_player_pool():
     player_pool = [
-        Player(name='A1', cost=5500, proj=60, pos='QB',
+        Player(name='A1', cost=5500, proj=100, pos='QB',
                                 team='X', matchup='X@Y'),
         Player(name='A2', cost=5500, proj=41, pos='QB',
                                 team='X', matchup='X@Y'),
@@ -61,7 +61,7 @@ def _build_mock_player_pool():
                                 team='Y', matchup='X@Y'),
         Player(name='A110', cost=5500, proj=49, pos='TE',
                                 team='Y', matchup='X@Y'),
-        Player(name='A112', cost=5500, proj=51, pos='DST',
+        Player(name='A112', cost=5500, proj=60, pos='DST',
                                 team='Y', matchup='X@Y'),
     ]
 
@@ -84,9 +84,8 @@ def test_nfl_dk_showdown_mock():
     )
 
     ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 352.0)
+    ntools.assert_equal(roster.projected(), 421)
 
-@ntools.raises(NotImplementedError)
 def test_nfl_showdown_no_def_against_capt():
     mock_dk_pool = _build_mock_player_pool()
 
@@ -101,7 +100,9 @@ def test_nfl_showdown_no_def_against_capt():
     )
 
     ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 352.0)
+    ntools.assert_equal(roster.projected(), 408.0)
+    for p in roster.players:
+        ntools.assert_not_equal(p.name, 'A112')
 
 # def test_nfl_dk():
 #     players = salary_download.generate_players_from_csvs(

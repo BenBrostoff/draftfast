@@ -97,7 +97,10 @@ class Optimizer(object):
         if self.showdown:
             self._set_single_captain()
             self._set_no_reuse_captain()
-        else:
+
+        if self.offensive_positions and self.defensive_positions \
+                and self.settings.no_offense_against_defense or \
+                self.showdown and self.settings.no_defense_against_captain:
             self._set_no_opp_defense()
 
 
@@ -215,24 +218,25 @@ class Optimizer(object):
         offensive_pos = self.offensive_positions
         defensive_pos = self.defensive_positions
 
-        if offensive_pos and defensive_pos \
-                and self.settings.no_offense_against_defense:
-            enumerated_players = self.enumerated_players
+        enumerated_players = self.enumerated_players
 
-            for team in self.teams:
-                offensive_against = [
-                    self.variables[i] for i, p in enumerated_players
-                    if p.pos in offensive_pos and
-                    p.is_opposing_team_in_match_up(team)
-                ]
-                defensive = [
-                    self.variables[i] for i, p in enumerated_players
-                    if p.team == team and p.pos in defensive_pos
-                ]
+        for team in self.teams:
+            offensive_against = [
+                self.variables[i] for i, p in enumerated_players
+                if p.pos in offensive_pos and
+                p.is_opposing_team_in_match_up(team)
+            ]
 
-                for p in offensive_against:
-                    for d in defensive:
-                        self.solver.Add(p <= 1 - d)
+            #TODO this is gross for showdown
+            defensive = [
+                self.variables[i] for i, p in enumerated_players
+                if p.team == team and p.pos in defensive_pos or
+                self.showdown and p.real_pos in defensive_pos
+            ]
+
+            for p in offensive_against:
+                for d in defensive:
+                    self.solver.Add(p <= 1 - d)
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:
