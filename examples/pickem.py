@@ -1,23 +1,32 @@
-import random
 import os
-from draftfast.pickem_optimize import get_all_players, optimize
-from draftfast.csv_parse import uploaders
-from draftfast.settings import PickemSettings
+import random
+from draftfast.pickem.pickem_optimize import optimize
+from draftfast.csv_parse import uploaders, salary_download
+from draftfast import rules
+from draftfast.lineup_contraints import LineupConstraints
+
+salary_file_location = os.environ.get('PICKEM')
+pid_file_location = os.environ.get('PICKEM_PIDS')
 
 
-players = get_all_players(
-    pickem_file_location=os.environ.get('PICKEM'),
+players = salary_download.generate_players_from_csvs(
+    game=rules.DRAFT_KINGS,
+    salary_file_location=salary_file_location,
+    ruleset=rules.DK_NBA_PICKEM_RULE_SET,
 )
-rosters = []
 
-player = random.choice(players)
+rosters = []
 for _ in range(20):
-    rosters.append(optimize(
+    player = random.choice(players)
+    roster = optimize(
         all_players=players,
-        pickem_settings=PickemSettings(locked=[player.name]))
+        constraints=LineupConstraints(locked=[p.name]),
     )
+    rosters.append(roster)
 
 uploader = uploaders.DraftKingsNBAPickemUploader(
-    pid_file=os.environ.get('PICKEM_PIDS'),
+    pid_file=pid_file_location,
 )
+
+
 uploader.write_rosters(rosters)

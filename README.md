@@ -77,6 +77,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | SOCCER | DraftKings | `DK_SOCCER_RULE_SET` |
 | EuroLeague | DraftKings | `DK_EURO_LEAGUE_RULE_SET` |
 | NHL | DraftKings | `DK_NHL_RULE_SET` |
+| NBA Pickem | DraftKings | `DK_NBA_PICKEM_RULE_SET` |
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 
@@ -85,9 +86,9 @@ from draftfast import rules
 
 nhl_rules = rules.RuleSet(
     site=rules.DRAFT_KINGS,
-    league='NHL',
-    roster_size='9',
-    position_limits=[['C', 9, 9]],
+    league='PGA',
+    roster_size='6',
+    position_limits=[['G', 6, 6]],
     salary_max=50_000,
 )
 ```
@@ -169,7 +170,7 @@ roster = run(
 
 ```python
 roster = run(
-    rule_set=rules.DK_NHL_RULE_SET,
+    rule_set=rules.DK_NFL_RULE_SET,
     player_pool=player_pool,
     verbose=True,
     constraints=LineupConstraints(
@@ -214,3 +215,8 @@ DraftFast provides support and consulting services that can help with all of the
 # Credits
 
 Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which was the inspiration for this one.
+
+Current project maintainers:
+
+- [BenBrostoff](https://github.com/BenBrostoff)
+- [sharkiteuthis](https://github.com/sharkiteuthis)
