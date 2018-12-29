@@ -207,6 +207,8 @@ DK_NFL_RULE_SET = RuleSet(
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
     general_position_limits=[],
+    offensive_positions=['QB', 'RB', 'WR', 'TE'],
+    defensive_positions=['DST'],
 )
 
 FD_NFL_RULE_SET = RuleSet(
@@ -216,6 +218,8 @@ FD_NFL_RULE_SET = RuleSet(
     salary_max=SALARY_CAP[FAN_DUEL]['NFL'],
     position_limits=POSITIONS[FAN_DUEL]['NFL'],
     general_position_limits=[],
+    offensive_positions=['QB', 'RB', 'WR', 'TE'],
+    defensive_positions=['D'],
 )
 
 FD_PGA_RULE_SET = RuleSet(
