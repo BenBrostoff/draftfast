@@ -45,17 +45,14 @@ SALARY_CAP = {
 
 
 def get_nfl_positions(
-    rb_min=2,
-    wr_min=3,
-    te_min=1,
-    te_upper=2,
     d_abbrev='DST',
 ):
     return [
         ['QB', 1, 1],
-        ['RB', rb_min, 3],
-        ['WR', wr_min, 4],
-        ['TE', te_min, te_upper],
+        ['RB', 2, 2],
+        ['WR', 3, 3],
+        ['TE', 1, 1],
+        ['FLEX', 1, 1]  # RB, WR, TE
         [d_abbrev, 1, 1]
     ]
 
@@ -63,17 +60,19 @@ def get_nfl_positions(
 POSITIONS = {
     DRAFT_KINGS: {
         'NBA': [
-            ['PG', 1, 3],
-            ['SG', 1, 3],
-            ['SF', 1, 3],
-            ['PF', 1, 3],
-            ['C', 1, 2]
+            ['PG', 1, 1],
+            ['SG', 1, 1],
+            ['SF', 1, 1],
+            ['PF', 1, 1],
+            ['C', 1, 1],
+            ['G', 1, 1],
+            ['F', 1, 1],
+            ['UTIL', 1, 1]  # any
         ],
         'WNBA': [
-            ['PG', 1, 3],
-            ['SG', 1, 3],
-            ['SF', 1, 4],
-            ['PF', 1, 4],
+            ['G', 2, 2],
+            ['F', 3, 3],
+            ['UTIL', 1, 1]  # G, F
         ],
         'NFL': get_nfl_positions(),
         'MLB': [
@@ -86,20 +85,23 @@ POSITIONS = {
             ['OF', 3, 3],
         ],
         'SOCCER': [
-            ['F', 2, 3],
-            ['M', 2, 3],
-            ['D', 2, 3],
-            ['GK', 1, 2],
+            ['F', 2, 2],
+            ['M', 2, 2],
+            ['D', 2, 2],
+            ['GK', 1, 1],
+            ['UTIL', 1, 1]  # D, M, F
         ],
         'EL': [
-            ['G', 2, 3],
-            ['F', 3, 4],
+            ['G', 2, 2],
+            ['F', 3, 3],    # F, C
+            ['UTIL', 1, 1]  # G, F, C
         ],
         'NHL': [
-            ['C', 2, 3],
-            ['W', 3, 4],
-            ['D', 2, 3],
+            ['C', 2, 2],
+            ['W', 3, 3],    # LW, RW
+            ['D', 2, 2],
             ['G', 1, 1],
+            ['UTIL', 1, 1]  # LW, RW, C, D
         ]
     },
     FAN_DUEL: {
@@ -112,11 +114,12 @@ POSITIONS = {
         ],
         'MLB': [
             ['P', 1, 1],
-            ['1B', 1, 2],  # TODO - allow C or 1B
-            ['2B', 1, 2],
-            ['3B', 1, 2],
-            ['SS', 1, 2],
-            ['OF', 3, 4],
+            ['1B', 1, 1],  # C, 1B
+            ['2B', 1, 1],
+            ['3B', 1, 1],
+            ['SS', 1, 1],
+            ['OF', 3, 3],
+            ['UTIL', 1, 1]  # any
         ],
         'WNBA': [
             ['G', 3, 3],
@@ -132,31 +135,58 @@ POSITIONS = {
     }
 }
 
-NBA_GENERAL_POSITIONS = [
-    ['G', 3, 4],
-    ['F', 3, 4],
-    ['C', 1, 2],
-]
 
-WNBA_GENERAL_POSITIONS = [
-    ['G', 2, 3],
-    ['F', 3, 4],
-]
-
+FLEX_POSITIONS = {
+    DRAFT_KINGS: {
+        'NBA': {
+            'G': ('PG', 'SG'),
+            'F': ('PG', 'SG', 'SF', 'PF'),
+            'UTIL': ('PG', 'SG', 'SF', 'PF', 'C')
+        },
+        'WNBA': {
+            'UTIL': ('G', 'F')
+        },
+        'NFL': {
+            'FLEX': ('RB', 'WR', 'TE')
+        },
+        'SOCCER': {
+            'UTIL': ('D', 'M', 'F')
+        },
+        'EL': {
+            'F': ('F', 'C'),
+            'UTIL': ('G', 'F', 'C')
+        },
+        'NHL': {
+            'W': ('LW', 'RW'),
+            'UTIL': ('LW', 'RW', 'C', 'D')
+        }
+    },
+    FAN_DUEL: {
+        'MLB': {
+            '1B', ('C', '1B'),
+            'UTIL': ('P', 'C', '1B', '2B', '3B', 'SS', 'OF')
+        },
+        'NFL': {
+            'FLEX': ('RB', 'WR', 'TE')
+        }
+    }
+}
 
 class RuleSet(object):
 
     def __init__(self, site, league,
                  roster_size, position_limits,
+                 flex_positions_allowed=None,
                  salary_max, salary_min=0,
                  general_position_limits=None,
-                 offensive_positions=None, defensive_positions=None,
+                 offensive_positions=None,
+                 defensive_positions=None,
                  game_type='classic'):
         self.site = site
         self.league = league
         self.roster_size = roster_size
         self.position_limits = position_limits
-        self.general_position_limits = general_position_limits
+        self.flex_positions_allowed = flex_positions_allowed
         self.salary_min = salary_min
         self.salary_max = salary_max
         self.offensive_positions = offensive_positions
@@ -170,7 +200,7 @@ DK_NBA_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NBA'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NBA'],
     position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
-    general_position_limits=NBA_GENERAL_POSITIONS,
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['NBA'],
 )
 
 FD_NBA_RULE_SET = RuleSet(
@@ -179,7 +209,7 @@ FD_NBA_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['NBA'],
     salary_max=SALARY_CAP[FAN_DUEL]['NBA'],
     position_limits=POSITIONS[FAN_DUEL]['NBA'],
-    general_position_limits=NBA_GENERAL_POSITIONS,
+    flex_positions_allowed=FLEX_POSITIONS[FAN_DUEL]['NBA'],
 )
 
 DK_WNBA_RULE_SET = RuleSet(
@@ -188,7 +218,7 @@ DK_WNBA_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['WNBA'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['WNBA'],
     position_limits=POSITIONS[DRAFT_KINGS]['WNBA'],
-    general_position_limits=NBA_GENERAL_POSITIONS,
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['WNBA'],
 )
 
 FD_WNBA_RULE_SET = RuleSet(
@@ -197,7 +227,7 @@ FD_WNBA_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['WNBA'],
     salary_max=SALARY_CAP[FAN_DUEL]['WNBA'],
     position_limits=POSITIONS[FAN_DUEL]['WNBA'],
-    general_position_limits=NBA_GENERAL_POSITIONS,
+    flex_positions_allowed=FLEX_POSITIONS[FAN_DUEL]['WNBA'],
 )
 
 DK_NFL_RULE_SET = RuleSet(
@@ -206,7 +236,7 @@ DK_NFL_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['NFL'],
     offensive_positions=['QB', 'RB', 'WR', 'TE'],
     defensive_positions=['DST'],
 )
@@ -216,8 +246,7 @@ FD_NFL_RULE_SET = RuleSet(
     league='NFL',
     roster_size=ROSTER_SIZE[FAN_DUEL]['NFL'],
     salary_max=SALARY_CAP[FAN_DUEL]['NFL'],
-    position_limits=POSITIONS[FAN_DUEL]['NFL'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[FAN_DUEL]['NFL'],
     offensive_positions=['QB', 'RB', 'WR', 'TE'],
     defensive_positions=['D'],
 )
@@ -228,7 +257,6 @@ FD_PGA_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['PGA'],
     salary_max=SALARY_CAP[FAN_DUEL]['PGA'],
     position_limits=POSITIONS[FAN_DUEL]['PGA'],
-    general_position_limits=[],
 )
 
 FD_NASCAR_RULE_SET = RuleSet(
@@ -237,7 +265,6 @@ FD_NASCAR_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['NASCAR'],
     salary_max=SALARY_CAP[FAN_DUEL]['NASCAR'],
     position_limits=POSITIONS[FAN_DUEL]['NASCAR'],
-    general_position_limits=[],
 )
 
 DK_MLB_RULE_SET = RuleSet(
@@ -246,7 +273,7 @@ DK_MLB_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['MLB'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['MLB'],
     position_limits=POSITIONS[DRAFT_KINGS]['MLB'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['MLB'],
 )
 
 FD_MLB_RULE_SET = RuleSet(
@@ -255,7 +282,7 @@ FD_MLB_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['MLB'],
     salary_max=SALARY_CAP[FAN_DUEL]['MLB'],
     position_limits=POSITIONS[FAN_DUEL]['MLB'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[FAN_DUEL]['MLB'],
 )
 
 DK_SOCCER_RULE_SET = RuleSet(
@@ -266,7 +293,7 @@ DK_SOCCER_RULE_SET = RuleSet(
     position_limits=POSITIONS[DRAFT_KINGS]['SOCCER'],
     offensive_positions=['M', 'F'],
     defensive_positions=['GK', 'D'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['SOCCER'],
 )
 
 DK_EURO_LEAGUE_RULE_SET = RuleSet(
@@ -275,7 +302,7 @@ DK_EURO_LEAGUE_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['EL'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['EL'],
     position_limits=POSITIONS[DRAFT_KINGS]['EL'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['EL'],
 )
 
 DK_NHL_RULE_SET = RuleSet(
@@ -286,7 +313,7 @@ DK_NHL_RULE_SET = RuleSet(
     position_limits=POSITIONS[DRAFT_KINGS]['NHL'],
     offensive_positions=['C', 'W'],
     defensive_positions=['G', 'D'],
-    general_position_limits=[],
+    flex_positions_allowed=FLEX_POSITIONS[DRAFT_KINGS]['NHL'],
 )
 
 DK_NBA_PICKEM_RULE_SET = RuleSet(
