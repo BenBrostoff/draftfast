@@ -184,7 +184,7 @@ roster = run(
 )
 ```
 
-- `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer (PRs welcome!)
+- `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer, NHL, and NFL -- PRs welcome!
 
 ## CSV Upload
 
