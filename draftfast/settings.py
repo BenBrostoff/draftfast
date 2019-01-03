@@ -99,7 +99,7 @@ class OptimizerSettings(object):
         self.uniques = uniques
         self.no_offense_against_defense = no_offense_against_defense
         self.no_defense_against_captain = no_defense_against_captain
-        self.showdown_teams=showdown_teams
+        self.showdown_teams = showdown_teams
         self.min_teams = min_teams
 
     # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>

@@ -1,9 +1,9 @@
 from draftfast.orm import Player
-from terminaltables import AsciiTable
 from copy import deepcopy
 
+
 class ShowdownPlayer(Player):
-    def __init__(self, player: Player, captain: bool=False):
+    def __init__(self, player: Player, captain: bool = False):
         for k, v in player.__dict__.items():
             if hasattr(self, k) or k.startswith('__'):
                 continue

@@ -25,7 +25,7 @@ def run(rule_set: RuleSet,
 
     if rule_set.game_type == 'showdown':
         if not optimizer_settings.showdown_teams or \
-                len(optimizer_settings.showdown_teams) !=2:
+                len(optimizer_settings.showdown_teams) != 2:
             raise Exception(
                 'Optimizer settings must specify two teams '
                 'for showdown game types.'
@@ -103,11 +103,8 @@ def run_multi(
     exposure_bounds: List[dict] = list(),
     exposure_random_seed=None,
 ) -> [List[Roster], list]:
-
     # set the random seed globally for random lineup exposure
     random.seed(exposure_random_seed)
-
-    print(exposure_random_seed)
 
     rosters = []
     for _ in range(0, iterations):

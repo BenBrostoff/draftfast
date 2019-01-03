@@ -1,5 +1,4 @@
 import locale
-from datetime import datetime, date
 from terminaltables import AsciiTable
 from functools import total_ordering
 import re
@@ -12,39 +11,6 @@ except Exception:
 
 def cs(n):
     return locale.format('%d', n, grouping=True)
-
-
-def retrieve_all_players_from_history(args):
-    from draft_kings_db import client
-    c = client.DraftKingsHistory()
-
-    all_players = []
-
-    # TODO - remove and allow retrieval from DB
-    historical_datetime = datetime.strptime(args.historical_date, '%Y-%m-%d')
-    historical_date = date(
-        historical_datetime.year,
-        historical_datetime.month,
-        historical_datetime.day
-    )
-    c.initialize_nba(from_date=historical_date, to_date=historical_date)
-
-    for perf in c.lookup_nba_performances(date=historical_date, limit=None):
-        for pos in perf.position.split('/'):
-            all_players.append(
-                Player(
-                    pos,
-                    perf.name,
-                    perf.salary,
-                    possible_positions=perf.position,
-                    multi_position=('/' in perf.position),
-                    team=perf.team,
-                    matchup=perf.matchup,
-                    lock=(args.locked and perf.name in args.locked),
-                    proj=perf.draft_kings_points
-                )
-            )
-    return all_players
 
 
 class Roster:
@@ -120,7 +86,7 @@ class Roster:
         position_order = getattr(self, 'POSITION_ORDER')
 
         # default sort order is low->high, so use the negative of cost
-        return (position_order[player.pos], -player.cost)
+        return position_order[player.pos], -player.cost
 
     def sorted_players(self):
         return sorted(
@@ -133,6 +99,7 @@ class Roster:
 POSITION_ORDER is based on the order
 required by DraftKings' CSV download
 '''
+
 
 class ShowdownRoster(Roster):
     POSITION_ORDER = {

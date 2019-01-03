@@ -291,7 +291,7 @@ def test_respect_group2():
         'DeAndre Hopkins',
         'Amari Cooper',
         'Sammy Watkins'
-        )
+    )
 
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -323,7 +323,7 @@ def test_respect_group3():
         'DeAndre Hopkins',
         'Amari Cooper',
         'Sammy Watkins'
-        )
+    )
 
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -706,8 +706,8 @@ def test_no_opposing_def_dk_nfl_mock():
 
     # add a player from a third team, min 2 teams
     mock_pool.append(Player(
-            name='B2', cost=5500, proj=70, pos='QB', team='Q', matchup='Q@Z'
-        )
+        name='B2', cost=5500, proj=70, pos='QB', team='Q', matchup='Q@Z'
+    )
     )
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,

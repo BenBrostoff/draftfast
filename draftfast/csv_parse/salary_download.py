@@ -3,7 +3,6 @@ from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer
 from draftfast.rules import DRAFT_KINGS, FAN_DUEL
-from copy import deepcopy
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {

@@ -2,8 +2,6 @@ from random import uniform as runiform
 from typing import List
 from draftfast.orm import Player
 from draftfast.settings import PlayerPoolSettings
-from draftfast.rules import RuleSet
-from draftfast.showdown.orm import ShowdownPlayer
 
 
 def filter_pool(pool: list,

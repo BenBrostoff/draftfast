@@ -103,7 +103,6 @@ class Optimizer(object):
                 self.showdown and self.settings.no_defense_against_captain:
             self._set_no_opp_defense()
 
-
         solution = self.solver.Solve()
 
         return solution == self.solver.OPTIMAL
@@ -227,7 +226,7 @@ class Optimizer(object):
                 p.is_opposing_team_in_match_up(team)
             ]
 
-            #TODO this is gross for showdown
+            # TODO this is gross for showdown
             defensive = [
                 self.variables[i] for i, p in enumerated_players
                 if p.team == team and p.pos in defensive_pos or
@@ -318,7 +317,8 @@ class Optimizer(object):
 
             if p.captain:
                 if p.name not in captain_constraints.keys():
-                    captain_constraints[p.name] = self.solver.Constraint(lb, ub)
+                    captain_constraints[p.name] = \
+                        self.solver.Constraint(lb, ub)
                 constraint = captain_constraints[p.name]
 
                 constraint.SetCoefficient(self.variables[i], 1)

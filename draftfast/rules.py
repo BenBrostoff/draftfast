@@ -64,7 +64,7 @@ def get_nfl_positions(
     ]
 
 
-def get_nfl_showdown_positions(dk: bool=False, fd: bool=False) -> list:
+def get_nfl_showdown_positions(dk: bool = False, fd: bool = False) -> list:
     if dk:
         ub = 5
     elif fd:
