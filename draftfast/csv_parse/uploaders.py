@@ -175,3 +175,22 @@ class DraftKingsNHLUploader(CSVUploader):
             encoding=self.encoding,
             errors=self.errors,
         )
+
+
+class DraftKingsNFLShowdown(CSVUploader):
+    HEADERS = [
+        'CPT', 'FLEX', 'FLEX', 'FLEX', 'FLEX', 'FLEX'
+    ]
+
+    def write_rosters(self, rosters):
+        with open(self.upload_file, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.HEADERS)
+            for roster in rosters:
+                writer.writerow([
+                    p.get_player_id(self.pid_map)
+                    for p in roster.sorted_players()
+                ])
+
+    def _map_pids(self, pid_file):
+        pass

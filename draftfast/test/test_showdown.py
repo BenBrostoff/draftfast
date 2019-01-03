@@ -1,15 +1,9 @@
-import os
 from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
 from draftfast.settings import OptimizerSettings
 from draftfast.showdown.orm import ShowdownPlayer
-
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
-fd_nfl_salary_file = '{}/data/fd-nfl-salaries.csv'.format(CURRENT_DIR)
-projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
 
 
 def _build_mock_player_pool():
@@ -104,21 +98,10 @@ def test_nfl_showdown_no_def_against_capt():
     for p in roster.players:
         ntools.assert_not_equal(p.name, 'A112')
 
-# def test_nfl_dk():
-#     players = salary_download.generate_players_from_csvs(
-#         salary_file_location=salary_file,
-#         projection_file_location=projection_file,
-#         game=rules.DRAFT_KINGS,
-#         ruleset=rules.DK_NFL_SHOWDOWN_RULE_SET
-#     )
-#     roster = run(
-#         rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
-#         player_pool=players,
-#         optimizer_settings=OptimizerSettings(
-#             showdown_teams=('GB', 'JAX'),
-#         ),
-#         verbose=True
-#     )
 
-#     ntools.assert_not_equal(roster, None)
-#     ntools.assert_equal(roster.projected(), 117.60)
+def test_nfl_showdown_lock():
+    pass
+
+
+def test_nfl_showdown_ban():
+    pass
