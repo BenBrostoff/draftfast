@@ -21,19 +21,17 @@ def test_dk_nba_upload():
         Uploader=uploaders.DraftKingsNBAUploader,
     )
     assert_equal(
-        set(row),
-        set(
-            [
-                '11743190',
-                '11743146',
-                '11743013',
-                '11743142',
-                '11743007',
-                '11743176',
-                '11743369',
-                '11743024',
-            ]
-        )
+        sorted(row),
+        sorted([
+            '11743190',
+            '11743146',
+            '11743013',
+            '11743142',
+            '11743007',
+            '11743176',
+            '11743369',
+            '11743024',
+        ])
     )
 
 
@@ -149,6 +147,46 @@ def test_pickem_nba_upload():
     pid_file = '{}/data/dk-nba-pickem-pids.csv'.format(CURRENT_DIR)
     upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
     uploader = uploaders.DraftKingsNBAPickemUploader(
+        pid_file=pid_file,
+        upload_file=upload_file,
+    )
+    uploader.write_rosters(rosters)
+
+    row = None
+    with open(upload_file, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for idx, row in enumerate(reader):
+            if idx == 0:
+                continue
+    assert_equal(
+        row,
+        [
+            '11839390',
+            '11839397',
+            '11839400',
+            '11839405',
+            '11839420',
+            '11839422',
+        ]
+    )
+
+
+def test_dk_nfl_showdown_upload():
+    salary_file_location = '{}/data/dk-nfl-showdown-salaries.csv'.format(
+        CURRENT_DIR
+    )
+    players = salary_download.generate_players_from_csvs(
+        game=rules.DRAFT_KINGS,
+        salary_file_location=salary_file_location,
+        ruleset=rules.DK_NFL_SHOWDOWN_RULE_SET,
+    )
+    rosters = [p_optimize(
+        all_players=players,
+    )]
+
+    pid_file = '{}/data/dk-nfl-showdown-pids.csv'.format(CURRENT_DIR)
+    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    uploader = uploaders.DraftKingsNFLShowdownUploader(
         pid_file=pid_file,
         upload_file=upload_file,
     )
