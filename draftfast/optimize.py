@@ -24,13 +24,6 @@ def run(rule_set: RuleSet,
     )
 
     if rule_set.game_type == 'showdown':
-        if not optimizer_settings.showdown_teams or \
-                len(optimizer_settings.showdown_teams) != 2:
-            raise Exception(
-                'Optimizer settings must specify two teams '
-                'for showdown game types.'
-            )
-
         if optimizer_settings.no_offense_against_defense:
             print('WARNING:')
             print('no_offense_against_defense setting ignored for showdown')

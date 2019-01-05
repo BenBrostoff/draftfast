@@ -180,8 +180,10 @@ def test_dk_nfl_showdown_upload():
         salary_file_location=salary_file_location,
         ruleset=rules.DK_NFL_SHOWDOWN_RULE_SET,
     )
-    rosters = [p_optimize(
-        all_players=players,
+    rosters = [optimize.run(
+        player_pool=players,
+        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        verbose=True,
     )]
 
     pid_file = '{}/data/dk-nfl-showdown-pids.csv'.format(CURRENT_DIR)
