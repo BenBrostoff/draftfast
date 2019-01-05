@@ -94,10 +94,6 @@ class Optimizer(object):
         self._set_no_duplicate_lineups()
         self._set_min_teams()
 
-        if self.showdown:
-            self._set_single_captain()
-            self._set_no_reuse_captain()
-
         if self.offensive_positions and self.defensive_positions \
                 and self.settings.no_offense_against_defense or \
                 self.showdown and self.settings.no_defense_against_captain:
@@ -117,7 +113,7 @@ class Optimizer(object):
             if lb > ub:
                 raise InvalidBoundsException
 
-            if p.multi_position:
+            if p.multi_position or self.showdown:
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
@@ -295,36 +291,3 @@ class Optimizer(object):
             self.solver.Add(
                 self.solver.Sum(teams) >= self.settings.min_teams
             )
-
-    def _set_single_captain(self):
-        captain_constraint = self.solver.Constraint(1, 1)
-        for i, p in self.enumerated_players:
-            if p.captain:
-                captain_constraint.SetCoefficient(self.variables[i], 1)
-
-    def _set_no_reuse_captain(self):
-        captain_constraints = dict()
-
-        # create the constraints for captains
-        for i, p in self.enumerated_players:
-            lb = 0
-            ub = 1
-            # lb = 1 if p.lock else 0
-            # ub = 0 if p.ban else 1
-
-            # if lb > ub:
-            #     raise InvalidBoundsException
-
-            if p.captain:
-                if p.name not in captain_constraints.keys():
-                    captain_constraints[p.name] = \
-                        self.solver.Constraint(lb, ub)
-                constraint = captain_constraints[p.name]
-
-                constraint.SetCoefficient(self.variables[i], 1)
-
-        # add non-captain players to the constraint if it exists
-        for i, p in self.enumerated_players:
-            constraint = captain_constraints.get(p.name)
-            if constraint and not p.captain:
-                constraint.SetCoefficient(self.variables[i], 1)
