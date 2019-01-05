@@ -23,3 +23,9 @@ class ShowdownPlayer(Player):
     @property
     def formatted_position(self):
         return '{} ({})'.format(self.pos, self.real_pos)
+
+    @property
+    def v_avg(self):
+        if self.pos == 'CAPT':
+            return self.proj / 1.5 - self.average_score
+        return self.proj - self.average_score

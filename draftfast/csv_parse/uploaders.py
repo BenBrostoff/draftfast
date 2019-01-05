@@ -137,6 +137,3 @@ class DraftKingsNFLShowdownUploader(DraftKingsUploader):
                     p.get_player_id(self.pid_map)
                     for p in roster.sorted_players()
                 ])
-
-    def _map_pids(self, pid_file):
-        pass

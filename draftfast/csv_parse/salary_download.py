@@ -75,7 +75,7 @@ def generate_players_from_csvs(
             elif is_showdown:
                 pos = row[pos_key]
                 player = generate_player(
-                    pos=pos,
+                    pos=row['Position'],
                     row=row,
                     game=game,
                 )
