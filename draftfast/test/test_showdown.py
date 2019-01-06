@@ -121,11 +121,49 @@ def test_nfl_showdown_lock_general():
 
 
 def test_nfl_showdown_lock_captain():
-    pass
+    mock_dk_pool = _build_mock_player_pool()
+
+    roster = run(
+        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        player_pool=mock_dk_pool,
+        optimizer_settings=OptimizerSettings(
+            showdown_teams=('X', 'Y'),
+            no_defense_against_captain=True,
+        ),
+        constraints=LineupConstraints(
+            position_locked=['A2 CAPT X'],
+        ),
+        verbose=True
+    )
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 370.5)
+    cpt = [x for x in roster.players if x.pos == 'CAPT'][0]
+    ntools.assert_equal('A2', cpt.name)
 
 
 def test_nfl_showdown_lock_flex():
-    pass
+    mock_dk_pool = _build_mock_player_pool()
+
+    roster = run(
+        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        player_pool=mock_dk_pool,
+        optimizer_settings=OptimizerSettings(
+            showdown_teams=('X', 'Y'),
+            no_defense_against_captain=True,
+        ),
+        constraints=LineupConstraints(
+            position_locked=['A1 FLEX X'],
+        ),
+        verbose=True
+    )
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 386.0)
+    cpt = [
+        x for x in roster.players
+        if x.pos == 'FLEX'
+        and x.name == 'A1'
+    ][0]
+    ntools.assert_equal('A1', cpt.name)
 
 
 def test_nfl_showdown_ban_general():

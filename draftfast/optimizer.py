@@ -54,6 +54,8 @@ class Optimizer(object):
                 player.lock = True
             if self._is_banned(player):
                 player.ban = True
+            if self._is_position_locked(player):
+                player.position_lock = True
 
             # TODO: this can only happen because of exposure, but it could be
             # handled better
@@ -81,6 +83,11 @@ class Optimizer(object):
                p.name in self.banned_for_exposure or \
                p.ban
 
+    def _is_position_locked(self, p: Player):
+        c = self.lineup_constraints.is_position_locked(p.solver_id)
+        print(p.solver_id, c)
+        return c
+
     def solve(self) -> bool:
         self._set_player_constraints()
         self._set_player_group_constraints()
@@ -107,16 +114,22 @@ class Optimizer(object):
         multi_constraints = dict()
 
         for i, p in self.enumerated_players:
-            lb = 1 if p.lock else 0
+            lb = 1 if (p.lock or p.position_lock) else 0
             ub = 0 if p.ban else 1
 
             if lb > ub:
                 raise InvalidBoundsException
 
-            if p.multi_position or self.showdown:
+            if (p.multi_position or self.showdown) and not p.position_lock:
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
+            elif (p.multi_position or self.showdown) and p.position_lock:
+                if p.name not in multi_constraints.keys():
+                    multi_constraints[p.name] = self.solver.Constraint(0, ub)
+                multi_constraints[p.name].SetCoefficient(self.variables[i], 1)
+
+                constraint = self.solver.Constraint(lb, ub)
             else:
                 constraint = self.solver.Constraint(lb, ub)
 

@@ -10,14 +10,19 @@ def _iterableify(x):
 class LineupConstraints(object):
     def __init__(self,
                  locked: list = [],
+                 position_locked: list = [],
                  banned: list = [],
                  groups: list = []):
         self._constraints = []
         self._banned = set()
         self._locked = set()
+        self._position_locked = set()
 
         for name in banned:
             self.ban(name)
+
+        for solver_id in position_locked:
+            self.position_lock(solver_id)
 
         for name in locked:
             self.lock(name)
@@ -100,6 +105,9 @@ class LineupConstraints(object):
     def is_locked(self, player: str) -> bool:
         return player in self._locked
 
+    def is_position_locked(self, solver_id: str) -> bool:
+        return solver_id in self._position_locked
+
     def has_group_constraints(self) -> bool:
         return len(self._constraints) != 0
 
@@ -131,6 +139,19 @@ class LineupConstraints(object):
                     '{} exists in another constraint'.format(p)
                 )
         self._locked.update(_players)
+
+    def position_lock(self, solver_ids):
+        _solver_ids = _iterableify(solver_ids)
+
+        if len(_solver_ids) == 0:
+            raise ConstraintException('Empty position lock group')
+
+        for p in _solver_ids:
+            if p in self:
+                raise ConstraintConflictException(
+                    '{} exists in another constraint'.format(p)
+                )
+        self._position_locked.update(_solver_ids)
 
 
 class ConstraintConflictException(Exception):
