@@ -186,9 +186,26 @@ def test_nfl_showdown_ban_general():
     ntools.assert_true('A1' not in [x.name for x in roster.players])
 
 
-def test_nfl_showdown_ban_captain():
-    pass
+def test_nfl_showdown_ban_specific():
+    mock_dk_pool = _build_mock_player_pool()
 
-
-def test_nfl_showdown_ban_flex():
-    pass
+    roster = run(
+        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        player_pool=mock_dk_pool,
+        optimizer_settings=OptimizerSettings(
+            showdown_teams=('X', 'Y'),
+            no_defense_against_captain=True,
+        ),
+        constraints=LineupConstraints(
+            position_banned=['A1 CAPT X'],
+        ),
+        verbose=True
+    )
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 386.0)
+    flex = [
+        x for x in roster.players
+        if x.pos == 'FLEX'
+        and x.name == 'A1'
+    ][0]
+    ntools.assert_equal('A1', flex.name)

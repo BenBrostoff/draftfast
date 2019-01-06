@@ -56,6 +56,8 @@ class Optimizer(object):
                 player.ban = True
             if self._is_position_locked(player):
                 player.position_lock = True
+            if self._is_position_banned(player):
+                player.position_ban = True
 
             # TODO: this can only happen because of exposure, but it could be
             # handled better
@@ -73,18 +75,21 @@ class Optimizer(object):
             self.name_to_idx_map[p.name] = set()
         self.name_to_idx_map[p.name].update([idx])
 
-    def _is_locked(self, p: Player):
+    def _is_locked(self, p: Player) -> bool:
         return self.lineup_constraints.is_locked(p.name) or \
                p.name in self.locked_for_exposure or \
                p.lock
 
-    def _is_banned(self, p: Player):
+    def _is_banned(self, p: Player) -> bool:
         return self.lineup_constraints.is_banned(p.name) or \
                p.name in self.banned_for_exposure or \
                p.ban
 
-    def _is_position_locked(self, p: Player):
+    def _is_position_locked(self, p: Player) -> bool:
         return self.lineup_constraints.is_position_locked(p.solver_id)
+
+    def _is_position_banned(self, p: Player) -> bool:
+        return self.lineup_constraints.is_position_banned(p.solver_id)
 
     def solve(self) -> bool:
         self._set_player_constraints()
@@ -113,12 +118,13 @@ class Optimizer(object):
 
         for i, p in self.enumerated_players:
             lb = 1 if (p.lock or p.position_lock) else 0
-            ub = 0 if p.ban else 1
+            ub = 0 if (p.ban or p.position_ban) else 1
 
             if lb > ub:
                 raise InvalidBoundsException
 
-            if (p.multi_position or self.showdown) and not p.position_lock:
+            if (p.multi_position or self.showdown) and not (
+                    p.position_lock or p.position_ban):
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
