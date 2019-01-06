@@ -131,13 +131,13 @@ def test_nfl_showdown_lock_captain():
             no_defense_against_captain=True,
         ),
         constraints=LineupConstraints(
-            position_locked=['A2 CAPT X'],
+            position_locked=['A2 CPT X'],
         ),
         verbose=True
     )
     ntools.assert_not_equal(roster, None)
     ntools.assert_equal(roster.projected(), 370.5)
-    cpt = [x for x in roster.players if x.pos == 'CAPT'][0]
+    cpt = [x for x in roster.players if x.pos == 'CPT'][0]
     ntools.assert_equal('A2', cpt.name)
 
 
@@ -197,7 +197,7 @@ def test_nfl_showdown_ban_specific():
             no_defense_against_captain=True,
         ),
         constraints=LineupConstraints(
-            position_banned=['A1 CAPT X'],
+            position_banned=['A1 CPT X'],
         ),
         verbose=True
     )

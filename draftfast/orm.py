@@ -103,7 +103,7 @@ required by DraftKings' CSV download
 
 class ShowdownRoster(Roster):
     POSITION_ORDER = {
-        'CAPT': 0,
+        'CPT': 0,
         'FLEX': 1,
     }
 

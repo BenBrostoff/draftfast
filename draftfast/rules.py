@@ -7,6 +7,7 @@ ROSTER_SIZE = {
         'NFL': 9,
         'NFL_SHOWDOWN': 6,
         'NBA': 8,
+        'NBA_SHOWDOWN': 6,
         'WNBA': 6,
         'MLB': 10,
         'SOCCER': 8,
@@ -30,6 +31,7 @@ SALARY_CAP = {
         'NFL': 50_000,
         'NFL_SHOWDOWN': 50_000,
         'NBA': 50_000,
+        'NBA_SHOWDOWN': 50_000,
         'WNBA': 50_000,
         'MLB': 50_000,
         'SOCCER': 50_000,
@@ -73,7 +75,7 @@ def get_nfl_showdown_positions(dk: bool = False, fd: bool = False) -> list:
         raise NotImplementedError
 
     return [
-        ['CAPT', 1, 1],
+        ['CPT', 1, 1],
         ['FLEX', ub, ub]
     ]
 
@@ -86,6 +88,10 @@ POSITIONS = {
             ['SF', 1, 3],
             ['PF', 1, 3],
             ['C', 1, 2]
+        ],
+        'NBA_SHOWDOWN': [
+            ['CPT', 1, 1],
+            ['FLEX', 5, 5],
         ],
         'WNBA': [
             ['PG', 1, 3],
@@ -192,6 +198,14 @@ DK_NBA_RULE_SET = RuleSet(
     general_position_limits=NBA_GENERAL_POSITIONS,
 )
 
+DK_NBA_SHOWDOWN_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NBA_SHOWDOWN',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['NBA_SHOWDOWN'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['NBA_SHOWDOWN'],
+    position_limits=POSITIONS[DRAFT_KINGS]['NBA_SHOWDOWN'],
+)
+
 FD_NBA_RULE_SET = RuleSet(
     site=FAN_DUEL,
     league='NBA',
@@ -247,7 +261,7 @@ DK_NFL_SHOWDOWN_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL_SHOWDOWN'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL_SHOWDOWN'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL_SHOWDOWN'],
-    offensive_positions=['CAPT'],
+    offensive_positions=['CPT'],
     defensive_positions=['DST'],
     general_position_limits=[],
     game_type='showdown',

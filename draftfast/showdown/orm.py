@@ -11,7 +11,7 @@ class ShowdownPlayer(Player):
 
         if captain:
             self.real_pos = self.pos
-            self.pos = 'CAPT'
+            self.pos = 'CPT'
             self.captain = True
             self.proj *= 1.5
             self.cost *= 1.5
@@ -26,6 +26,6 @@ class ShowdownPlayer(Player):
 
     @property
     def v_avg(self):
-        if self.pos == 'CAPT':
+        if self.pos == 'CPT':
             return self.proj / 1.5 - self.average_score
         return self.proj - self.average_score
