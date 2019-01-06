@@ -172,34 +172,12 @@ def test_pickem_nba_upload():
 
 
 def test_dk_nfl_showdown_upload():
-    salary_file_location = '{}/data/dk-nfl-showdown-salaries.csv'.format(
-        CURRENT_DIR
-    )
-    players = salary_download.generate_players_from_csvs(
-        game=rules.DRAFT_KINGS,
-        salary_file_location=salary_file_location,
+    row = _get_first_written_row_dk_showdown(
+        salary_file='dk-nfl-showdown-salaries.csv',
+        pid_file='dk-nfl-showdown-pids.csv',
         ruleset=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
-    rosters = [optimize.run(
-        player_pool=players,
-        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
-        verbose=True,
-    )]
-
-    pid_file = '{}/data/dk-nfl-showdown-pids.csv'.format(CURRENT_DIR)
-    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
-    uploader = uploaders.DraftKingsNFLShowdownUploader(
-        pid_file=pid_file,
-        upload_file=upload_file,
-    )
-    uploader.write_rosters(rosters)
-
-    row = None
-    with open(upload_file, 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        for idx, row in enumerate(reader):
-            if idx == 0:
-                continue
     assert_equal(
         row,
         [
@@ -210,6 +188,26 @@ def test_dk_nfl_showdown_upload():
             '11895997',
             '11896018',
         ]
+    )
+
+
+def test_dk_nba_showdown_upload():
+    row = _get_first_written_row_dk_showdown(
+        salary_file='dk-nba-showdown-salaries.csv',
+        pid_file='dk-nba-showdown-pids.csv',
+        ruleset=rules.DK_NBA_SHOWDOWN_RULE_SET,
+        Uploader=uploaders.DraftKingsCaptainShowdownUploader,
+    )
+    assert_equal(
+        row,
+        [
+            '11915867',
+            '11915844',
+            '11915845',
+            '11915846',
+            '11915852',
+            '11915855',
+        ],
     )
 
 
@@ -236,6 +234,45 @@ def _get_first_written_row(
         upload_file=upload_file,
     )
     uploader.write_rosters([roster])
+
+    row = None
+    with open(upload_file, 'r') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for idx, row in enumerate(reader):
+            if idx == 0:
+                continue
+
+    return row
+
+
+def _get_first_written_row_dk_showdown(
+    salary_file: str,
+    pid_file: str,
+    ruleset: rules.RuleSet,
+    Uploader: Type[uploaders.CSVUploader],
+) -> list:
+    salary_file_location = '{}/data/{}'.format(
+        CURRENT_DIR,
+        salary_file,
+    )
+    players = salary_download.generate_players_from_csvs(
+        game=rules.DRAFT_KINGS,
+        salary_file_location=salary_file_location,
+        ruleset=ruleset,
+    )
+    rosters = [optimize.run(
+        player_pool=players,
+        rule_set=ruleset,
+        verbose=True,
+    )]
+
+    pid_file_location = '{}/data/{}'.format(CURRENT_DIR, pid_file)
+    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    uploader = Uploader(
+        pid_file=pid_file_location,
+        upload_file=upload_file,
+    )
+    uploader.write_rosters(rosters)
 
     row = None
     with open(upload_file, 'r') as csvfile:

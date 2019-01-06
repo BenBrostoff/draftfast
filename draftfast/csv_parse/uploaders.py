@@ -123,7 +123,7 @@ class DraftKingsNBAPickemUploader(CSVUploader):
         return pickem_upload.map_pids(pid_file)
 
 
-class DraftKingsNFLShowdownUploader(DraftKingsUploader):
+class DraftKingsCaptainShowdownUploader(DraftKingsUploader):
     HEADERS = [
         'CPT', 'FLEX', 'FLEX', 'FLEX', 'FLEX', 'FLEX'
     ]

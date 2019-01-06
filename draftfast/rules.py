@@ -204,6 +204,8 @@ DK_NBA_SHOWDOWN_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NBA_SHOWDOWN'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NBA_SHOWDOWN'],
     position_limits=POSITIONS[DRAFT_KINGS]['NBA_SHOWDOWN'],
+    game_type='showdown',
+    general_position_limits=[],
 )
 
 FD_NBA_RULE_SET = RuleSet(

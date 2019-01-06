@@ -195,6 +195,7 @@ class RosterSelect:
     def roster_gen(league):
         roster_dict = {
             'NBA': NBARoster(),
+            'NBA_SHOWDOWN': ShowdownRoster(),
             'WNBA': WNBARoster(),
             'NFL': NFLRoster(),
             'NFL_SHOWDOWN': ShowdownRoster(),

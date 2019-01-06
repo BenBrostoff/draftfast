@@ -79,6 +79,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | NHL | DraftKings | `DK_NHL_RULE_SET` |
 | NBA Pickem | DraftKings | `DK_NBA_PICKEM_RULE_SET` |
 | NFL Showdown | DraftKings | `DK_NFL_SHOWDOWN_RULE_SET` |
+| NBA Showdown | DraftKings | `DK_NBA_SHOWDOWN_RULE_SET` |
 
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
