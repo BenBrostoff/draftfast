@@ -84,9 +84,7 @@ class Optimizer(object):
                p.ban
 
     def _is_position_locked(self, p: Player):
-        c = self.lineup_constraints.is_position_locked(p.solver_id)
-        print(p.solver_id, c)
-        return c
+        return self.lineup_constraints.is_position_locked(p.solver_id)
 
     def solve(self) -> bool:
         self._set_player_constraints()

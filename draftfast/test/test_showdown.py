@@ -158,12 +158,12 @@ def test_nfl_showdown_lock_flex():
     )
     ntools.assert_not_equal(roster, None)
     ntools.assert_equal(roster.projected(), 386.0)
-    cpt = [
+    flex = [
         x for x in roster.players
         if x.pos == 'FLEX'
         and x.name == 'A1'
     ][0]
-    ntools.assert_equal('A1', cpt.name)
+    ntools.assert_equal('A1', flex.name)
 
 
 def test_nfl_showdown_ban_general():
