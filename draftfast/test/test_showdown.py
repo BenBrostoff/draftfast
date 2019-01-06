@@ -4,6 +4,7 @@ from draftfast import rules
 from draftfast.orm import Player
 from draftfast.settings import OptimizerSettings
 from draftfast.showdown.orm import ShowdownPlayer
+from draftfast.lineup_contraints import LineupConstraints
 
 
 def _build_mock_player_pool():
@@ -99,9 +100,57 @@ def test_nfl_showdown_no_def_against_capt():
         ntools.assert_not_equal(p.name, 'A112')
 
 
-def test_nfl_showdown_lock():
+def test_nfl_showdown_lock_general():
+    mock_dk_pool = _build_mock_player_pool()
+
+    roster = run(
+        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        player_pool=mock_dk_pool,
+        optimizer_settings=OptimizerSettings(
+            showdown_teams=('X', 'Y'),
+            no_defense_against_captain=True,
+        ),
+        constraints=LineupConstraints(
+            locked=['A14'],
+        ),
+        verbose=True
+    )
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 399.0)
+    ntools.assert_true('A14' in [x.name for x in roster.players])
+
+
+def test_nfl_showdown_lock_captain():
     pass
 
 
-def test_nfl_showdown_ban():
+def test_nfl_showdown_lock_flex():
+    pass
+
+
+def test_nfl_showdown_ban_general():
+    mock_dk_pool = _build_mock_player_pool()
+
+    roster = run(
+        rule_set=rules.DK_NFL_SHOWDOWN_RULE_SET,
+        player_pool=mock_dk_pool,
+        optimizer_settings=OptimizerSettings(
+            showdown_teams=('X', 'Y'),
+            no_defense_against_captain=True,
+        ),
+        constraints=LineupConstraints(
+            banned=['A1'],
+        ),
+        verbose=True
+    )
+    ntools.assert_not_equal(roster, None)
+    ntools.assert_equal(roster.projected(), 334.0)
+    ntools.assert_true('A1' not in [x.name for x in roster.players])
+
+
+def test_nfl_showdown_ban_captain():
+    pass
+
+
+def test_nfl_showdown_ban_flex():
     pass
