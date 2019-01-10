@@ -10,14 +10,24 @@ def _iterableify(x):
 class LineupConstraints(object):
     def __init__(self,
                  locked: list = [],
+                 position_locked: list = [],
                  banned: list = [],
+                 position_banned: list = [],
                  groups: list = []):
         self._constraints = []
         self._banned = set()
         self._locked = set()
+        self._position_locked = set()
+        self._position_banned = set()
 
         for name in banned:
             self.ban(name)
+
+        for solver_id in position_banned:
+            self.position_ban(solver_id)
+
+        for solver_id in position_locked:
+            self.position_lock(solver_id)
 
         for name in locked:
             self.lock(name)
@@ -29,14 +39,22 @@ class LineupConstraints(object):
         return ConstraintIterator(self._constraints)
 
     def __len__(self):
-        return len(self._constraints) + len(self._locked) + len(self._banned)
+        return (
+            len(self._constraints) +
+            len(self._locked) +
+            len(self._banned) +
+            len(self._position_locked) +
+            len(self._position_banned)
+        )
 
     def __repr__(self):
         constraints = ', '.join([repr(c) for c in self._constraints])
         lcs = 'LineupConstraintSet: {}'.format(constraints)
         b1 = '<Banned: {!r}>'.format(self._banned)
-        l1 = '<Locked: {!r}>'.format(self._locked)
-        return '<{}, {}, {}>'.format(lcs, b1, l1)
+        bp1 = '<PositionBanned: {!r}>'.format(self._position_banned)
+        lp1 = '<Locked: {!r}>'.format(self._locked)
+        l1 = '<PositionLocked: {!r}>'.format(self._position_locked)
+        return '<{}, {}, {}, {}, {}>'.format(lcs, b1, bp1, l1, lp1)
 
     def __str__(self):
         lines = [str(c) for c in self._constraints]
@@ -60,6 +78,12 @@ class LineupConstraints(object):
             return False
 
         if self._banned != constraintset._banned:
+            return False
+
+        if self._position_locked != constraintset._position_locked:
+            return False
+
+        if self._position_banned != constraintset._position_banned:
             return False
 
         return True
@@ -100,6 +124,12 @@ class LineupConstraints(object):
     def is_locked(self, player: str) -> bool:
         return player in self._locked
 
+    def is_position_locked(self, solver_id: str) -> bool:
+        return solver_id in self._position_locked
+
+    def is_position_banned(self, solver_id: str) -> bool:
+        return solver_id in self._position_banned
+
     def has_group_constraints(self) -> bool:
         return len(self._constraints) != 0
 
@@ -131,6 +161,32 @@ class LineupConstraints(object):
                     '{} exists in another constraint'.format(p)
                 )
         self._locked.update(_players)
+
+    def position_lock(self, solver_ids):
+        _solver_ids = _iterableify(solver_ids)
+
+        if len(_solver_ids) == 0:
+            raise ConstraintException('Empty position lock group')
+
+        for p in _solver_ids:
+            if p in self:
+                raise ConstraintConflictException(
+                    '{} exists in another constraint'.format(p)
+                )
+        self._position_locked.update(_solver_ids)
+
+    def position_ban(self, solver_ids):
+        _solver_ids = _iterableify(solver_ids)
+
+        if len(_solver_ids) == 0:
+            raise ConstraintException('Empty position lock group')
+
+        for p in _solver_ids:
+            if p in self:
+                raise ConstraintConflictException(
+                    '{} exists in another constraint'.format(p)
+                )
+        self._position_banned.update(_solver_ids)
 
 
 class ConstraintConflictException(Exception):

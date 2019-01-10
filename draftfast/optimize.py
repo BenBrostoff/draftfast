@@ -22,12 +22,20 @@ def run(rule_set: RuleSet,
         player_pool,
         player_settings,
     )
+
+    if rule_set.game_type == 'showdown':
+        if optimizer_settings.no_offense_against_defense:
+            print('WARNING:')
+            print('no_offense_against_defense setting ignored for showdown')
+            print('game types. Use no_defense_against_captain instead.')
+            print()
+
     optimizer = Optimizer(
         players=players,
         rule_set=rule_set,
         settings=optimizer_settings,
         lineup_constraints=constraints,
-        exposure_dict=exposure_dict
+        exposure_dict=exposure_dict,
     )
 
     variables = optimizer.variables
@@ -88,11 +96,8 @@ def run_multi(
     exposure_bounds: List[dict] = list(),
     exposure_random_seed=None,
 ) -> [List[Roster], list]:
-
     # set the random seed globally for random lineup exposure
     random.seed(exposure_random_seed)
-
-    print(exposure_random_seed)
 
     rosters = []
     for _ in range(0, iterations):

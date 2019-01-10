@@ -31,6 +31,7 @@ class Optimizer(object):
         self.offensive_positions = rule_set.offensive_positions
         self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
+        self.showdown = rule_set.game_type == 'showdown'
         self.settings = settings
         self.lineup_constraints = lineup_constraints
         self.banned_for_exposure = exposure_dict.get('banned', [])
@@ -53,6 +54,10 @@ class Optimizer(object):
                 player.lock = True
             if self._is_banned(player):
                 player.ban = True
+            if self._is_position_locked(player):
+                player.position_lock = True
+            if self._is_position_banned(player):
+                player.position_ban = True
 
             # TODO: this can only happen because of exposure, but it could be
             # handled better
@@ -70,15 +75,21 @@ class Optimizer(object):
             self.name_to_idx_map[p.name] = set()
         self.name_to_idx_map[p.name].update([idx])
 
-    def _is_locked(self, p: Player):
+    def _is_locked(self, p: Player) -> bool:
         return self.lineup_constraints.is_locked(p.name) or \
                p.name in self.locked_for_exposure or \
                p.lock
 
-    def _is_banned(self, p: Player):
+    def _is_banned(self, p: Player) -> bool:
         return self.lineup_constraints.is_banned(p.name) or \
                p.name in self.banned_for_exposure or \
                p.ban
+
+    def _is_position_locked(self, p: Player) -> bool:
+        return self.lineup_constraints.is_position_locked(p.solver_id)
+
+    def _is_position_banned(self, p: Player) -> bool:
+        return self.lineup_constraints.is_position_banned(p.solver_id)
 
     def solve(self) -> bool:
         self._set_player_constraints()
@@ -91,8 +102,13 @@ class Optimizer(object):
         self._set_stack()
         self._set_combo()
         self._set_no_duplicate_lineups()
-        self._set_no_opp_defense()
         self._set_min_teams()
+
+        if self.offensive_positions and self.defensive_positions \
+                and self.settings.no_offense_against_defense or \
+                self.showdown and self.settings.no_defense_against_captain:
+            self._set_no_opp_defense()
+
         solution = self.solver.Solve()
 
         return solution == self.solver.OPTIMAL
@@ -101,16 +117,23 @@ class Optimizer(object):
         multi_constraints = dict()
 
         for i, p in self.enumerated_players:
-            lb = 1 if p.lock else 0
-            ub = 0 if p.ban else 1
+            lb = 1 if (p.lock or p.position_lock) else 0
+            ub = 0 if (p.ban or p.position_ban) else 1
 
             if lb > ub:
                 raise InvalidBoundsException
 
-            if p.multi_position:
+            if (p.multi_position or self.showdown) and not (
+                    p.position_lock or p.position_ban):
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
+            elif (p.multi_position or self.showdown) and p.position_lock:
+                if p.name not in multi_constraints.keys():
+                    multi_constraints[p.name] = self.solver.Constraint(0, ub)
+                multi_constraints[p.name].SetCoefficient(self.variables[i], 1)
+
+                constraint = self.solver.Constraint(lb, ub)
             else:
                 constraint = self.solver.Constraint(lb, ub)
 
@@ -207,24 +230,25 @@ class Optimizer(object):
         offensive_pos = self.offensive_positions
         defensive_pos = self.defensive_positions
 
-        if offensive_pos and defensive_pos \
-                and self.settings.no_offense_against_defense:
-            enumerated_players = self.enumerated_players
+        enumerated_players = self.enumerated_players
 
-            for team in self.teams:
-                offensive_against = [
-                    self.variables[i] for i, p in enumerated_players
-                    if p.pos in offensive_pos and
-                    p.is_opposing_team_in_match_up(team)
-                ]
-                defensive = [
-                    self.variables[i] for i, p in enumerated_players
-                    if p.team == team and p.pos in defensive_pos
-                ]
+        for team in self.teams:
+            offensive_against = [
+                self.variables[i] for i, p in enumerated_players
+                if p.pos in offensive_pos and
+                p.is_opposing_team_in_match_up(team)
+            ]
 
-                for p in offensive_against:
-                    for d in defensive:
-                        self.solver.Add(p <= 1 - d)
+            # TODO this is gross for showdown
+            defensive = [
+                self.variables[i] for i, p in enumerated_players
+                if p.team == team and p.pos in defensive_pos or
+                self.showdown and p.real_pos in defensive_pos
+            ]
+
+            for p in offensive_against:
+                for d in defensive:
+                    self.solver.Add(p <= 1 - d)
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:

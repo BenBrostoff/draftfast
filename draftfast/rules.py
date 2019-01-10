@@ -5,7 +5,9 @@ FAN_DUEL = 'FAN_DUEL'
 ROSTER_SIZE = {
     DRAFT_KINGS: {
         'NFL': 9,
+        'NFL_SHOWDOWN': 6,
         'NBA': 8,
+        'NBA_SHOWDOWN': 6,
         'WNBA': 6,
         'MLB': 10,
         'SOCCER': 8,
@@ -14,6 +16,7 @@ ROSTER_SIZE = {
     },
     FAN_DUEL: {
         'NFL': 9,
+        'NFL_MVP': 5,
         'NBA': 9,
         'MLB': 9,
         'WNBA': 7,
@@ -26,7 +29,9 @@ ROSTER_SIZE = {
 SALARY_CAP = {
     DRAFT_KINGS: {
         'NFL': 50_000,
+        'NFL_SHOWDOWN': 50_000,
         'NBA': 50_000,
+        'NBA_SHOWDOWN': 50_000,
         'WNBA': 50_000,
         'MLB': 50_000,
         'SOCCER': 50_000,
@@ -35,6 +40,7 @@ SALARY_CAP = {
     },
     FAN_DUEL: {
         'NFL': 60_000,
+        'NFL_MVP': 60_000,
         'NBA': 60_000,
         'MLB': 35_000,
         'WNBA': 40_000,
@@ -60,6 +66,20 @@ def get_nfl_positions(
     ]
 
 
+def get_nfl_showdown_positions(dk: bool = False, fd: bool = False) -> list:
+    if dk:
+        ub = 5
+    elif fd:
+        ub = 4
+    else:
+        raise NotImplementedError
+
+    return [
+        ['CPT', 1, 1],
+        ['FLEX', ub, ub]
+    ]
+
+
 POSITIONS = {
     DRAFT_KINGS: {
         'NBA': [
@@ -69,6 +89,10 @@ POSITIONS = {
             ['PF', 1, 3],
             ['C', 1, 2]
         ],
+        'NBA_SHOWDOWN': [
+            ['CPT', 1, 1],
+            ['FLEX', 5, 5],
+        ],
         'WNBA': [
             ['PG', 1, 3],
             ['SG', 1, 3],
@@ -76,6 +100,7 @@ POSITIONS = {
             ['PF', 1, 4],
         ],
         'NFL': get_nfl_positions(),
+        'NFL_SHOWDOWN': get_nfl_showdown_positions(dk=True),
         'MLB': [
             ['SP', 2, 2],
             ['C', 1, 1],
@@ -123,6 +148,7 @@ POSITIONS = {
             ['F', 4, 4],
         ],
         'NFL': get_nfl_positions(d_abbrev='D'),
+        'NFL_MVP': get_nfl_showdown_positions(fd=True),
         'NASCAR': [
             ['D', 5, 5],
         ],
@@ -145,7 +171,6 @@ WNBA_GENERAL_POSITIONS = [
 
 
 class RuleSet(object):
-
     def __init__(self, site, league,
                  roster_size, position_limits,
                  salary_max, salary_min=0,
@@ -171,6 +196,16 @@ DK_NBA_RULE_SET = RuleSet(
     salary_max=SALARY_CAP[DRAFT_KINGS]['NBA'],
     position_limits=POSITIONS[DRAFT_KINGS]['NBA'],
     general_position_limits=NBA_GENERAL_POSITIONS,
+)
+
+DK_NBA_SHOWDOWN_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NBA_SHOWDOWN',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['NBA_SHOWDOWN'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['NBA_SHOWDOWN'],
+    position_limits=POSITIONS[DRAFT_KINGS]['NBA_SHOWDOWN'],
+    game_type='showdown',
+    general_position_limits=[],
 )
 
 FD_NBA_RULE_SET = RuleSet(
@@ -206,9 +241,9 @@ DK_NFL_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['NFL'],
     position_limits=POSITIONS[DRAFT_KINGS]['NFL'],
-    general_position_limits=[],
     offensive_positions=['QB', 'RB', 'WR', 'TE'],
     defensive_positions=['DST'],
+    general_position_limits=[],
 )
 
 FD_NFL_RULE_SET = RuleSet(
@@ -217,9 +252,33 @@ FD_NFL_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['NFL'],
     salary_max=SALARY_CAP[FAN_DUEL]['NFL'],
     position_limits=POSITIONS[FAN_DUEL]['NFL'],
-    general_position_limits=[],
     offensive_positions=['QB', 'RB', 'WR', 'TE'],
     defensive_positions=['D'],
+    general_position_limits=[],
+)
+
+DK_NFL_SHOWDOWN_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='NFL_SHOWDOWN',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['NFL_SHOWDOWN'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['NFL_SHOWDOWN'],
+    position_limits=POSITIONS[DRAFT_KINGS]['NFL_SHOWDOWN'],
+    offensive_positions=['CPT'],
+    defensive_positions=['DST'],
+    general_position_limits=[],
+    game_type='showdown',
+)
+
+FD_NFL_MVP_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='NFL_SHOWDOWN',
+    roster_size=ROSTER_SIZE[FAN_DUEL]['NFL_MVP'],
+    salary_max=SALARY_CAP[FAN_DUEL]['NFL_MVP'],
+    position_limits=POSITIONS[FAN_DUEL]['NFL_MVP'],
+    offensive_positions=['CAPT'],
+    defensive_positions=['D'],
+    general_position_limits=[],
+    game_type='showdown',
 )
 
 FD_PGA_RULE_SET = RuleSet(

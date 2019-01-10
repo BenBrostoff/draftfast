@@ -6,10 +6,10 @@ from draftfast.pickem.pickem_orm import TieredPlayer
 
 
 def optimize(
-            all_players: list,
-            player_settings: PlayerPoolSettings = PlayerPoolSettings(),
-            constraints: LineupConstraints = LineupConstraints()
-            ):
+    all_players: list,
+    player_settings: PlayerPoolSettings = PlayerPoolSettings(),
+    constraints: LineupConstraints = LineupConstraints()
+):
     lineup_players = []
     all_players = list(filter(
         add_pickem_contraints(player_settings),
