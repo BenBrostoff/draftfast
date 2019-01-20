@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from typing import List
 from draftfast import player_pool as pool
 from draftfast.orm import RosterSelect, Roster
@@ -19,7 +20,7 @@ def run(rule_set: RuleSet,
         roster_gen: Roster = None,
         verbose=False) -> Roster:
     players = pool.filter_pool(
-        player_pool,
+        deepcopy(player_pool),
         player_settings,
     )
 

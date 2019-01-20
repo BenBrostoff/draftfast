@@ -799,3 +799,23 @@ def test_no_opposing_def_fd_nfl():
     )
 
     ntools.assert_equal(roster, None)
+
+
+def test_no_mutate_side_Effect():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=fd_nfl_salary_file,
+        game=rules.FAN_DUEL,
+    )
+    run(
+        rule_set=rules.FD_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            locked=['Tom Brady']
+        ),
+        verbose=True
+    )
+    brady = next((p for p in players if p.name == 'Tom Brady'))
+    ntools.assert_equal(brady.lock, False)
