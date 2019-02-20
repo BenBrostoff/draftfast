@@ -6,7 +6,7 @@ from draftfast import rules
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings, Stack
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 mock_nba_pool = [
     Player(name='A1', cost=5500, proj=40, pos='PG'),
@@ -291,7 +291,7 @@ def test_respect_group2():
         'DeAndre Hopkins',
         'Amari Cooper',
         'Sammy Watkins'
-        )
+    )
 
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -323,7 +323,7 @@ def test_respect_group3():
         'DeAndre Hopkins',
         'Amari Cooper',
         'Sammy Watkins'
-        )
+    )
 
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -706,8 +706,8 @@ def test_no_opposing_def_dk_nfl_mock():
 
     # add a player from a third team, min 2 teams
     mock_pool.append(Player(
-            name='B2', cost=5500, proj=70, pos='QB', team='Q', matchup='Q@Z'
-        )
+        name='B2', cost=5500, proj=70, pos='QB', team='Q', matchup='Q@Z'
+    )
     )
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -799,3 +799,23 @@ def test_no_opposing_def_fd_nfl():
     )
 
     ntools.assert_equal(roster, None)
+
+
+def test_no_mutate_side_Effect():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=fd_nfl_salary_file,
+        game=rules.FAN_DUEL,
+    )
+    run(
+        rule_set=rules.FD_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            no_offense_against_defense=True
+        ),
+        constraints=LineupConstraints(
+            locked=['Tom Brady']
+        ),
+        verbose=True
+    )
+    brady = next((p for p in players if p.name == 'Tom Brady'))
+    ntools.assert_equal(brady.lock, False)

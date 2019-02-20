@@ -20,82 +20,56 @@ class CSVUploader(object):
         raise NotImplementedError('You must implement _map_pids')
 
 
-class DraftKingsNBAUploader(CSVUploader):
+class DraftKingsUploader(CSVUploader):
+    def write_rosters(self, rosters):
+        with open(self.upload_file, 'w') as f:
+            writer = csv.writer(f)
+            writer.writerow(self.HEADERS)
+            for roster in rosters:
+                write_to_csv(
+                    writer=writer,
+                    roster=roster,
+                    player_map=self.pid_map,
+                    league=self.LEAGUE,
+                )
+
+    def _map_pids(self, pid_file):
+        return map_pids(
+            pid_file,
+            game=DRAFT_KINGS,
+            encoding=self.encoding,
+            errors=self.errors,
+        )
+
+
+class DraftKingsNBAUploader(DraftKingsUploader):
+    LEAGUE = 'NBA'
     HEADERS = [
         'PG', 'SG', 'SF',
         'PF', 'C', 'G', 'F', 'UTIL'
     ]
 
-    def write_rosters(self, rosters):
-        with open(self.upload_file, 'w') as f:
-            writer = csv.writer(f)
-            writer.writerow(self.HEADERS)
-            for roster in rosters:
-                write_to_csv(
-                    writer=writer,
-                    roster=roster,
-                    player_map=self.pid_map,
-                )
 
-    def _map_pids(self, pid_file):
-        return map_pids(
-            pid_file,
-            game=DRAFT_KINGS,
-            encoding=self.encoding,
-            errors=self.errors,
-        )
-
-
-class DraftKingsELUploader(CSVUploader):
+class DraftKingsELUploader(DraftKingsUploader):
+    LEAGUE = 'EL'
     HEADERS = [
         'G', 'G', 'F', 'F', 'F', 'UTIL',
     ]
 
-    def write_rosters(self, rosters):
-        with open(self.upload_file, 'w') as f:
-            writer = csv.writer(f)
-            writer.writerow(self.HEADERS)
-            for roster in rosters:
-                write_to_csv(
-                    writer=writer,
-                    roster=roster,
-                    player_map=self.pid_map,
-                    league='EL',
-                )
 
-    def _map_pids(self, pid_file):
-        return map_pids(
-            pid_file,
-            game=DRAFT_KINGS,
-            encoding=self.encoding,
-            errors=self.errors,
-        )
-
-
-class DraftKingsSoccerUploader(CSVUploader):
+class DraftKingsSoccerUploader(DraftKingsUploader):
+    LEAGUE = 'SOCCER'
     HEADERS = [
         'F', 'F', 'M', 'M', 'D', 'D', 'GK', 'UTIL',
     ]
 
-    def write_rosters(self, rosters):
-        with open(self.upload_file, 'w') as f:
-            writer = csv.writer(f)
-            writer.writerow(self.HEADERS)
-            for roster in rosters:
-                write_to_csv(
-                    writer=writer,
-                    roster=roster,
-                    player_map=self.pid_map,
-                    league='SOCCER',
-                )
 
-    def _map_pids(self, pid_file):
-        return map_pids(
-            pid_file,
-            game=DRAFT_KINGS,
-            encoding=self.encoding,
-            errors=self.errors,
-        )
+class DraftKingsNHLUploader(DraftKingsUploader):
+    LEAGUE = 'NHL'
+    HEADERS = [
+        'C', 'C', 'W', 'W', 'W', 'D',
+        'D', 'G', 'UTIL',
+    ]
 
 
 class DraftKingsNFLUploader(CSVUploader):
@@ -134,7 +108,6 @@ class FanDuelNFLUploader(CSVUploader):
 
 
 class DraftKingsNBAPickemUploader(CSVUploader):
-
     def write_rosters(self, rosters):
         with open(self.upload_file, 'w') as f:
             writer = csv.DictWriter(f, fieldnames=pickem_orm.TIERS)
@@ -150,10 +123,9 @@ class DraftKingsNBAPickemUploader(CSVUploader):
         return pickem_upload.map_pids(pid_file)
 
 
-class DraftKingsNHLUploader(CSVUploader):
+class DraftKingsCaptainShowdownUploader(DraftKingsUploader):
     HEADERS = [
-        'C', 'C', 'W', 'W', 'W', 'D',
-        'D', 'G', 'UTIL',
+        'CPT', 'FLEX', 'FLEX', 'FLEX', 'FLEX', 'FLEX'
     ]
 
     def write_rosters(self, rosters):
@@ -161,17 +133,7 @@ class DraftKingsNHLUploader(CSVUploader):
             writer = csv.writer(f)
             writer.writerow(self.HEADERS)
             for roster in rosters:
-                write_to_csv(
-                    writer=writer,
-                    roster=roster,
-                    player_map=self.pid_map,
-                    league='NHL',
-                )
-
-    def _map_pids(self, pid_file):
-        return map_pids(
-            pid_file,
-            game=DRAFT_KINGS,
-            encoding=self.encoding,
-            errors=self.errors,
-        )
+                writer.writerow([
+                    p.get_player_id(self.pid_map)
+                    for p in roster.sorted_players()
+                ])

@@ -5,6 +5,7 @@ from draftfast import (
     csv_parse,
     exposure,
     pickem,
+    showdown,
 )
 
 assert optimize
@@ -13,3 +14,4 @@ assert orm
 assert csv_parse
 assert exposure
 assert pickem
+assert showdown

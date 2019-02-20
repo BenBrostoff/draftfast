@@ -78,13 +78,16 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | EuroLeague | DraftKings | `DK_EURO_LEAGUE_RULE_SET` |
 | NHL | DraftKings | `DK_NHL_RULE_SET` |
 | NBA Pickem | DraftKings | `DK_NBA_PICKEM_RULE_SET` |
+| NFL Showdown | DraftKings | `DK_NFL_SHOWDOWN_RULE_SET` |
+| NBA Showdown | DraftKings | `DK_NBA_SHOWDOWN_RULE_SET` |
+
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 
 ```python
 from draftfast import rules
 
-nhl_rules = rules.RuleSet(
+golf_rules = rules.RuleSet(
     site=rules.DRAFT_KINGS,
     league='PGA',
     roster_size='6',
@@ -184,7 +187,7 @@ roster = run(
 )
 ```
 
-- `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer (PRs welcome!)
+- `no_offense_against_defense` - Do not allow offensive players to be matched up against defensive players in the optimized lineup. Currently only implemented for soccer, NHL, and NFL -- PRs welcome!
 
 ## CSV Upload
 

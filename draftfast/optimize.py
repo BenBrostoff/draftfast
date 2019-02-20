@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from typing import List
 from draftfast import player_pool as pool
 from draftfast.orm import RosterSelect, Roster
@@ -7,7 +8,7 @@ from draftfast.exposure import check_exposure, \
     get_exposure_table, get_exposure_matrix, get_exposure_args
 from draftfast.rules import RuleSet
 from draftfast.settings import PlayerPoolSettings, OptimizerSettings
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 
 def run(rule_set: RuleSet,
@@ -19,15 +20,23 @@ def run(rule_set: RuleSet,
         roster_gen: Roster = None,
         verbose=False) -> Roster:
     players = pool.filter_pool(
-        player_pool,
+        deepcopy(player_pool),
         player_settings,
     )
+
+    if rule_set.game_type == 'showdown':
+        if optimizer_settings.no_offense_against_defense:
+            print('WARNING:')
+            print('no_offense_against_defense setting ignored for showdown')
+            print('game types. Use no_defense_against_captain instead.')
+            print()
+
     optimizer = Optimizer(
         players=players,
         rule_set=rule_set,
         settings=optimizer_settings,
         lineup_constraints=constraints,
-        exposure_dict=exposure_dict
+        exposure_dict=exposure_dict,
     )
 
     variables = optimizer.variables
@@ -88,11 +97,8 @@ def run_multi(
     exposure_bounds: List[dict] = list(),
     exposure_random_seed=None,
 ) -> [List[Roster], list]:
-
     # set the random seed globally for random lineup exposure
     random.seed(exposure_random_seed)
-
-    print(exposure_random_seed)
 
     rosters = []
     for _ in range(0, iterations):

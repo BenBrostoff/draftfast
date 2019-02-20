@@ -1,6 +1,7 @@
 import csv
 from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
+from draftfast.showdown.orm import ShowdownPlayer
 from draftfast.rules import DRAFT_KINGS, FAN_DUEL
 
 GAME_KEY_MAP = {
@@ -48,6 +49,12 @@ def generate_players_from_csvs(
     with open(salary_file_location, 'r',
               encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
+        pos_key = 'Position'
+        is_nhl = ruleset and ruleset.league == 'NHL'
+        is_showdown = ruleset and ruleset.game_type == 'showdown'
+        if is_nhl or is_showdown:
+            pos_key = 'Roster Position'
+
         for row in csv_data:
             if ruleset and ruleset.game_type == 'pickem':
                 player = TieredPlayer(
@@ -65,12 +72,26 @@ def generate_players_from_csvs(
                     verbose,
                 )
                 players.append(player)
+            elif is_showdown:
+                pos = row[pos_key]
+                player = generate_player(
+                    pos=row['Position'],
+                    row=row,
+                    game=game,
+                )
+                _set_projections(
+                    projections,
+                    player,
+                    verbose,
+                )
+                captain = pos == 'CPT'
+                players.append(
+                    ShowdownPlayer(
+                        player,
+                        captain=captain,
+                    )
+                )
             else:
-                pos_key = 'Position'
-                is_nhl = ruleset and ruleset.league == 'NHL'
-                if is_nhl:
-                    pos_key = 'Roster Position'
-
                 for pos in row[pos_key].split('/'):
                     if is_nhl and pos == 'UTIL':
                         continue
@@ -84,9 +105,23 @@ def generate_players_from_csvs(
                         player,
                         verbose,
                     )
+
                     players.append(player)
 
     return players
+
+
+# TODO - extract
+def _create_classic_player():
+    pass
+
+
+def _create_tiered_player():
+    pass
+
+
+def _create_showdown_player():
+    pass
 
 
 def generate_player(pos, row, game):

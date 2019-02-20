@@ -89,6 +89,8 @@ class OptimizerSettings(object):
                  existing_rosters=None, force_combo=None,
                  combo_allow_te=None, uniques=None,
                  no_offense_against_defense=False,
+                 no_defense_against_captain=False,
+                 showdown_teams=None,
                  min_teams=2):
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
@@ -96,6 +98,8 @@ class OptimizerSettings(object):
         self.combo_allow_te = combo_allow_te
         self.uniques = uniques
         self.no_offense_against_defense = no_offense_against_defense
+        self.no_defense_against_captain = no_defense_against_captain
+        self.showdown_teams = showdown_teams
         self.min_teams = min_teams
 
     # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
