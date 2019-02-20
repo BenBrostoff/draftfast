@@ -25,6 +25,7 @@ OPTIMIZE_COMMAND_LINE = [
     ['-pids', 'player id file (create upload file)', None],
     ['-keep_pids', 'Keep current upload file', None],
     ['-po_location', 'projected ownership percentages file location', None],
+    ['-json', 'ingest salary and projection files as json', False],
     ['-salary_file', 'file location for salaries',
      os.getcwd() + '/data/current-salaries.csv'],
     ['-projection_file', 'file location for projections',
