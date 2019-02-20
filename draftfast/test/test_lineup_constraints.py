@@ -1,6 +1,6 @@
-from draftfast.lineup_contraints import (LineupConstraints,
-                                         ConstraintConflictException,
-                                         ConstraintException)
+from draftfast.lineup_constraints import (LineupConstraints,
+                                          ConstraintConflictException,
+                                          ConstraintException)
 from nose import tools as ntools
 
 

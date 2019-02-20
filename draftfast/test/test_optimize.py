@@ -6,7 +6,7 @@ from draftfast import rules
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings, Stack
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 mock_nba_pool = [
     Player(name='A1', cost=5500, proj=40, pos='PG'),
