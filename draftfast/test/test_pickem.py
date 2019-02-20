@@ -2,7 +2,7 @@ from nose import tools as ntools
 from draftfast.pickem import pickem_orm
 from draftfast.pickem.pickem_optimize import optimize
 from draftfast.settings import PlayerPoolSettings
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 
 def _generate_player(name, proj, tier, **kwargs):

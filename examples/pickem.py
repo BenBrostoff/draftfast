@@ -3,7 +3,7 @@ import random
 from draftfast.pickem.pickem_optimize import optimize
 from draftfast.csv_parse import uploaders, salary_download
 from draftfast import rules
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 salary_file_location = os.environ.get('PICKEM')
 pid_file_location = os.environ.get('PICKEM_PIDS')

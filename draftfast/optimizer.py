@@ -5,7 +5,7 @@ from draftfast.dke_exceptions import (InvalidBoundsException,
                                       PlayerBanAndLockException)
 from draftfast.orm import Player
 from draftfast.rules import RuleSet
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 
 class Optimizer(object):

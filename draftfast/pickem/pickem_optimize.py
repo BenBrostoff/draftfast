@@ -1,7 +1,7 @@
 from draftfast.player_pool import add_pickem_contraints
 from draftfast.pickem.pickem_orm import TieredLineup, TIERS
 from draftfast.settings import PlayerPoolSettings
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 from draftfast.pickem.pickem_orm import TieredPlayer
 
 

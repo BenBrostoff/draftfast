@@ -4,7 +4,7 @@ from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-soccer-salaries.csv'.format(CURRENT_DIR)

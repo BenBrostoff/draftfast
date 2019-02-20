@@ -8,7 +8,7 @@ from draftfast.exposure import check_exposure, \
     get_exposure_table, get_exposure_matrix, get_exposure_args
 from draftfast.rules import RuleSet
 from draftfast.settings import PlayerPoolSettings, OptimizerSettings
-from draftfast.lineup_contraints import LineupConstraints
+from draftfast.lineup_constraints import LineupConstraints
 
 
 def run(rule_set: RuleSet,
