@@ -206,6 +206,7 @@ class RosterSelect:
             'SOCCER': SoccerRoster(),
             'EL': ELRoster(),
             'NHL': NHLRoster(),
+            'NHL_SHOWDOWN': ShowdownRoster(),
         }
         return roster_dict[league]
 
