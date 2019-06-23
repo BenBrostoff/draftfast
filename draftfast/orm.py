@@ -229,7 +229,6 @@ class Player(object):
         lock=False,
         position_lock=False,
         ban=False,
-        position_ban=False,
         multi_position=False,
     ):
         self.pos = pos
