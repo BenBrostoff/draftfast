@@ -58,7 +58,7 @@ class Roster:
                 if p.name == player or p.short_name == player:
                     return True
         elif isinstance(player, Player):
-            return p in self.players
+            return self.players
         else:
             raise NotImplementedError
 
@@ -207,6 +207,7 @@ class RosterSelect:
             'EL': ELRoster(),
             'NHL': NHLRoster(),
             'NHL_SHOWDOWN': ShowdownRoster(),
+            'MLB_SHOWDOWN': ShowdownRoster(),
         }
         return roster_dict[league]
 

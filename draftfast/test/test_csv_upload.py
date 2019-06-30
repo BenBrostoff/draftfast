@@ -211,6 +211,27 @@ def test_dk_nba_showdown_upload():
     )
 
 
+def test_dk_mlb_showdown_upload():
+    row = _get_first_written_row_dk_showdown(
+        salary_file='dk-mlb-showdown-salaries.csv',
+        pid_file='dk-mlb-showdown-pids.csv',
+        ruleset=rules.DK_MLB_SHOWDOWN_RULE_SET,
+        Uploader=uploaders.DraftKingsCaptainShowdownUploader,
+    )
+    assert_equal(
+        row,
+        [
+            1,
+            '11915867',
+            '11915844',
+            '11915845',
+            '11915846',
+            '11915852',
+            '11915855',
+        ],
+    )
+
+
 def _get_first_written_row(
         game: str,
         salary_file_location: str,

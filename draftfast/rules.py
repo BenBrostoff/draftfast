@@ -6,6 +6,7 @@ ROSTER_SIZE = {
     DRAFT_KINGS: {
         'NFL': 9,
         'NFL_SHOWDOWN': 6,
+        'MLB_SHOWDOWN': 6,
         'NBA': 8,
         'NBA_SHOWDOWN': 6,
         'WNBA': 6,
@@ -39,6 +40,7 @@ SALARY_CAP = {
         'EL': 50_000,
         'NHL': 50_000,
         'NHL_SHOWDOWN': 50_000,
+        'MLB_SHOWDOWN': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -129,6 +131,9 @@ POSITIONS = {
             ['G', 1, 1],
         ],
         'NHL_SHOWDOWN': [
+            ['FLEX', 6, 6],
+        ],
+        'MLB_SHOWDOWN': [
             ['FLEX', 6, 6],
         ],
     },
@@ -372,4 +377,14 @@ DK_NBA_PICKEM_RULE_SET = RuleSet(
     salary_max=None,
     position_limits=None,
     game_type='pickem',
+)
+
+DK_MLB_SHOWDOWN_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='MLB_SHOWDOWN',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['MLB_SHOWDOWN'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['MLB_SHOWDOWN'],
+    position_limits=POSITIONS[DRAFT_KINGS]['MLB_SHOWDOWN'],
+    general_position_limits=[],
+    game_type='showdown'
 )
