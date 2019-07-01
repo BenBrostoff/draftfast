@@ -16,7 +16,7 @@ players = salary_download.generate_players_from_csvs(
 )
 
 rosters = []
-for _ in range(20):
+for p in range(20):
     player = random.choice(players)
     roster = optimize(
         all_players=players,
