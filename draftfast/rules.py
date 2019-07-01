@@ -134,7 +134,8 @@ POSITIONS = {
             ['FLEX', 6, 6],
         ],
         'MLB_SHOWDOWN': [
-            ['FLEX', 6, 6],
+            ['CPT', 1, 1],
+            ['FLEX', 5, 5],
         ],
     },
     FAN_DUEL: {
