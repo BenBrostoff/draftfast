@@ -58,7 +58,7 @@ class Roster:
                 if p.name == player or p.short_name == player:
                     return True
         elif isinstance(player, Player):
-            return self.players
+            return player in self.players
         else:
             raise NotImplementedError
 
