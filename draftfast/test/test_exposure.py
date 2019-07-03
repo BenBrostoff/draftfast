@@ -25,6 +25,7 @@ def test_deterministic_exposure_limits():
             {'name': 'Andrew Luck', 'min': 0.5, 'max': 0.7},
             {'name': 'Alshon Jeffery', 'min': 1, 'max': 1},
         ],
+        verbose=True,
     )
     ntools.assert_equal(len(rosters), iterations)
     ntools.assert_equal(len(exposure_diffs), 0)
