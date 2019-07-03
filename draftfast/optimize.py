@@ -24,6 +24,9 @@ def run(rule_set: RuleSet,
         player_settings,
     )
 
+    if not isinstance(rule_set, RuleSet):
+        raise Exception("RuleSet not defined. Please refer to the docs")
+
     if rule_set.game_type == 'showdown':
         if optimizer_settings.no_offense_against_defense:
             print('WARNING:')
@@ -97,6 +100,10 @@ def run_multi(
     exposure_bounds: List[dict] = list(),
     exposure_random_seed=None,
 ) -> [List[Roster], list]:
+
+    if not isinstance(rule_set, RuleSet):
+        raise Exception("RuleSet not defined. Please refer to the docs")
+
     # set the random seed globally for random lineup exposure
     random.seed(exposure_random_seed)
 
