@@ -59,8 +59,23 @@ def _build_mock_player_pool():
                team='Y', matchup='X@Y'),
     ]
 
-    mock_dk_pool = [ShowdownPlayer(p) for p in player_pool] + \
-                   [ShowdownPlayer(p, captain=True) for p in player_pool]
+    def capt_boost(p):
+        return Player(
+            name=p.name,
+            team=p.team,
+            matchup=p.matchup,
+            pos=p.pos,
+            cost=p.cost * 1.5,
+            proj=p.proj * 1.5,
+        )
+
+    captain_pool = [capt_boost(p) for p in player_pool]
+
+    mock_dk_pool = []
+    for p in player_pool:
+        mock_dk_pool.append(ShowdownPlayer(p))
+    for p in captain_pool:
+        mock_dk_pool.append(ShowdownPlayer(p, captain=True))
 
     return mock_dk_pool
 
