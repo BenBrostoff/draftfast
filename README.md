@@ -21,9 +21,8 @@ from draftfast import rules
 from draftfast.optimize import run
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
-from draftfast.lineup_constraints import LineupConstraints
 
-# Create players
+# Create players for a classic DraftKings game
 player_pool = [
     Player(name='A1', cost=5500, proj=55, pos='PG'),
     Player(name='A2', cost=5500, proj=55, pos='PG'),
@@ -80,7 +79,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | NBA Pickem | DraftKings | `DK_NBA_PICKEM_RULE_SET` |
 | NFL Showdown | DraftKings | `DK_NFL_SHOWDOWN_RULE_SET` |
 | NBA Showdown | DraftKings | `DK_NBA_SHOWDOWN_RULE_SET` |
-
+| MLB Showdown | DraftKings | `DK_MLB_SHOWDOWN_RULE_SET` |
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 
