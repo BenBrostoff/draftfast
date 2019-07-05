@@ -125,7 +125,7 @@ class DraftKingsNBAPickemUploader(CSVUploader):
 
 class DraftKingsCaptainShowdownUploader(DraftKingsUploader):
     HEADERS = [
-        'CPT', 'FLEX', 'FLEX', 'FLEX', 'FLEX', 'FLEX'
+        'CPT', 'UTIL', 'UTIL', 'UTIL', 'UTIL', 'UTIL'
     ]
 
     def write_rosters(self, rosters):
