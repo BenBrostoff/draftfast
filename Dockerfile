@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu
 
 RUN apt-get update && apt-get install -y vim python3 python3-pip python3-wheel python3-six python3-pip
 
