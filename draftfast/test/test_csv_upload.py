@@ -35,6 +35,29 @@ def test_dk_nba_upload():
     )
 
 
+def test_dk_nfl_upload():
+    row = _get_first_written_row(
+        game=rules.DRAFT_KINGS,
+        salary_file_location='{}/data/dk-nfl-upload-salaries.csv'.format(
+            CURRENT_DIR
+        ),
+        rule_set=rules.DK_NFL_RULE_SET,
+        pid_file='{}/data/dk-nfl-upload.csv'.format(CURRENT_DIR),
+        Uploader=uploaders.DraftKingsNFLUploader,
+    )
+    assert_equal(
+        row,
+        [
+            '11799918',
+            '11799942',
+            '11799922',
+            '11799956',
+            '11800052',
+            '11799950',
+        ],
+    )
+
+
 def test_dk_el_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
