@@ -50,6 +50,11 @@ def map_pids(pid_file, encoding, errors, game=DRAFT_KINGS):
                         encoding=encoding, errors=errors), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
+            # DraftKings adds spaces to DST for NFL
+            if 'DST' in line[position]:
+                line[name] = line[name].strip()
+                line[position] = line[position].strip()
+
             player_map[line[name] + " " + line[position]] = line[p_id]
 
     return player_map
