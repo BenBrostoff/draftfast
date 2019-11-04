@@ -1,13 +1,11 @@
 from . import (
     mlb_upload,
-    nba_upload,
-    nfl_upload,
+    upload,
     salary_download,
     uploaders,
 )
 
 assert mlb_upload
-assert nba_upload
-assert nfl_upload
+assert upload
 assert salary_download
 assert uploaders
