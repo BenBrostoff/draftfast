@@ -206,6 +206,7 @@ class Optimizer(object):
                         stack_lock_pos,
                         stack_lock_eligible_pos,
                         stack_team,
+                        stack.count
                     )
 
     def _set_stacking_type(
@@ -213,6 +214,7 @@ class Optimizer(object):
         stack_lock_pos,
         stack_eligible_pos,
         team,
+        count,
     ):
         if self.settings:
             if stack_lock_pos and stack_eligible_pos:
@@ -229,6 +231,10 @@ class Optimizer(object):
                 self.solver.Add(
                     self.solver.Sum(skillplayers_on_team) >=
                     self.solver.Sum(locked_on_team)
+                )
+                self.solver.Add(
+                    (self.solver.Sum(skillplayers_on_team)) >=
+                    count - 1
                 )
 
     def _set_combo(self):

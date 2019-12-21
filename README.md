@@ -164,6 +164,18 @@ roster = run(
 )
 ```
 
+`Stack` can also be tuned to support different combinations of positions. For NFL,
+to only specify a QB-WRs based stack of five:
+
+```python
+Stack(
+    team='NE',
+    count=5,
+    stack_lock_pos=['QB'],
+    stack_eligible_pos=['WR'],
+)
+```
+
 `LineupConstraints`
 
 - `locked` - list of players to lock
