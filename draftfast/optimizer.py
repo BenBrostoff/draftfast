@@ -188,7 +188,7 @@ class Optimizer(object):
                     stack_team = stack.team
                     stack_count = stack.count
                     stack_lock_pos = stack.stack_lock_pos
-                    stack_lock_eligible_pos = stack.stack_lock_eligible_pos
+                    stack_lock_eligible_pos = stack.stack_eligible_pos
 
                     stack_cap = self.solver.Constraint(
                         stack_count,
@@ -208,9 +208,6 @@ class Optimizer(object):
                         stack_team,
                     )
 
-    # TODO - still expose ability to always pair a QB with WR WITHOUT a stack specified
-    # This represents a view that you don't know what team you want to stack,
-    # but you want the optimizer to pick a stack for you.
     def _set_stacking_type(
         self,
         stack_lock_pos,
@@ -233,6 +230,33 @@ class Optimizer(object):
                     self.solver.Sum(skillplayers_on_team) >=
                     self.solver.Sum(locked_on_team)
                 )
+
+    def _set_combo(self):
+        if self.settings:
+            combo = self.settings.force_combo
+            combo_allow_te = self.settings.combo_allow_te
+
+            combo_skill_type = ['WR']
+            if combo_allow_te:
+                combo_skill_type.append('TE')
+
+            if combo:
+                teams = set([p.team for p in self.players])
+                enumerated_players = self.enumerated_players
+
+                for team in teams:
+                    skillplayers_on_team = [
+                        self.variables[i] for i, p in enumerated_players
+                        if p.team == team and p.pos in combo_skill_type
+                    ]
+                    qbs_on_team = [
+                        self.variables[i] for i, p in enumerated_players
+                        if p.team == team and p.pos == 'QB'
+                    ]
+                    self.solver.Add(
+                        self.solver.Sum(skillplayers_on_team) >=
+                        self.solver.Sum(qbs_on_team)
+                    )
 
     def _set_no_opp_defense(self):
         offensive_pos = self.offensive_positions
