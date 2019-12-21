@@ -18,7 +18,7 @@ setuptools.setup(
                 'lineup construction.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/BenBrostoff/draft-kings-fun',
+    url='https://githubgpod.com/BenBrostoff/draft-kings-fun',
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
