@@ -363,6 +363,49 @@ def test_stack():
         if p.team == 'NE'
     ])
     ntools.assert_equals(5, ne_players_count)
+    ne_def = len([
+        p for p in roster.sorted_players()
+        if p.team == 'NE' and p.pos == 'DST'
+    ])
+    ntools.assert_equals(ne_def, 1)
+
+
+def test_custom_stack():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        projection_file_location=projection_file,
+        game=rules.DRAFT_KINGS,
+    )
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET,
+        player_pool=players,
+        optimizer_settings=OptimizerSettings(
+            stacks=[
+                Stack(
+                    team='NE',
+                    count=5,
+                    stack_lock_pos=['QB'],
+                    stack_eligible_pos=['WR'],
+                )
+            ]
+        ),
+        verbose=True,
+    )
+    ne_players_count = len([
+        p for p in roster.sorted_players()
+        if p.team == 'NE'
+    ])
+    ntools.assert_equals(5, ne_players_count)
+    ne_def = len([
+        p for p in roster.sorted_players()
+        if p.team == 'NE' and p.pos == 'DST'
+    ])
+    ntools.assert_equals(ne_def, 0)
+    wides = len([
+        p for p in roster.sorted_players()
+        if p.team == 'NE' and p.pos == 'WR'
+    ])
+    ntools.assert_equals(wides, 4)
 
 
 def test_force_combo():
@@ -477,47 +520,6 @@ def test_te_combo():
         if x.team == qb.team and x.pos == 'WR'
     ])
     ntools.assert_equals(team_count, 1)
-
-# def test_no_double_te():
-#     # check double TE allowed
-#     players = salary_download.generate_players_from_csvs(
-#         salary_file_location=salary_file,
-#         projection_file_location=projection_file,
-#         game=rules.DRAFT_KINGS,
-#     )
-#     roster = run(
-#         rule_set=rules.DK_NFL_RULE_SET,
-#         player_pool=players,
-#         verbose=True,
-#         constraints=LineupConstraints(
-#             locked=['Rob Gronkowski']
-#         ),
-#     )
-#     qb = roster.sorted_players()[0]
-#     ntools.assert_equal(qb.pos, 'QB')
-
-#     te_count = len([
-#         x for x in roster.sorted_players()
-#         if x.pos == 'TE'
-#     ])
-#     ntools.assert_equals(te_count, 2)
-
-#     # ban double te
-#     roster = run(
-#         rule_set=rules.DK_NFL_RULE_SET,
-#         player_pool=players,
-#         constraints=LineupConstraints(
-#             locked=['Rob Gronkowski'],
-#         )
-#     )
-#     qb = roster.sorted_players()[0]
-#     ntools.assert_equal(qb.pos, 'QB')
-
-#     te_count = len([
-#         x for x in roster.sorted_players()
-#         if x.pos == 'TE'
-#     ])
-#     ntools.assert_equals(te_count, 1)
 
 
 def test_impossible_constraints():

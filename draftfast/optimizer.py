@@ -187,6 +187,9 @@ class Optimizer(object):
                 for stack in stacks:
                     stack_team = stack.team
                     stack_count = stack.count
+                    stack_lock_pos = stack.stack_lock_pos
+                    stack_lock_eligible_pos = stack.stack_eligible_pos
+
                     stack_cap = self.solver.Constraint(
                         stack_count,
                         stack_count,
@@ -198,6 +201,41 @@ class Optimizer(object):
                                 self.variables[i],
                                 1
                             )
+
+                    self._set_stacking_type(
+                        stack_lock_pos,
+                        stack_lock_eligible_pos,
+                        stack_team,
+                        stack.count
+                    )
+
+    def _set_stacking_type(
+        self,
+        stack_lock_pos,
+        stack_eligible_pos,
+        team,
+        count,
+    ):
+        if self.settings:
+            if stack_lock_pos and stack_eligible_pos:
+                enumerated_players = self.enumerated_players
+
+                skillplayers_on_team = [
+                    self.variables[i] for i, p in enumerated_players
+                    if p.team == team and p.pos in stack_eligible_pos
+                ]
+                locked_on_team = [
+                    self.variables[i] for i, p in enumerated_players
+                    if p.team == team and p.pos == stack_lock_pos
+                ]
+                self.solver.Add(
+                    self.solver.Sum(skillplayers_on_team) >=
+                    self.solver.Sum(locked_on_team)
+                )
+                self.solver.Add(
+                    (self.solver.Sum(skillplayers_on_team)) >=
+                    count - 1
+                )
 
     def _set_combo(self):
         if self.settings:
