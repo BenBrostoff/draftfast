@@ -100,7 +100,13 @@ class UploadSettings(object):
 
 
 class Stack(object):
-    def __init__(self, team: str, count: int, stack_lock_pos=None, stack_eligible_pos=None):
+    def __init__(
+        self,
+        team: str,
+        count: int,
+        stack_lock_pos=None,
+        stack_eligible_pos=None
+    ):
         self.team = team
         self.count = count
         self.stack_lock_pos = stack_lock_pos
