@@ -30,7 +30,16 @@ def write_to_csv(writer, player_map, roster, game=DRAFT_KINGS,
 
             # NFL Flex
             _on_position(players, ['TE', 'WR', 'RB']),
-
+            _on_position(players, ['DST']),
+        ]
+    elif game == DRAFT_KINGS and league == 'XFL':
+        ordered_possible = [
+            _on_position(players, ['QB']),
+            _on_position(players, ['RB']),
+            _on_position(players, ['WR']),
+            _on_position(players, ['WR']),
+            _on_position(players, ['WR', 'RB']),
+            _on_position(players, ['WR', 'RB']),
             _on_position(players, ['DST']),
         ]
     elif game == DRAFT_KINGS and league == 'SOCCER':

@@ -1,6 +1,7 @@
 import os
 import csv
 from typing import Type
+import types
 from nose.tools import assert_equal
 from draftfast import rules
 from draftfast import optimize
@@ -257,6 +258,32 @@ def test_dk_mlb_showdown_upload():
     )
 
 
+def test_dk_xfl_classic_upload():
+    def proj(players):
+        for idx, p in enumerate(players):
+            p.proj = idx
+
+    row = _get_first_written_row_dk_showdown(
+        salary_file='dk-xfl-salaries.csv',
+        pid_file='dk-xfl-pids.csv',
+        ruleset=rules.DK_XFL_CLASSIC_RULE_SET,
+        Uploader=uploaders.DraftKingsXFLUploader,
+        players_side_effect=proj
+    )
+    assert_equal(
+        row,
+        [
+            '14224920',
+            '14225002',
+            '14225226',
+            '14225228',
+            '14225230',
+            '14225232',
+            '14225241'
+        ]
+    )
+
+
 def _get_first_written_row(
         game: str,
         salary_file_location: str,
@@ -290,12 +317,15 @@ def _get_first_written_row(
 
     return row
 
+def _noop(players):
+    pass
 
 def _get_first_written_row_dk_showdown(
     salary_file: str,
     pid_file: str,
     ruleset: rules.RuleSet,
     Uploader: Type[uploaders.CSVUploader],
+    players_side_effect: types.FunctionType = _noop
 ) -> list:
     salary_file_location = '{}/data/{}'.format(
         CURRENT_DIR,
@@ -306,6 +336,7 @@ def _get_first_written_row_dk_showdown(
         salary_file_location=salary_file_location,
         ruleset=ruleset,
     )
+    players_side_effect(players)
     rosters = [optimize.run(
         player_pool=players,
         rule_set=ruleset,

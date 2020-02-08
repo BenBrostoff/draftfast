@@ -134,6 +134,16 @@ class DraftKingsNFLUploader(DraftKingsUploader):
     ]
 
 
+class DraftKingsXFLUploader(DraftKingsUploader):
+    LEAGUE = 'XFL'
+    HEADERS = [
+        'QB', 'RB',
+        'WR', 'WR',
+        'FLEX', 'FLEX',
+        'DST',
+    ]
+
+
 class FanDuelNBAUploader(CSVUploader):
     HEADERS = [
         'PG', 'PG', 'SG', 'SG', 'SF',
