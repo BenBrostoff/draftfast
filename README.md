@@ -80,6 +80,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | NFL Showdown | DraftKings | `DK_NFL_SHOWDOWN_RULE_SET` |
 | NBA Showdown | DraftKings | `DK_NBA_SHOWDOWN_RULE_SET` |
 | MLB Showdown | DraftKings | `DK_MLB_SHOWDOWN_RULE_SET` |
+| XFL | DraftKings | `DK_XFL_CLASSIC_RULE_SET` |
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 
@@ -225,6 +226,27 @@ DFS optimization is only one part of a sustainable strategy. Long-term DFS winne
 - ...and so much more
 
 DraftFast provides support and consulting services that can help with all of these. [Let's get in touch today](mailto:ben.brostoff@gmail.com).
+
+# Contributing
+
+Run tests or set of tests:
+
+```sh
+# All tests
+nosetests
+
+# Single file
+nosetests draftfast/test/test_soccer.py
+
+# Single test
+nosetests draftfast/test/test_soccer.py:test_soccer_dk_no_opp_d
+```
+
+Run linting
+
+```
+flake8 draftfast
+```
 
 # Credits
 
