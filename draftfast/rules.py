@@ -15,6 +15,7 @@ ROSTER_SIZE = {
         'EL': 6,
         'NHL': 9,
         'NHL_SHOWDOWN': 6,
+        'XFL': 7,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -41,6 +42,7 @@ SALARY_CAP = {
         'NHL': 50_000,
         'NHL_SHOWDOWN': 50_000,
         'MLB_SHOWDOWN': 50_000,
+        'XFL': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -137,6 +139,12 @@ POSITIONS = {
             ['CPT', 1, 1],
             ['FLEX', 5, 5],
         ],
+        'XFL': [
+            ['QB', 1, 1],
+            ['RB', 1, 3],
+            ['WR', 2, 4],
+            ['DST', 1, 1]
+        ]
     },
     FAN_DUEL: {
         'NBA': [
@@ -388,4 +396,14 @@ DK_MLB_SHOWDOWN_RULE_SET = RuleSet(
     position_limits=POSITIONS[DRAFT_KINGS]['MLB_SHOWDOWN'],
     general_position_limits=[],
     game_type='showdown'
+)
+
+
+DK_XFL_CLASSIC_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='XFL',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['XFL'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['XFL'],
+    position_limits=POSITIONS[DRAFT_KINGS]['XFL'],
+    general_position_limits=[],
 )

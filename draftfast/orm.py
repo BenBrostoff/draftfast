@@ -208,6 +208,8 @@ class RosterSelect:
             'NHL': NHLRoster(),
             'NHL_SHOWDOWN': ShowdownRoster(),
             'MLB_SHOWDOWN': ShowdownRoster(),
+            # XFL uses the same positions as NFL
+            'XFL': NFLRoster()
         }
         return roster_dict[league]
 

@@ -226,6 +226,27 @@ DFS optimization is only one part of a sustainable strategy. Long-term DFS winne
 
 DraftFast provides support and consulting services that can help with all of these. [Let's get in touch today](mailto:ben.brostoff@gmail.com).
 
+# Contributing
+
+Run tests or set of tests:
+
+```sh
+# All tests
+nosetests
+
+# Single file
+nosetests draftfast/test/test_soccer.py
+
+# Single test
+nosetests draftfast/test/test_soccer.py:test_soccer_dk_no_opp_d
+```
+
+Run linting
+
+```
+flake8 draftfast
+```
+
 # Credits
 
 Special thanks to [swanson](https://github.com/swanson/), who authored [this repo](https://github.com/swanson/degenerate), which was the inspiration for this one.
