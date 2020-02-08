@@ -317,8 +317,10 @@ def _get_first_written_row(
 
     return row
 
+
 def _noop(players):
     pass
+
 
 def _get_first_written_row_dk_showdown(
     salary_file: str,
