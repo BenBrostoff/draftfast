@@ -119,6 +119,12 @@ class NFLRoster(Roster):
     }
 
 
+class TenRoster(Roster):
+    POSITION_ORDER = {
+        'P': 1,
+    }
+
+
 class MLBRoster(Roster):
     POSITION_ORDER = {
         'P': 0,
@@ -209,7 +215,8 @@ class RosterSelect:
             'NHL_SHOWDOWN': ShowdownRoster(),
             'MLB_SHOWDOWN': ShowdownRoster(),
             # XFL uses the same positions as NFL
-            'XFL': NFLRoster()
+            'XFL': NFLRoster(),
+            'TEN': TenRoster(),
         }
         return roster_dict[league]
 
