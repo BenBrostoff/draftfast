@@ -1,3 +1,5 @@
+[ -z "$1" ] && echo "Need to specify version, exiting." && exit 1
+
 echo "You are about to update to version ${1}. Please confirm upgrade with Y."
 
 read confirmation
