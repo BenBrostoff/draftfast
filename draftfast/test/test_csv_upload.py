@@ -261,7 +261,7 @@ def test_dk_mlb_showdown_upload():
 def test_dk_xfl_classic_upload():
     def proj(players):
         for idx, p in enumerate(players):
-            p.proj = (p.cost / 1000.0) * 5
+            p.proj = idx
 
     row = _get_first_written_row_dk_showdown(
         salary_file='dk-xfl-salaries.csv',
@@ -339,26 +339,19 @@ def _get_first_written_row_dk_showdown(
         ruleset=ruleset,
     )
     players_side_effect(players)
+    rosters = [optimize.run(
+        player_pool=players,
+        rule_set=ruleset,
+        verbose=True,
+    )]
+
     pid_file_location = '{}/data/{}'.format(CURRENT_DIR, pid_file)
-    upload_file = '{}/data/current-upload2.csv'.format(CURRENT_DIR)
+    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
     uploader = Uploader(
         pid_file=pid_file_location,
         upload_file=upload_file,
     )
-
-    from draftfast.settings import OptimizerSettings
-    existing_rosters = []
-    for x in range(20):
-        roster = optimize.run(
-            rule_set=rules.DK_XFL_CLASSIC_RULE_SET,
-            player_pool=players,
-            optimizer_settings=OptimizerSettings(
-                existing_rosters=existing_rosters,
-            ),
-            verbose=True,
-        )
-        existing_rosters.append(roster)
-    uploader.write_rosters(existing_rosters)
+    uploader.write_rosters(rosters)
 
     row = None
     with open(upload_file, 'r') as csvfile:
