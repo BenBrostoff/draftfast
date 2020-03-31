@@ -40,9 +40,11 @@ mock_nfl_pool = [
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
+dk_nfl_salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
 fd_nfl_salary_file = '{}/data/fd-nfl-salaries.csv'.format(CURRENT_DIR)
-projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
+dk_nfl_projection_file = '{}/data/dk-nfl-projections.csv'.format(CURRENT_DIR)
+nba_test_salaries = '{}/data/nba-test-salaries.csv'.format(CURRENT_DIR)
+nba_test_projections = '{}/data/nba-test-projections.csv'.format(CURRENT_DIR)
 
 
 def test_nba_dk():
@@ -55,9 +57,14 @@ def test_nba_dk():
 
 
 def test_nba_dk_with_csv():
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=nba_test_salaries,
+        projection_file_location=nba_test_projections,
+        game=rules.DRAFT_KINGS,
+    )
     roster = run(
         rule_set=rules.DK_NBA_RULE_SET,
-        player_pool=mock_nba_pool,
+        player_pool=players,
         verbose=True,
     )
     ntools.assert_not_equal(roster, None)
@@ -84,8 +91,8 @@ def test_nfl_dk_mock():
 
 def test_nfl_dk():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
 
     )
@@ -116,8 +123,8 @@ def test_nfl_fd():
 
 def test_multi_position():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -136,8 +143,8 @@ def test_multi_position():
 
 def test_multi_roster_nfl():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -215,8 +222,8 @@ def test_uniques_nba():
 
 def test_respect_lock():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 
@@ -235,8 +242,8 @@ def test_respect_lock():
 
 def test_respect_ban():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 
@@ -254,8 +261,8 @@ def test_respect_ban():
 
 def test_respect_group1():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 
@@ -280,8 +287,8 @@ def test_respect_group1():
 
 def test_respect_group2():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 
@@ -312,8 +319,8 @@ def test_respect_group2():
 
 def test_respect_group3():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 
@@ -344,8 +351,8 @@ def test_respect_group3():
 
 def test_stack():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -372,8 +379,8 @@ def test_stack():
 
 def test_custom_stack():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -411,8 +418,8 @@ def test_custom_stack():
 def test_force_combo():
     # no combo
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -436,8 +443,8 @@ def test_force_combo():
 
     # QB/WR combo
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -470,8 +477,8 @@ def test_force_combo():
 def test_te_combo():
     # use lock and ban to make a non-globally optimal QB/TE combo optimal
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -497,8 +504,8 @@ def test_te_combo():
 
     # make sure WR/QB still works
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -524,8 +531,8 @@ def test_te_combo():
 
 def test_impossible_constraints():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
     roster = run(
@@ -599,8 +606,8 @@ def test_multi_position_group_constraint():
 
 def test_multi_position_group_constraint2():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 
@@ -727,8 +734,8 @@ def test_no_opposing_def_dk_nfl_mock():
 
 def test_no_opposing_def_dk_nfl():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        projection_file_location=projection_file,
+        salary_file_location=dk_nfl_salary_file,
+        projection_file_location=dk_nfl_projection_file,
         game=rules.DRAFT_KINGS,
     )
 

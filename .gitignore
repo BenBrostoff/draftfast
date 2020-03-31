@@ -5,6 +5,7 @@
 \current*
 .coverage
 .DS_Store
+.eggs/*
 
 # for experimentation
 scratch.py
