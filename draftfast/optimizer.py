@@ -40,8 +40,6 @@ class Optimizer(object):
         self.player_to_idx_map = {}
         self.name_to_idx_map = {}
         self.variables = []
-        self.name_to_idx_map = dict()
-        self.player_to_idx_map = dict()
 
         for idx, player in self.enumerated_players:
             self.variables.append(
@@ -73,7 +71,7 @@ class Optimizer(object):
 
         if p.name not in self.name_to_idx_map.keys():
             self.name_to_idx_map[p.name] = set()
-        self.name_to_idx_map[p.name].update([idx])
+        self.name_to_idx_map[p.name].add(idx)
 
     def _is_locked(self, p: Player) -> bool:
         return self.lineup_constraints.is_locked(p.name) or \
@@ -324,9 +322,10 @@ class Optimizer(object):
                 max_repeats
             )
             for player in roster.sorted_players():
-                i = self.player_to_idx_map.get(player.solver_id)
-                if i is not None:
-                    repeated_players.SetCoefficient(self.variables[i], 1)
+                # Get all players by name to avoid same player in different position not be treated as repeats.
+                for i in self.name_to_idx_map.get(player.name):
+                    if i is not None:
+                        repeated_players.SetCoefficient(self.variables[i], 1)
 
     def _set_min_teams(self):
         teams = []

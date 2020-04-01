@@ -9,17 +9,17 @@ from draftfast.settings import OptimizerSettings, Stack
 from draftfast.lineup_constraints import LineupConstraints
 
 mock_nba_pool = [
-    Player(name='A1', cost=5500, proj=40, pos='PG'),
-    Player(name='A2', cost=5500, proj=41, pos='PG'),
-    Player(name='A11', cost=5500, proj=50, pos='PG'),
-    Player(name='A3', cost=5500, proj=42, pos='SG'),
-    Player(name='A4', cost=5500, proj=43, pos='SG'),
-    Player(name='A5', cost=5500, proj=44, pos='SF'),
-    Player(name='A6', cost=5500, proj=45, pos='SF'),
-    Player(name='A7', cost=5500, proj=46, pos='PF'),
-    Player(name='A8', cost=5500, proj=47, pos='PF'),
-    Player(name='A9', cost=5500, proj=48, pos='C'),
-    Player(name='A10', cost=5500, proj=49, pos='C'),
+    Player(name='A1', cost=6250, proj=50, pos='PG', multi_position=True, possible_positions='PG/SG'),
+    Player(name='A1', cost=6250, proj=50, pos='SG', multi_position=True, possible_positions='PG/SG'),
+    Player(name='A2', cost=6250, proj=41, pos='PG'),
+    Player(name='A3', cost=6250, proj=42, pos='SG'),
+    Player(name='A4', cost=6250, proj=43, pos='PG'),
+    Player(name='A5', cost=6250, proj=44, pos='SF'),
+    Player(name='A6', cost=6250, proj=45, pos='SF'),
+    Player(name='A7', cost=6250, proj=46, pos='PF'),
+    Player(name='A8', cost=6250, proj=47, pos='PF'),
+    Player(name='A9', cost=6250, proj=48, pos='C'),
+    Player(name='A10', cost=6250, proj=49, pos='C'),
 ]
 
 mock_nfl_pool = [
