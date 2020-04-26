@@ -17,6 +17,7 @@ ROSTER_SIZE = {
         'NHL_SHOWDOWN': 6,
         'XFL': 7,
         'TEN': 6,
+        'PGA': 6,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -45,6 +46,7 @@ SALARY_CAP = {
         'MLB_SHOWDOWN': 50_000,
         'XFL': 50_000,
         'TEN': 50_000,
+        'PGA': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -149,6 +151,9 @@ POSITIONS = {
         ],
         'TEN': [
             ['P', 6, 6],
+        ],
+        'PGA': [
+            ['G', 6, 6],
         ],
     },
     FAN_DUEL: {
@@ -311,6 +316,15 @@ FD_PGA_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['PGA'],
     salary_max=SALARY_CAP[FAN_DUEL]['PGA'],
     position_limits=POSITIONS[FAN_DUEL]['PGA'],
+    general_position_limits=[],
+)
+
+DK_PGA_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='PGA',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['PGA'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['PGA'],
+    position_limits=POSITIONS[DRAFT_KINGS]['PGA'],
     general_position_limits=[],
 )
 
