@@ -217,6 +217,7 @@ class RosterSelect:
             # XFL uses the same positions as NFL
             'XFL': NFLRoster(),
             'TEN': TenRoster(),
+            'CSGO_SHOWDOWN': ShowdownRoster(),
         }
         return roster_dict[league]
 
