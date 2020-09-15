@@ -217,6 +217,7 @@ class RosterSelect:
             # XFL uses the same positions as NFL
             'XFL': NFLRoster(),
             'TEN': TenRoster(),
+            'CSGO_SHOWDOWN': ShowdownRoster(),
         }
         return roster_dict[league]
 
@@ -240,6 +241,7 @@ class Player(object):
         position_lock=False,
         ban=False,
         multi_position=False,
+        kv_store={},
     ):
         self.pos = pos
         self.name = name
@@ -257,6 +259,7 @@ class Player(object):
         self.position_ban = False
         self.multi_position = multi_position
         self.possible_positions = possible_positions
+        self.kv_store = kv_store
 
     def get_player_id(self, player_map):
         return player_map[self.name + ' ' + self.possible_positions]
