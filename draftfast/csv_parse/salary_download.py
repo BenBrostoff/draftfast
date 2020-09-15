@@ -149,6 +149,7 @@ def generate_player(pos, row, game):
         team=row.get(team_key) or row.get(team_alt_key),
         matchup=row.get(game_key) or row.get(game_alt_key),
         average_score=avg,
+        kv_store=row,
     )
 
     return player
