@@ -4,7 +4,6 @@ from draftfast import rules
 from draftfast.orm import Player
 from draftfast.settings import OptimizerSettings
 from draftfast.showdown.orm import ShowdownPlayer
-from draftfast.lineup_constraints import LineupConstraints
 
 
 def _build_mock_player_pool():

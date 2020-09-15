@@ -342,7 +342,8 @@ class Optimizer(object):
                 ]
                 self.solver.Add(team_var <= self.solver.Sum(players_on_team))
                 self.solver.Add(
-                    self.max_players_per_team >= self.solver.Sum(players_on_team)
+                    self.max_players_per_team >=
+                    self.solver.Sum(players_on_team)
                 )
 
         if len(teams) > 0:
