@@ -31,6 +31,7 @@ class Optimizer(object):
         self.offensive_positions = rule_set.offensive_positions
         self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
+        self.max_players_per_team = rule_set.max_players_per_team
         self.showdown = rule_set.game_type == 'showdown'
         self.settings = settings
         self.lineup_constraints = lineup_constraints
@@ -340,8 +341,10 @@ class Optimizer(object):
                     in self.enumerated_players if p.team == team
                 ]
                 self.solver.Add(team_var <= self.solver.Sum(players_on_team))
+                self.solver.Add(
+                    self.max_players_per_team >= self.solver.Sum(players_on_team)
+                )
 
-        # TODO - add constraint of max players per team per sport
         if len(teams) > 0:
             self.solver.Add(
                 self.solver.Sum(teams) >= self.settings.min_teams

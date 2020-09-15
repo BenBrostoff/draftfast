@@ -205,6 +205,7 @@ class RuleSet(object):
                  salary_max, salary_min=0,
                  general_position_limits=None,
                  offensive_positions=None, defensive_positions=None,
+                 max_players_per_team=None,
                  game_type='classic'):
         self.site = site
         self.league = league
@@ -216,6 +217,7 @@ class RuleSet(object):
         self.offensive_positions = offensive_positions
         self.defensive_positions = defensive_positions
         self.game_type = game_type
+        self.max_players_per_team = max_players_per_team or roster_size
 
 
 DK_NBA_RULE_SET = RuleSet(
