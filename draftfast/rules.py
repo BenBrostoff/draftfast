@@ -223,7 +223,7 @@ class RuleSet(object):
         self.offensive_positions = offensive_positions
         self.defensive_positions = defensive_positions
         self.game_type = game_type
-        self.max_players_per_team = max_players_per_team or roster_size
+        self.max_players_per_team = max_players_per_team or (roster_size - 1)
 
 
 DK_NBA_RULE_SET = RuleSet(

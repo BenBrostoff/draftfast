@@ -332,19 +332,23 @@ class Optimizer(object):
     def _set_min_teams(self):
         teams = []
 
-        for team in self.teams:
-            if team:
-                team_var = self.solver.IntVar(0, 1, team)
-                teams.append(team_var)
-                players_on_team = [
-                    self.variables[i] for i, p
-                    in self.enumerated_players if p.team == team
-                ]
-                self.solver.Add(team_var <= self.solver.Sum(players_on_team))
-                self.solver.Add(
-                    self.max_players_per_team >=
-                    self.solver.Sum(players_on_team)
-                )
+        if self.settings.min_teams > 1:
+            for team in self.teams:
+                if team:
+                    team_var = self.solver.IntVar(0, 1, team)
+                    teams.append(team_var)
+                    players_on_team = [
+                        self.variables[i] for i, p
+                        in self.enumerated_players if p.team == team
+                    ]
+                    self.solver.Add(
+                        team_var <=
+                        self.solver.Sum(players_on_team)
+                    )
+                    self.solver.Add(
+                        self.max_players_per_team >=
+                        self.solver.Sum(players_on_team)
+                    )
 
         if len(teams) > 0:
             self.solver.Add(
