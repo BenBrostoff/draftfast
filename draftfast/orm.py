@@ -128,6 +128,7 @@ class TenRoster(Roster):
 class MLBRoster(Roster):
     POSITION_ORDER = {
         'P': 0,
+        'RP': 0,
         'SP': 0,
         'C': 1,
         '1B': 2,
@@ -135,7 +136,6 @@ class MLBRoster(Roster):
         '3B': 4,
         'SS': 5,
         'OF': 6,
-        'RP': 7,
     }
 
 
@@ -354,6 +354,12 @@ class Player(object):
         elif self.pos == 'SF' or self.pos == 'PF' or self.pos == 'F':
             return 'F'
         return 'C'
+
+    @property
+    def mlb_general_position(self):
+        if self.pos in {'SP', 'RP'}:
+            return 'P'
+        return self.pos
 
     @property
     def short_name(self):

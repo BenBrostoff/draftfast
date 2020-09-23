@@ -114,7 +114,8 @@ POSITIONS = {
         'NFL': get_nfl_positions(),
         'NFL_SHOWDOWN': get_nfl_showdown_positions(dk=True),
         'MLB': [
-            ['SP', 2, 2],
+            ['SP', 0, 2],
+            ['RP', 0, 2],
             ['C', 1, 1],
             ['1B', 1, 1],
             ['2B', 1, 1],
@@ -198,7 +199,9 @@ NBA_GENERAL_POSITIONS = [
     ['F', 3, 4],
     ['C', 1, 2],
 ]
-
+MLB_GENERAL_POSITIONS = [
+    ['P', 2, 2],
+]
 WNBA_GENERAL_POSITIONS = [
     ['G', 2, 3],
     ['F', 3, 4],
@@ -351,7 +354,7 @@ DK_MLB_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['MLB'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['MLB'],
     position_limits=POSITIONS[DRAFT_KINGS]['MLB'],
-    general_position_limits=[],
+    general_position_limits=MLB_GENERAL_POSITIONS,
 )
 
 FD_MLB_RULE_SET = RuleSet(

@@ -306,6 +306,11 @@ class Optimizer(object):
             position_cap = self.solver.Constraint(min_limit, max_limit)
 
             for i, player in self.enumerated_players:
+                if general_position == player.mlb_general_position:
+                    position_cap.SetCoefficient(
+                        self.variables[i],
+                        1
+                    )
                 if general_position == player.nba_general_position:
                     position_cap.SetCoefficient(
                         self.variables[i],
