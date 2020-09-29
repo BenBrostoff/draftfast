@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 requires = [
     'numpy==1.15.4',
-    'terminaltables==3.1.1',
+    'terminaltables==3.1.0',
     'ortools==7.6.7691',
 ]
 
