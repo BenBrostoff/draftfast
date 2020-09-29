@@ -16,6 +16,7 @@ def cs(n):
 class Roster:
     def __init__(self):
         self.players = []
+        self.cached_id = None
 
     def __repr__(self):
         table_data = []
@@ -44,13 +45,24 @@ class Roster:
 
         return table.table + aggregate_info
 
-    def __eq__(self, roster):
-        if not roster:
+    @property
+    def identifier(self):
+        if self.cached_id:
+            return self.cached_id
+        self.cached_id = ' '.join([
+            x.solver_id for x in self.sorted_players()
+        ])
+
+        return self.cached_id
+
+    def __eq__(self, other):
+        if not other:
             return False
 
-        player_set_a = set(a.solver_id for a in self.players)
-        player_set_b = set(b.solver_id for b in roster.players)
-        return player_set_a == player_set_b
+        return self.identifier == other.identifier
+
+    def __hash__(self):
+        return id(self.identifier)
 
     def __contains__(self, player):
         if isinstance(player, str):
