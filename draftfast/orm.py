@@ -62,7 +62,7 @@ class Roster:
         return self.identifier == other.identifier
 
     def __hash__(self):
-        return id(self.identifier)
+        return hash(self.identifier)
 
     def __contains__(self, player):
         if isinstance(player, str):
