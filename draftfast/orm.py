@@ -49,9 +49,9 @@ class Roster:
     def identifier(self):
         if self.cached_id:
             return self.cached_id
-        self.cached_id = ' '.join([
+        self.cached_id = ' '.join(sorted([
             x.solver_id for x in self.sorted_players()
-        ])
+        ]))
 
         return self.cached_id
 
