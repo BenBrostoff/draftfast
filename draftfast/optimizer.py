@@ -287,7 +287,9 @@ class Optimizer(object):
 
             for p in offensive_against:
                 for d in defensive:
-                    self.solver.Add(p <= 1 - d)
+                    # For each combination of offensive player and their
+                    # opposing defense, force no defense given offense (d <= 0)
+                    self.solver.Add(d <= 1 - p)
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:
