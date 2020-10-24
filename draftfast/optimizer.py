@@ -37,6 +37,7 @@ class Optimizer(object):
         self.lineup_constraints = lineup_constraints
         self.banned_for_exposure = exposure_dict.get('banned', [])
         self.locked_for_exposure = exposure_dict.get('locked', [])
+        self.custom_rules = settings.custom_rules
 
         self.player_to_idx_map = {}
         self.name_to_idx_map = {}
@@ -104,6 +105,7 @@ class Optimizer(object):
         self._set_combo()
         self._set_no_duplicate_lineups()
         self._set_min_teams()
+        self._set_custom_rules()
 
         if self.offensive_positions and self.defensive_positions \
                 and self.settings.no_offense_against_defense or \
@@ -290,6 +292,21 @@ class Optimizer(object):
                     # For each combination of offensive player and their
                     # opposing defense, force no defense given offense (d <= 0)
                     self.solver.Add(d <= 1 - p)
+
+    def _set_custom_rules(self):
+        if self.custom_rules:
+            for rule in self.custom_rules:
+                group_a = [
+                    self.variables[i] for i, p
+                    in self.enumerated_players if rule.group_a(p)
+                ]
+                group_b = [
+                    self.variables[i] for i, p
+                    in self.enumerated_players if rule.group_b(p)
+                ]
+                self.solver.Add(
+                    rule.comparison(self.solver.Sum, group_a, group_b)
+                )
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:
