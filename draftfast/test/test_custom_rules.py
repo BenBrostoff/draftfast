@@ -1,11 +1,7 @@
-import os
 from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
-from draftfast.csv_parse import salary_download
-from draftfast.settings import OptimizerSettings, Stack
-from draftfast.lineup_constraints import LineupConstraints
 from draftfast.settings import OptimizerSettings, CustomRule
 
 mock_nba_pool = [
@@ -31,6 +27,7 @@ for p in mock_nba_pool:
         p.team = 'SomeTeam'
     else:
         p.team = str(team)
+
 
 def test_if_one_then_two():
     # Base case
@@ -62,7 +59,7 @@ def test_if_one_then_two():
         optimizer_settings=settings,
     )
     names = {p.name for p in roster.players}
-    
+
     # Without this rule, A4 and A9 would never appear in the optimized
     # lineup. Both have a 0 point projection.
     ntools.assert_equal(
@@ -110,8 +107,9 @@ def test_never_two():
         'A101' not in names and 'A100' in names
     )
 
+
 def test_team_rules():
-     # If two PGs on one team, play the C from same team
+    # If two PGs on one team, play the C from same team
     settings = OptimizerSettings(
         custom_rules=[
             CustomRule(

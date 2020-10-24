@@ -297,8 +297,14 @@ class Optimizer(object):
         if self.custom_rules:
             print('Go! rules')
             for rule in self.custom_rules:
-                group_a = [self.variables[i] for i, p in self.enumerated_players if rule.group_a(p)]
-                group_b = [self.variables[i] for i, p in self.enumerated_players if rule.group_b(p)]
+                group_a = [
+                    self.variables[i] for i, p
+                    in self.enumerated_players if rule.group_a(p)
+                ]
+                group_b = [
+                    self.variables[i] for i, p
+                    in self.enumerated_players if rule.group_b(p)
+                ]
                 self.solver.Add(
                     rule.comparison(self.solver.Sum, group_a, group_b)
                 )

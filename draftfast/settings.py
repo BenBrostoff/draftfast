@@ -44,11 +44,13 @@ class PlayerPoolSettings(object):
 def default_comparison(solver_sum, g_a, g_b):
     return solver_sum(g_a) + 1 <= solver_sum(g_b)
 
+
 class CustomRule(object):
     def __init__(self, group_a, group_b, comparison=None):
         self.group_a = group_a
         self.group_b = group_b
         self.comparison = comparison or default_comparison
+
 
 class OptimizerSettings(object):
 
