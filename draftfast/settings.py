@@ -45,6 +45,7 @@ class CustomRule(object):
     def __init__(self, group_a, group_b, name=None):
         self.group_a = group_a
         self.group_b = group_b
+        self.comparison = lambda solver_sum, g_a, g_b: solver_sum(g_a) + 1 <= solver_sum(g_b)
 
 
 class OptimizerSettings(object):
