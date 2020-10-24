@@ -25,9 +25,13 @@ mock_nba_pool = [
     Player(name='A10', cost=5500, proj=49, pos='C'),
 ]
 
-# for p in mock_nba_pool:
-#     if p.team != 'SomeTeam':
-#         p.team = 'OtherTeam'
+team = 0
+for p in mock_nba_pool:
+    team += 1
+    if p.name in ['A101', 'A100', 'A10']:
+        p.team = 'SomeTeam'
+    else:
+        p.team = str(team)
 
 def test_if_one_then_two():
     # Base case
