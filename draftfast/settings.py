@@ -41,16 +41,27 @@ class PlayerPoolSettings(object):
             return 'None'
 
 
+class CustomRule(object):
+    def __init__(self, group_a, group_b, name=None):
+        self.group_a = group_a
+        self.group_b = group_b
+
+
 class OptimizerSettings(object):
 
-    def __init__(self,
-                 stacks=None,
-                 existing_rosters=None, force_combo=None,
-                 combo_allow_te=None, uniques=None,
-                 no_offense_against_defense=False,
-                 no_defense_against_captain=False,
-                 showdown_teams=None,
-                 min_teams=2):
+    def __init__(
+        self,
+        stacks=None,
+        existing_rosters=None,
+        force_combo=None,
+        combo_allow_te=None,
+        uniques=None,
+        no_offense_against_defense=False,
+        no_defense_against_captain=False,
+        showdown_teams=None,
+        min_teams=2,
+        custom_rules=None,
+    ):
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo
@@ -60,6 +71,7 @@ class OptimizerSettings(object):
         self.no_defense_against_captain = no_defense_against_captain
         self.showdown_teams = showdown_teams
         self.min_teams = min_teams
+        self.custom_rules = custom_rules
 
     # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
     def __repr__(self):
@@ -82,6 +94,10 @@ class OptimizerSettings(object):
                     self.no_offense_against_defense
                 )
             )
+        if self.custom_rules:
+            lines.append('Custom rules: {}'.format(
+                self.custum_rules
+            ))
 
         if len(lines):
             return '\n'.join(lines)
