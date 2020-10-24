@@ -1,5 +1,4 @@
 import os
-from copy import deepcopy
 from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
