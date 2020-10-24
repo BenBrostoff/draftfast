@@ -81,7 +81,7 @@ def test_never_two():
         'A101' in names and 'A100' in names
     )
 
-    # Never play two players together with same attributes, in this case team
+    # Never play two players together
     settings = OptimizerSettings(
         custom_rules=[
           CustomRule(

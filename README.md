@@ -179,6 +179,44 @@ Stack(
 )
 ```
 
+- `custom_rules` - Define rules that set if / then conditions for lineups. For example, if two WRs from the same team are in a naturally optimized lineup, then the QB must also be in the lineup. You can find some good examples of rules in `draftfast/test/test_custom_rules.py`.
+
+```python
+from draftfast.optimize import run
+from draftfast.settings import OptimizerSettings, CustomRule
+
+# If two PGs on one team, play the C from same team
+settings = OptimizerSettings(
+    custom_rules=[
+        CustomRule(
+            group_a=lambda p: p.pos == 'WR' and p.team == 'SomeTeam',
+            group_b=lambda p: p.pos == 'QB' and p.team == 'SomeTeam',
+        )
+    ]
+)
+roster = run(
+    rule_set=rules.DK_NFL_RULE_SET,
+    player_pool=nfl_pool,
+    verbose=True,
+    optimizer_settings=settings,
+)
+```
+
+Custom rules also don't have to make a comparison between two groups. You can say "never play these two players in the same lineup" by using the `CustomRule#comparison` property.
+
+```python
+# Never play these two players together
+settings = OptimizerSettings(
+    custom_rules=[
+        CustomRule(
+            group_a=lambda p: p,
+            group_b=lambda p: p.name == 'PlayerA' or p.name == 'PlayerB',
+            comparison=lambda sum, a, b: sum(b) <= 1
+        )
+    ]
+)
+```
+
 `LineupConstraints`
 
 - `locked` - list of players to lock
