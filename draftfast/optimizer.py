@@ -295,7 +295,6 @@ class Optimizer(object):
 
     def _set_custom_rules(self):
         if self.custom_rules:
-            print('Go! rules')
             for rule in self.custom_rules:
                 group_a = [
                     self.variables[i] for i, p

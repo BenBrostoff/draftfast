@@ -125,9 +125,6 @@ def test_team_rules():
         optimizer_settings=settings,
     )
     names = {p.name for p in roster.players}
-
-    # Without this rule, A4 and A9 would never appear in the optimized
-    # lineup. Both have a 0 point projection.
     ntools.assert_equal(
         True,
         'A100' in names and 'A101' in names and 'A10' in names
