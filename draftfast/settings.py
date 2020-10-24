@@ -96,7 +96,7 @@ class OptimizerSettings(object):
             )
         if self.custom_rules:
             lines.append('Custom rules: {}'.format(
-                self.custum_rules
+                self.custom_rules
             ))
 
         if len(lines):

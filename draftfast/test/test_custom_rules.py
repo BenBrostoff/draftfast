@@ -28,8 +28,8 @@ def test_nba_dk():
       custom_rules=[
         # Always play A1 with A9 and A4
         CustomRule(
-          group_a=lambda x: p.name == 'A1',
-          group_b=lambda x: x.name == 'A9' or x.name == 'A4'
+          group_a=lambda p: p.name == 'A1',
+          group_b=lambda p: p.name == 'A9' or p.name == 'A4'
         )
       ]
     )
