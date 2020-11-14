@@ -124,7 +124,11 @@ class Optimizer(object):
             ub = 0 if (p.ban or p.position_ban) else 1
 
             if lb > ub:
-                raise InvalidBoundsException
+                raise InvalidBoundsException(
+                    'Invalid bounds for {}'.format(
+                        p.name
+                    )
+                )
 
             if (p.multi_position or self.showdown) and not (
                     p.position_lock or p.position_ban):
