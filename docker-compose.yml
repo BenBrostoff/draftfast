@@ -1,0 +1,7 @@
+services:
+  draftfast:
+    platform: linux/arm64 # for Mac with Apple chip
+    image: intel-ben
+    command: tail -F anything
+    volumes:
+      - .:/app
