@@ -4,4 +4,4 @@ services:
     image: intel-ben
     command: tail -F anything
     volumes:
-      - .:/app
+      - .:/dk

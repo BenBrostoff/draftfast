@@ -39,6 +39,7 @@ class Optimizer(object):
         self.locked_for_exposure = exposure_dict.get('locked', [])
         self.custom_rules = settings.custom_rules
         self.min_teams = rule_set.min_teams or settings.min_teams
+        self.position_per_team_rules = rule_set.position_per_team_rules
 
         self.player_to_idx_map = {}
         self.name_to_idx_map = {}
@@ -379,6 +380,19 @@ class Optimizer(object):
                         self.max_players_per_team >=
                         self.solver.Sum(players_on_team)
                     )
+
+                    if self.position_per_team_rules:
+                        for rule in self.position_per_team_rules:
+                            position_group_func, max_pos = rule
+                            grouped_position_by_team = [
+                                self.variables[i] for i, p
+                                in self.enumerated_players if p.team == team
+                                and position_group_func(p.pos)
+                            ]
+                            self.solver.Add(
+                                max_pos >=
+                                self.solver.Sum(grouped_position_by_team)
+                            )
 
         if len(teams) > 0:
             self.solver.Add(

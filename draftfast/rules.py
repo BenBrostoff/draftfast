@@ -216,6 +216,7 @@ class RuleSet(object):
                  offensive_positions=None, defensive_positions=None,
                  max_players_per_team=None,
                  min_teams=None,
+                 position_per_team_rules=None,
                  game_type='classic'):
         self.site = site
         self.league = league
@@ -228,6 +229,7 @@ class RuleSet(object):
         self.defensive_positions = defensive_positions
         self.game_type = game_type
         self.max_players_per_team = max_players_per_team or (roster_size - 1)
+        self.position_per_team_rules = position_per_team_rules
         self.min_teams = min_teams
 
 
@@ -353,11 +355,14 @@ FD_NASCAR_RULE_SET = RuleSet(
 DK_MLB_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='MLB',
+    # Can start two pitchers and 5 hitters
+    max_players_per_team=7,
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['MLB'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['MLB'],
     position_limits=POSITIONS[DRAFT_KINGS]['MLB'],
     general_position_limits=MLB_GENERAL_POSITIONS,
     min_teams=3,
+    position_per_team_rules=[[lambda pos: 'P' not in pos, 5]],
 )
 
 FD_MLB_RULE_SET = RuleSet(
