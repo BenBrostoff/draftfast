@@ -215,6 +215,7 @@ class RuleSet(object):
                  general_position_limits=None,
                  offensive_positions=None, defensive_positions=None,
                  max_players_per_team=None,
+                 min_teams=None,
                  game_type='classic'):
         self.site = site
         self.league = league
@@ -227,6 +228,7 @@ class RuleSet(object):
         self.defensive_positions = defensive_positions
         self.game_type = game_type
         self.max_players_per_team = max_players_per_team or (roster_size - 1)
+        self.min_teams = min_teams
 
 
 DK_NBA_RULE_SET = RuleSet(
@@ -355,6 +357,7 @@ DK_MLB_RULE_SET = RuleSet(
     salary_max=SALARY_CAP[DRAFT_KINGS]['MLB'],
     position_limits=POSITIONS[DRAFT_KINGS]['MLB'],
     general_position_limits=MLB_GENERAL_POSITIONS,
+    min_teams=3,
 )
 
 FD_MLB_RULE_SET = RuleSet(

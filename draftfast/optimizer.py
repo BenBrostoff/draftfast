@@ -38,6 +38,7 @@ class Optimizer(object):
         self.banned_for_exposure = exposure_dict.get('banned', [])
         self.locked_for_exposure = exposure_dict.get('locked', [])
         self.custom_rules = settings.custom_rules
+        self.min_teams = rule_set.min_teams or settings.min_teams
 
         self.player_to_idx_map = {}
         self.name_to_idx_map = {}
@@ -359,8 +360,9 @@ class Optimizer(object):
 
     def _set_min_teams(self):
         teams = []
+        min_teams = self.min_teams
 
-        if self.settings.min_teams > 1:
+        if min_teams > 1:
             for team in self.teams:
                 if team:
                     team_var = self.solver.IntVar(0, 1, team)
