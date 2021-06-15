@@ -353,7 +353,8 @@ FD_NASCAR_RULE_SET = RuleSet(
 DK_MLB_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
     league='MLB',
-    max_players_per_team=6,
+    # Can start two pitchers and 5 hitters
+    max_players_per_team=7,
     roster_size=ROSTER_SIZE[DRAFT_KINGS]['MLB'],
     salary_max=SALARY_CAP[DRAFT_KINGS]['MLB'],
     position_limits=POSITIONS[DRAFT_KINGS]['MLB'],

@@ -380,6 +380,18 @@ class Optimizer(object):
                         self.solver.Sum(players_on_team)
                     )
 
+                    hitters_on_team = [
+                        self.variables[i] for i, p
+                        in self.enumerated_players if p.team == team
+                        and 'P' not in p.pos
+                    ]
+                    self.solver.Add(
+                        5 >=
+                        self.solver.Sum(hitters_on_team)
+                    )
+
+
+
         if len(teams) > 0:
             self.solver.Add(
                 self.solver.Sum(teams) >= self.settings.min_teams
