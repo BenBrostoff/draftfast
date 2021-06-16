@@ -108,6 +108,7 @@ class Optimizer(object):
         self._set_no_duplicate_lineups()
         self._set_min_teams()
         self._set_custom_rules()
+        self._set_position_team_constraints()
 
         if self.offensive_positions and self.defensive_positions \
                 and self.settings.no_offense_against_defense or \
@@ -299,6 +300,21 @@ class Optimizer(object):
                     # opposing defense, force no defense given offense (d <= 0)
                     self.solver.Add(d <= 1 - p)
 
+    def _set_position_team_constraints(self):
+        if self.position_per_team_rules:
+            for team in self.teams:
+                for rule in self.position_per_team_rules:
+                    position_group_func, max_pos = rule
+                    grouped_position_by_team = [
+                        self.variables[i] for i, p
+                        in self.enumerated_players if p.team == team
+                                                      and position_group_func(p.pos)
+                    ]
+                    self.solver.Add(
+                        max_pos >=
+                        self.solver.Sum(grouped_position_by_team)
+                    )
+
     def _set_custom_rules(self):
         if self.custom_rules:
             for rule in self.custom_rules:
@@ -380,19 +396,6 @@ class Optimizer(object):
                         self.max_players_per_team >=
                         self.solver.Sum(players_on_team)
                     )
-
-                    if self.position_per_team_rules:
-                        for rule in self.position_per_team_rules:
-                            position_group_func, max_pos = rule
-                            grouped_position_by_team = [
-                                self.variables[i] for i, p
-                                in self.enumerated_players if p.team == team
-                                and position_group_func(p.pos)
-                            ]
-                            self.solver.Add(
-                                max_pos >=
-                                self.solver.Sum(grouped_position_by_team)
-                            )
 
         if len(teams) > 0:
             self.solver.Add(
