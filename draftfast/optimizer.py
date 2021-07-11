@@ -308,7 +308,7 @@ class Optimizer(object):
                     grouped_position_by_team = [
                         self.variables[i] for i, p
                         in self.enumerated_players if p.team == team
-                                                      and position_group_func(p.pos)
+                        and position_group_func(p.pos)
                     ]
                     self.solver.Add(
                         max_pos >=

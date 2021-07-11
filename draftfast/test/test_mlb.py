@@ -3,6 +3,7 @@ from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
+from draftfast.orm import Player
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-mlb-salaries.csv'.format(CURRENT_DIR)
@@ -26,30 +27,34 @@ def test_mlb_dk():
 
 
 def test_five_batters_max():
-    player_pool = salary_download.generate_players_from_csvs(
-        salary_file_location=salary_file,
-        game=rules.DRAFT_KINGS,
-        ruleset=rules.DK_MLB_RULE_SET,
-    )
-    mil_players = [
-        x for x in player_pool
-        if x.team == 'MIL'
+    player_pool = [
+        Player(pos='P', name='A', cost=5000, team='C'),
+        Player(pos='P', name='B', cost=5000, team='B'),
+
+        Player(pos='1B', name='C', cost=5000, team='C'),
+        Player(pos='OF', name='H', cost=5000, team='C'),
+        Player(pos='OF', name='I', cost=5000, team='C'),
+        Player(pos='C', name='F', cost=5000, team='C'),
+        Player(pos='2B', name='D', cost=5000, team='C'),
+        Player(pos='2B', name='E', cost=5000, team='C'),
+        Player(pos='3B', name='E', cost=5000, team='C'),
+
+        Player(pos='3B', name='EA', cost=5000, team='A'),
+        Player(pos='SS', name='G', cost=5000, team='Q'),
+        Player(pos='OF', name='J', cost=5000, team='G'),
     ]
-    for p in mil_players:
-        if p.pos == 'SP':
-            p.proj = 1_000
-        else:
-            p.proj = 500
 
     roster = run(
         rule_set=rules.DK_MLB_RULE_SET,
         player_pool=player_pool,
         verbose=True,
     )
-    mil_in_roster = [
+    assert roster is not None
+
+    c_in_roster = [
         x for x in roster.players
-        if x.team == 'MIL'
-        and x.pos != 'SP'
+        if x.team == 'C'
+        and x.pos != 'P'
     ]
 
-    assert len(mil_in_roster) < 6
+    assert len(c_in_roster) < 6
