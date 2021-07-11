@@ -39,7 +39,6 @@ def test_five_batters_max():
         Player(pos='2B', name='E', cost=5000, team='C'),
         Player(pos='3B', name='E', cost=5000, team='C'),
 
-        Player(pos='3B', name='EA', cost=5000, team='A'),
         Player(pos='SS', name='G', cost=5000, team='Q'),
         Player(pos='OF', name='J', cost=5000, team='G'),
     ]
@@ -49,8 +48,14 @@ def test_five_batters_max():
         player_pool=player_pool,
         verbose=True,
     )
-    assert roster is not None
+    assert roster is None
 
+    player_pool.append(Player(pos='3B', name='EA', cost=5000, team='A'))
+    roster = run(
+        rule_set=rules.DK_MLB_RULE_SET,
+        player_pool=player_pool,
+        verbose=True,
+    )
     c_in_roster = [
         x for x in roster.players
         if x.team == 'C'
