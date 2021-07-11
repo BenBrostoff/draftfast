@@ -185,12 +185,13 @@ Stack(
 from draftfast.optimize import run
 from draftfast.settings import OptimizerSettings, CustomRule
 
-# If two PGs on one team, play the C from same team
+# If two WRs on one team, play the QB from same team
 settings = OptimizerSettings(
     custom_rules=[
         CustomRule(
-            group_a=lambda p: p.pos == 'WR' and p.team == 'SomeTeam',
-            group_b=lambda p: p.pos == 'QB' and p.team == 'SomeTeam',
+            group_a=lambda p: p.pos == 'WR' and p.team == 'Patriots',
+            group_b=lambda p: p.pos == 'QB' and p.team == 'Patriots',
+            comparison=lambda sum, a, b: sum(a) + 1 <= sum(b)
         )
     ]
 )
@@ -210,12 +211,21 @@ settings = OptimizerSettings(
     custom_rules=[
         CustomRule(
             group_a=lambda p: p,
-            group_b=lambda p: p.name == 'PlayerA' or p.name == 'PlayerB',
+            group_b=lambda p: p.name == 'Devon Booker' or p.name == 'Chris Paul',
             comparison=lambda sum, a, b: sum(b) <= 1
         )
     ]
 )
+roster = run(
+    rule_set=rules.DK_NBA_RULE_SET,
+    player_pool=nba_pool,
+    verbose=True,
+    optimizer_settings=settings,
+)
 ```
+
+Importantly, as of this writing, passing closures into `CustomRule`s does this work (ex. `lambda p: p.team == team`),
+so dynamically generating rules is not possible. PRs welcome for a fix here, I believe this is a limitation of `ortools`.
 
 `LineupConstraints`
 

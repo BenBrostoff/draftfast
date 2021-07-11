@@ -51,6 +51,11 @@ class CustomRule(object):
         self.group_b = group_b
         self.comparison = comparison or default_comparison
 
+    def __repr__(self):
+        import inspect as i
+        import sys
+        return f"{i.getsource(self.group_a)} {i.getsource(self.group_b)} {i.getsource(self.comparison)}"
+
 
 class OptimizerSettings(object):
 
