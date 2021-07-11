@@ -81,14 +81,17 @@ def test_custom_rules():
     def comp(sum, a, b):
         return sum(b) >= sum(a) + 2
 
-    # It appears to me closures do not work with ortools (ex. passing p.team == t)
+    # It appears to me closures do not work with ortools
+    # (ex. passing p.team == t)
     custom_rules.append(
         CustomRule(
             # Given 1B in optimized lineup
-            group_a=lambda p: p.pos == '1B' and p.team == 'ATL',
+            group_a=lambda p:
+            p.pos == '1B' and p.team == 'ATL',
 
             # Ensure the stack is four players
-            group_b=lambda p: '1B' not in p.pos and p.team == 'ATL',  # batters only
+            group_b=lambda p:
+            '1B' not in p.pos and p.team == 'ATL',  # batters only
 
             comparison=comp,
         )
@@ -96,10 +99,12 @@ def test_custom_rules():
     custom_rules.append(
         CustomRule(
             # Given 1B in optimized lineup
-            group_a=lambda p: p.pos == '1B' and p.team == 'BOS',
+            group_a=lambda p:
+            p.pos == '1B' and p.team == 'BOS',
 
             # Ensure the stack is four players
-            group_b=lambda p: '1B' not in p.pos and p.team == 'BOS',  # batters only
+            group_b=lambda p:
+            '1B' not in p.pos and p.team == 'BOS',  # batters only
 
             comparison=comp,
         )
@@ -116,5 +121,6 @@ def test_custom_rules():
         optimizer_settings=settings,
     )
     team_for_first = [p for p in roster.players if p.pos == '1B'][0].team
-    total = len([p for p in roster.players if p.team == team_for_first and 'P' not in p.pos])
+    total = len([p for p in roster.players
+                 if p.team == team_for_first and 'P' not in p.pos])
     assert total > 3, f"{total} below 4"
