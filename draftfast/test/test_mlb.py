@@ -65,6 +65,7 @@ def test_five_batters_max():
 
     assert len(c_in_roster) < 6
 
+
 def test_custom_rules():
     # Minimum stack size
     custom_rules = []
@@ -76,7 +77,6 @@ def test_custom_rules():
     for p in player_pool:
         if p.team == 'ATL' and p.pos == '1B':
             p.proj = 1_000
-
 
     def comp(sum, a, b):
         return sum(b) >= sum(a) + 2

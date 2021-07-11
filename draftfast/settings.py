@@ -53,8 +53,9 @@ class CustomRule(object):
 
     def __repr__(self):
         import inspect as i
-        import sys
-        return f"{i.getsource(self.group_a)} {i.getsource(self.group_b)} {i.getsource(self.comparison)}"
+        return f"{i.getsource(self.group_a)}" \
+               f"{i.getsource(self.group_b)}" \
+               f"{i.getsource(self.comparison)}"
 
 
 class OptimizerSettings(object):
