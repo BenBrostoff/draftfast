@@ -224,7 +224,7 @@ roster = run(
 )
 ```
 
-Importantly, as of this writing, passing closures into `CustomRule`s does this work (ex. `lambda p: p.team == team`),
+Importantly, as of this writing, passing closures into `CustomRule`s does not work (ex. `lambda p: p.team == team`),
 so dynamically generating rules is not possible. PRs welcome for a fix here, I believe this is a limitation of `ortools`.
 
 `LineupConstraints`
