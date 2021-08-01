@@ -111,6 +111,21 @@ class ShowdownRoster(Roster):
         'FLEX': 1,
     }
 
+    @property
+    def identifier(self):
+        """
+        In Showdown, only two positions exist
+        and a change in position means a change
+        in points, so unique is on position.
+        """
+        if self.cached_id:
+            return self.cached_id
+        self.cached_id = ' '.join(sorted([
+            x.solver_id for x in self.sorted_players()
+        ]))
+
+        return self.cached_id
+
 
 class NFLRoster(Roster):
     POSITION_ORDER = {
@@ -342,9 +357,9 @@ class Player(object):
     @property
     def roster_id(self):
         """
-        Used for roster equality. From the perspective of someone entering lineups,
-        a lineup with the same players scores the same points irrespective of
-        positions
+        Used for roster equality. From the perspective of someone
+        entering lineups,a lineup with the same players scores
+        the same points irrespective of positions
         """
         return f'{self.name} {self.team}'
 
