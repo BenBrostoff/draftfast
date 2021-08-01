@@ -50,7 +50,7 @@ class Roster:
         if self.cached_id:
             return self.cached_id
         self.cached_id = ' '.join(sorted([
-            x.solver_id for x in self.sorted_players()
+            x.roster_id for x in self.sorted_players()
         ]))
 
         return self.cached_id
@@ -75,14 +75,6 @@ class Roster:
             raise NotImplementedError
 
         return False
-
-    def exact_equal(self, roster):
-        if not roster:
-            return False
-
-        player_set_a = [a.solver_id for a in self.sorted_players()]
-        player_set_b = [b.solver_id for b in roster.sorted_players()]
-        return player_set_a == player_set_b
 
     def add_player(self, player):
         self.players.append(player)
@@ -342,7 +334,19 @@ class Player(object):
 
     @property
     def solver_id(self):
+        """
+        Used by optimizer to accommodate same player in different positions
+        """
         return '{} {} {}'.format(self.name, self.pos, self.team)
+
+    @property
+    def roster_id(self):
+        """
+        Used for roster equality. From the perspective of someone entering lineups,
+        a lineup with the same players scores the same points irrespective of
+        positions
+        """
+        return f'{self.name} {self.team}'
 
     @property
     def formatted_position(self):
