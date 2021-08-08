@@ -70,6 +70,7 @@ def test_showdown_roster_equality_and_position_shuffle():
     ntool.assert_false(roster_a == roster_c)
     ntool.assert_false(roster_a == roster_b)
 
+
 def test_roster_set():
     player_a = Player(pos='RB', name='A', cost=1, team='X')
     player_b = Player(pos='QB', name='B', cost=1, team='X')
