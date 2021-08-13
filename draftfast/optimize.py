@@ -19,6 +19,7 @@ def run(rule_set: RuleSet,
         exposure_dict: dict = dict(),
         roster_gen: Roster = None,
         verbose=False) -> Roster:
+    players = player_pool
     if player_settings.exist():
         players = pool.filter_pool(
             deepcopy(player_pool),
