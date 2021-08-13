@@ -21,7 +21,7 @@ def run(rule_set: RuleSet,
         verbose=False) -> Roster:
     if player_settings.exist():
         players = pool.filter_pool(
-            player_pool,
+            deepcopy(player_pool),
             player_settings,
         )
 
