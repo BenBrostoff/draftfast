@@ -19,10 +19,11 @@ def run(rule_set: RuleSet,
         exposure_dict: dict = dict(),
         roster_gen: Roster = None,
         verbose=False) -> Roster:
-    players = pool.filter_pool(
-        deepcopy(player_pool),
-        player_settings,
-    )
+    if player_settings.exist():
+        players = pool.filter_pool(
+            player_pool,
+            player_settings,
+        )
 
     if not isinstance(rule_set, RuleSet):
         raise Exception("RuleSet not defined. Please refer to the docs")

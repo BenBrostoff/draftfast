@@ -11,6 +11,9 @@ class PlayerPoolSettings(object):
         self.max_salary = max_salary
         self.randomize = randomize
 
+    def exist(self):
+        return str(self) == 'None'
+
     # TODO: format this like a proper repr(), i.e. <PlayerPoolSettings: ...>
     def __repr__(self):
         if not str(self):
