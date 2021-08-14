@@ -20,7 +20,7 @@ def run(rule_set: RuleSet,
         roster_gen: Roster = None,
         verbose=False) -> Roster:
     players = player_pool
-    if player_settings.exist():
+    if player_settings.exist() or constraints.exist():
         players = pool.filter_pool(
             deepcopy(player_pool),
             player_settings,

@@ -803,7 +803,7 @@ def test_no_opposing_def_fd_nfl():
     ntools.assert_equal(roster, None)
 
 
-def test_no_mutate_side_Effect():
+def test_no_mutate_side_effect():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=fd_nfl_salary_file,
         game=rules.FAN_DUEL,

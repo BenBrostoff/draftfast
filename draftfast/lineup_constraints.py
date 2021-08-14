@@ -35,6 +35,9 @@ class LineupConstraints(object):
         for players, bounds in groups:
             self.add_group_constraint(players, bounds)
 
+    def exist(self):
+        return len(self)
+
     def __iter__(self):
         return ConstraintIterator(self._constraints)
 
