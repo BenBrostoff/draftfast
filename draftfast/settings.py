@@ -1,3 +1,7 @@
+from typing import List
+from ortools.linear_solver import pywraplp
+
+
 class PlayerPoolSettings(object):
 
     def __init__(self, min_proj=None, max_proj=None,
@@ -44,7 +48,28 @@ class PlayerPoolSettings(object):
             return 'None'
 
 
-def default_comparison(solver_sum, g_a, g_b):
+def default_comparison(
+    solver_sum: pywraplp.Solver.Sum,
+    g_a: List[pywraplp.Variable],
+    g_b: List[pywraplp.Variable],
+) -> bool:
+    """
+    You will generally want to override this as the default
+    assumes total players in group A plus one is less than or
+    equal to total players in group B. While this may be true in
+    some cases, it's not appropriate for all.
+
+    Some other examples to help get started:
+
+    Player A must be played with Player B:
+    lambda sum, a, b: sum(a) == sum(b)
+
+    Always have at least three of this group (A):
+    lambda sum, a, b: sum(a) >= 3
+
+    Never play this group (A):
+    lambda sum, a, b: sum(a) <= 1
+    """
     return solver_sum(g_a) + 1 <= solver_sum(g_b)
 
 

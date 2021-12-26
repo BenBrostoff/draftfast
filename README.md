@@ -179,7 +179,10 @@ Stack(
 )
 ```
 
-- `custom_rules` - Define rules that set if / then conditions for lineups. For example, if two WRs from the same team are in a naturally optimized lineup, then the QB must also be in the lineup. You can find some good examples of rules in `draftfast/test/test_custom_rules.py`.
+- `custom_rules` - Define rules that set if / then conditions for lineups.
+
+
+For example, if two WRs from the same team are in a naturally optimized lineup, then the QB must also be in the lineup. You can find some good examples of rules in `draftfast/test/test_custom_rules.py`.
 
 ```python
 from draftfast.optimize import run
@@ -192,6 +195,30 @@ settings = OptimizerSettings(
             group_a=lambda p: p.pos == 'WR' and p.team == 'Patriots',
             group_b=lambda p: p.pos == 'QB' and p.team == 'Patriots',
             comparison=lambda sum, a, b: sum(a) + 1 <= sum(b)
+        )
+    ]
+)
+roster = run(
+    rule_set=rules.DK_NFL_RULE_SET,
+    player_pool=nfl_pool,
+    verbose=True,
+    optimizer_settings=settings,
+)
+```
+
+Another common use case is given one player is in a lineup, always play another player:
+
+```python
+from draftfast.optimize import run
+from draftfast.settings import OptimizerSettings, CustomRule
+
+# If Player A, always play Player B and vice versa
+settings = OptimizerSettings(
+    custom_rules=[
+        CustomRule(
+            group_a=lambda p: p.name == 'Tom Brady',
+            group_b=lambda p: p.name == 'Rob Gronkowski',
+            comparison=lambda sum, a, b: sum(a) == sum(b)
         )
     ]
 )
