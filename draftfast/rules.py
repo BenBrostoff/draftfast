@@ -19,6 +19,7 @@ ROSTER_SIZE = {
         'TEN': 6,
         'PGA': 6,
         'CSGO_SHOWDOWN': 6,
+        'NASCAR': 6,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -49,6 +50,7 @@ SALARY_CAP = {
         'TEN': 50_000,
         'PGA': 50_000,
         'CSGO_SHOWDOWN': 50_000,
+        'NASCAR': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -162,6 +164,9 @@ POSITIONS = {
             ['CPT', 1, 1],
             ['FLEX', 5, 5],
         ],
+        'NASCAR': [
+            ['D', 6, 6],
+        ]
     },
     FAN_DUEL: {
         'NBA': [
@@ -345,10 +350,21 @@ DK_PGA_RULE_SET = RuleSet(
 
 FD_NASCAR_RULE_SET = RuleSet(
     site=FAN_DUEL,
+    min_teams=1,
     league='NASCAR',
     roster_size=ROSTER_SIZE[FAN_DUEL]['NASCAR'],
     salary_max=SALARY_CAP[FAN_DUEL]['NASCAR'],
     position_limits=POSITIONS[FAN_DUEL]['NASCAR'],
+    general_position_limits=[],
+)
+
+DK_NASCAR_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    min_teams=1,
+    league='NASCAR',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['NASCAR'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['NASCAR'],
+    position_limits=POSITIONS[DRAFT_KINGS]['NASCAR'],
     general_position_limits=[],
 )
 

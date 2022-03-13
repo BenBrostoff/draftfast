@@ -6,7 +6,7 @@ An incredibly powerful tool that automates and optimizes lineup building, allowi
 
 ## Installation
 
-Requires Python 3.6.
+Requires Python 3.9+.
 
 ```bash
 pip install draftfast
@@ -73,6 +73,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | WNBA | FanDuel | `FD_WNBA_RULE_SET` |
 | PGA | FanDuel | `FD_PGA_RULE_SET` |
 | NASCAR | FanDuel | `FD_NASCAR_RULE_SET` |
+| NASCAR | DraftKings | `DK_NASCAR_RULE_SET` |
 | SOCCER | DraftKings | `DK_SOCCER_RULE_SET` |
 | EuroLeague | DraftKings | `DK_EURO_LEAGUE_RULE_SET` |
 | NHL | DraftKings | `DK_NHL_RULE_SET` |
