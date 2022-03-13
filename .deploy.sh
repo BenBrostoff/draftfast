@@ -9,7 +9,7 @@ then
     exit
 fi
 
-python setup.py sdist
+python3 setup.py sdist
 twine upload "dist/draftfast-${1}.tar.gz"
 
 git tag $1
