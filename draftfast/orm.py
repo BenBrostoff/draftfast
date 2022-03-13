@@ -99,6 +99,24 @@ class Roster:
         )
 
 
+class RosterGroup:
+    """
+    Group of rosters that might be entered into GPP or other contest.
+    The purpose of this class is to allow for easy retrieval of metrics
+    that would be helpful for thinking about multi-entry.
+    """
+
+    def __init__(self, rosters: List[Roster]):
+        self.rosters = rosters
+
+    @property
+    def player_frequency(self):
+        pass
+
+    @property
+    def salary_frequency(self):
+        pass
+
 
 '''
 POSITION_ORDER is based on the order
