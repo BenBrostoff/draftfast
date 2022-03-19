@@ -15,7 +15,7 @@ class Optimizer(object):
         rule_set: RuleSet,
         settings: OptimizerSettings,
         lineup_constraints: LineupConstraints,
-                exposure_dict: dict
+        exposure_dict: dict
     ):
         self.solver = pywraplp.Solver(
             'FD',
