@@ -7,7 +7,8 @@ class ShowdownPlayer(Player):
     def __init__(
         self,
         player: Player,
-        captain: bool = False, pos: Optional[str] = None
+        captain: bool = False,
+        pos: Optional[str] = None
     ):
         for k, v in player.__dict__.items():
             if hasattr(self, k) or k.startswith('__'):
