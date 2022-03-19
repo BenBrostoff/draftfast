@@ -216,6 +216,14 @@ class NHLRoster(Roster):
     }
 
 
+class F1ShowdownRoster(Roster):
+    POSITION_ORDER = {
+        'CPT': 0,
+        'D': 1,
+        'CNSTR': 2,
+    }
+
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -238,6 +246,7 @@ class RosterSelect:
             'XFL': NFLRoster(),
             'TEN': TenRoster(),
             'CSGO_SHOWDOWN': ShowdownRoster(),
+            'F1_SHOWDOWN': F1ShowdownRoster(),
         }
         return roster_dict[league]
 

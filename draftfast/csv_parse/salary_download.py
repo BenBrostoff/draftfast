@@ -85,9 +85,17 @@ def generate_players_from_csvs(
                     verbose,
                 )
                 captain = pos == 'CPT'
+
+                showdown_pos = None
+
+                # F1 requires unique non-captain position
+                if ruleset.league == 'F1_SHOWDOWN':
+                    showdown_pos = pos if not captain else None
+
                 players.append(
                     ShowdownPlayer(
                         player,
+                        pos=showdown_pos if not captain else None,
                         captain=captain,
                     )
                 )

@@ -1,9 +1,10 @@
 from draftfast.orm import Player
+from typing import Optional
 from copy import deepcopy
 
 
 class ShowdownPlayer(Player):
-    def __init__(self, player: Player, captain: bool = False):
+    def __init__(self, player: Player, captain: bool = False, pos: Optional[str] = None):
         for k, v in player.__dict__.items():
             if hasattr(self, k) or k.startswith('__'):
                 continue
@@ -14,8 +15,13 @@ class ShowdownPlayer(Player):
             self.pos = 'CPT'
             self.captain = True
         else:
-            self.real_pos = self.pos
-            self.pos = 'FLEX'
+            if pos:
+                self.pos = pos
+                self.real_pos = pos
+            else:
+                self.real_pos = self.pos
+                self.pos = 'FLEX'
+
             self.captain = False
 
     @property
