@@ -84,6 +84,7 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | XFL | DraftKings | `DK_XFL_CLASSIC_RULE_SET` |
 | Tennis | DraftKings | `DK_TEN_CLASSIC_RULE_SET` |
 | CS:GO | DraftKings | `DK_CSGO_SHOWDOWN` |
+| F1 | DraftKings | `DK_F1_SHOWDOWN` |
 
 Note that you can also tune `draftfast` for any game of your choice even if it's not implemented in the library (PRs welcome!). Using the `RuleSet` class, you can generate your own game rules that specific number of players, salary, etc. Example:
 

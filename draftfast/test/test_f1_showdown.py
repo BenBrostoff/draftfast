@@ -14,7 +14,6 @@ def test_f1_dk():
         game=rules.DRAFT_KINGS,
         ruleset=rules.DK_F1_SHOWDOWN,
     )
-    print(player_pool)
     roster = run(
         rule_set=rules.DK_F1_SHOWDOWN,
         player_pool=player_pool,
