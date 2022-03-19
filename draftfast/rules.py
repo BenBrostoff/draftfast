@@ -498,4 +498,7 @@ DK_F1_SHOWDOWN = RuleSet(
     position_limits=POSITIONS[DRAFT_KINGS]['F1_SHOWDOWN'],
     game_type='showdown',
     general_position_limits=[],
+    # TODO - can there be 3 drivers on same team?
+    # We know no 2 and constructor
+    max_players_per_team=2,
 )
