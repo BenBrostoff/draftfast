@@ -99,7 +99,6 @@ class Roster:
         )
 
 
-
 '''
 POSITION_ORDER is based on the order
 required by DraftKings' CSV download
