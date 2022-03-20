@@ -170,6 +170,7 @@ class RosterGroup:
 
         return len(shared) / len(roster_a.players)
 
+
 '''
 POSITION_ORDER is based on the order
 required by DraftKings' CSV download
