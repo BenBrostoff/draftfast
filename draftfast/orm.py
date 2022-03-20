@@ -1,3 +1,5 @@
+from collections import Counter
+from typing import List, Dict
 import locale
 from terminaltables import AsciiTable
 from functools import total_ordering
@@ -97,6 +99,76 @@ class Roster:
             self.players,
             key=lambda p: self.position_order(p)
         )
+
+
+class RosterGroup:
+    """
+    Group of rosters that might be entered into GPP or other contest.
+    The purpose of this class is to allow for easy retrieval of metrics
+    that would be helpful for thinking about multi-entry.
+    """
+
+    def __init__(self, rosters: List[Roster]):
+        self.rosters = rosters
+
+    def get_player_frequency(self):
+        players = []
+        for r in self.rosters:
+            for p in r.players:
+                players.append(p)
+
+        counter = Counter(players)
+        return sorted(
+            counter.items(),
+            reverse=True,
+            key=lambda items: items[1],
+        )
+
+    def get_salary_frequency(self) -> List[Dict[int, int]]:
+        salaries = []
+        for r in self.rosters:
+            salaries.append(r.spent())
+
+        counter = Counter(salaries)
+        return sorted(
+            counter.items(),
+            key=lambda items: items[0]
+        )
+
+    def get_similarity_score(self):
+        """
+        A similarity score of 1 means you're playing all of the same lineups.
+        0 would all be all different players in all different lineups.
+        0.5 would be say 3 lineups of 6 players with three of the same in each.
+        """
+        scores, pairs = [], []
+        for idx, r in enumerate(self.rosters):
+            for idx_comp, r_comp in enumerate(self.rosters):
+                if idx == idx_comp or (sorted([idx_comp, idx]) in pairs):
+                    # Do not compare to self or re-make comparison
+                    continue
+
+                if r == r_comp:
+                    scores.append(1)
+                else:
+                    scores.append(
+                        self.__get_roster_similarity(
+                            r,
+                            r_comp
+                        )
+                    )
+                pairs.append(sorted([idx_comp, idx]))
+
+        return sum(scores) / len(scores)
+
+    def __get_roster_similarity(self, roster_a, roster_b):
+        shared = []
+        for p_a in roster_a.players:
+            for p_b in roster_b.players:
+                if p_a == p_b:
+                    shared.append(p_a)
+
+        return len(shared) / len(roster_a.players)
 
 
 '''
