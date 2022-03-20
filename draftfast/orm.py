@@ -136,6 +136,11 @@ class RosterGroup:
         )
 
     def get_similarity_score(self):
+        """
+        A similarity score of 1 means you're playing all of the same lineups.
+        0 would all be all different players in all different lineups.
+        0.5 would be say 3 lineups of 6 players with three of the same in each.
+        """
         scores, pairs = [], []
         for idx, r in enumerate(self.rosters):
             for idx_comp, r_comp in enumerate(self.rosters):
@@ -154,7 +159,7 @@ class RosterGroup:
                     )
                 pairs.append(sorted([idx_comp, idx]))
 
-        return sum(scores) / len(pairs)
+        return sum(scores) / len(scores)
 
     def __get_roster_similarity(self, roster_a, roster_b):
         shared = []

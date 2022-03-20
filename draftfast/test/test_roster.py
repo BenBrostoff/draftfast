@@ -125,3 +125,15 @@ def test_roster_group():
         # (1 + 0.5 + 0.5)/3
         2 / 3
     )
+
+    roster_d = NFLRoster()
+    roster_d.add_player(player_a)
+    roster_d.add_player(Player(pos='QB', name='D', cost=1, team='X'))
+
+    # All lineups share half of the same players
+    rg_4 = RosterGroup(rosters=[roster_a, roster_c, roster_d])
+    ntool.assert_equal(
+        rg_4.get_similarity_score(),
+        # (0.5 + 0.5 + 0.5)/3
+        0.5
+    )
