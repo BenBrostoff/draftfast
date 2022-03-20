@@ -112,6 +112,14 @@ def test_roster_group():
         rg.get_similarity_score(),
         1
     )
+    ntool.assert_equal(
+        rg.get_salary_frequency(),
+        [(2, 2)]
+    )
+    ntool.assert_equal(
+        rg.get_player_frequency(),
+        [(player_a, 2), (player_b, 2)]
+    )
 
     rg_2 = RosterGroup(rosters=[roster_a, roster_c])
     ntool.assert_equal(

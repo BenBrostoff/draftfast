@@ -119,20 +119,20 @@ class RosterGroup:
 
         counter = Counter(players)
         return sorted(
-            counter,
+            counter.items(),
             reverse=True,
-            key=lambda player, freq: freq
+            key=lambda items: items[1],
         )
 
     def get_salary_frequency(self) -> List[Dict[int, int]]:
         salaries = []
         for r in self.rosters:
-            salaries.append(r.cost)
+            salaries.append(r.spent())
 
         counter = Counter(salaries)
         return sorted(
-            counter,
-            key=lambda salary, freq: salary
+            counter.items(),
+            key=lambda items: items[0]
         )
 
     def get_similarity_score(self):
