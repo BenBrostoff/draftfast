@@ -20,6 +20,7 @@ ROSTER_SIZE = {
         'PGA': 6,
         'CSGO_SHOWDOWN': 6,
         'NASCAR': 6,
+        'F1_SHOWDOWN': 6,
     },
     FAN_DUEL: {
         'NFL': 9,
@@ -51,6 +52,7 @@ SALARY_CAP = {
         'PGA': 50_000,
         'CSGO_SHOWDOWN': 50_000,
         'NASCAR': 50_000,
+        'F1_SHOWDOWN': 50_000,
     },
     FAN_DUEL: {
         'NFL': 60_000,
@@ -163,6 +165,11 @@ POSITIONS = {
         'CSGO_SHOWDOWN': [
             ['CPT', 1, 1],
             ['FLEX', 5, 5],
+        ],
+        'F1_SHOWDOWN': [
+            ['CPT', 1, 1],
+            ['D', 4, 4],
+            ['CNSTR', 1, 1],
         ],
         'NASCAR': [
             ['D', 6, 6],
@@ -481,4 +488,15 @@ DK_CSGO_SHOWDOWN = RuleSet(
     game_type='showdown',
     general_position_limits=[],
     max_players_per_team=3,
+)
+
+DK_F1_SHOWDOWN = RuleSet(
+    site=DRAFT_KINGS,
+    league='F1_SHOWDOWN',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['F1_SHOWDOWN'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['F1_SHOWDOWN'],
+    position_limits=POSITIONS[DRAFT_KINGS]['F1_SHOWDOWN'],
+    game_type='showdown',
+    general_position_limits=[],
+    max_players_per_team=2,
 )

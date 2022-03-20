@@ -1,0 +1,53 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame
+D,Max Verstappen (21699687),Max Verstappen,21699687,CPT,18000,Bahrain Grand Prix 2022,RB,27.90
+D,Lewis Hamilton (21699688),Lewis Hamilton,21699688,CPT,17400,Bahrain Grand Prix 2022,MERC,24.66
+D,Charles Leclerc (21699689),Charles Leclerc,21699689,CPT,16200,Bahrain Grand Prix 2022,FERR,12.79
+D,Carlos Sainz Jr (21699690),Carlos Sainz Jr,21699690,CPT,15300,Bahrain Grand Prix 2022,FERR,10.92
+D,George Russell (21699691),George Russell,21699691,CPT,14400,Bahrain Grand Prix 2022,MERC,5.14
+D,Sergio Perez (21699692),Sergio Perez,21699692,CPT,13200,Bahrain Grand Prix 2022,RB,11.34
+D,Lando Norris (21699693),Lando Norris,21699693,CPT,12300,Bahrain Grand Prix 2022,MCL,11.68
+D,Max Verstappen (21699667),Max Verstappen,21699667,D,12000,Bahrain Grand Prix 2022,RB,27.90
+D,Lewis Hamilton (21699668),Lewis Hamilton,21699668,D,11600,Bahrain Grand Prix 2022,MERC,24.66
+D,Pierre Gasly (21699694),Pierre Gasly,21699694,CPT,11400,Bahrain Grand Prix 2022,AT,9.18
+CNSTR,Mercedes  (21699707),Mercedes ,21699707,CNSTR,11200,Bahrain Grand Prix 2022,MERC,36.16
+D,Charles Leclerc (21699669),Charles Leclerc,21699669,D,10800,Bahrain Grand Prix 2022,FERR,12.79
+CNSTR,Red Bull Racing  (21699708),Red Bull Racing ,21699708,CNSTR,10800,Bahrain Grand Prix 2022,RB,35.96
+D,Daniel Ricciardo (21699695),Daniel Ricciardo,21699695,CPT,10800,Bahrain Grand Prix 2022,MCL,8.71
+D,Carlos Sainz Jr (21699670),Carlos Sainz Jr,21699670,D,10200,Bahrain Grand Prix 2022,FERR,10.92
+D,Fernando Alonso (21699696),Fernando Alonso,21699696,CPT,9900,Bahrain Grand Prix 2022,ALPN,7.64
+D,George Russell (21699671),George Russell,21699671,D,9600,Bahrain Grand Prix 2022,MERC,5.14
+CNSTR,Ferrari  (21699709),Ferrari ,21699709,CNSTR,9400,Bahrain Grand Prix 2022,FERR,20.68
+D,Esteban Ocon (21699697),Esteban Ocon,21699697,CPT,9300,Bahrain Grand Prix 2022,ALPN,7.31
+D,Sergio Perez (21699672),Sergio Perez,21699672,D,8800,Bahrain Grand Prix 2022,RB,11.34
+D,Sebastian Vettel (21699698),Sebastian Vettel,21699698,CPT,8700,Bahrain Grand Prix 2022,AM,4.97
+D,Nico Hulkenberg (21728161),Nico Hulkenberg,21728161,CPT,8400,Bahrain Grand Prix 2022,AM,0
+D,Lando Norris (21699673),Lando Norris,21699673,D,8200,Bahrain Grand Prix 2022,MCL,11.68
+D,Lance Stroll (21699699),Lance Stroll,21699699,CPT,8100,Bahrain Grand Prix 2022,AM,5.95
+CNSTR,McLaren  (21699710),McLaren ,21699710,CNSTR,7800,Bahrain Grand Prix 2022,MCL,17.85
+D,Pierre Gasly (21699674),Pierre Gasly,21699674,D,7600,Bahrain Grand Prix 2022,AT,9.18
+D,Yuki Tsunoda (21699700),Yuki Tsunoda,21699700,CPT,7500,Bahrain Grand Prix 2022,AT,3.6
+D,Daniel Ricciardo (21699675),Daniel Ricciardo,21699675,D,7200,Bahrain Grand Prix 2022,MCL,8.71
+D,Valtteri Bottas (21699701),Valtteri Bottas,21699701,CPT,6900,Bahrain Grand Prix 2022,AR,12.67
+D,Fernando Alonso (21699676),Fernando Alonso,21699676,D,6600,Bahrain Grand Prix 2022,ALPN,7.64
+CNSTR,Alpine F1 Team  (21699711),Alpine F1 Team ,21699711,CNSTR,6600,Bahrain Grand Prix 2022,ALPN,11.08
+D,Esteban Ocon (21699677),Esteban Ocon,21699677,D,6200,Bahrain Grand Prix 2022,ALPN,7.31
+D,Sebastian Vettel (21699678),Sebastian Vettel,21699678,D,5800,Bahrain Grand Prix 2022,AM,4.97
+CNSTR,Alphatauri  (21699712),Alphatauri ,21699712,CNSTR,5800,Bahrain Grand Prix 2022,AT,8.77
+D,Kevin Magnussen (21699702),Kevin Magnussen,21699702,CPT,5700,Bahrain Grand Prix 2022,HAAS,0
+D,Nico Hulkenberg (21728160),Nico Hulkenberg,21728160,D,5600,Bahrain Grand Prix 2022,AM,0
+D,Lance Stroll (21699679),Lance Stroll,21699679,D,5400,Bahrain Grand Prix 2022,AM,5.95
+D,Yuki Tsunoda (21699680),Yuki Tsunoda,21699680,D,5000,Bahrain Grand Prix 2022,AT,3.6
+CNSTR,Aston Martin F1 Team  (21699713),Aston Martin F1 Team ,21699713,CNSTR,5000,Bahrain Grand Prix 2022,AM,5.88
+D,Mick Schumacher (21699703),Mick Schumacher,21699703,CPT,4800,Bahrain Grand Prix 2022,HAAS,4.95
+D,Valtteri Bottas (21699681),Valtteri Bottas,21699681,D,4600,Bahrain Grand Prix 2022,AR,12.67
+D,Alexander Albon (21699704),Alexander Albon,21699704,CPT,4200,Bahrain Grand Prix 2022,WILL,0
+CNSTR,Williams  (21699714),Williams ,21699714,CNSTR,4000,Bahrain Grand Prix 2022,WILL,3.23
+D,Kevin Magnussen (21699682),Kevin Magnussen,21699682,D,3800,Bahrain Grand Prix 2022,HAAS,0
+CNSTR,Haas F1 Team  (21699715),Haas F1 Team ,21699715,CNSTR,3600,Bahrain Grand Prix 2022,HAAS,1.18
+D,Guanyu Zhou (21699705),Guanyu Zhou,21699705,CPT,3600,Bahrain Grand Prix 2022,AR,0
+D,Mick Schumacher (21699683),Mick Schumacher,21699683,D,3200,Bahrain Grand Prix 2022,HAAS,4.95
+CNSTR,Alfa Romeo Racing  (21699716),Alfa Romeo Racing ,21699716,CNSTR,3000,Bahrain Grand Prix 2022,AR,2.32
+D,Nicholas Latifi (21699706),Nicholas Latifi,21699706,CPT,3000,Bahrain Grand Prix 2022,WILL,3.19
+D,Alexander Albon (21699684),Alexander Albon,21699684,D,2800,Bahrain Grand Prix 2022,WILL,0
+D,Guanyu Zhou (21699685),Guanyu Zhou,21699685,D,2400,Bahrain Grand Prix 2022,AR,0
+D,Nicholas Latifi (21699686),Nicholas Latifi,21699686,D,2000,Bahrain Grand Prix 2022,WILL,3.19

@@ -1,3 +1,4 @@
+from collections import Counter
 import locale
 from terminaltables import AsciiTable
 from functools import total_ordering
@@ -109,14 +110,53 @@ class RosterGroup:
     def __init__(self, rosters: List[Roster]):
         self.rosters = rosters
 
-    @property
-    def player_frequency(self):
-        pass
+    def get_player_frequency(self) -> List[Player, int]:
+        players = []
+        for r in self.rosters:
+            for p in r.players:
+                players.append(p)
 
-    @property
-    def salary_frequency(self):
-        pass
+        counter = Counter(players)
+        return sorted(
+            counter,
+            reverse=True,
+            key=lambda player, freq: freq
+        )
 
+    def get_salary_frequency(self) -> List[int, int]:
+        salaries = []
+        for r in self.rosters:
+            salaries.append(r.cost)
+
+        counter = Counter(salaries)
+        return sorted(
+            counter,
+            key=lambda salary, freq: salary
+        )
+
+    def get_similarity_score(self):
+        scores = []
+        for r in self.rosters:
+            for r_comp in self.rosters:
+                if r == r_comp:
+                    continue
+                scores.append(
+                    self.__get_roster_similarity(
+                        r,
+                        r_comp
+                    )
+                )
+
+        return sum(scores)
+
+    def __get_roster_similarity(self, roster_a, roster_b):
+        shared = []
+        for p_a in roster_a.players:
+            for p_b in roster_b.players:
+                if p_a == p_b:
+                    shared.append(p_a)
+
+        return len(shared) / len(roster_a.players)
 
 '''
 POSITION_ORDER is based on the order
@@ -234,6 +274,14 @@ class NHLRoster(Roster):
     }
 
 
+class F1ShowdownRoster(Roster):
+    POSITION_ORDER = {
+        'CPT': 0,
+        'D': 1,
+        'CNSTR': 2,
+    }
+
+
 class RosterSelect:
     @staticmethod
     def roster_gen(league):
@@ -256,6 +304,7 @@ class RosterSelect:
             'XFL': NFLRoster(),
             'TEN': TenRoster(),
             'CSGO_SHOWDOWN': ShowdownRoster(),
+            'F1_SHOWDOWN': F1ShowdownRoster(),
         }
         return roster_dict[league]
 
