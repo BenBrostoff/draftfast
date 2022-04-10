@@ -35,6 +35,9 @@ class ShowdownPlayer(Player):
 
     @property
     def v_avg(self):
+        """
+        Normalize average comparison for captain.
+        """
         if self.pos == 'CPT':
             return self.proj / 1.5 - self.average_score
         return self.proj - self.average_score
