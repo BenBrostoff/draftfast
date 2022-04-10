@@ -4,7 +4,6 @@ from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
 from draftfast.showdown.orm import ShowdownPlayer
-from draftfast.orm import Roster
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/f1-salaries-showdown.csv'.format(CURRENT_DIR)
