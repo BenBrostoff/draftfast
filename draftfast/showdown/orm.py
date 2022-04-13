@@ -33,11 +33,23 @@ class ShowdownPlayer(Player):
     def formatted_position(self):
         return '{} ({})'.format(self.pos, self.real_pos)
 
+    @propert
+    def is_captain(self):
+        return self.pos == 'CPT'
+
+    @prooperty
+    def roster_id(self):
+        """
+        Used for roster equality.
+        Unlike classic, position matters in showdown at CPT level.
+        """
+        return f'{self.name} {self.team} {self.is_captain}'
+
     @property
     def v_avg(self):
         """
         Normalize average comparison for captain.
         """
-        if self.pos == 'CPT':
+        if self.is_captain:
             return self.proj / 1.5 - self.average_score
         return self.proj - self.average_score
