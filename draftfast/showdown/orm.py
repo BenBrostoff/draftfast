@@ -37,7 +37,7 @@ class ShowdownPlayer(Player):
     def is_captain(self):
         return self.pos == 'CPT'
 
-    @prooperty
+    @property
     def roster_id(self):
         """
         Used for roster equality.
