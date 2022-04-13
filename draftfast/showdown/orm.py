@@ -33,7 +33,7 @@ class ShowdownPlayer(Player):
     def formatted_position(self):
         return '{} ({})'.format(self.pos, self.real_pos)
 
-    @propert
+    @property
     def is_captain(self):
         return self.pos == 'CPT'
 
