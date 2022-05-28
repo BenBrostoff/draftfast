@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:22.10
 
 RUN apt-get clean
 RUN apt-get -y update
