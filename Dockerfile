@@ -1,5 +1,6 @@
 FROM ubuntu
 
+RUN apt-get clean
 RUN apt-get -y update
 RUN apt-get install -y apt-transport-https && apt-get install -y vim python3 python3-pip python3-wheel python3-six python3-pip
 
