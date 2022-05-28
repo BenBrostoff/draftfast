@@ -72,6 +72,8 @@ Optimizing for a particular game is as easy as setting the `RuleSet` (see the ex
 | WNBA | DraftKings | `DK_WNBA_RULE_SET` |
 | WNBA | FanDuel | `FD_WNBA_RULE_SET` |
 | PGA | FanDuel | `FD_PGA_RULE_SET` |
+| PGA | DraftKings | `DK_PGA_RULE_SET` |
+| PGA_CAPTAIN | DraftKings | `DK_PGA_CAPTAIN_RULE_SET` |
 | NASCAR | FanDuel | `FD_NASCAR_RULE_SET` |
 | NASCAR | DraftKings | `DK_NASCAR_RULE_SET` |
 | SOCCER | DraftKings | `DK_SOCCER_RULE_SET` |

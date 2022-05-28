@@ -262,6 +262,13 @@ class PGARoster(Roster):
     }
 
 
+class PGACaptainRoster(Roster):
+    POSITION_ORDER = {
+        'CPT': 0,
+        'G': 1,
+    }
+
+
 class SoccerRoster(Roster):
     POSITION_ORDER = {
         'F': 0,
@@ -307,6 +314,7 @@ class RosterSelect:
             'NFL_MVP': ShowdownRoster(),
             'MLB': MLBRoster(),
             'PGA': PGARoster(),
+            'PGA_CAPTAIN': PGACaptainRoster(),
             'NASCAR': NASCARRoster(),
             'SOCCER': SoccerRoster(),
             'EL': ELRoster(),

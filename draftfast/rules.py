@@ -18,6 +18,7 @@ ROSTER_SIZE = {
         'XFL': 7,
         'TEN': 6,
         'PGA': 6,
+        'PGA_CAPTAIN': 6,
         'CSGO_SHOWDOWN': 6,
         'NASCAR': 6,
         'F1_SHOWDOWN': 6,
@@ -50,6 +51,7 @@ SALARY_CAP = {
         'XFL': 50_000,
         'TEN': 50_000,
         'PGA': 50_000,
+        'PGA_CAPTAIN': 50_000,
         'CSGO_SHOWDOWN': 50_000,
         'NASCAR': 50_000,
         'F1_SHOWDOWN': 50_000,
@@ -161,6 +163,10 @@ POSITIONS = {
         ],
         'PGA': [
             ['G', 6, 6],
+        ],
+        'PGA_CAPTAIN': [
+            ['CPT', 1, 1],
+            ['G', 5, 5],
         ],
         'CSGO_SHOWDOWN': [
             ['CPT', 1, 1],
@@ -353,6 +359,16 @@ DK_PGA_RULE_SET = RuleSet(
     salary_max=SALARY_CAP[DRAFT_KINGS]['PGA'],
     position_limits=POSITIONS[DRAFT_KINGS]['PGA'],
     general_position_limits=[],
+)
+
+DK_PGA_SHOWDOWN_CAPTAIN_RULE_SET = RuleSet(
+    site=DRAFT_KINGS,
+    league='PGA_CAPTAIN',
+    roster_size=ROSTER_SIZE[DRAFT_KINGS]['PGA_CAPTAIN'],
+    salary_max=SALARY_CAP[DRAFT_KINGS]['PGA_CAPTAIN'],
+    position_limits=POSITIONS[DRAFT_KINGS]['PGA_CAPTAIN'],
+    general_position_limits=[],
+    game_type='showdown',
 )
 
 FD_NASCAR_RULE_SET = RuleSet(
