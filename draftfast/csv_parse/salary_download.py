@@ -72,6 +72,9 @@ def generate_players_from_csvs(
                     verbose,
                 )
                 players.append(player)
+            elif is_showdown and ruleset.site == FAN_DUEL:
+                raise Exception()
+
             elif is_showdown:
                 pos = row[pos_key]
                 player = generate_player(
