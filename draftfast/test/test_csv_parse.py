@@ -2,6 +2,7 @@ import os
 from nose import tools as ntools
 from draftfast.csv_parse import salary_download
 from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET
+from draftfast.optimize import run
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salaries = f'{CURRENT_DIR}/data/nba-test-salaries.csv'
@@ -55,4 +56,8 @@ def test_fd_showdown_nfl():
     ntools.assert_equals(renfrow[1].pos, 'FLEX')
 
     # Optimization should work
-    ntools.assert_equals(1, 1)
+    optimized = run(
+        rule_set=FD_NFL_MVP_RULE_SET,
+        player_pool=players
+    )
+    ntools.assert_equals(len(optimized.players), 5)
