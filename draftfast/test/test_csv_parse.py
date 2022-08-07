@@ -52,7 +52,10 @@ def test_fd_showdown_nfl():
     ]
     ntools.assert_equals(len(renfrow), 2)
     ntools.assert_equals(renfrow[0].cost, renfrow[1].cost)
-    ntools.assert_almost_equals(renfrow[0].average_score, renfrow[1].average_score * 1.5)
+    ntools.assert_almost_equals(
+        renfrow[0].average_score,
+        renfrow[1].average_score * 1.5
+    )
     ntools.assert_equals(renfrow[0].pos, 'CPT')
     ntools.assert_equals(renfrow[1].pos, 'FLEX')
 
