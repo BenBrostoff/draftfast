@@ -1,8 +1,9 @@
 import csv
+from typing import List
 from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer
-from draftfast.rules import DRAFT_KINGS, FAN_DUEL
+from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {
@@ -72,6 +73,14 @@ def generate_players_from_csvs(
                     verbose,
                 )
                 players.append(player)
+            elif ruleset == FD_NFL_MVP_RULE_SET:
+                parsed = _parse_fd_mvp_row(
+                    pos=row['Position'],
+                    row=row,
+                )
+                players += parsed
+                continue
+
             elif is_showdown:
                 pos = row[pos_key]
                 player = generate_player(
@@ -119,19 +128,6 @@ def generate_players_from_csvs(
     return players
 
 
-# TODO - extract
-def _create_classic_player():
-    pass
-
-
-def _create_tiered_player():
-    pass
-
-
-def _create_showdown_player():
-    pass
-
-
 def generate_player(pos, row, game):
     '''
     Parses CSV row for DraftKings or FanDuel
@@ -145,8 +141,7 @@ def generate_player(pos, row, game):
     team_alt_key = GAME_KEY_MAP[game]['team_alt']
     game_key = GAME_KEY_MAP[game]['game']
     game_alt_key = GAME_KEY_MAP[game]['game_alt']
-
-    avg = float(row.get(avg_key, 0))
+    avg = float(row.get(avg_key, 0) or 0)
 
     player = Player(
         pos,
@@ -161,6 +156,35 @@ def generate_player(pos, row, game):
     )
 
     return player
+
+
+def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
+    """
+    FanDuel CSVs give all players without breaking out a captain position.
+    Unlike DK, salary does not change here.
+    To allow DraftFast to correctly optimize, break into two players.
+    """
+    player = generate_player(
+        pos=pos,
+        row=row,
+        game=FAN_DUEL,
+    )
+    captain = ShowdownPlayer(
+        player,
+        captain=True,
+    )
+
+    # Unlike DK, FD does not break out players by captain,
+    # so make the adjustment here
+    captain.average_score *= ShowdownPlayer._CAPTAIN_MULTIPLIER
+
+    return [
+       captain,
+        ShowdownPlayer(
+            player,
+            captain=False,
+        ),
+    ]
 
 
 def _generate_projection_dict(projection_file_location: str,

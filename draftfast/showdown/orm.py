@@ -4,6 +4,10 @@ from copy import deepcopy
 
 
 class ShowdownPlayer(Player):
+
+    # Captain and MVP multiplier
+    _CAPTAIN_MULTIPLIER = 1.5
+
     def __init__(
         self,
         player: Player,
@@ -51,5 +55,5 @@ class ShowdownPlayer(Player):
         Normalize average comparison for captain.
         """
         if self.is_captain:
-            return self.proj / 1.5 - self.average_score
+            return self.proj / self._CAPTAIN_MULTIPLIER - self.average_score
         return self.proj - self.average_score
