@@ -3,7 +3,7 @@ from typing import List
 from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer
-from draftfast.rules import DRAFT_KINGS, FAN_DUEL
+from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {
@@ -73,7 +73,7 @@ def generate_players_from_csvs(
                     verbose,
                 )
                 players.append(player)
-            elif is_showdown and ruleset.site == FAN_DUEL:
+            elif ruleset == FD_NFL_MVP_RULE_SET:
                 parsed = _parse_fd_mvp_row(
                     pos=row['Position'],
                     row=row,
