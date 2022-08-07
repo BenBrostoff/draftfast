@@ -179,7 +179,7 @@ def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
     captain.average_score *= ShowdownPlayer._CAPTAIN_MULTIPLIER
 
     return [
-       captain,
+        captain,
         ShowdownPlayer(
             player,
             captain=False,
