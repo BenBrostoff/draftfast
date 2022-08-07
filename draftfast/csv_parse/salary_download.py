@@ -184,7 +184,6 @@ def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
             player,
             captain=False,
         ),
-
     ]
 
 
