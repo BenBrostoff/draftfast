@@ -169,11 +169,17 @@ def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
         row=row,
         game=FAN_DUEL,
     )
+    captain = ShowdownPlayer(
+        player,
+        captain=True,
+    )
+
+    # Unlike DK, FD does not break out players by captain,
+    # so make the adjustment here
+    captain.average_score *= ShowdownPlayer._CAPTAIN_MULTIPLIER
+
     return [
-        ShowdownPlayer(
-            player,
-            captain=True,
-        ),
+       captain,
         ShowdownPlayer(
             player,
             captain=False,
