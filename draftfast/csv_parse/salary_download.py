@@ -181,6 +181,7 @@ def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
 
     ]
 
+
 def _generate_projection_dict(projection_file_location: str,
                               encoding: str,
                               errors: str) -> dict:
