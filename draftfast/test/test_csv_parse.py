@@ -1,7 +1,10 @@
 import os
 from nose import tools as ntools
 from draftfast.csv_parse import salary_download
-from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
+from draftfast.rules import (
+    DRAFT_KINGS, FAN_DUEL,
+    FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
+)
 from draftfast.optimize import run
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -77,8 +80,6 @@ def test_fd_showdown_mlb():
     )
     ntools.assert_equals(len(players), 147)
 
-    # Two same ID players should break out captain and flex
-    # and have identical costs
     judges = [
         p for p in players
         if p.name == 'Aaron Judge'

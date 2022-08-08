@@ -3,7 +3,10 @@ from typing import List
 from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer, MVPPlayer
-from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
+from draftfast.rules import (
+    DRAFT_KINGS, FAN_DUEL,
+    FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
+)
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {
