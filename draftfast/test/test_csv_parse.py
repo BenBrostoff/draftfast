@@ -38,7 +38,7 @@ def test_dk_nba_use_proj():
 
 def test_fd_showdown_nfl():
     players = salary_download.generate_players_from_csvs(
-        salary_file_location=fd_mvp_salaries,
+        salary_file_location=fd_mvp_nfl_salaries,
         projection_file_location=projections,
         game=FAN_DUEL,
         ruleset=FD_NFL_MVP_RULE_SET,
@@ -75,23 +75,30 @@ def test_fd_showdown_mlb():
         game=FAN_DUEL,
         ruleset=FD_MLB_MVP_RULE_SET,
     )
-    ntools.assert_equals(len(players), 146)
+    ntools.assert_equals(len(players), 147)
 
     # Two same ID players should break out captain and flex
     # and have identical costs
-    renfrow = [
+    judges = [
         p for p in players
-        if p.name == 'Hunter Renfrow'
+        if p.name == 'Aaron Judge'
     ]
-    ntools.assert_equals(len(renfrow), 2)
-    ntools.assert_equals(renfrow[0].cost, renfrow[1].cost)
+    ntools.assert_equals(len(judges), 3)
+    mvp, star, util = judges
+
+    ntools.assert_equals(mvp.cost, star.cost, util.cost)
+    ntools.assert_equals(mvp.pos, 'MVP')
+    ntools.assert_equals(star.pos, 'STAR')
+    ntools.assert_equals(util.pos, 'UTIL')
+
     ntools.assert_almost_equals(
-        renfrow[0].average_score,
-        renfrow[1].average_score * 1.5
+        star.average_score,
+        util.average_score * 1.2
     )
-    ntools.assert_equals(renfrow[0].pos, 'MLB')
-    ntools.assert_equals(renfrow[1].pos, 'STAR')
-    ntools.assert_equals(renfrow[2].pos, 'UTIL')
+    ntools.assert_almost_equals(
+        mvp.average_score,
+        util.average_score * 1.5
+    )
 
     # Optimization should work
     optimized = run(

@@ -2,8 +2,8 @@ import csv
 from typing import List
 from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
-from draftfast.showdown.orm import ShowdownPlayer
-from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET
+from draftfast.showdown.orm import ShowdownPlayer, MVPPlayer
+from draftfast.rules import DRAFT_KINGS, FAN_DUEL, FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {
@@ -74,13 +74,19 @@ def generate_players_from_csvs(
                 )
                 players.append(player)
             elif ruleset == FD_NFL_MVP_RULE_SET:
-                parsed = _parse_fd_mvp_row(
+                parsed = _parse_fd_mvp_nfl_row(
                     pos=row['Position'],
                     row=row,
                 )
                 players += parsed
                 continue
-
+            elif ruleset == FD_MLB_MVP_RULE_SET:
+                parsed = _parse_fd_mvp_mlb_row(
+                    pos=row['Position'],
+                    row=row,
+                )
+                players += parsed
+                continue
             elif is_showdown:
                 pos = row[pos_key]
                 player = generate_player(
@@ -158,7 +164,7 @@ def generate_player(pos, row, game):
     return player
 
 
-def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
+def _parse_fd_mvp_nfl_row(pos: str, row: dict) -> List[ShowdownPlayer]:
     """
     FanDuel CSVs give all players without breaking out a captain position.
     Unlike DK, salary does not change here.
@@ -185,6 +191,34 @@ def _parse_fd_mvp_row(pos: str, row: dict) -> List[ShowdownPlayer]:
             captain=False,
         ),
     ]
+
+
+def _parse_fd_mvp_mlb_row(pos: str, row: dict) -> List[ShowdownPlayer]:
+    """
+    FanDuel CSVs give all players without breaking out an MVP / STAR position.
+    Unlike DK, salary does not change here.
+    To allow DraftFast to correctly optimize, break into three players.
+    """
+    player = generate_player(
+        pos=pos,
+        row=row,
+        game=FAN_DUEL,
+    )
+    mvp = MVPPlayer(
+        player,
+        game_position='MVP',
+    )
+    star = MVPPlayer(
+        player,
+        game_position='STAR'
+    )
+    util = MVPPlayer(player, game_position='UTIL')
+
+    # Unlike DK, FD does not break out players by multiplier position
+    mvp.average_score *= MVPPlayer.MVP_MULTIPLIER
+    star.average_score *= MVPPlayer.STAR_MULTIPLIER
+
+    return [mvp, star, util]
 
 
 def _generate_projection_dict(projection_file_location: str,
