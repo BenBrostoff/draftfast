@@ -94,11 +94,11 @@ def test_fd_showdown_mlb():
 
     ntools.assert_almost_equals(
         star.average_score,
-        util.average_score * 1.2
+        util.average_score * 1.5
     )
     ntools.assert_almost_equals(
         mvp.average_score,
-        util.average_score * 1.5
+        util.average_score * 2
     )
 
     # Optimization should work

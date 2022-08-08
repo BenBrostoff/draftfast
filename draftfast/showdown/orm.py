@@ -61,8 +61,8 @@ class ShowdownPlayer(Player):
 
 
 class MVPPlayer(Player):
-    MVP_MULTIPLIER = 1.5
-    STAR_MULTIPLIER = 1.2
+    MVP_MULTIPLIER = 2
+    STAR_MULTIPLIER = 1.5
 
     def __init__(self, player, game_position):
         for k, v in player.__dict__.items():
