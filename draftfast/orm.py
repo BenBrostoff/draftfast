@@ -199,6 +199,14 @@ class ShowdownRoster(Roster):
         return self.cached_id
 
 
+class MLBMVPRoster(Roster):
+    POSITION_ORDER = {
+        'MVP': 0,
+        'STAR': 1,
+        'UTIL': 2,
+    }
+
+
 class NFLRoster(Roster):
     POSITION_ORDER = {
         'QB': 0,
@@ -311,6 +319,7 @@ class RosterSelect:
             'WNBA': WNBARoster(),
             'NFL': NFLRoster(),
             'NFL_SHOWDOWN': ShowdownRoster(),
+            'MLB_MVP': MLBMVPRoster(),
             'NFL_MVP': ShowdownRoster(),
             'MLB': MLBRoster(),
             'PGA': PGARoster(),

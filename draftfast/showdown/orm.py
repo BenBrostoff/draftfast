@@ -6,6 +6,7 @@ from copy import deepcopy
 class ShowdownPlayer(Player):
 
     # Captain and MVP multiplier
+    # TODO - make public
     _CAPTAIN_MULTIPLIER = 1.5
 
     def __init__(
@@ -57,3 +58,26 @@ class ShowdownPlayer(Player):
         if self.is_captain:
             return self.proj / self._CAPTAIN_MULTIPLIER - self.average_score
         return self.proj - self.average_score
+
+
+class MVPPlayer(Player):
+    MVP_MULTIPLIER = 2
+    STAR_MULTIPLIER = 1.5
+
+    def __init__(self, player, game_position):
+        for k, v in player.__dict__.items():
+            if hasattr(self, k) or k.startswith('__'):
+                continue
+            setattr(self, k, deepcopy(v))
+        self.real_pos = self.pos
+
+        # MVP, STAR, UTIL
+        self.pos = game_position
+
+    @property
+    def roster_id(self):
+        """
+        Used for roster equality.
+        Unlike classic, multipliers exist at MVP and star levels
+        """
+        return f'{self.name} {self.team} {self.pos}'
