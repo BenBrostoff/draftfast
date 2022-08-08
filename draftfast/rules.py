@@ -121,11 +121,6 @@ POSITIONS = {
         ],
         'NFL': get_nfl_positions(),
         'NFL_SHOWDOWN': get_nfl_showdown_positions(dk=True),
-        'MLB_MVP': [
-            ['MVP', 1, 1],
-            ['STAR', 1, 1],
-            ['UTIL', 3, 3],
-        ],
         'MLB': [
             ['SP', 0, 2],
             ['RP', 0, 2],
@@ -203,6 +198,11 @@ POSITIONS = {
             ['3B', 1, 2],
             ['SS', 1, 2],
             ['OF', 3, 4],
+        ],
+        'MLB_MVP': [
+            ['MVP', 1, 1],
+            ['STAR', 1, 1],
+            ['UTIL', 3, 3],
         ],
         'WNBA': [
             ['G', 3, 3],
