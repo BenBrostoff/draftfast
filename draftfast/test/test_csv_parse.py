@@ -125,21 +125,25 @@ def test_fd_showdown_nba():
     for p in players:
         p.proj = p.average_score
 
-    print(players)
-    ntools.assert_equals(len(players), 15)
+    ntools.assert_equals(len(players), 20)
 
     chefs = [
         p for p in players
         if p.name == 'Stephen Curry'
     ]
-    ntools.assert_equals(len(chefs), 3)
-    mvp, star, util = chefs
+    ntools.assert_equals(len(chefs), 4)
+    mvp, star, pro, util = chefs
 
     ntools.assert_equals(mvp.cost, star.cost, util.cost)
     ntools.assert_equals(mvp.pos, 'MVP')
     ntools.assert_equals(star.pos, 'STAR')
+    ntools.assert_equals(pro.pos, 'PRO')
     ntools.assert_equals(util.pos, 'UTIL')
 
+    ntools.assert_almost_equals(
+        pro.average_score,
+        util.average_score * 1.2
+    )
     ntools.assert_almost_equals(
         star.average_score,
         util.average_score * 1.5
@@ -156,4 +160,4 @@ def test_fd_showdown_nba():
     )
     print(optimized)
     ntools.assert_equals(len(optimized.players), 5)
-    ntools.assert_almost_equals(optimized.score, 276.99)
+    ntools.assert_almost_equals(optimized.projected(), 276.99)

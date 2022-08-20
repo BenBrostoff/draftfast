@@ -203,7 +203,8 @@ class MVPRoster(Roster):
     POSITION_ORDER = {
         'MVP': 0,
         'STAR': 1,
-        'UTIL': 2,
+        'PRO': 2,
+        'UTIL': 3,
     }
 
 

@@ -4,6 +4,7 @@ from draftfast.orm import Player
 from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer, MVPPlayer
 from draftfast.rules import (
+    RuleSet,
     DRAFT_KINGS, FAN_DUEL,
     FD_NFL_MVP_RULE_SET,
     FD_MLB_MVP_RULE_SET,
@@ -86,9 +87,10 @@ def generate_players_from_csvs(
                 players += parsed
                 continue
             elif ruleset in [FD_MLB_MVP_RULE_SET, FD_NBA_MVP_RULE_SET]:
-                parsed = _parse_fd_mvp_mlb_row(
+                parsed = _parse_mvp_mlb_row(
                     pos=row['Position'],
                     row=row,
+                    ruleset=ruleset,
                 )
                 players += parsed
                 continue
@@ -198,7 +200,7 @@ def _parse_fd_mvp_nfl_row(pos: str, row: dict) -> List[ShowdownPlayer]:
     ]
 
 
-def _parse_fd_mvp_mlb_row(pos: str, row: dict) -> List[ShowdownPlayer]:
+def _parse_mvp_mlb_row(pos: str, row: dict, ruleset: RuleSet) -> List[ShowdownPlayer]:
     """
     FanDuel CSVs give all players without breaking out an MVP / STAR position.
     Unlike DK, salary does not change here.
@@ -209,6 +211,7 @@ def _parse_fd_mvp_mlb_row(pos: str, row: dict) -> List[ShowdownPlayer]:
         row=row,
         game=FAN_DUEL,
     )
+    util = MVPPlayer(player, game_position='UTIL')
     mvp = MVPPlayer(
         player,
         game_position='MVP',
@@ -217,11 +220,19 @@ def _parse_fd_mvp_mlb_row(pos: str, row: dict) -> List[ShowdownPlayer]:
         player,
         game_position='STAR'
     )
-    util = MVPPlayer(player, game_position='UTIL')
 
     # Unlike DK, FD does not break out players by multiplier position
     mvp.average_score *= MVPPlayer.MVP_MULTIPLIER
     star.average_score *= MVPPlayer.STAR_MULTIPLIER
+
+    # NBA contains PRO
+    if ruleset == FD_NBA_MVP_RULE_SET:
+        pro = MVPPlayer(
+            player,
+            game_position='PRO'
+        )
+        pro.average_score *= MVPPlayer.PRO_MULTIPLIER
+        return [mvp, star, pro, util]
 
     return [mvp, star, util]
 

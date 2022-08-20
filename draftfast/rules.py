@@ -209,7 +209,8 @@ POSITIONS = {
         'NBA_MVP': [
             ['MVP', 1, 1],
             ['STAR', 1, 1],
-            ['UTIL', 3, 3],
+            ['PRO', 1, 1],
+            ['UTIL', 2, 2],
         ],
         'WNBA': [
             ['G', 3, 3],
