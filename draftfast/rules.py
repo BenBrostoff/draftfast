@@ -27,6 +27,7 @@ ROSTER_SIZE = {
         'NFL': 9,
         'NFL_MVP': 5,
         'MLB_MVP': 5,
+        'NBA_MVP': 5,
         'NBA': 9,
         'MLB': 9,
         'WNBA': 7,
@@ -61,6 +62,7 @@ SALARY_CAP = {
         'NFL': 60_000,
         'NFL_MVP': 60_000,
         'MLB_MVP': 35_000,
+        'NBA_MVP': 60_000,
         'NBA': 60_000,
         'MLB': 35_000,
         'WNBA': 40_000,
@@ -200,6 +202,11 @@ POSITIONS = {
             ['OF', 3, 4],
         ],
         'MLB_MVP': [
+            ['MVP', 1, 1],
+            ['STAR', 1, 1],
+            ['UTIL', 3, 3],
+        ],
+        'NBA_MVP': [
             ['MVP', 1, 1],
             ['STAR', 1, 1],
             ['UTIL', 3, 3],
@@ -356,6 +363,16 @@ FD_MLB_MVP_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE[FAN_DUEL]['MLB_MVP'],
     salary_max=SALARY_CAP[FAN_DUEL]['MLB_MVP'],
     position_limits=POSITIONS[FAN_DUEL]['MLB_MVP'],
+    general_position_limits=[],
+    game_type='showdown',
+)
+
+FD_NBA_MVP_RULE_SET = RuleSet(
+    site=FAN_DUEL,
+    league='NBA_MVP',
+    roster_size=ROSTER_SIZE[FAN_DUEL]['NBA_MVP'],
+    salary_max=SALARY_CAP[FAN_DUEL]['NBA_MVP'],
+    position_limits=POSITIONS[FAN_DUEL]['NBA_MVP'],
     general_position_limits=[],
     game_type='showdown',
 )
