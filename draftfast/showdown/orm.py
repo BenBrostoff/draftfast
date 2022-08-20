@@ -63,6 +63,7 @@ class ShowdownPlayer(Player):
 class MVPPlayer(Player):
     MVP_MULTIPLIER = 2
     STAR_MULTIPLIER = 1.5
+    PRO_MULTIPLIER = 1.2
 
     def __init__(self, player, game_position):
         for k, v in player.__dict__.items():
@@ -71,7 +72,7 @@ class MVPPlayer(Player):
             setattr(self, k, deepcopy(v))
         self.real_pos = self.pos
 
-        # MVP, STAR, UTIL
+        # MVP, STAR, PRO, UTIL
         self.pos = game_position
 
     @property

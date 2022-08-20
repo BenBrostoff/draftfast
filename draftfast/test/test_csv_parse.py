@@ -3,7 +3,8 @@ from nose import tools as ntools
 from draftfast.csv_parse import salary_download
 from draftfast.rules import (
     DRAFT_KINGS, FAN_DUEL,
-    FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
+    FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET,
+    FD_NBA_MVP_RULE_SET
 )
 from draftfast.optimize import run
 
@@ -12,6 +13,7 @@ salaries = f'{CURRENT_DIR}/data/nba-test-salaries.csv'
 projections = f'{CURRENT_DIR}/data/nba-test-projections.csv'
 fd_mvp_nfl_salaries = f'{CURRENT_DIR}/data/nfl-mvp-fd-test-salaries.csv'
 fd_mvp_mlb_salaries = f'{CURRENT_DIR}/data/mlb-mvp-fd-test-salaries.csv'
+fd_mvp_nba_salaries = f'{CURRENT_DIR}/data/nba-mvp-fd-test-salaries.csv'
 
 
 def test_dk_nba_parse():
@@ -107,3 +109,55 @@ def test_fd_showdown_mlb():
         player_pool=players
     )
     ntools.assert_equals(len(optimized.players), 5)
+
+
+def test_fd_showdown_nba():
+    """
+    Based on
+    https://www.fanduel.com/games/76828/contests/76828-256975749/entries/2844624169/scoring?entry=2844624169
+    """
+    players = salary_download.generate_players_from_csvs(
+        salary_file_location=fd_mvp_nba_salaries,
+        projection_file_location=projections,
+        game=FAN_DUEL,
+        ruleset=FD_NBA_MVP_RULE_SET,
+    )
+    for p in players:
+        p.proj = p.average_score
+
+    ntools.assert_equals(len(players), 20)
+
+    chefs = [
+        p for p in players
+        if p.name == 'Stephen Curry'
+    ]
+    ntools.assert_equals(len(chefs), 4)
+    mvp, star, pro, util = chefs
+
+    ntools.assert_equals(mvp.cost, star.cost, util.cost)
+    ntools.assert_equals(mvp.pos, 'MVP')
+    ntools.assert_equals(star.pos, 'STAR')
+    ntools.assert_equals(pro.pos, 'PRO')
+    ntools.assert_equals(util.pos, 'UTIL')
+
+    ntools.assert_almost_equals(
+        pro.average_score,
+        util.average_score * 1.2
+    )
+    ntools.assert_almost_equals(
+        star.average_score,
+        util.average_score * 1.5
+    )
+    ntools.assert_almost_equals(
+        mvp.average_score,
+        util.average_score * 2
+    )
+
+    # Optimization should work
+    optimized = run(
+        rule_set=FD_NBA_MVP_RULE_SET,
+        player_pool=players
+    )
+    print(optimized)
+    ntools.assert_equals(len(optimized.players), 5)
+    ntools.assert_almost_equals(optimized.projected(), 276.99)
