@@ -5,7 +5,9 @@ from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer, MVPPlayer
 from draftfast.rules import (
     DRAFT_KINGS, FAN_DUEL,
-    FD_NFL_MVP_RULE_SET, FD_MLB_MVP_RULE_SET
+    FD_NFL_MVP_RULE_SET,
+    FD_MLB_MVP_RULE_SET,
+    FD_NBA_MVP_RULE_SET
 )
 
 GAME_KEY_MAP = {
@@ -83,7 +85,7 @@ def generate_players_from_csvs(
                 )
                 players += parsed
                 continue
-            elif ruleset == FD_MLB_MVP_RULE_SET:
+            elif ruleset in [FD_MLB_MVP_RULE_SET, FD_NBA_MVP_RULE_SET]:
                 parsed = _parse_fd_mvp_mlb_row(
                     pos=row['Position'],
                     row=row,
