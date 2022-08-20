@@ -200,7 +200,9 @@ def _parse_fd_mvp_nfl_row(pos: str, row: dict) -> List[ShowdownPlayer]:
     ]
 
 
-def _parse_mvp_mlb_row(pos: str, row: dict, ruleset: RuleSet) -> List[ShowdownPlayer]:
+def _parse_mvp_mlb_row(
+    pos: str, row: dict, ruleset: RuleSet
+) -> List[ShowdownPlayer]:
     """
     FanDuel CSVs give all players without breaking out an MVP / STAR position.
     Unlike DK, salary does not change here.
