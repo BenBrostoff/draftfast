@@ -450,7 +450,7 @@ class Player(object):
         """
         Used by optimizer to accommodate same player in different positions
         """
-        return '{} {} {}'.format(self.name, self.pos, self.team)
+        return f'{self.name} {self.pos} {self.team}'
 
     @property
     def roster_id(self):
@@ -464,7 +464,7 @@ class Player(object):
     @property
     def formatted_position(self):
         if self.multi_position:
-            return '{} ({})'.format(self.possible_positions, self.pos)
+            return f'{self.possible_positions} ({self.pos})'
         return self.pos
 
     @property
@@ -502,7 +502,7 @@ class Player(object):
         if re.match(r'^[A-Z]{2}$', s[0]):
             return s
 
-        return '{}. {}'.format(s[0][0], s[1])
+        return f'{s[0][0]}. {s[1]}'
 
     def __set_from_data_cache(self, player_data):
         if player_data is None:
@@ -522,7 +522,7 @@ class Game:
         self.opponent = opp
 
     def __repr__(self):
-        return '{} @ {}'.format(self.team, self.opponent)
+        return f'{self.team} @ {self.opponent}'
 
     def team_in_game(self, team):
         return team == self.team or team == self.opponent
