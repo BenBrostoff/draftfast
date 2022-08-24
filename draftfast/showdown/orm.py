@@ -85,10 +85,10 @@ class MVPPlayer(Player):
             multi_position=player.multi_position,
             kv_store=player.kv_store,
         )
-        self.real_pos = self.pos
+        player.real_pos = player.pos
 
         # MVP, STAR, PRO, UTIL
-        self.pos = game_position
+        player.pos = game_position
 
         return player
 
