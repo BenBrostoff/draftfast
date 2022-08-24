@@ -213,12 +213,12 @@ def _parse_mvp_mlb_row(
         row=row,
         game=FAN_DUEL,
     )
-    util = MVPPlayer(player, game_position='UTIL')
-    mvp = MVPPlayer(
+    util = MVPPlayer.from_player(player, game_position='UTIL')
+    mvp = MVPPlayer.from_player(
         player,
         game_position='MVP',
     )
-    star = MVPPlayer(
+    star = MVPPlayer.from_player(
         player,
         game_position='STAR'
     )
@@ -229,7 +229,7 @@ def _parse_mvp_mlb_row(
 
     # NBA contains PRO
     if ruleset == FD_NBA_MVP_RULE_SET:
-        pro = MVPPlayer(
+        pro = MVPPlayer.from_player(
             player,
             game_position='PRO'
         )
