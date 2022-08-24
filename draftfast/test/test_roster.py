@@ -1,4 +1,6 @@
-from draftfast.orm import NFLRoster, Player, ShowdownRoster, RosterGroup, MVPRoster
+from draftfast.orm import (
+    NFLRoster, Player, ShowdownRoster, RosterGroup, MVPRoster
+)
 from nose import tools as ntool
 
 
