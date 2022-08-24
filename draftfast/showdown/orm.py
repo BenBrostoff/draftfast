@@ -65,15 +65,32 @@ class MVPPlayer(Player):
     STAR_MULTIPLIER = 1.5
     PRO_MULTIPLIER = 1.2
 
-    def __init__(self, player, game_position):
-        for k, v in player.__dict__.items():
-            if hasattr(self, k) or k.startswith('__'):
-                continue
-            setattr(self, k, deepcopy(v))
+    @classmethod
+    def from_player(cls, player, game_position):
+        player = cls(
+            pos,
+            name=player.name,
+            cost=player.cost,
+            proj=player.proj,
+            projected_ownership_pct=player.projected_ownership_pct,
+            lineup_count=player.lineup_count,
+            average_score=player.average_score,
+            matchup=player.matchup,
+            team=player.team,
+            marked=player.marked,
+            possible_positions=player.possible_positions,
+            lock=player.lock,
+            position_lock=player.position_lock,
+            ban=player.ban,
+            multi_position=player.multi_position,
+            kv_store=player.kv_store,
+        )
         self.real_pos = self.pos
 
         # MVP, STAR, PRO, UTIL
         self.pos = game_position
+
+        return player
 
     @property
     def roster_id(self):
