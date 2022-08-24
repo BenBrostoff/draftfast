@@ -199,7 +199,7 @@ class ShowdownRoster(Roster):
         return self.cached_id
 
 
-class MVPRoster(Roster):
+class MVPRoster(ShowdownRoster):
     POSITION_ORDER = {
         'MVP': 0,
         'STAR': 1,
