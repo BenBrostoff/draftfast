@@ -68,7 +68,7 @@ class MVPPlayer(Player):
     @classmethod
     def from_player(cls, player, game_position):
         player = cls(
-            pos,
+            player.pos,
             name=player.name,
             cost=player.cost,
             proj=player.proj,
