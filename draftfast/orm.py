@@ -201,7 +201,11 @@ class ShowdownRoster(Roster):
 
 class MVPRoster(ShowdownRoster):
     POSITION_ORDER = {
+        # TODO - adjust NFL FD to MVP format
+        # and remove CPT, FLEX
+        'CPT': 0,
         'MVP': 0,
+        'FLEX': 1,
         'STAR': 1,
         'PRO': 2,
         'UTIL': 3,
@@ -322,7 +326,7 @@ class RosterSelect:
             'NFL_SHOWDOWN': ShowdownRoster(),
             'MLB_MVP': MVPRoster(),
             'NBA_MVP': MVPRoster(),
-            'NFL_MVP': ShowdownRoster(),
+            'NFL_MVP': MVPRoster(),
             'MLB': MLBRoster(),
             'PGA': PGARoster(),
             'PGA_CAPTAIN': PGACaptainRoster(),
