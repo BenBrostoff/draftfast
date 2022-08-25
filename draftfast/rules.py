@@ -348,7 +348,7 @@ DK_NFL_SHOWDOWN_RULE_SET = RuleSet(
 
 FD_NFL_MVP_RULE_SET = RuleSet(
     site=FAN_DUEL,
-    league='NFL_SHOWDOWN',
+    league='NFL_MVP',
     roster_size=ROSTER_SIZE[FAN_DUEL]['NFL_MVP'],
     salary_max=SALARY_CAP[FAN_DUEL]['NFL_MVP'],
     position_limits=POSITIONS[FAN_DUEL]['NFL_MVP'],
