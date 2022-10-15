@@ -173,3 +173,46 @@ def test_roster_group():
         # (0.5 + 0.5 + 0.5)/3
         0.5
     )
+
+
+def test_shared_and_different_player_count():
+    player_a = Player(pos='RB', name='A', cost=1, team='X')
+    player_b = Player(pos='QB', name='B', cost=1, team='X')
+    player_c = Player(pos='QB', name='C', cost=1, team='X')
+
+    roster_a = NFLRoster()
+    roster_a.add_player(player_a)
+    roster_a.add_player(player_b)
+
+    roster_b = NFLRoster()
+    roster_b.add_player(player_a)
+    roster_b.add_player(player_b)
+
+    roster_c = NFLRoster()
+    roster_c.add_player(player_a)
+    roster_c.add_player(player_c)
+
+    ntool.assert_equal(
+        roster_a.different_player_count(roster_b),
+        0
+    )
+    ntool.assert_equal(
+        roster_a.shared_player_count(roster_b),
+        2
+    )
+    ntool.assert_equal(
+        roster_a.different_player_count(roster_c),
+        1
+    )
+    ntool.assert_equal(
+        roster_a.shared_player_count(roster_c),
+        1
+    )
+    ntool.assert_equal(
+        roster_b.different_player_count(roster_c),
+        1
+    )
+    ntool.assert_equal(
+        roster_b.shared_player_count(roster_c),
+        1
+    )

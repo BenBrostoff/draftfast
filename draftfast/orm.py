@@ -15,336 +15,6 @@ def cs(n):
     return locale.format('%d', n, grouping=True)
 
 
-class Roster:
-    def __init__(self):
-        self.players = []
-        self.cached_id = None
-
-    def __repr__(self):
-        table_data = []
-        headers = [
-            'Position',
-            'Player',
-            'Team',
-            'Matchup',
-            'Salary',
-            'Projection',
-            'vs. Avg.',
-            'Locked'
-        ]
-        table_data.append(headers)
-        for p in self.sorted_players():
-            table_data.append(p.to_table_row())
-
-        table = AsciiTable(table_data)
-        table.justify_columns[4] = 'right'
-        table.justify_columns[5] = 'right'
-        table.justify_columns[6] = 'right'
-
-        aggregate_info = '\n\nProjected Score: {:0.2f} \t Cost: ${}'.format(
-            self.projected(),
-            cs(self.spent()))
-
-        return table.table + aggregate_info
-
-    @property
-    def identifier(self):
-        if self.cached_id:
-            return self.cached_id
-        self.cached_id = ' '.join(sorted([
-            x.roster_id for x in self.sorted_players()
-        ]))
-
-        return self.cached_id
-
-    def __eq__(self, other):
-        if not other:
-            return False
-
-        return self.identifier == other.identifier
-
-    def __hash__(self):
-        return hash(self.identifier)
-
-    def __contains__(self, player):
-        if isinstance(player, str):
-            for p in self.players:
-                if p.name == player or p.short_name == player:
-                    return True
-        elif isinstance(player, Player):
-            return player in self.players
-        else:
-            raise NotImplementedError
-
-        return False
-
-    def add_player(self, player):
-        self.players.append(player)
-
-    def spent(self):
-        return sum([x.cost for x in self.players])
-
-    def projected(self):
-        return sum([x.proj for x in self.players])
-
-    def position_order(self, player):
-        # raises exception in case someone tries to instantiate base class
-        position_order = getattr(self, 'POSITION_ORDER')
-
-        # default sort order is low->high, so use the negative of cost
-        return position_order[player.pos], -player.cost
-
-    def sorted_players(self):
-        return sorted(
-            self.players,
-            key=lambda p: self.position_order(p)
-        )
-
-
-class RosterGroup:
-    """
-    Group of rosters that might be entered into GPP or other contest.
-    The purpose of this class is to allow for easy retrieval of metrics
-    that would be helpful for thinking about multi-entry.
-    """
-
-    def __init__(self, rosters: List[Roster]):
-        self.rosters = rosters
-
-    def get_player_frequency(self):
-        players = []
-        for r in self.rosters:
-            for p in r.players:
-                players.append(p)
-
-        counter = Counter(players)
-        return sorted(
-            counter.items(),
-            reverse=True,
-            key=lambda items: items[1],
-        )
-
-    def get_salary_frequency(self) -> List[Dict[int, int]]:
-        salaries = []
-        for r in self.rosters:
-            salaries.append(r.spent())
-
-        counter = Counter(salaries)
-        return sorted(
-            counter.items(),
-            key=lambda items: items[0]
-        )
-
-    def get_similarity_score(self):
-        """
-        A similarity score of 1 means you're playing all of the same lineups.
-        0 would all be all different players in all different lineups.
-        0.5 would be say 3 lineups of 6 players with three of the same in each.
-        """
-        scores, pairs = [], []
-        for idx, r in enumerate(self.rosters):
-            for idx_comp, r_comp in enumerate(self.rosters):
-                if idx == idx_comp or (sorted([idx_comp, idx]) in pairs):
-                    # Do not compare to self or re-make comparison
-                    continue
-
-                if r == r_comp:
-                    scores.append(1)
-                else:
-                    scores.append(
-                        self.__get_roster_similarity(
-                            r,
-                            r_comp
-                        )
-                    )
-                pairs.append(sorted([idx_comp, idx]))
-
-        return sum(scores) / len(scores)
-
-    def __get_roster_similarity(self, roster_a, roster_b):
-        shared = []
-        for p_a in roster_a.players:
-            for p_b in roster_b.players:
-                if p_a == p_b:
-                    shared.append(p_a)
-
-        return len(shared) / len(roster_a.players)
-
-
-'''
-POSITION_ORDER is based on the order
-required by DraftKings' CSV download
-'''
-
-
-class ShowdownRoster(Roster):
-    POSITION_ORDER = {
-        'CPT': 0,
-        'FLEX': 1,
-    }
-
-    @property
-    def identifier(self):
-        """
-        In Showdown, only two positions exist
-        and a change in position means a change
-        in points, so unique is on position.
-        """
-        if self.cached_id:
-            return self.cached_id
-        self.cached_id = ' '.join(sorted([
-            x.solver_id for x in self.sorted_players()
-        ]))
-
-        return self.cached_id
-
-
-class MVPRoster(ShowdownRoster):
-    POSITION_ORDER = {
-        # TODO - adjust NFL FD to MVP format
-        # and remove CPT, FLEX
-        'CPT': 0,
-        'MVP': 0,
-        'FLEX': 1,
-        'STAR': 1,
-        'PRO': 2,
-        'UTIL': 3,
-    }
-
-
-class NFLRoster(Roster):
-    POSITION_ORDER = {
-        'QB': 0,
-        'RB': 1,
-        'WR': 2,
-        'TE': 3,
-        'DST': 4,
-        'D': 5,
-    }
-
-
-class TenRoster(Roster):
-    POSITION_ORDER = {
-        'P': 1,
-    }
-
-
-class MLBRoster(Roster):
-    POSITION_ORDER = {
-        'P': 0,
-        'RP': 0,
-        'SP': 0,
-        'C': 1,
-        '1B': 2,
-        '2B': 3,
-        '3B': 4,
-        'SS': 5,
-        'OF': 6,
-    }
-
-
-class NBARoster(Roster):
-    POSITION_ORDER = {
-        'PG': 0,
-        'SG': 1,
-        'SF': 2,
-        'PF': 3,
-        'C': 4
-    }
-
-
-class WNBARoster(Roster):
-    POSITION_ORDER = {
-        'G': 0,
-        'F': 1,
-        'SG': 2,
-        'SF': 3,
-        'PF': 4,
-    }
-
-
-class NASCARRoster(Roster):
-    POSITION_ORDER = {
-        'D': 0,
-    }
-
-
-class PGARoster(Roster):
-    POSITION_ORDER = {
-        'G': 0,
-    }
-
-
-class PGACaptainRoster(Roster):
-    POSITION_ORDER = {
-        'CPT': 0,
-        'G': 1,
-    }
-
-
-class SoccerRoster(Roster):
-    POSITION_ORDER = {
-        'F': 0,
-        'M': 1,
-        'D': 2,
-        'GK': 3,
-    }
-
-
-class ELRoster(Roster):
-    POSITION_ORDER = {
-        'G': 0,
-        'F': 1,
-    }
-
-
-class NHLRoster(Roster):
-    POSITION_ORDER = {
-        'C': 0,
-        'W': 1,
-        'D': 2,
-        'G': 3,
-    }
-
-
-class F1ShowdownRoster(Roster):
-    POSITION_ORDER = {
-        'CPT': 0,
-        'D': 1,
-        'CNSTR': 2,
-    }
-
-
-class RosterSelect:
-    @staticmethod
-    def roster_gen(league):
-        roster_dict = {
-            'NBA': NBARoster(),
-            'NBA_SHOWDOWN': ShowdownRoster(),
-            'WNBA': WNBARoster(),
-            'NFL': NFLRoster(),
-            'NFL_SHOWDOWN': ShowdownRoster(),
-            'MLB_MVP': MVPRoster(),
-            'NBA_MVP': MVPRoster(),
-            'NFL_MVP': MVPRoster(),
-            'MLB': MLBRoster(),
-            'PGA': PGARoster(),
-            'PGA_CAPTAIN': PGACaptainRoster(),
-            'NASCAR': NASCARRoster(),
-            'SOCCER': SoccerRoster(),
-            'EL': ELRoster(),
-            'NHL': NHLRoster(),
-            'NHL_SHOWDOWN': ShowdownRoster(),
-            'MLB_SHOWDOWN': ShowdownRoster(),
-            # XFL uses the same positions as NFL
-            'XFL': NFLRoster(),
-            'TEN': TenRoster(),
-            'CSGO_SHOWDOWN': ShowdownRoster(),
-            'F1_SHOWDOWN': F1ShowdownRoster(),
-        }
-        return roster_dict[league]
-
-
 @total_ordering
 class Player(object):
     def __init__(
@@ -520,6 +190,346 @@ class Player(object):
         if self.v_avg > 0:
             return '\x1b[0;32;40m{:0.2f}\x1b[0m'.format(self.v_avg)
         return '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(self.v_avg)
+
+
+class Roster:
+    def __init__(self):
+        self.players = []
+        self.cached_id = None
+
+    def __repr__(self):
+        table_data = []
+        headers = [
+            'Position',
+            'Player',
+            'Team',
+            'Matchup',
+            'Salary',
+            'Projection',
+            'vs. Avg.',
+            'Locked'
+        ]
+        table_data.append(headers)
+        for p in self.sorted_players():
+            table_data.append(p.to_table_row())
+
+        table = AsciiTable(table_data)
+        table.justify_columns[4] = 'right'
+        table.justify_columns[5] = 'right'
+        table.justify_columns[6] = 'right'
+
+        aggregate_info = '\n\nProjected Score: {:0.2f} \t Cost: ${}'.format(
+            self.projected(),
+            cs(self.spent()))
+
+        return table.table + aggregate_info
+
+    @property
+    def identifier(self):
+        if self.cached_id:
+            return self.cached_id
+        self.cached_id = ' '.join(sorted([
+            x.roster_id for x in self.sorted_players()
+        ]))
+
+        return self.cached_id
+
+    def __eq__(self, other):
+        if not other:
+            return False
+
+        return self.identifier == other.identifier
+
+    def __hash__(self):
+        return hash(self.identifier)
+
+    def __contains__(self, player):
+        if isinstance(player, str):
+            for p in self.players:
+                if p.name == player or p.short_name == player:
+                    return True
+        elif isinstance(player, Player):
+            return player in self.players
+        else:
+            raise NotImplementedError()
+
+        return False
+
+    def add_player(self, player):
+        self.players.append(player)
+
+    def spent(self):
+        return sum([x.cost for x in self.players])
+
+    def projected(self):
+        return sum([x.proj for x in self.players])
+
+    def position_order(self, player):
+        # raises exception in case someone tries to instantiate base class
+        position_order = getattr(self, 'POSITION_ORDER')
+
+        # default sort order is low->high, so use the negative of cost
+        return position_order[player.pos], -player.cost
+
+    def sorted_players(self):
+        return sorted(
+            self.players,
+            key=lambda p: self.position_order(p)
+        )
+
+    def different_player_count(self, other_roster):
+        dpc = 0
+        other_roster_players: List[Player] = other_roster.players
+        for player in self.players:
+            if player not in other_roster_players:
+                dpc += 1
+        return dpc
+
+    def shared_player_count(self, other_roster):
+        spc = 0
+        other_roster_players: List[Player] = other_roster.players
+        for player in self.players:
+            if player in other_roster_players:
+                spc += 1
+        return spc
+
+
+class RosterGroup:
+    """
+    Group of rosters that might be entered into GPP or other contest.
+    The purpose of this class is to allow for easy retrieval of metrics
+    that would be helpful for thinking about multi-entry.
+    """
+
+    def __init__(self, rosters: List[Roster]):
+        self.rosters = rosters
+
+    def get_player_frequency(self):
+        players = []
+        for r in self.rosters:
+            for p in r.players:
+                players.append(p)
+
+        counter = Counter(players)
+        return sorted(
+            counter.items(),
+            reverse=True,
+            key=lambda items: items[1],
+        )
+
+    def get_salary_frequency(self) -> List[Dict[int, int]]:
+        salaries = []
+        for r in self.rosters:
+            salaries.append(r.spent())
+
+        counter = Counter(salaries)
+        return sorted(
+            counter.items(),
+            key=lambda items: items[0]
+        )
+
+    def get_similarity_score(self):
+        """
+        A similarity score of 1 means you're playing all of the same lineups.
+        0 would all be all different players in all different lineups.
+        0.5 would be say 3 lineups of 6 players with three of the same in each.
+        """
+        scores, pairs = [], []
+        for idx, r in enumerate(self.rosters):
+            for idx_comp, r_comp in enumerate(self.rosters):
+                if idx == idx_comp or (sorted([idx_comp, idx]) in pairs):
+                    # Do not compare to self or re-make comparison
+                    continue
+
+                if r == r_comp:
+                    scores.append(1)
+                else:
+                    scores.append(
+                        self.__get_roster_similarity(
+                            r,
+                            r_comp
+                        )
+                    )
+                pairs.append(sorted([idx_comp, idx]))
+
+        return sum(scores) / len(scores)
+
+    def __get_roster_similarity(self, roster_a, roster_b):
+        return roster_a.shared_player_count(roster_b) / len(roster_a.players)
+
+
+'''
+POSITION_ORDER is based on the order
+required by DraftKings' CSV download
+'''
+
+
+class ShowdownRoster(Roster):
+    POSITION_ORDER = {
+        'CPT': 0,
+        'FLEX': 1,
+    }
+
+    @property
+    def identifier(self):
+        """
+        In Showdown, only two positions exist
+        and a change in position means a change
+        in points, so unique is on position.
+        """
+        if self.cached_id:
+            return self.cached_id
+        self.cached_id = ' '.join(sorted([
+            x.solver_id for x in self.sorted_players()
+        ]))
+
+        return self.cached_id
+
+
+class MVPRoster(ShowdownRoster):
+    POSITION_ORDER = {
+        # TODO - adjust NFL FD to MVP format
+        # and remove CPT, FLEX
+        'CPT': 0,
+        'MVP': 0,
+        'FLEX': 1,
+        'STAR': 1,
+        'PRO': 2,
+        'UTIL': 3,
+    }
+
+
+class NFLRoster(Roster):
+    POSITION_ORDER = {
+        'QB': 0,
+        'RB': 1,
+        'WR': 2,
+        'TE': 3,
+        'DST': 4,
+        'D': 5,
+    }
+
+
+class TenRoster(Roster):
+    POSITION_ORDER = {
+        'P': 1,
+    }
+
+
+class MLBRoster(Roster):
+    POSITION_ORDER = {
+        'P': 0,
+        'RP': 0,
+        'SP': 0,
+        'C': 1,
+        '1B': 2,
+        '2B': 3,
+        '3B': 4,
+        'SS': 5,
+        'OF': 6,
+    }
+
+
+class NBARoster(Roster):
+    POSITION_ORDER = {
+        'PG': 0,
+        'SG': 1,
+        'SF': 2,
+        'PF': 3,
+        'C': 4
+    }
+
+
+class WNBARoster(Roster):
+    POSITION_ORDER = {
+        'G': 0,
+        'F': 1,
+        'SG': 2,
+        'SF': 3,
+        'PF': 4,
+    }
+
+
+class NASCARRoster(Roster):
+    POSITION_ORDER = {
+        'D': 0,
+    }
+
+
+class PGARoster(Roster):
+    POSITION_ORDER = {
+        'G': 0,
+    }
+
+
+class PGACaptainRoster(Roster):
+    POSITION_ORDER = {
+        'CPT': 0,
+        'G': 1,
+    }
+
+
+class SoccerRoster(Roster):
+    POSITION_ORDER = {
+        'F': 0,
+        'M': 1,
+        'D': 2,
+        'GK': 3,
+    }
+
+
+class ELRoster(Roster):
+    POSITION_ORDER = {
+        'G': 0,
+        'F': 1,
+    }
+
+
+class NHLRoster(Roster):
+    POSITION_ORDER = {
+        'C': 0,
+        'W': 1,
+        'D': 2,
+        'G': 3,
+    }
+
+
+class F1ShowdownRoster(Roster):
+    POSITION_ORDER = {
+        'CPT': 0,
+        'D': 1,
+        'CNSTR': 2,
+    }
+
+
+class RosterSelect:
+    @staticmethod
+    def roster_gen(league):
+        roster_dict = {
+            'NBA': NBARoster(),
+            'NBA_SHOWDOWN': ShowdownRoster(),
+            'WNBA': WNBARoster(),
+            'NFL': NFLRoster(),
+            'NFL_SHOWDOWN': ShowdownRoster(),
+            'MLB_MVP': MVPRoster(),
+            'NBA_MVP': MVPRoster(),
+            'NFL_MVP': MVPRoster(),
+            'MLB': MLBRoster(),
+            'PGA': PGARoster(),
+            'PGA_CAPTAIN': PGACaptainRoster(),
+            'NASCAR': NASCARRoster(),
+            'SOCCER': SoccerRoster(),
+            'EL': ELRoster(),
+            'NHL': NHLRoster(),
+            'NHL_SHOWDOWN': ShowdownRoster(),
+            'MLB_SHOWDOWN': ShowdownRoster(),
+            # XFL uses the same positions as NFL
+            'XFL': NFLRoster(),
+            'TEN': TenRoster(),
+            'CSGO_SHOWDOWN': ShowdownRoster(),
+            'F1_SHOWDOWN': F1ShowdownRoster(),
+        }
+        return roster_dict[league]
 
 
 class Game:
