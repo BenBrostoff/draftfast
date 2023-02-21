@@ -4,7 +4,7 @@ with open('README.md', 'r') as fh:
     long_description = fh.read()
 
 requires = [
-    'numpy==1.21',
+    'numpy==1.24.2',
     'terminaltables==3.1.0',
     'ortools==9.0.9048',
 ]
