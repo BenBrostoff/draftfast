@@ -159,7 +159,7 @@ def test_multi_roster_nfl():
 
     assertions.assertNotEqual(roster, None)
     assertions.assertNotEqual(second_roster, None)
-    ntools.assert_false(roster == second_roster)
+    assertions.assertFalse(roster == second_roster)
 
 
 def test_multi_roster_nba():
@@ -177,7 +177,7 @@ def test_multi_roster_nba():
 
     assertions.assertNotEqual(roster, None)
     assertions.assertNotEqual(second_roster, None)
-    ntools.assert_false(roster == second_roster)
+    assertions.assertFalse(roster == second_roster)
 
 
 def test_uniques_nba():

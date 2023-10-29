@@ -71,8 +71,8 @@ def test_showdown_roster_equality_and_position_shuffle():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_false(roster_a == roster_c)
-    ntool.assert_false(roster_a == roster_b)
+    assertions.assertFalse(roster_a == roster_c)
+    assertions.assertFalse(roster_a == roster_b)
 
 
 def test_mvp_roster_equality_and_position_shuffle():
@@ -194,27 +194,27 @@ def test_shared_and_different_player_count():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assertEquals(
+    assertions.assertEquals(
         roster_a.different_player_count(roster_b),
         0
     )
-    ntool.assertEquals(
+    assertions.assertEquals(
         roster_a.shared_player_count(roster_b),
         2
     )
-    ntool.assertEquals(
+    assertions.assertEquals(
         roster_a.different_player_count(roster_c),
         1
     )
-    ntool.assertEquals(
+    assertions.assertEquals(
         roster_a.shared_player_count(roster_c),
         1
     )
-    ntool.assertEquals(
+    assertions.assertEquals(
         roster_b.different_player_count(roster_c),
         1
     )
-    ntool.assertEquals(
+    assertions.assertEquals(
         roster_b.shared_player_count(roster_c),
         1
     )

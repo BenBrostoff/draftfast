@@ -7,6 +7,7 @@ from draftfast.settings import OptimizerSettings
 from draftfast.showdown.orm import ShowdownPlayer
 from draftfast.lineup_constraints import LineupConstraints
 
+assertions = unittest.TestCase('__init__')
 
 def _build_mock_player_pool():
     player_pool = [

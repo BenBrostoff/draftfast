@@ -317,13 +317,13 @@ Run tests or set of tests:
 
 ```sh
 # All tests
-nosetests
+nose2
 
 # Single file
-nosetests draftfast/test/test_soccer.py
+nose2 draftfast.test.test_soccer
 
 # Single test
-nosetests draftfast/test/test_soccer.py:test_soccer_dk_no_opp_d
+nosetests draftfast.test.test_soccer.test_soccer_dk_no_opp_d
 ```
 
 Run linting
