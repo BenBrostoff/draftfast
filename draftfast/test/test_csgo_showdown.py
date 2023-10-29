@@ -7,6 +7,7 @@ from draftfast.showdown.orm import ShowdownPlayer
 
 assertions = unittest.TestCase('__init__')
 
+
 def _build_mock_player_pool():
     player_pool = [
         Player(name='A1', cost=5500, proj=100, pos='QB',
