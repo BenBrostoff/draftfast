@@ -1,5 +1,8 @@
 import os
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 from draftfast.orm import Player
 from draftfast.optimize import run
 from draftfast import rules
@@ -8,21 +11,21 @@ from draftfast.csv_parse import salary_download as sd
 
 def test_general_guard():
     pg = Player(name='A', cost=1, proj=1, pos='PG')
-    ntools.assert_equal(pg.nba_general_position, 'G')
+    assertions.assertEquals(pg.nba_general_position, 'G')
     sg = Player(name='A', cost=1, proj=1, pos='SG')
-    ntools.assert_equal(sg.nba_general_position, 'G')
+    assertions.assertEquals(sg.nba_general_position, 'G')
 
 
 def test_general_forward():
     pg = Player(name='A', cost=1, proj=1, pos='SF')
-    ntools.assert_equal(pg.nba_general_position, 'F')
+    assertions.assertEquals(pg.nba_general_position, 'F')
     sg = Player(name='A', cost=1, proj=1, pos='PF')
-    ntools.assert_equal(sg.nba_general_position, 'F')
+    assertions.assertEquals(sg.nba_general_position, 'F')
 
 
 def test_general_center():
     pg = Player(name='A', cost=1, proj=1, pos='C')
-    ntools.assert_equal(pg.nba_general_position, 'C')
+    assertions.assertEquals(pg.nba_general_position, 'C')
 
 
 def test_optimize_with_general():
@@ -55,14 +58,14 @@ def test_optimize_with_general():
     # this does appear to be an ortools artifact. Since the lineup produced is
     # correct and optimal either way, i modified the test to account for all
     # possible constructions
-    ntools.assert_equal(rosters[0].projected(), 279.53)
+    assertions.assertEquals(rosters[0].projected(), 279.53)
 
     for i in range(1, 30):
         print(i)
 
-        ntools.assert_equal(rosters[i], rosters[0])
+        assertions.assertEquals(rosters[i], rosters[0])
 
-        ntools.assert_equal(rosters[i].projected(), 279.53)
-        ntools.assert_true(get_player_count_at_pos(rosters[i], 'G') in [3, 4])
-        ntools.assert_true(get_player_count_at_pos(rosters[i], 'F') in [3, 4])
-        ntools.assert_true(get_player_count_at_pos(rosters[i], 'C') in [1, 2])
+        assertions.assertEquals(rosters[i].projected(), 279.53)
+        assertions.assertTrue(get_player_count_at_pos(rosters[i], 'G') in [3, 4])
+        assertions.assertTrue(get_player_count_at_pos(rosters[i], 'F') in [3, 4])
+        assertions.assertTrue(get_player_count_at_pos(rosters[i], 'C') in [1, 2])

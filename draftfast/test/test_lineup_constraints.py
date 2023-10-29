@@ -1,14 +1,17 @@
 from draftfast.lineup_constraints import (LineupConstraints,
                                           ConstraintConflictException,
                                           ConstraintException)
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 
 
 def test_constraint_string_args():
     lcs = LineupConstraints()
     lcs.ban('Sam Bradford')
     lcs.lock('Will Fuller')
-    ntools.assert_equal(len(lcs), 2)
+    assertions.assertEquals(len(lcs), 2)
 
 
 def test_constraint_contains():
@@ -19,7 +22,7 @@ def test_constraint_contains():
     lcs.lock(['H'])
 
     for c in ['A', 'B', 'C', 'E', 'F', 'G', 'H']:
-        ntools.assert_equal(c in lcs, True)
+        assertions.assertEquals(c in lcs, True)
 
 
 def test_constraint_set_eq():
@@ -37,7 +40,7 @@ def test_constraint_set_eq():
                               (1, 3))
     lcs2.lock(['Will Fuller'])
 
-    ntools.assert_equal(lcs1, lcs2)
+    assertions.assertEquals(lcs1, lcs2)
 
 
 def test_build_constraint_set():
@@ -48,7 +51,7 @@ def test_build_constraint_set():
                              (1, 3))
     lcs.lock(['Will Fuller'])
 
-    ntools.assert_equal(len(lcs), 4)
+    assertions.assertEquals(len(lcs), 4)
 
 
 @ntools.raises(ConstraintConflictException)

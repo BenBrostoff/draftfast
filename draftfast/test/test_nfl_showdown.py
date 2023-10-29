@@ -1,4 +1,5 @@
-from nose import tools as ntools
+import unittest
+
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
@@ -92,8 +93,8 @@ def test_nfl_dk_showdown_mock():
         verbose=True
     )
 
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 421)
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 421)
 
 
 def test_nfl_showdown_no_def_against_capt():
@@ -109,10 +110,10 @@ def test_nfl_showdown_no_def_against_capt():
         verbose=True
     )
 
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 408.0)
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 408.0)
     for p in roster.players:
-        ntools.assert_not_equal(p.name, 'A112')
+        assertions.assertNotEqual(p.name, 'A112')
 
 
 def test_nfl_showdown_lock_general():
@@ -130,9 +131,9 @@ def test_nfl_showdown_lock_general():
         ),
         verbose=True
     )
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 399.0)
-    ntools.assert_true('A14' in [x.name for x in roster.players])
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 399.0)
+    assertions.assertTrue('A14' in [x.name for x in roster.players])
 
 
 def test_nfl_showdown_lock_captain():
@@ -150,10 +151,10 @@ def test_nfl_showdown_lock_captain():
         ),
         verbose=True
     )
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 370.5)
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 370.5)
     cpt = [x for x in roster.players if x.pos == 'CPT'][0]
-    ntools.assert_equal('A2', cpt.name)
+    assertions.assertEquals('A2', cpt.name)
 
 
 def test_nfl_showdown_lock_flex():
@@ -171,14 +172,14 @@ def test_nfl_showdown_lock_flex():
         ),
         verbose=True
     )
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 386.0)
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 386.0)
     flex = [
         x for x in roster.players
         if x.pos == 'FLEX'
         and x.name == 'A1'
     ][0]
-    ntools.assert_equal('A1', flex.name)
+    assertions.assertEquals('A1', flex.name)
 
 
 def test_nfl_showdown_ban_general():
@@ -196,9 +197,9 @@ def test_nfl_showdown_ban_general():
         ),
         verbose=True
     )
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 334.0)
-    ntools.assert_true('A1' not in [x.name for x in roster.players])
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 334.0)
+    assertions.assertTrue('A1' not in [x.name for x in roster.players])
 
 
 def test_nfl_showdown_ban_specific():
@@ -216,11 +217,11 @@ def test_nfl_showdown_ban_specific():
         ),
         verbose=True
     )
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 386.0)
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 386.0)
     flex = [
         x for x in roster.players
         if x.pos == 'FLEX'
         and x.name == 'A1'
     ][0]
-    ntools.assert_equal('A1', flex.name)
+    assertions.assertEquals('A1', flex.name)

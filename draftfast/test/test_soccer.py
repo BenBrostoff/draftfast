@@ -1,5 +1,8 @@
 import os
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
@@ -20,7 +23,7 @@ def test_soccer_dk():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)
 
 
 def test_soccer_dk_no_opp_d():
@@ -47,8 +50,8 @@ def test_soccer_dk_no_opp_d():
         p for p in roster.players if p.team == 'LGN'
         and p.pos in ['D', 'GK']
     ]
-    ntools.assert_equal(len(cel_off_players), 2)
-    ntools.assert_equal(len(lgn_d_players), 2)
+    assertions.assertEquals(len(cel_off_players), 2)
+    assertions.assertEquals(len(lgn_d_players), 2)
 
     roster = run(
         rule_set=rules.DK_SOCCER_RULE_SET,
@@ -69,5 +72,5 @@ def test_soccer_dk_no_opp_d():
         p for p in roster.players if p.team == 'LGN'
         and p.pos in ['D', 'GK']
     ]
-    ntools.assert_equal(len(cel_off_players), 2)
-    ntools.assert_equal(len(lgn_d_players), 0)
+    assertions.assertEquals(len(cel_off_players), 2)
+    assertions.assertEquals(len(lgn_d_players), 0)

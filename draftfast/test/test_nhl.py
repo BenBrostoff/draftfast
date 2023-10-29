@@ -1,5 +1,8 @@
 import os
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
@@ -20,7 +23,7 @@ def test_nhl_dk():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)
 
 
 def test_triple_stack():
@@ -46,6 +49,6 @@ def test_triple_stack():
     phi_players = [x for x in players if x.team == 'TOR']
     fla_players = [x for x in players if x.team == 'COL']
     nsh_players = [x for x in players if x.team == 'VAN']
-    ntools.assert_equal(len(phi_players), 3)
-    ntools.assert_equal(len(fla_players), 3)
-    ntools.assert_equal(len(nsh_players), 2)
+    assertions.assertEquals(len(phi_players), 3)
+    assertions.assertEquals(len(fla_players), 3)
+    assertions.assertEquals(len(nsh_players), 2)

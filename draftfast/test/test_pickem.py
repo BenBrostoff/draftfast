@@ -1,4 +1,7 @@
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 from draftfast.pickem import pickem_orm
 from draftfast.pickem.pickem_optimize import optimize
 from draftfast.settings import PlayerPoolSettings
@@ -42,7 +45,7 @@ def _generate_test_player_data():
 def test_default_lineup():
     players = _generate_test_player_data()
     optimized = optimize(players)
-    ntools.assert_equal(
+    assertions.assertEquals(
         optimized.total,
         50 + 48 + 46 + 44 + 42 + 40
     )
@@ -56,7 +59,7 @@ def test_banned_players():
         player_settings=PlayerPoolSettings(),
         constraints=LineupConstraints(banned=['A', 'C'])
     )
-    ntools.assert_equal(
+    assertions.assertEquals(
         optimized.total,
         49 + 47 + 46 + 44 + 42 + 40
     )
@@ -69,7 +72,7 @@ def test_locked_players():
         players,
         constraints=LineupConstraints(locked=['B', 'D'])
     )
-    ntools.assert_equal(
+    assertions.assertEquals(
         optimized.total,
         49 + 47 + 46 + 44 + 42 + 40
     )
@@ -80,7 +83,7 @@ def test_locked_players():
 #     test_args = args_dict.copy()
 #     test_args['banned_teams'] = [_BOS]
 #     optimized = optimize(players, cmd_args=Namespace(**test_args))
-#     ntools.assert_equal(
+#     assertions.assertEquals(
 #         optimized.total,
 #         49 + 47 + 45 + 43 + 41 + 39
 #     )
@@ -91,7 +94,7 @@ def test_locked_players():
 #     test_args = args_dict.copy()
 #     test_args['locked_teams'] = [_GS]
 #     optimized = optimize(players, cmd_args=Namespace(**test_args))
-#     ntools.assert_equal(
+#     assertions.assertEquals(
 #         optimized.total,
 #         49 + 47 + 45 + 43 + 41 + 39
 #     )

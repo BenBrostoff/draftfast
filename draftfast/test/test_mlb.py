@@ -1,5 +1,8 @@
 import os
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
@@ -23,8 +26,8 @@ def test_mlb_dk():
     )
 
     # Test general position limits
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_true('RP' in [x.pos for x in roster.players])
+    assertions.assertNotEqual(roster, None)
+    assertions.assertTrue('RP' in [x.pos for x in roster.players])
 
 
 def test_five_batters_max():

@@ -1,5 +1,8 @@
 import os
-from nose import tools as ntools
+
+import unittest
+assertions = unittest.TestCase('__init__')
+
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
@@ -18,4 +21,4 @@ def test_xlf_lineup():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)
