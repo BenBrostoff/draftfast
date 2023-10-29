@@ -6,7 +6,7 @@ An incredibly powerful tool that automates and optimizes lineup building, allowi
 
 ## Installation
 
-Requires Python 3.9+.
+Requires Python 3.11+.
 
 ```bash
 pip install draftfast
