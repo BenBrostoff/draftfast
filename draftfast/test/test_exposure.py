@@ -1,8 +1,10 @@
 import os
-from nose import tools as ntools
 from draftfast.optimize import run_multi
 from draftfast import rules
 from draftfast.csv_parse import salary_download
+
+import unittest
+assertions = unittest.TestCase('__init__')
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-nfl-salaries.csv'.format(CURRENT_DIR)
@@ -26,16 +28,16 @@ def test_deterministic_exposure_limits():
             {'name': 'Alshon Jeffery', 'min': 1, 'max': 1},
         ],
     )
-    ntools.assert_equal(len(rosters), iterations)
-    ntools.assert_equal(len(exposure_diffs), 0)
+    assertions.assertEquals(len(rosters), iterations)
+    assertions.assertEquals(len(exposure_diffs), 0)
 
     players = [p.name for p in rosters[0].players]
-    ntools.assert_true('Andrew Luck' in players)
-    ntools.assert_true('Alshon Jeffery' in players)
+    assertions.assertTrue('Andrew Luck' in players)
+    assertions.assertTrue('Alshon Jeffery' in players)
 
     players = [p.name for p in rosters[1].players]
-    ntools.assert_true('Andrew Luck' not in players)
-    ntools.assert_true('Alshon Jeffery' in players)
+    assertions.assertTrue('Andrew Luck' not in players)
+    assertions.assertTrue('Alshon Jeffery' in players)
 
 
 def test_random_exposure_limits():
@@ -51,5 +53,5 @@ def test_random_exposure_limits():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
     )
-    ntools.assert_equal(len(rosters), iterations)
-    ntools.assert_equal(len(exposure_diffs), 0)
+    assertions.assertEquals(len(rosters), iterations)
+    assertions.assertEquals(len(exposure_diffs), 0)
