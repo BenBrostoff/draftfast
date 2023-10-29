@@ -1,7 +1,9 @@
-from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
+
+import unittest
+assertions = unittest.TestCase('__init__')
 
 GOLFER, CPT = 'G', 'CPT'
 
@@ -21,7 +23,7 @@ def test_golf_dk():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)
 
 
 def test_golf_dk_captain():
@@ -39,5 +41,5 @@ def test_golf_dk_captain():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_equal(roster.projected(), 376)
+    assertions.assertNotEqual(roster, None)
+    assertions.assertEquals(roster.projected(), 376)

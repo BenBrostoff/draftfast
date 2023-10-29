@@ -1,9 +1,11 @@
 import os
-from nose import tools as ntools
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
 from draftfast.orm import Roster
+
+import unittest
+assertions = unittest.TestCase('__init__')
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/soccer-showdown.csv'.format(CURRENT_DIR)
@@ -45,4 +47,4 @@ def test_el_dk():
         verbose=True,
         roster_gen=Showdown,
     )
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)

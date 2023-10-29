@@ -1,11 +1,15 @@
 import os
-from nose import tools as ntools
+
+import unittest
+
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-ten-salaries.csv'.format(CURRENT_DIR)
+
+assertions = unittest.TestCase('__init__')
 
 
 def test_tennis_lineup():
@@ -18,4 +22,4 @@ def test_tennis_lineup():
         player_pool=player_pool,
         verbose=True,
     )
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)

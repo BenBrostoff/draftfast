@@ -2,7 +2,6 @@ import os
 import csv
 from typing import Type
 import types
-from nose.tools import assert_equal
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
@@ -10,7 +9,12 @@ from draftfast.pickem.pickem_optimize import (
     optimize as p_optimize
 )
 
+import unittest
+assertions = unittest.TestCase('__init__')
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+assertEquals = assertions.assertEqual
 
 
 def test_dk_nba_upload():
@@ -21,7 +25,7 @@ def test_dk_nba_upload():
         pid_file='{}/data/dk-nba-pids.csv'.format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNBAUploader,
     )
-    assert_equal(
+    assertEquals(
         sorted(row),
         sorted([
             '11743190',
@@ -46,7 +50,7 @@ def test_dk_nfl_upload():
         pid_file='{}/data/dk-nfl-upload.csv'.format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNFLUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '13651346',
@@ -72,7 +76,7 @@ def test_dk_el_upload():
         pid_file='{}/data/dk-euro-league-pids.csv'.format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsELUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '11799918',
@@ -95,7 +99,7 @@ def test_dk_soccer_upload():
         pid_file='{}/data/dk-soccer-pids.csv'.format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsSoccerUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '11801828',
@@ -118,7 +122,7 @@ def test_fd_nba_upload():
         pid_file='{}/data/fd-nba-pids.csv'.format(CURRENT_DIR),
         Uploader=uploaders.FanDuelNBAUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '30803-9535:Kyle Lowry',
@@ -142,7 +146,7 @@ def test_dk_nhl_uploader():
         pid_file='{}/data/dk-nhl-pids.csv'.format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNHLUploader,
     )
-    assert_equal(
+    assertEquals(
         sorted(row),
         sorted([
             '11845288',
@@ -185,7 +189,7 @@ def test_pickem_nba_upload():
         for idx, row in enumerate(reader):
             if idx == 0:
                 continue
-    assert_equal(
+    assertEquals(
         row,
         [
             '11839390',
@@ -205,7 +209,7 @@ def test_dk_nfl_showdown_upload():
         ruleset=rules.DK_NFL_SHOWDOWN_RULE_SET,
         Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '11896024',
@@ -225,7 +229,7 @@ def test_dk_nba_showdown_upload():
         ruleset=rules.DK_NBA_SHOWDOWN_RULE_SET,
         Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '11915867',
@@ -245,7 +249,7 @@ def test_dk_mlb_showdown_upload():
         ruleset=rules.DK_MLB_SHOWDOWN_RULE_SET,
         Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '12895602',
@@ -270,7 +274,7 @@ def test_dk_xfl_classic_upload():
         Uploader=uploaders.DraftKingsXFLUploader,
         players_side_effect=proj
     )
-    assert_equal(
+    assertEquals(
         row,
         [
             '14224920',

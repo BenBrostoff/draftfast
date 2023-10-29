@@ -1,5 +1,5 @@
 import os
-from nose import tools as ntools
+import unittest
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download
@@ -8,6 +8,8 @@ from draftfast.settings import CustomRule, OptimizerSettings
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-mlb-salaries.csv'.format(CURRENT_DIR)
+
+assertions = unittest.TestCase('__init__')
 
 
 def test_mlb_dk():
@@ -23,8 +25,8 @@ def test_mlb_dk():
     )
 
     # Test general position limits
-    ntools.assert_not_equal(roster, None)
-    ntools.assert_true('RP' in [x.pos for x in roster.players])
+    assertions.assertNotEqual(roster, None)
+    assertions.assertTrue('RP' in [x.pos for x in roster.players])
 
 
 def test_five_batters_max():

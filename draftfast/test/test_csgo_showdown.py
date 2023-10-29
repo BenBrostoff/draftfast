@@ -1,9 +1,11 @@
-from nose import tools as ntools
+import unittest
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
 from draftfast.settings import OptimizerSettings
 from draftfast.showdown.orm import ShowdownPlayer
+
+assertions = unittest.TestCase('__init__')
 
 
 def _build_mock_player_pool():
@@ -68,8 +70,8 @@ def test_csgo_mock():
         verbose=True
     )
 
-    ntools.assert_not_equal(roster, None)
+    assertions.assertNotEqual(roster, None)
     players = roster.players
-    ntools.assert_equal(len([
+    assertions.assertEquals(len([
         x for x in players if x.team == 'Y'
     ]), 3)

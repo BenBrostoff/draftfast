@@ -1,7 +1,9 @@
 from draftfast.orm import (
     NFLRoster, Player, ShowdownRoster, RosterGroup, MVPRoster
 )
-from nose import tools as ntool
+import unittest
+
+assertions = unittest.TestCase('__init__')
 
 
 def test_roster_equality():
@@ -21,8 +23,8 @@ def test_roster_equality():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_false(roster_a == roster_c)
-    ntool.assert_true(roster_a == roster_b)
+    assertions.assertFalse(roster_a == roster_c)
+    assertions.assertTrue(roster_a == roster_b)
 
 
 def test_roster_equality_with_position_shuffle():
@@ -43,8 +45,8 @@ def test_roster_equality_with_position_shuffle():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_false(roster_a == roster_c)
-    ntool.assert_true(roster_a == roster_b)
+    assertions.assertFalse(roster_a == roster_c)
+    assertions.assertTrue(roster_a == roster_b)
 
 
 def test_showdown_roster_equality_and_position_shuffle():
@@ -69,8 +71,8 @@ def test_showdown_roster_equality_and_position_shuffle():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_false(roster_a == roster_c)
-    ntool.assert_false(roster_a == roster_b)
+    assertions.assertFalse(roster_a == roster_c)
+    assertions.assertFalse(roster_a == roster_b)
 
 
 def test_mvp_roster_equality_and_position_shuffle():
@@ -95,8 +97,8 @@ def test_mvp_roster_equality_and_position_shuffle():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_false(roster_a == roster_c)
-    ntool.assert_false(roster_a == roster_b)
+    assertions.assertFalse(roster_a == roster_c)
+    assertions.assertFalse(roster_a == roster_b)
 
 
 def test_roster_set():
@@ -115,7 +117,7 @@ def test_roster_set():
     roster_c = NFLRoster()
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
-    ntool.assert_true(len(set([roster_a, roster_b, roster_c])), 2)
+    assertions.assertTrue(len(set([roster_a, roster_b, roster_c])), 2)
 
 
 def test_roster_group():
@@ -136,27 +138,27 @@ def test_roster_group():
     roster_c.add_player(player_c)
 
     rg = RosterGroup(rosters=[roster_a, roster_b])
-    ntool.assert_equal(
+    assertions.assertEquals(
         rg.get_similarity_score(),
         1
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         rg.get_salary_frequency(),
         [(2, 2)]
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         rg.get_player_frequency(),
         [(player_a, 2), (player_b, 2)]
     )
 
     rg_2 = RosterGroup(rosters=[roster_a, roster_c])
-    ntool.assert_equal(
+    assertions.assertEquals(
         rg_2.get_similarity_score(),
         0.5
     )
 
     rg_3 = RosterGroup(rosters=[roster_a, roster_b, roster_c])
-    ntool.assert_equal(
+    assertions.assertEquals(
         rg_3.get_similarity_score(),
         # (1 + 0.5 + 0.5)/3
         2 / 3
@@ -168,7 +170,7 @@ def test_roster_group():
 
     # All lineups share half of the same players
     rg_4 = RosterGroup(rosters=[roster_a, roster_c, roster_d])
-    ntool.assert_equal(
+    assertions.assertEquals(
         rg_4.get_similarity_score(),
         # (0.5 + 0.5 + 0.5)/3
         0.5
@@ -192,27 +194,27 @@ def test_shared_and_different_player_count():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    ntool.assert_equal(
+    assertions.assertEquals(
         roster_a.different_player_count(roster_b),
         0
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         roster_a.shared_player_count(roster_b),
         2
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         roster_a.different_player_count(roster_c),
         1
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         roster_a.shared_player_count(roster_c),
         1
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         roster_b.different_player_count(roster_c),
         1
     )
-    ntool.assert_equal(
+    assertions.assertEquals(
         roster_b.shared_player_count(roster_c),
         1
     )
