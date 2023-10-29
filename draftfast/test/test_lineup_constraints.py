@@ -6,7 +6,6 @@ import unittest
 assertions = unittest.TestCase('__init__')
 
 
-
 def test_constraint_string_args():
     lcs = LineupConstraints()
     lcs.ban('Sam Bradford')
@@ -64,10 +63,14 @@ def test_dup_group_rule():
 def test_dup_group_rule2():
     with assertions.assertRaises(ConstraintConflictException):
         lcs = LineupConstraints()
-        lcs.add_group_constraint(['Eli Manning', 'Russell Wilson', 'Doug Martin'],
-                                 (1, 2))
-        lcs.add_group_constraint(['Eli Manning', 'Russell Wilson', 'Doug Martin'],
-                                 (1, 2))
+        lcs.add_group_constraint(
+            ['Eli Manning', 'Russell Wilson', 'Doug Martin'],
+            (1, 2)
+        )
+        lcs.add_group_constraint(
+            ['Eli Manning', 'Russell Wilson', 'Doug Martin'],
+            (1, 2)
+        )
 
 
 def test_bad_group_shadow_lock_bound():

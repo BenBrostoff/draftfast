@@ -1,12 +1,10 @@
 import random
-
 import unittest
-assertions = unittest.TestCase('__init__')
-
 from draftfast.player_pool import filter_pool
 from draftfast.orm import Player
 from draftfast.settings import PlayerPoolSettings
 
+assertions = unittest.TestCase('__init__')
 
 p_a, p_b, p_c = [
     Player(name='A1', cost=5500, proj=20, pos='PG'),

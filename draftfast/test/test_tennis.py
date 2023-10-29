@@ -1,7 +1,6 @@
 import os
 
 import unittest
-assertions = unittest.TestCase('__init__')
 
 from draftfast.optimize import run
 from draftfast import rules
@@ -9,6 +8,8 @@ from draftfast.csv_parse import salary_download
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = '{}/data/dk-ten-salaries.csv'.format(CURRENT_DIR)
+
+assertions = unittest.TestCase('__init__')
 
 
 def test_tennis_lineup():

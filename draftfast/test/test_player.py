@@ -1,8 +1,7 @@
-
 import unittest
-assertions = unittest.TestCase('__init__')
-
 from draftfast.orm import Player
+
+assertions = unittest.TestCase('__init__')
 
 
 def test_player_value():
