@@ -2,7 +2,6 @@ import os
 import csv
 from typing import Type
 import types
-from nose.tools import assert_equal
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
@@ -10,7 +9,12 @@ from draftfast.pickem.pickem_optimize import (
     optimize as p_optimize
 )
 
+import unittest
+assertions = unittest.TestCase('__init__')
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+assert_equal = assertions.assertEqual
 
 
 def test_dk_nba_upload():
