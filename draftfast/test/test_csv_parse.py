@@ -1,5 +1,5 @@
 import os
-from nose import tools as ntools
+import unittest
 from draftfast.csv_parse import salary_download
 from draftfast.rules import (
     DRAFT_KINGS, FAN_DUEL,
@@ -7,6 +7,8 @@ from draftfast.rules import (
     FD_NBA_MVP_RULE_SET
 )
 from draftfast.optimize import run
+
+assertions = unittest.TestCase('__init__')
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salaries = f'{CURRENT_DIR}/data/nba-test-salaries.csv'
@@ -21,7 +23,7 @@ def test_dk_nba_parse():
         salary_file_location=salaries,
         game=DRAFT_KINGS,
     )
-    ntools.assert_equals(len(players), 221)
+    assertions.assertEquals(len(players), 221)
 
 
 def test_dk_nba_use_avg():
@@ -29,7 +31,7 @@ def test_dk_nba_use_avg():
         salary_file_location=salaries,
         game=DRAFT_KINGS,
     )
-    ntools.assert_equals(players[0].proj, 60.462)
+    assertions.assertEquals(players[0].proj, 60.462)
 
 
 def test_dk_nba_use_proj():
@@ -38,7 +40,7 @@ def test_dk_nba_use_proj():
         projection_file_location=projections,
         game=DRAFT_KINGS,
     )
-    ntools.assert_equals(players[0].proj, 62.29)
+    assertions.assertEquals(players[0].proj, 62.29)
 
 
 def test_fd_showdown_nfl():
@@ -48,7 +50,7 @@ def test_fd_showdown_nfl():
         game=FAN_DUEL,
         ruleset=FD_NFL_MVP_RULE_SET,
     )
-    ntools.assert_equals(len(players), 146)
+    assertions.assertEquals(len(players), 146)
 
     # Two same ID players should break out captain and flex
     # and have identical costs
@@ -56,21 +58,21 @@ def test_fd_showdown_nfl():
         p for p in players
         if p.name == 'Hunter Renfrow'
     ]
-    ntools.assert_equals(len(renfrow), 2)
-    ntools.assert_equals(renfrow[0].cost, renfrow[1].cost)
-    ntools.assert_almost_equals(
+    assertions.assertEquals(len(renfrow), 2)
+    assertions.assertEquals(renfrow[0].cost, renfrow[1].cost)
+    assertions.assertAlmostEquals(
         renfrow[0].average_score,
         renfrow[1].average_score * 1.5
     )
-    ntools.assert_equals(renfrow[0].pos, 'CPT')
-    ntools.assert_equals(renfrow[1].pos, 'FLEX')
+    assertions.assertEquals(renfrow[0].pos, 'CPT')
+    assertions.assertEquals(renfrow[1].pos, 'FLEX')
 
     # Optimization should work
     optimized = run(
         rule_set=FD_NFL_MVP_RULE_SET,
         player_pool=players
     )
-    ntools.assert_equals(len(optimized.players), 5)
+    assertions.assertEquals(len(optimized.players), 5)
 
 
 def test_fd_showdown_mlb():
@@ -80,25 +82,25 @@ def test_fd_showdown_mlb():
         game=FAN_DUEL,
         ruleset=FD_MLB_MVP_RULE_SET,
     )
-    ntools.assert_equals(len(players), 147)
+    assertions.assertEquals(len(players), 147)
 
     judges = [
         p for p in players
         if p.name == 'Aaron Judge'
     ]
-    ntools.assert_equals(len(judges), 3)
+    assertions.assertEquals(len(judges), 3)
     mvp, star, util = judges
 
-    ntools.assert_equals(mvp.cost, star.cost, util.cost)
-    ntools.assert_equals(mvp.pos, 'MVP')
-    ntools.assert_equals(star.pos, 'STAR')
-    ntools.assert_equals(util.pos, 'UTIL')
+    assertions.assertEquals(mvp.cost, star.cost, util.cost)
+    assertions.assertEquals(mvp.pos, 'MVP')
+    assertions.assertEquals(star.pos, 'STAR')
+    assertions.assertEquals(util.pos, 'UTIL')
 
-    ntools.assert_almost_equals(
+    assertions.assertAlmostEquals(
         star.average_score,
         util.average_score * 1.5
     )
-    ntools.assert_almost_equals(
+    assertions.assertAlmostEquals(
         mvp.average_score,
         util.average_score * 2
     )
@@ -108,7 +110,7 @@ def test_fd_showdown_mlb():
         rule_set=FD_MLB_MVP_RULE_SET,
         player_pool=players
     )
-    ntools.assert_equals(len(optimized.players), 5)
+    assertions.assertEquals(len(optimized.players), 5)
 
 
 def test_fd_showdown_nba():
@@ -125,30 +127,30 @@ def test_fd_showdown_nba():
     for p in players:
         p.proj = p.average_score
 
-    ntools.assert_equals(len(players), 20)
+    assertions.assertEquals(len(players), 20)
 
     chefs = [
         p for p in players
         if p.name == 'Stephen Curry'
     ]
-    ntools.assert_equals(len(chefs), 4)
+    assertions.assertEquals(len(chefs), 4)
     mvp, star, pro, util = chefs
 
-    ntools.assert_equals(mvp.cost, star.cost, util.cost)
-    ntools.assert_equals(mvp.pos, 'MVP')
-    ntools.assert_equals(star.pos, 'STAR')
-    ntools.assert_equals(pro.pos, 'PRO')
-    ntools.assert_equals(util.pos, 'UTIL')
+    assertions.assertEquals(mvp.cost, star.cost, util.cost)
+    assertions.assertEquals(mvp.pos, 'MVP')
+    assertions.assertEquals(star.pos, 'STAR')
+    assertions.assertEquals(pro.pos, 'PRO')
+    assertions.assertEquals(util.pos, 'UTIL')
 
-    ntools.assert_almost_equals(
+    assertions.assertAlmostEquals(
         pro.average_score,
         util.average_score * 1.2
     )
-    ntools.assert_almost_equals(
+    assertions.assertAlmostEquals(
         star.average_score,
         util.average_score * 1.5
     )
-    ntools.assert_almost_equals(
+    assertions.assertAlmostEquals(
         mvp.average_score,
         util.average_score * 2
     )
@@ -159,5 +161,5 @@ def test_fd_showdown_nba():
         player_pool=players
     )
     print(optimized)
-    ntools.assert_equals(len(optimized.players), 5)
-    ntools.assert_almost_equals(optimized.projected(), 276.99)
+    assertions.assertEquals(len(optimized.players), 5)
+    assertions.assertAlmostEquals(optimized.projected(), 276.99)
