@@ -1,12 +1,11 @@
 import os
-
 import unittest
-assertions = unittest.TestCase('__init__')
-
 from draftfast.orm import Player
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download as sd
+
+assertions = unittest.TestCase('__init__')
 
 
 def test_general_guard():

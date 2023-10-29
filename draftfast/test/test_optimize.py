@@ -1,15 +1,15 @@
 import os
 from copy import deepcopy
-
 import unittest
-assertions = unittest.TestCase('__init__')
-
 from draftfast.optimize import run
 from draftfast import rules
 from draftfast.orm import Player
 from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings, Stack
 from draftfast.lineup_constraints import LineupConstraints
+
+assertions = unittest.TestCase('__init__')
+
 
 mock_nba_pool = [
     Player(name='A1', cost=5500, proj=40, pos='PG'),

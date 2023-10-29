@@ -1,11 +1,10 @@
-
 import unittest
-assertions = unittest.TestCase('__init__')
-
 from draftfast.pickem import pickem_orm
 from draftfast.pickem.pickem_optimize import optimize
 from draftfast.settings import PlayerPoolSettings
 from draftfast.lineup_constraints import LineupConstraints
+
+assertions = unittest.TestCase('__init__')
 
 
 def _generate_player(name, proj, tier, **kwargs):
