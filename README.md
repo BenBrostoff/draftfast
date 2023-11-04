@@ -1,6 +1,7 @@
 ## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draftfast.svg?branch=master)](https://travis-ci.org/BenBrostoff/draftfast) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/)
 
-![](marketing/NFL_OPTIMIZED.png)
+![](marketing/MAIN_WORKFLOW.png)
+![](marketing/USE_CASES.png)
 
 An incredibly powerful tool that automates and optimizes lineup building, allowing you to enter thousands of lineups in any DraftKings or FanDuel contest in the time it takes you to grab a coffee.
 
