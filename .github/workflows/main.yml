@@ -15,8 +15,8 @@ jobs:
           python-version: '3.11'
           # Optional - x64 or x86 architecture, defaults to x64
           architecture: 'x64'
-      - name: Setup Nose2
-        run: pip install nose2
+      - name: Install requirements
+        run: pip install requirements.txt; pip install test-requirements.txt
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
       - name: Run Tests

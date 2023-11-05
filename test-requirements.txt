@@ -1,0 +1,4 @@
+nose2===0.14.0
+coverage==4.5.2
+flake8>=3.5
+testpath<0.4
