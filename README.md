@@ -1,4 +1,4 @@
-## Introduction &middot; [![Build Status](https://travis-ci.org/BenBrostoff/draftfast.svg?branch=master)](https://travis-ci.org/BenBrostoff/draftfast) &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/)
+## Introduction &middot; [![Build status](https://github.com/BenBrostoff/draftfast/actions/workflows/main.yml/badge.svg)](https://github.com/BenBrostoff/draftfast/actions/workflows/main.yml)  &middot; [![](https://draftfast.herokuapp.com/badge.svg)](https://draftfast.herokuapp.com/)
 
 ![](marketing/MAIN_WORKFLOW.png)
 ![](marketing/USE_CASES.png)
