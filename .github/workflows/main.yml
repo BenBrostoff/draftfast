@@ -19,4 +19,5 @@ jobs:
         run: pip install nose2
       - name: Display Python version
         run: python -c "import sys; print(sys.version)"
-
+      - name: Run Tests
+      - run: nose2
