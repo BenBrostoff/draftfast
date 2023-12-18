@@ -10,21 +10,21 @@ assertions = unittest.TestCase('__init__')
 
 def test_general_guard():
     pg = Player(name='A', cost=1, proj=1, pos='PG')
-    assertions.assertEquals(pg.nba_general_position, 'G')
+    assertions.assertEqual(pg.nba_general_position, 'G')
     sg = Player(name='A', cost=1, proj=1, pos='SG')
-    assertions.assertEquals(sg.nba_general_position, 'G')
+    assertions.assertEqual(sg.nba_general_position, 'G')
 
 
 def test_general_forward():
     pg = Player(name='A', cost=1, proj=1, pos='SF')
-    assertions.assertEquals(pg.nba_general_position, 'F')
+    assertions.assertEqual(pg.nba_general_position, 'F')
     sg = Player(name='A', cost=1, proj=1, pos='PF')
-    assertions.assertEquals(sg.nba_general_position, 'F')
+    assertions.assertEqual(sg.nba_general_position, 'F')
 
 
 def test_general_center():
     pg = Player(name='A', cost=1, proj=1, pos='C')
-    assertions.assertEquals(pg.nba_general_position, 'C')
+    assertions.assertEqual(pg.nba_general_position, 'C')
 
 
 def test_optimize_with_general():
@@ -57,14 +57,14 @@ def test_optimize_with_general():
     # this does appear to be an ortools artifact. Since the lineup produced is
     # correct and optimal either way, i modified the test to account for all
     # possible constructions
-    assertions.assertEquals(rosters[0].projected(), 279.53)
+    assertions.assertEqual(rosters[0].projected(), 279.53)
 
     for i in range(1, 30):
         print(i)
 
-        assertions.assertEquals(rosters[i], rosters[0])
+        assertions.assertEqual(rosters[i], rosters[0])
 
-        assertions.assertEquals(rosters[i].projected(), 279.53)
+        assertions.assertEqual(rosters[i].projected(), 279.53)
         assertions.assertTrue(get_player_count_at_pos(
             rosters[i], 'G') in [3, 4]
         )

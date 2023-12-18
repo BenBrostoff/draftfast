@@ -16,27 +16,27 @@ mock_player_pool = [p_a, p_b, p_c]
 
 def test_no_settings():
     pool = filter_pool(mock_player_pool, PlayerPoolSettings())
-    assertions.assertEquals(pool, mock_player_pool)
+    assertions.assertEqual(pool, mock_player_pool)
 
 
 def test_respects_min_proj():
     pool = filter_pool(mock_player_pool, PlayerPoolSettings(min_proj=50))
-    assertions.assertEquals(pool, [p_c])
+    assertions.assertEqual(pool, [p_c])
 
 
 def test_respects_max_proj():
     pool = filter_pool(mock_player_pool, PlayerPoolSettings(max_proj=50))
-    assertions.assertEquals(pool, [p_a, p_b])
+    assertions.assertEqual(pool, [p_a, p_b])
 
 
 def test_respects_min_cost():
     pool = filter_pool(mock_player_pool, PlayerPoolSettings(min_salary=7001))
-    assertions.assertEquals(pool, [p_c])
+    assertions.assertEqual(pool, [p_c])
 
 
 def test_respects_max_cost():
     pool = filter_pool(mock_player_pool, PlayerPoolSettings(max_salary=7001))
-    assertions.assertEquals(pool, [p_a, p_b])
+    assertions.assertEqual(pool, [p_a, p_b])
 
 
 def test_randomize():
@@ -44,7 +44,7 @@ def test_randomize():
     pool = filter_pool(mock_player_pool, PlayerPoolSettings(
         randomize=0.1,
     ))
-    assertions.assertEquals(
+    assertions.assertEqual(
         pool[0].proj,
         18.537456976449604
     )

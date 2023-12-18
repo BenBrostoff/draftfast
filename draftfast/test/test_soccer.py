@@ -49,8 +49,8 @@ def test_soccer_dk_no_opp_d():
         p for p in roster.players if p.team == 'LGN'
         and p.pos in ['D', 'GK']
     ]
-    assertions.assertEquals(len(cel_off_players), 2)
-    assertions.assertEquals(len(lgn_d_players), 2)
+    assertions.assertEqual(len(cel_off_players), 2)
+    assertions.assertEqual(len(lgn_d_players), 2)
 
     roster = run(
         rule_set=rules.DK_SOCCER_RULE_SET,
@@ -71,5 +71,5 @@ def test_soccer_dk_no_opp_d():
         p for p in roster.players if p.team == 'LGN'
         and p.pos in ['D', 'GK']
     ]
-    assertions.assertEquals(len(cel_off_players), 2)
-    assertions.assertEquals(len(lgn_d_players), 0)
+    assertions.assertEqual(len(cel_off_players), 2)
+    assertions.assertEqual(len(lgn_d_players), 0)

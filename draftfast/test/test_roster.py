@@ -138,27 +138,27 @@ def test_roster_group():
     roster_c.add_player(player_c)
 
     rg = RosterGroup(rosters=[roster_a, roster_b])
-    assertions.assertEquals(
+    assertions.assertEqual(
         rg.get_similarity_score(),
         1
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         rg.get_salary_frequency(),
         [(2, 2)]
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         rg.get_player_frequency(),
         [(player_a, 2), (player_b, 2)]
     )
 
     rg_2 = RosterGroup(rosters=[roster_a, roster_c])
-    assertions.assertEquals(
+    assertions.assertEqual(
         rg_2.get_similarity_score(),
         0.5
     )
 
     rg_3 = RosterGroup(rosters=[roster_a, roster_b, roster_c])
-    assertions.assertEquals(
+    assertions.assertEqual(
         rg_3.get_similarity_score(),
         # (1 + 0.5 + 0.5)/3
         2 / 3
@@ -170,7 +170,7 @@ def test_roster_group():
 
     # All lineups share half of the same players
     rg_4 = RosterGroup(rosters=[roster_a, roster_c, roster_d])
-    assertions.assertEquals(
+    assertions.assertEqual(
         rg_4.get_similarity_score(),
         # (0.5 + 0.5 + 0.5)/3
         0.5
@@ -194,27 +194,27 @@ def test_shared_and_different_player_count():
     roster_c.add_player(player_a)
     roster_c.add_player(player_c)
 
-    assertions.assertEquals(
+    assertions.assertEqual(
         roster_a.different_player_count(roster_b),
         0
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         roster_a.shared_player_count(roster_b),
         2
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         roster_a.different_player_count(roster_c),
         1
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         roster_a.shared_player_count(roster_c),
         1
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         roster_b.different_player_count(roster_c),
         1
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         roster_b.shared_player_count(roster_c),
         1
     )

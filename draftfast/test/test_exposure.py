@@ -28,8 +28,8 @@ def test_deterministic_exposure_limits():
             {'name': 'Alshon Jeffery', 'min': 1, 'max': 1},
         ],
     )
-    assertions.assertEquals(len(rosters), iterations)
-    assertions.assertEquals(len(exposure_diffs), 0)
+    assertions.assertEqual(len(rosters), iterations)
+    assertions.assertEqual(len(exposure_diffs), 0)
 
     players = [p.name for p in rosters[0].players]
     assertions.assertTrue('Andrew Luck' in players)
@@ -53,5 +53,5 @@ def test_random_exposure_limits():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
     )
-    assertions.assertEquals(len(rosters), iterations)
-    assertions.assertEquals(len(exposure_diffs), 0)
+    assertions.assertEqual(len(rosters), iterations)
+    assertions.assertEqual(len(exposure_diffs), 0)

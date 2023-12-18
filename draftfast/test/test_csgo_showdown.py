@@ -72,6 +72,6 @@ def test_csgo_mock():
 
     assertions.assertNotEqual(roster, None)
     players = roster.players
-    assertions.assertEquals(len([
+    assertions.assertEqual(len([
         x for x in players if x.team == 'Y'
     ]), 3)

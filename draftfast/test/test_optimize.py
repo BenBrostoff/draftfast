@@ -82,7 +82,7 @@ def test_nfl_dk_mock():
     )
 
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 420.0)
+    assertions.assertEqual(roster.projected(), 420.0)
 
 
 def test_nfl_dk():
@@ -99,7 +99,7 @@ def test_nfl_dk():
     )
 
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 124.30)
+    assertions.assertEqual(roster.projected(), 124.30)
 
 
 def test_nfl_fd():
@@ -114,7 +114,7 @@ def test_nfl_fd():
     )
 
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 155.0172712846236)
+    assertions.assertAlmostEqual(roster.projected(), 155.0172712846236)
 
 
 def test_multi_position():
@@ -133,8 +133,8 @@ def test_multi_position():
     )
     assertions.assertNotEqual(roster, None)
     multi_pos = [p for p in roster.players if p.name == 'Eli Manning']
-    assertions.assertEquals(len(multi_pos), 1)
-    assertions.assertEquals(multi_pos[0].pos, 'TE')
+    assertions.assertEqual(len(multi_pos), 1)
+    assertions.assertEqual(multi_pos[0].pos, 'TE')
 
 
 def test_multi_roster_nfl():
@@ -206,11 +206,11 @@ def test_uniques_nba():
     third_players = third_roster.sorted_players()
     crossover_a = list(set(players).intersection(second_players))
     crossover_b = list(set(players).intersection(third_players))
-    assertions.assertEquals(
+    assertions.assertEqual(
         len(crossover_a),
         rules.DK_NBA_RULE_SET.roster_size - 1
     )
-    assertions.assertEquals(
+    assertions.assertEqual(
         len(crossover_b),
         rules.DK_NBA_RULE_SET.roster_size - 2
     )
@@ -232,8 +232,8 @@ def test_respect_lock():
         ),
     )
     qb = roster.sorted_players()[0]
-    assertions.assertEquals(qb.pos, 'QB')
-    assertions.assertEquals(qb.name, 'Andrew Luck')
+    assertions.assertEqual(qb.pos, 'QB')
+    assertions.assertEqual(qb.name, 'Andrew Luck')
 
 
 def test_respect_ban():
@@ -278,7 +278,7 @@ def test_respect_group1():
     group_count = len([
         x for x in roster.sorted_players() if x.name in grouped_players
     ])
-    assertions.assertEquals(group_count, 2)
+    assertions.assertEqual(group_count, 2)
 
 
 def test_respect_group2():
@@ -365,12 +365,12 @@ def test_stack():
         p for p in roster.sorted_players()
         if p.team == 'NE'
     ])
-    assertions.assertEquals(5, ne_players_count)
+    assertions.assertEqual(5, ne_players_count)
     ne_def = len([
         p for p in roster.sorted_players()
         if p.team == 'NE' and p.pos == 'DST'
     ])
-    assertions.assertEquals(ne_def, 1)
+    assertions.assertEqual(ne_def, 1)
 
 
 def test_custom_stack():
@@ -398,17 +398,17 @@ def test_custom_stack():
         p for p in roster.sorted_players()
         if p.team == 'NE'
     ])
-    assertions.assertEquals(5, ne_players_count)
+    assertions.assertEqual(5, ne_players_count)
     ne_def = len([
         p for p in roster.sorted_players()
         if p.team == 'NE' and p.pos == 'DST'
     ])
-    assertions.assertEquals(ne_def, 0)
+    assertions.assertEqual(ne_def, 0)
     wides = len([
         p for p in roster.sorted_players()
         if p.team == 'NE' and p.pos == 'WR'
     ])
-    assertions.assertEquals(wides, 4)
+    assertions.assertEqual(wides, 4)
 
 
 def test_force_combo():
@@ -435,7 +435,7 @@ def test_force_combo():
         x for x in roster.sorted_players()
         if x.team == qb.team
     ])
-    assertions.assertEquals(team_count, 1)
+    assertions.assertEqual(team_count, 1)
 
     # QB/WR combo
     players = salary_download.generate_players_from_csvs(
@@ -455,19 +455,19 @@ def test_force_combo():
         verbose=True,
     )
     qb = roster.sorted_players()[0]
-    assertions.assertEquals(qb.pos, 'QB')
+    assertions.assertEqual(qb.pos, 'QB')
 
     wr_team_count = len([
         x for x in roster.sorted_players()
         if x.team == qb.team and x.pos == 'WR'
     ])
-    assertions.assertEquals(wr_team_count, 1)
+    assertions.assertEqual(wr_team_count, 1)
 
     te_team_count = len([
         x for x in roster.sorted_players()
         if x.team == qb.team and x.pos == 'TE'
     ])
-    assertions.assertEquals(te_team_count, 0)
+    assertions.assertEqual(te_team_count, 0)
 
 
 def test_te_combo():
@@ -491,12 +491,12 @@ def test_te_combo():
         verbose=True,
     )
     qb = roster.sorted_players()[0]
-    assertions.assertEquals(qb.pos, 'QB')
+    assertions.assertEqual(qb.pos, 'QB')
     team_count = len([
         x for x in roster.sorted_players()
         if x.team == qb.team and x.pos == 'TE'
     ])
-    assertions.assertEquals(team_count, 1)
+    assertions.assertEqual(team_count, 1)
 
     # make sure WR/QB still works
     players = salary_download.generate_players_from_csvs(
@@ -517,12 +517,12 @@ def test_te_combo():
         verbose=True,
     )
     qb = roster.sorted_players()[0]
-    assertions.assertEquals(qb.pos, 'QB')
+    assertions.assertEqual(qb.pos, 'QB')
     team_count = len([
         x for x in roster.sorted_players()
         if x.team == qb.team and x.pos == 'WR'
     ])
-    assertions.assertEquals(team_count, 1)
+    assertions.assertEqual(team_count, 1)
 
 
 def test_impossible_constraints():
@@ -551,7 +551,7 @@ def test_impossible_constraints():
         verbose=True
     )
 
-    assertions.assertEquals(roster, None)
+    assertions.assertEqual(roster, None)
 
 
 def test_multi_position_group_constraint():
@@ -596,8 +596,8 @@ def test_multi_position_group_constraint():
     group_count = len([
         x for x in roster.sorted_players() if x.name in grouped_players
     ])
-    assertions.assertEquals(group_count, 2)
-    assertions.assertEquals(roster.projected(), 1304)
+    assertions.assertEqual(group_count, 2)
+    assertions.assertEqual(roster.projected(), 1304)
 
 
 def test_multi_position_group_constraint2():
@@ -623,8 +623,8 @@ def test_multi_position_group_constraint2():
     group_count = len([
         x for x in roster.sorted_players() if x.name in grouped_players
     ])
-    assertions.assertEquals(group_count, 2)
-    assertions.assertEquals(roster.projected(), 120.89999999999999)
+    assertions.assertEqual(group_count, 2)
+    assertions.assertAlmostEqual(roster.projected(), 120.89999999999999)
 
 
 def test_no_opposing_def_dk_nfl_mock():
@@ -678,10 +678,10 @@ def test_no_opposing_def_dk_nfl_mock():
         verbose=True
     )
 
-    assertions.assertEquals(roster.projected(), 909)
+    assertions.assertEqual(roster.projected(), 909)
     qb_team = roster.sorted_players()[0].team
     dst_team = roster.sorted_players()[-1].team
-    assertions.assertEquals(qb_team, dst_team)
+    assertions.assertEqual(qb_team, dst_team)
 
     # this will fail to produce a roster because we only have 2 teams (X and Y)
     roster = run(
@@ -693,7 +693,7 @@ def test_no_opposing_def_dk_nfl_mock():
         verbose=True
     )
 
-    assertions.assertEquals(roster, None)
+    assertions.assertEqual(roster, None)
 
     # relax min teams
     roster = run(
@@ -706,8 +706,8 @@ def test_no_opposing_def_dk_nfl_mock():
         verbose=True
     )
 
-    assertions.assertEquals(roster.projected(), 877)
-    assertions.assertEquals(len(set([p.team for p in roster.players])), 1)
+    assertions.assertEqual(roster.projected(), 877)
+    assertions.assertEqual(len(set([p.team for p in roster.players])), 1)
 
     # add a player from a third team, min 2 teams
     mock_pool.append(Player(
@@ -764,7 +764,7 @@ def test_no_opposing_def_dk_nfl():
         verbose=True
     )
 
-    assertions.assertEquals(roster, None)
+    assertions.assertEqual(roster, None)
 
 
 def test_no_opposing_def_fd_nfl():
@@ -803,7 +803,7 @@ def test_no_opposing_def_fd_nfl():
         verbose=True
     )
 
-    assertions.assertEquals(roster, None)
+    assertions.assertEqual(roster, None)
 
 
 def test_no_mutate_side_effect():
@@ -823,4 +823,4 @@ def test_no_mutate_side_effect():
         verbose=True
     )
     brady = next((p for p in players if p.name == 'Tom Brady'))
-    assertions.assertEquals(brady.lock, False)
+    assertions.assertEqual(brady.lock, False)

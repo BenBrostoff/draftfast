@@ -42,4 +42,4 @@ def test_golf_dk_captain():
         verbose=True,
     )
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 376)
+    assertions.assertEqual(roster.projected(), 376)
