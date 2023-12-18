@@ -44,7 +44,7 @@ def test_if_one_then_one():
         verbose=True,
     )
     names = {p.name for p in roster.players}
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A1' in names and 'A4' not in names
     )
@@ -67,7 +67,7 @@ def test_if_one_then_one():
     names = {p.name for p in roster.players}
 
     # Without this rule, A1 and A4 are not in the same lineup.
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A1' in names and 'A4' in names
     )
@@ -91,7 +91,7 @@ def test_if_one_then_one():
         optimizer_settings=settings,
     )
     names = {p.name for p in roster.players}
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A1' not in names and 'A4' not in names
     )
@@ -107,7 +107,7 @@ def test_if_one_then_two():
         verbose=True,
     )
     names = {p.name for p in roster.players}
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A1' in names and 'A4' not in names and 'A9' not in names
     )
@@ -132,7 +132,7 @@ def test_if_one_then_two():
 
     # Without this rule, A4 and A9 would never appear in the optimized
     # lineup. Both have a 0 point projection.
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A1' in names and 'A9' in names and 'A4' in names
     )
@@ -148,7 +148,7 @@ def test_never_two():
         verbose=True,
     )
     names = {p.name for p in roster.players}
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A101' in names and 'A100' in names
     )
@@ -174,7 +174,7 @@ def test_never_two():
 
     # Without this rule, A4 and A9 would never appear in the optimized
     # lineup. Both have a 0 point projection.
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A101' not in names and 'A100' in names
     )
@@ -199,7 +199,7 @@ def test_team_rules():
         optimizer_settings=settings,
     )
     names = {p.name for p in roster.players}
-    assertions.assertEquals(
+    assertions.assertEqual(
         True,
         'A100' in names and 'A101' in names and 'A10' in names
     )

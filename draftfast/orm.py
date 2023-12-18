@@ -12,7 +12,7 @@ except Exception:
 
 
 def cs(n):
-    return locale.format('%d', n, grouping=True)
+    return locale._format('%d', n, grouping=True)
 
 
 @total_ordering

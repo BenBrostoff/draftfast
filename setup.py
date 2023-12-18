@@ -6,12 +6,12 @@ with open('README.md', 'r') as fh:
 requires = [
     'numpy==1.24.2',
     'terminaltables==3.1.0',
-    'ortools==9.7.2996',
+    'ortools== 9.8.3296',
 ]
 
 setuptools.setup(
     name='draftfast',
-    version='3.9.0',
+    version='3.10.0',
     author='Ben Brostoff',
     author_email='ben.brostoff@gmail.com',
     description='A tool to automate and optimize DraftKings and FanDuel '

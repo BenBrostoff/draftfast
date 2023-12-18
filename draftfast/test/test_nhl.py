@@ -48,6 +48,6 @@ def test_triple_stack():
     phi_players = [x for x in players if x.team == 'TOR']
     fla_players = [x for x in players if x.team == 'COL']
     nsh_players = [x for x in players if x.team == 'VAN']
-    assertions.assertEquals(len(phi_players), 3)
-    assertions.assertEquals(len(fla_players), 3)
-    assertions.assertEquals(len(nsh_players), 2)
+    assertions.assertEqual(len(phi_players), 3)
+    assertions.assertEqual(len(fla_players), 3)
+    assertions.assertEqual(len(nsh_players), 2)

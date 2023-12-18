@@ -23,7 +23,7 @@ def test_dk_nba_parse():
         salary_file_location=salaries,
         game=DRAFT_KINGS,
     )
-    assertions.assertEquals(len(players), 221)
+    assertions.assertEqual(len(players), 221)
 
 
 def test_dk_nba_use_avg():
@@ -31,7 +31,7 @@ def test_dk_nba_use_avg():
         salary_file_location=salaries,
         game=DRAFT_KINGS,
     )
-    assertions.assertEquals(players[0].proj, 60.462)
+    assertions.assertEqual(players[0].proj, 60.462)
 
 
 def test_dk_nba_use_proj():
@@ -40,7 +40,7 @@ def test_dk_nba_use_proj():
         projection_file_location=projections,
         game=DRAFT_KINGS,
     )
-    assertions.assertEquals(players[0].proj, 62.29)
+    assertions.assertEqual(players[0].proj, 62.29)
 
 
 def test_fd_showdown_nfl():
@@ -50,7 +50,7 @@ def test_fd_showdown_nfl():
         game=FAN_DUEL,
         ruleset=FD_NFL_MVP_RULE_SET,
     )
-    assertions.assertEquals(len(players), 146)
+    assertions.assertEqual(len(players), 146)
 
     # Two same ID players should break out captain and flex
     # and have identical costs
@@ -58,21 +58,21 @@ def test_fd_showdown_nfl():
         p for p in players
         if p.name == 'Hunter Renfrow'
     ]
-    assertions.assertEquals(len(renfrow), 2)
-    assertions.assertEquals(renfrow[0].cost, renfrow[1].cost)
-    assertions.assertAlmostEquals(
+    assertions.assertEqual(len(renfrow), 2)
+    assertions.assertEqual(renfrow[0].cost, renfrow[1].cost)
+    assertions.assertAlmostEqual(
         renfrow[0].average_score,
         renfrow[1].average_score * 1.5
     )
-    assertions.assertEquals(renfrow[0].pos, 'CPT')
-    assertions.assertEquals(renfrow[1].pos, 'FLEX')
+    assertions.assertEqual(renfrow[0].pos, 'CPT')
+    assertions.assertEqual(renfrow[1].pos, 'FLEX')
 
     # Optimization should work
     optimized = run(
         rule_set=FD_NFL_MVP_RULE_SET,
         player_pool=players
     )
-    assertions.assertEquals(len(optimized.players), 5)
+    assertions.assertEqual(len(optimized.players), 5)
 
 
 def test_fd_showdown_mlb():
@@ -82,25 +82,25 @@ def test_fd_showdown_mlb():
         game=FAN_DUEL,
         ruleset=FD_MLB_MVP_RULE_SET,
     )
-    assertions.assertEquals(len(players), 147)
+    assertions.assertEqual(len(players), 147)
 
     judges = [
         p for p in players
         if p.name == 'Aaron Judge'
     ]
-    assertions.assertEquals(len(judges), 3)
+    assertions.assertEqual(len(judges), 3)
     mvp, star, util = judges
 
-    assertions.assertEquals(mvp.cost, star.cost, util.cost)
-    assertions.assertEquals(mvp.pos, 'MVP')
-    assertions.assertEquals(star.pos, 'STAR')
-    assertions.assertEquals(util.pos, 'UTIL')
+    assertions.assertEqual(mvp.cost, star.cost, util.cost)
+    assertions.assertEqual(mvp.pos, 'MVP')
+    assertions.assertEqual(star.pos, 'STAR')
+    assertions.assertEqual(util.pos, 'UTIL')
 
-    assertions.assertAlmostEquals(
+    assertions.assertAlmostEqual(
         star.average_score,
         util.average_score * 1.5
     )
-    assertions.assertAlmostEquals(
+    assertions.assertAlmostEqual(
         mvp.average_score,
         util.average_score * 2
     )
@@ -110,7 +110,7 @@ def test_fd_showdown_mlb():
         rule_set=FD_MLB_MVP_RULE_SET,
         player_pool=players
     )
-    assertions.assertEquals(len(optimized.players), 5)
+    assertions.assertEqual(len(optimized.players), 5)
 
 
 def test_fd_showdown_nba():
@@ -127,30 +127,30 @@ def test_fd_showdown_nba():
     for p in players:
         p.proj = p.average_score
 
-    assertions.assertEquals(len(players), 20)
+    assertions.assertEqual(len(players), 20)
 
     chefs = [
         p for p in players
         if p.name == 'Stephen Curry'
     ]
-    assertions.assertEquals(len(chefs), 4)
+    assertions.assertEqual(len(chefs), 4)
     mvp, star, pro, util = chefs
 
-    assertions.assertEquals(mvp.cost, star.cost, util.cost)
-    assertions.assertEquals(mvp.pos, 'MVP')
-    assertions.assertEquals(star.pos, 'STAR')
-    assertions.assertEquals(pro.pos, 'PRO')
-    assertions.assertEquals(util.pos, 'UTIL')
+    assertions.assertEqual(mvp.cost, star.cost, util.cost)
+    assertions.assertEqual(mvp.pos, 'MVP')
+    assertions.assertEqual(star.pos, 'STAR')
+    assertions.assertEqual(pro.pos, 'PRO')
+    assertions.assertEqual(util.pos, 'UTIL')
 
-    assertions.assertAlmostEquals(
+    assertions.assertAlmostEqual(
         pro.average_score,
         util.average_score * 1.2
     )
-    assertions.assertAlmostEquals(
+    assertions.assertAlmostEqual(
         star.average_score,
         util.average_score * 1.5
     )
-    assertions.assertAlmostEquals(
+    assertions.assertAlmostEqual(
         mvp.average_score,
         util.average_score * 2
     )
@@ -161,5 +161,5 @@ def test_fd_showdown_nba():
         player_pool=players
     )
     print(optimized)
-    assertions.assertEquals(len(optimized.players), 5)
-    assertions.assertAlmostEquals(optimized.projected(), 276.99)
+    assertions.assertEqual(len(optimized.players), 5)
+    assertions.assertAlmostEqual(optimized.projected(), 276.99)

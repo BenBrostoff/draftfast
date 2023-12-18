@@ -25,7 +25,7 @@ def test_f1_dk():
     )
     assertions.assertNotEqual(roster, None)
     for p in roster.sorted_players():
-        assertions.assertEquals(type(p), ShowdownPlayer)
+        assertions.assertEqual(type(p), ShowdownPlayer)
 
 
 def test_f1_identifier():

@@ -10,7 +10,7 @@ def test_constraint_string_args():
     lcs = LineupConstraints()
     lcs.ban('Sam Bradford')
     lcs.lock('Will Fuller')
-    assertions.assertEquals(len(lcs), 2)
+    assertions.assertEqual(len(lcs), 2)
 
 
 def test_constraint_contains():
@@ -21,7 +21,7 @@ def test_constraint_contains():
     lcs.lock(['H'])
 
     for c in ['A', 'B', 'C', 'E', 'F', 'G', 'H']:
-        assertions.assertEquals(c in lcs, True)
+        assertions.assertEqual(c in lcs, True)
 
 
 def test_constraint_set_eq():
@@ -39,7 +39,7 @@ def test_constraint_set_eq():
                               (1, 3))
     lcs2.lock(['Will Fuller'])
 
-    assertions.assertEquals(lcs1, lcs2)
+    assertions.assertEqual(lcs1, lcs2)
 
 
 def test_build_constraint_set():
@@ -50,7 +50,7 @@ def test_build_constraint_set():
                              (1, 3))
     lcs.lock(['Will Fuller'])
 
-    assertions.assertEquals(len(lcs), 4)
+    assertions.assertEqual(len(lcs), 4)
 
 
 def test_dup_group_rule():

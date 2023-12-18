@@ -20,4 +20,4 @@ def test_el_dk():
         player_pool=player_pool,
         verbose=True,
     )
-    assertions.assertNotEquals(roster, None)
+    assertions.assertNotEqual(roster, None)

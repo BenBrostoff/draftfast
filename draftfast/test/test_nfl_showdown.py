@@ -96,7 +96,7 @@ def test_nfl_dk_showdown_mock():
     )
 
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 421)
+    assertions.assertEqual(roster.projected(), 421)
 
 
 def test_nfl_showdown_no_def_against_capt():
@@ -113,7 +113,7 @@ def test_nfl_showdown_no_def_against_capt():
     )
 
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 408.0)
+    assertions.assertEqual(roster.projected(), 408.0)
     for p in roster.players:
         assertions.assertNotEqual(p.name, 'A112')
 
@@ -134,7 +134,7 @@ def test_nfl_showdown_lock_general():
         verbose=True
     )
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 399.0)
+    assertions.assertEqual(roster.projected(), 399.0)
     assertions.assertTrue('A14' in [x.name for x in roster.players])
 
 
@@ -154,9 +154,9 @@ def test_nfl_showdown_lock_captain():
         verbose=True
     )
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 370.5)
+    assertions.assertEqual(roster.projected(), 370.5)
     cpt = [x for x in roster.players if x.pos == 'CPT'][0]
-    assertions.assertEquals('A2', cpt.name)
+    assertions.assertEqual('A2', cpt.name)
 
 
 def test_nfl_showdown_lock_flex():
@@ -175,13 +175,13 @@ def test_nfl_showdown_lock_flex():
         verbose=True
     )
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 386.0)
+    assertions.assertEqual(roster.projected(), 386.0)
     flex = [
         x for x in roster.players
         if x.pos == 'FLEX'
         and x.name == 'A1'
     ][0]
-    assertions.assertEquals('A1', flex.name)
+    assertions.assertEqual('A1', flex.name)
 
 
 def test_nfl_showdown_ban_general():
@@ -200,7 +200,7 @@ def test_nfl_showdown_ban_general():
         verbose=True
     )
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 334.0)
+    assertions.assertEqual(roster.projected(), 334.0)
     assertions.assertTrue('A1' not in [x.name for x in roster.players])
 
 
@@ -220,10 +220,10 @@ def test_nfl_showdown_ban_specific():
         verbose=True
     )
     assertions.assertNotEqual(roster, None)
-    assertions.assertEquals(roster.projected(), 386.0)
+    assertions.assertEqual(roster.projected(), 386.0)
     flex = [
         x for x in roster.players
         if x.pos == 'FLEX'
         and x.name == 'A1'
     ][0]
-    assertions.assertEquals('A1', flex.name)
+    assertions.assertEqual('A1', flex.name)
