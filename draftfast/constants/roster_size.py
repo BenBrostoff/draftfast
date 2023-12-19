@@ -1,0 +1,33 @@
+ROSTER_SIZE_BY_SITE_BY_SPORT = {
+    'DRAFT_KINGS': {
+        'NFL': 9,
+        'NFL_SHOWDOWN': 6,
+        'MLB_SHOWDOWN': 6,
+        'NBA': 8,
+        'NBA_SHOWDOWN': 6,
+        'WNBA': 6,
+        'MLB': 10,
+        'SOCCER': 8,
+        'EL': 6,
+        'NHL': 9,
+        'NHL_SHOWDOWN': 6,
+        'XFL': 7,
+        'TEN': 6,
+        'PGA': 6,
+        'PGA_CAPTAIN': 6,
+        'CSGO_SHOWDOWN': 6,
+        'NASCAR': 6,
+        'F1_SHOWDOWN': 6,
+    },
+    'FAN_DUEL': {
+        'NFL': 9,
+        'NFL_MVP': 5,
+        'MLB_MVP': 5,
+        'NBA_MVP': 5,
+        'NBA': 9,
+        'MLB': 9,
+        'WNBA': 7,
+        'NASCAR': 5,
+        'PGA': 6,
+    }
+}
