@@ -27,6 +27,7 @@ def test_deterministic_exposure_limits():
             {'name': 'Andrew Luck', 'min': 0.5, 'max': 0.7},
             {'name': 'Alshon Jeffery', 'min': 1, 'max': 1},
         ],
+        verbose=True,
     )
     assertions.assertEqual(len(rosters), iterations)
     assertions.assertEqual(len(exposure_diffs), 0)

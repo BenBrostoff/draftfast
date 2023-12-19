@@ -57,36 +57,7 @@ class Player(object):
     def get_player_id(self, player_map):
         return player_map[self.name + ' ' + self.possible_positions]
 
-    def to_table_row(self):
-        return [
-            self.formatted_position,
-            self.name,
-            self.team,
-            self.matchup,
-            cs(self.cost),
-            self.proj,
-            self.__format_v_avg(),
-            'LOCK' if self.lock else ''
-        ]
-
-    def to_exposure_table_row(self, n, s_min, s_max):
-        return [
-            self.formatted_position,
-            self.name,
-            self.team,
-            self.matchup,
-            cs(self.cost),
-            self.proj,
-            n,
-            s_min,
-            s_max
-        ]
-
-    def is_opposing_team_in_match_up(self, team):
-        return (team.upper() != self.team.upper()) and \
-               (team.upper() in self.matchup.upper())
-
-    def __repr__(self):
+    def __get_player_dict(self):
         v_avg = self.__format_v_avg()
         player_dict = dict(
             pos=self.formatted_position,
@@ -94,14 +65,28 @@ class Player(object):
             team=self.team,
             match=self.matchup,
             cost=cs(self.cost),
-            proj=self.proj,
+            proj='{:0.2f}'.format(self.proj),
             v_avg=v_avg,
             lock='LOCK' if self.lock else ''
         )
+        return player_dict
 
+    def to_table_row(self):
+        return [v for k,v in self.__get_player_dict().items()]
+
+    def __repr__(self):
+        player_dict = self.__get_player_dict()
         return "[{pos: <2}] {name: <20} {team} {match} " \
                "(${cost}, {proj} ({v_avg})), {lock}".format(
                    **player_dict)
+
+    def to_exposure_table_row(self, n, s_min, s_max):
+        row = [v for k,v in self.__get_player_dict()][:-2]
+        row += [n, s_min, s_max]
+
+    def is_opposing_team_in_match_up(self, team):
+        return (team.upper() != self.team.upper()) and \
+               (team.upper() in self.matchup.upper())
 
     def __eq__(self, player):
         return self.pos == player.pos and \
