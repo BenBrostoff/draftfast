@@ -1,2 +1,5 @@
 from roster_size import ROSTER_SIZE_BY_SITE_BY_SPORT
 from positions import POSITIONS_BY_SITE_BY_LEAGUE
+
+assert ROSTER_SIZE_BY_SITE_BY_SPORT
+assert POSITIONS_BY_SITE_BY_LEAGUE
