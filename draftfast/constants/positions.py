@@ -125,3 +125,18 @@ POSITIONS_BY_SITE_BY_LEAGUE = {
         ],
     }
 }
+
+NBA_GENERAL_POSITIONS = [
+    ['G', 3, 4],
+    ['F', 3, 4],
+    ['C', 1, 2],
+]
+
+MLB_GENERAL_POSITIONS = [
+    ['P', 2, 2],
+]
+
+WNBA_GENERAL_POSITIONS = [
+    ['G', 2, 3],
+    ['F', 3, 4],
+]
