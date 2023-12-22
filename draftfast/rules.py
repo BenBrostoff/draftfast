@@ -1,6 +1,9 @@
-from draftfast.constants.positions import MLB_GENERAL_POSITIONS, NBA_GENERAL_POSITIONS, POSITIONS_BY_SITE_BY_LEAGUE
+from draftfast.constants.positions import (MLB_GENERAL_POSITIONS, 
+                                           NBA_GENERAL_POSITIONS, 
+                                           POSITIONS_BY_SITE_BY_LEAGUE)
 from draftfast.constants.roster_size import ROSTER_SIZE_BY_SITE_BY_SPORT
 from draftfast.constants.salary_cap import SALARY_CAP_BY_SITE_BY_LEAGUE
+
 
 DRAFT_KINGS = 'DRAFT_KINGS'
 FAN_DUEL = 'FAN_DUEL'
@@ -33,6 +36,7 @@ def get_nfl_showdown_positions(dk: bool = False, fd: bool = False) -> list:
         ['CPT', 1, 1],
         ['FLEX', ub, ub]
     ]
+
 
 class RuleSet(object):
     def __init__(self, site, league,
