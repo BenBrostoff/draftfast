@@ -1,4 +1,4 @@
-from draftfast.rules import get_nfl_positions, get_nfl_showdown_positions
+from draftfast.rules_utils import get_nfl_positions, get_nfl_showdown_positions
 
 
 POSITIONS_BY_SITE_BY_LEAGUE = {
