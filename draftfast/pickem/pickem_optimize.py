@@ -11,7 +11,9 @@ def optimize(
     constraints: LineupConstraints = LineupConstraints(),
 ):
     lineup_players = []
-    all_players = list(filter(add_pickem_contraints(player_settings), all_players))
+    all_players = list(
+        filter(add_pickem_contraints(player_settings), all_players)
+    )
 
     if constraints.has_group_constraints():
         raise NotImplementedError("Groups are not supported for pickem")

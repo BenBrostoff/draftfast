@@ -54,7 +54,9 @@ def generate_players_from_csvs(
             errors,
         )
 
-    with open(salary_file_location, "r", encoding=encoding, errors=errors) as csv_file:
+    with open(
+        salary_file_location, "r", encoding=encoding, errors=errors
+    ) as csv_file:
         csv_data = csv.DictReader(csv_file)
         pos_key = "Position"
         is_nhl = ruleset and ruleset.league == "NHL"
@@ -200,7 +202,9 @@ def _parse_fd_mvp_nfl_row(pos: str, row: dict) -> List[ShowdownPlayer]:
     ]
 
 
-def _parse_mvp_mlb_row(pos: str, row: dict, ruleset: RuleSet) -> List[ShowdownPlayer]:
+def _parse_mvp_mlb_row(
+    pos: str, row: dict, ruleset: RuleSet
+) -> List[ShowdownPlayer]:
     """
     FanDuel CSVs give all players without breaking out an MVP / STAR position.
     Unlike DK, salary does not change here.

@@ -47,7 +47,9 @@ def map_pids(pid_file, encoding, errors, game=DRAFT_KINGS):
             )
 
         f.close()
-        f = islice(open(pid_file, "r", encoding=encoding, errors=errors), n, None)
+        f = islice(
+            open(pid_file, "r", encoding=encoding, errors=errors), n, None
+        )
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
             # DraftKings adds spaces to DST for NFL
@@ -62,7 +64,11 @@ def map_pids(pid_file, encoding, errors, game=DRAFT_KINGS):
 
 class CSVUploader(object):
     def __init__(
-        self, pid_file, upload_file="./upload.csv", encoding="utf-8", errors="replace"
+        self,
+        pid_file,
+        upload_file="./upload.csv",
+        encoding="utf-8",
+        errors="replace",
     ):
         self.upload_file = upload_file
         self.encoding = encoding
@@ -222,5 +228,8 @@ class DraftKingsCaptainShowdownUploader(DraftKingsUploader):
             writer.writerow(self.HEADERS)
             for roster in rosters:
                 writer.writerow(
-                    [p.get_player_id(self.pid_map) for p in roster.sorted_players()]
+                    [
+                        p.get_player_id(self.pid_map)
+                        for p in roster.sorted_players()
+                    ]
                 )

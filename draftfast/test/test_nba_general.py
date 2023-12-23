@@ -29,7 +29,9 @@ def test_general_center():
 
 def test_optimize_with_general():
     def get_player_count_at_pos(roster, pos):
-        return len([p for p in roster.players if p.nba_general_position == pos])
+        return len(
+            [p for p in roster.players if p.nba_general_position == pos]
+        )
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     players = sd.generate_players_from_csvs(
@@ -62,6 +64,12 @@ def test_optimize_with_general():
         assertions.assertEqual(rosters[i], rosters[0])
 
         assertions.assertEqual(rosters[i].projected(), 279.53)
-        assertions.assertTrue(get_player_count_at_pos(rosters[i], "G") in [3, 4])
-        assertions.assertTrue(get_player_count_at_pos(rosters[i], "F") in [3, 4])
-        assertions.assertTrue(get_player_count_at_pos(rosters[i], "C") in [1, 2])
+        assertions.assertTrue(
+            get_player_count_at_pos(rosters[i], "G") in [3, 4]
+        )
+        assertions.assertTrue(
+            get_player_count_at_pos(rosters[i], "F") in [3, 4]
+        )
+        assertions.assertTrue(
+            get_player_count_at_pos(rosters[i], "C") in [1, 2]
+        )

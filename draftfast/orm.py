@@ -232,7 +232,9 @@ class Roster:
     def identifier(self):
         if self.cached_id:
             return self.cached_id
-        self.cached_id = " ".join(sorted([x.roster_id for x in self.sorted_players()]))
+        self.cached_id = " ".join(
+            sorted([x.roster_id for x in self.sorted_players()])
+        )
 
         return self.cached_id
 
@@ -370,7 +372,9 @@ class ShowdownRoster(Roster):
         """
         if self.cached_id:
             return self.cached_id
-        self.cached_id = " ".join(sorted([x.solver_id for x in self.sorted_players()]))
+        self.cached_id = " ".join(
+            sorted([x.solver_id for x in self.sorted_players()])
+        )
 
         return self.cached_id
 

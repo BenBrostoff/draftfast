@@ -61,7 +61,9 @@ def test_banned_players():
 def test_locked_players():
     players = _generate_test_player_data()
 
-    optimized = optimize(players, constraints=LineupConstraints(locked=["B", "D"]))
+    optimized = optimize(
+        players, constraints=LineupConstraints(locked=["B", "D"])
+    )
     assertions.assertEqual(optimized.total, 49 + 47 + 46 + 44 + 42 + 40)
 
 

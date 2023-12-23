@@ -44,7 +44,9 @@ def test_dk_nba_upload():
 def test_dk_nfl_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location="{}/data/dk-nfl-upload-salaries.csv".format(CURRENT_DIR),
+        salary_file_location="{}/data/dk-nfl-upload-salaries.csv".format(
+            CURRENT_DIR
+        ),
         rule_set=rules.DK_NFL_RULE_SET,
         pid_file="{}/data/dk-nfl-upload.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNFLUploader,
@@ -68,7 +70,9 @@ def test_dk_nfl_upload():
 def test_dk_el_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location="{}/data/dk-euro-league-salaries.csv".format(CURRENT_DIR),
+        salary_file_location="{}/data/dk-euro-league-salaries.csv".format(
+            CURRENT_DIR
+        ),
         rule_set=rules.DK_EURO_LEAGUE_RULE_SET,
         pid_file="{}/data/dk-euro-league-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsELUploader,
@@ -89,7 +93,9 @@ def test_dk_el_upload():
 def test_dk_soccer_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location="{}/data/dk-soccer-salaries.csv".format(CURRENT_DIR),
+        salary_file_location="{}/data/dk-soccer-salaries.csv".format(
+            CURRENT_DIR
+        ),
         rule_set=rules.DK_SOCCER_RULE_SET,
         pid_file="{}/data/dk-soccer-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsSoccerUploader,
@@ -160,7 +166,9 @@ def test_dk_nhl_uploader():
 
 
 def test_pickem_nba_upload():
-    salary_file_location = "{}/data/dk-nba-pickem-salaries.csv".format(CURRENT_DIR)
+    salary_file_location = "{}/data/dk-nba-pickem-salaries.csv".format(
+        CURRENT_DIR
+    )
     players = salary_download.generate_players_from_csvs(
         game=rules.DRAFT_KINGS,
         salary_file_location=salary_file_location,

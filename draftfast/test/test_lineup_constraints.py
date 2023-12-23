@@ -31,13 +31,17 @@ def test_constraint_set_eq():
     lcs1 = LineupConstraints()
     lcs1.add_group_constraint(["Spencer Ware", "Amari Cooper"], 1)
     lcs1.ban(["Packers"])
-    lcs1.add_group_constraint(["Eli Manning", "Russell Wilson", "Doug Martin"], (1, 3))
+    lcs1.add_group_constraint(
+        ["Eli Manning", "Russell Wilson", "Doug Martin"], (1, 3)
+    )
     lcs1.lock(["Will Fuller"])
 
     lcs2 = LineupConstraints()
     lcs2.add_group_constraint(["Spencer Ware", "Amari Cooper"], 1)
     lcs2.ban(["Packers"])
-    lcs2.add_group_constraint(["Eli Manning", "Russell Wilson", "Doug Martin"], (1, 3))
+    lcs2.add_group_constraint(
+        ["Eli Manning", "Russell Wilson", "Doug Martin"], (1, 3)
+    )
     lcs2.lock(["Will Fuller"])
 
     assertions.assertEqual(lcs1, lcs2)
@@ -47,7 +51,9 @@ def test_build_constraint_set():
     lcs = LineupConstraints()
     lcs.add_group_constraint(["Spencer Ware", "Amari Cooper"], 1)
     lcs.ban(["Packers"])
-    lcs.add_group_constraint(["Eli Manning", "Russell Wilson", "Doug Martin"], (1, 3))
+    lcs.add_group_constraint(
+        ["Eli Manning", "Russell Wilson", "Doug Martin"], (1, 3)
+    )
     lcs.lock(["Will Fuller"])
 
     assertions.assertEqual(len(lcs), 4)

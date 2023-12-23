@@ -4,10 +4,14 @@ from draftfast.orm import Player
 from draftfast.settings import PlayerPoolSettings
 
 
-def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> List[Player]:
+def filter_pool(
+    pool: list, player_settings: PlayerPoolSettings
+) -> List[Player]:
     if player_settings.randomize:
         for player in pool:
-            factor = 1 + runiform(-player_settings.randomize, player_settings.randomize)
+            factor = 1 + runiform(
+                -player_settings.randomize, player_settings.randomize
+            )
             player.proj = player.proj * factor
 
     return list(

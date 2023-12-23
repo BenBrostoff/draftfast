@@ -130,12 +130,16 @@ class OptimizerSettings(object):
     def __str__(self):
         lines = []
         if self.stacks and len(self.stacks):
-            lines.append("Stacks: {}".format([(x.team, x.count) for x in self.stacks]))
+            lines.append(
+                "Stacks: {}".format([(x.team, x.count) for x in self.stacks])
+            )
         if self.min_teams:
             lines.append("Min teams: {}".format(self.min_teams))
         if self.no_offense_against_defense:
             lines.append(
-                "No offense against D: {}".format(self.no_offense_against_defense)
+                "No offense against D: {}".format(
+                    self.no_offense_against_defense
+                )
             )
         if self.custom_rules:
             lines.append("Custom rules: {}".format(self.custom_rules))
@@ -156,7 +160,11 @@ class UploadSettings(object):
 
 class Stack(object):
     def __init__(
-        self, team: str, count: int, stack_lock_pos=None, stack_eligible_pos=None
+        self,
+        team: str,
+        count: int,
+        stack_lock_pos=None,
+        stack_eligible_pos=None,
     ):
         self.team = team
         self.count = count

@@ -47,9 +47,13 @@ def get_exposure_args(
             exposures[p.name] = exposures.get(p.name, 0) + 1
 
     if use_random:
-        return get_exposure_args_random(exposures, exposure_bounds, n, random_seed)
+        return get_exposure_args_random(
+            exposures, exposure_bounds, n, random_seed
+        )
 
-    return get_exposure_args_deterministic(exposures, existing_rosters, exposure_bounds)
+    return get_exposure_args_deterministic(
+        exposures, existing_rosters, exposure_bounds
+    )
 
 
 def get_exposure_args_deterministic(
@@ -78,7 +82,9 @@ def get_exposure_args_deterministic(
     }
 
 
-def get_exposure_args_random(exposures, exposure_bounds, n, random_seed) -> dict:
+def get_exposure_args_random(
+    exposures, exposure_bounds, n, random_seed
+) -> dict:
     locked = []
 
     for bound in exposure_bounds:
@@ -129,7 +135,9 @@ def get_exposure_table(rosters, bounds):
             exposures[p.name] = exposures.get(p.name, 0) + 1
             players[p.name] = p
 
-    exposures = OrderedDict(sorted(exposures.items(), key=lambda t: t[1], reverse=True))
+    exposures = OrderedDict(
+        sorted(exposures.items(), key=lambda t: t[1], reverse=True)
+    )
 
     table_data = []
     headers = [
@@ -162,7 +170,9 @@ def get_exposure_table(rosters, bounds):
 
                     continue
 
-        table_data.append(players[name].to_exposure_table_row(num, s_min, s_max))
+        table_data.append(
+            players[name].to_exposure_table_row(num, s_min, s_max)
+        )
 
     table = AsciiTable(table_data)
     table.justify_columns[4] = "right"

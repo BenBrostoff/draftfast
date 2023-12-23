@@ -1,4 +1,10 @@
-from draftfast.orm import NFLRoster, Player, ShowdownRoster, RosterGroup, MVPRoster
+from draftfast.orm import (
+    NFLRoster,
+    Player,
+    ShowdownRoster,
+    RosterGroup,
+    MVPRoster,
+)
 import unittest
 
 assertions = unittest.TestCase("__init__")
@@ -138,7 +144,9 @@ def test_roster_group():
     rg = RosterGroup(rosters=[roster_a, roster_b])
     assertions.assertEqual(rg.get_similarity_score(), 1)
     assertions.assertEqual(rg.get_salary_frequency(), [(2, 2)])
-    assertions.assertEqual(rg.get_player_frequency(), [(player_a, 2), (player_b, 2)])
+    assertions.assertEqual(
+        rg.get_player_frequency(), [(player_a, 2), (player_b, 2)]
+    )
 
     rg_2 = RosterGroup(rosters=[roster_a, roster_c])
     assertions.assertEqual(rg_2.get_similarity_score(), 0.5)

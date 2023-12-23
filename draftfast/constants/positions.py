@@ -3,7 +3,13 @@ from draftfast.rules_utils import get_nfl_positions, get_nfl_showdown_positions
 
 POSITIONS_BY_SITE_BY_LEAGUE = {
     "DRAFT_KINGS": {
-        "NBA": [["PG", 1, 3], ["SG", 1, 3], ["SF", 1, 3], ["PF", 1, 3], ["C", 1, 2]],
+        "NBA": [
+            ["PG", 1, 3],
+            ["SG", 1, 3],
+            ["SF", 1, 3],
+            ["PF", 1, 3],
+            ["C", 1, 2],
+        ],
         "NBA_SHOWDOWN": [
             ["CPT", 1, 1],
             ["FLEX", 5, 5],

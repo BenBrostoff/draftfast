@@ -1,7 +1,10 @@
 from typing import List
 from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
-from draftfast.dke_exceptions import InvalidBoundsException, PlayerBanAndLockException
+from draftfast.dke_exceptions import (
+    InvalidBoundsException,
+    PlayerBanAndLockException,
+)
 from draftfast.orm import Player
 from draftfast.rules import RuleSet
 from draftfast.lineup_constraints import LineupConstraints
@@ -131,7 +134,9 @@ class Optimizer(object):
             ub = 0 if (p.ban or p.position_ban) else 1
 
             if lb > ub:
-                raise InvalidBoundsException("Invalid bounds for {}".format(p.name))
+                raise InvalidBoundsException(
+                    "Invalid bounds for {}".format(p.name)
+                )
 
             if (p.multi_position or self.showdown) and not (
                 p.position_lock or p.position_ban
@@ -208,7 +213,10 @@ class Optimizer(object):
                             stack_cap.SetCoefficient(self.variables[i], 1)
 
                     self._set_stacking_type(
-                        stack_lock_pos, stack_lock_eligible_pos, stack_team, stack.count
+                        stack_lock_pos,
+                        stack_lock_eligible_pos,
+                        stack_team,
+                        stack.count,
                     )
 
     def _set_stacking_type(
@@ -236,7 +244,9 @@ class Optimizer(object):
                     self.solver.Sum(skillplayers_on_team)
                     >= self.solver.Sum(locked_on_team)
                 )
-                self.solver.Add((self.solver.Sum(skillplayers_on_team)) >= count - 1)
+                self.solver.Add(
+                    (self.solver.Sum(skillplayers_on_team)) >= count - 1
+                )
 
     def _set_combo(self):
         if self.settings:
@@ -277,7 +287,8 @@ class Optimizer(object):
             offensive_against = [
                 self.variables[i]
                 for i, p in enumerated_players
-                if p.pos in offensive_pos and p.is_opposing_team_in_match_up(team)
+                if p.pos in offensive_pos
+                and p.is_opposing_team_in_match_up(team)
             ]
 
             # TODO this is gross for showdown
@@ -323,7 +334,9 @@ class Optimizer(object):
                     for i, p in self.enumerated_players
                     if rule.group_b(p)
                 ]
-                self.solver.Add(rule.comparison(self.solver.Sum, group_a, group_b))
+                self.solver.Add(
+                    rule.comparison(self.solver.Sum, group_a, group_b)
+                )
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:
@@ -334,7 +347,11 @@ class Optimizer(object):
                     position_cap.SetCoefficient(self.variables[i], 1)
 
     def _set_general_positions(self):
-        for general_position, min_limit, max_limit in self.general_position_limits:
+        for (
+            general_position,
+            min_limit,
+            max_limit,
+        ) in self.general_position_limits:
             position_cap = self.solver.Constraint(min_limit, max_limit)
 
             for i, player in self.enumerated_players:
@@ -368,9 +385,12 @@ class Optimizer(object):
                         for i, p in self.enumerated_players
                         if p.team == team
                     ]
-                    self.solver.Add(team_var <= self.solver.Sum(players_on_team))
                     self.solver.Add(
-                        self.max_players_per_team >= self.solver.Sum(players_on_team)
+                        team_var <= self.solver.Sum(players_on_team)
+                    )
+                    self.solver.Add(
+                        self.max_players_per_team
+                        >= self.solver.Sum(players_on_team)
                     )
 
         if len(teams) > 0:

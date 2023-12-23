@@ -123,7 +123,9 @@ def test_if_one_then_two():
 
     # Without this rule, A4 and A9 would never appear in the optimized
     # lineup. Both have a 0 point projection.
-    assertions.assertEqual(True, "A1" in names and "A9" in names and "A4" in names)
+    assertions.assertEqual(
+        True, "A1" in names and "A9" in names and "A4" in names
+    )
 
 
 def test_never_two():
@@ -181,4 +183,6 @@ def test_team_rules():
         optimizer_settings=settings,
     )
     names = {p.name for p in roster.players}
-    assertions.assertEqual(True, "A100" in names and "A101" in names and "A10" in names)
+    assertions.assertEqual(
+        True, "A100" in names and "A101" in names and "A10" in names
+    )

@@ -89,7 +89,9 @@ def test_nfl_dk():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = run(rule_set=rules.DK_NFL_RULE_SET, player_pool=players, verbose=True)
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET, player_pool=players, verbose=True
+    )
 
     assertions.assertNotEqual(roster, None)
     assertions.assertEqual(roster.projected(), 124.30)
@@ -100,7 +102,9 @@ def test_nfl_fd():
         salary_file_location=fd_nfl_salary_file,
         game=rules.FAN_DUEL,
     )
-    roster = run(rule_set=rules.FD_NFL_RULE_SET, player_pool=players, verbose=True)
+    roster = run(
+        rule_set=rules.FD_NFL_RULE_SET, player_pool=players, verbose=True
+    )
 
     assertions.assertNotEqual(roster, None)
     assertions.assertAlmostEqual(roster.projected(), 155.0172712846236)
@@ -132,7 +136,9 @@ def test_multi_roster_nfl():
         projection_file_location=projection_file,
         game=rules.DRAFT_KINGS,
     )
-    roster = run(rule_set=rules.DK_NFL_RULE_SET, player_pool=players, verbose=True)
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET, player_pool=players, verbose=True
+    )
     second_roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
@@ -191,8 +197,12 @@ def test_uniques_nba():
     third_players = third_roster.sorted_players()
     crossover_a = list(set(players).intersection(second_players))
     crossover_b = list(set(players).intersection(third_players))
-    assertions.assertEqual(len(crossover_a), rules.DK_NBA_RULE_SET.roster_size - 1)
-    assertions.assertEqual(len(crossover_b), rules.DK_NBA_RULE_SET.roster_size - 2)
+    assertions.assertEqual(
+        len(crossover_a), rules.DK_NBA_RULE_SET.roster_size - 1
+    )
+    assertions.assertEqual(
+        len(crossover_b), rules.DK_NBA_RULE_SET.roster_size - 2
+    )
 
 
 def test_respect_lock():
@@ -252,7 +262,9 @@ def test_respect_group1():
         ),
     )
 
-    group_count = len([x for x in roster.sorted_players() if x.name in grouped_players])
+    group_count = len(
+        [x for x in roster.sorted_players() if x.name in grouped_players]
+    )
     assertions.assertEqual(group_count, 2)
 
 
@@ -280,7 +292,9 @@ def test_respect_group2():
         ),
     )
 
-    group_count = len([x for x in roster.sorted_players() if x.name in grouped_players])
+    group_count = len(
+        [x for x in roster.sorted_players() if x.name in grouped_players]
+    )
     assertions.assertTrue(group_count >= 2 and group_count <= 3)
 
 
@@ -308,7 +322,9 @@ def test_respect_group3():
         ),
     )
 
-    group_count = len([x for x in roster.sorted_players() if x.name in grouped_players])
+    group_count = len(
+        [x for x in roster.sorted_players() if x.name in grouped_players]
+    )
     assertions.assertTrue(group_count == 1)
 
 
@@ -321,13 +337,21 @@ def test_stack():
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
-        optimizer_settings=OptimizerSettings(stacks=[Stack(team="NE", count=5)]),
+        optimizer_settings=OptimizerSettings(
+            stacks=[Stack(team="NE", count=5)]
+        ),
         verbose=True,
     )
-    ne_players_count = len([p for p in roster.sorted_players() if p.team == "NE"])
+    ne_players_count = len(
+        [p for p in roster.sorted_players() if p.team == "NE"]
+    )
     assertions.assertEqual(5, ne_players_count)
     ne_def = len(
-        [p for p in roster.sorted_players() if p.team == "NE" and p.pos == "DST"]
+        [
+            p
+            for p in roster.sorted_players()
+            if p.team == "NE" and p.pos == "DST"
+        ]
     )
     assertions.assertEqual(ne_def, 1)
 
@@ -353,14 +377,24 @@ def test_custom_stack():
         ),
         verbose=True,
     )
-    ne_players_count = len([p for p in roster.sorted_players() if p.team == "NE"])
+    ne_players_count = len(
+        [p for p in roster.sorted_players() if p.team == "NE"]
+    )
     assertions.assertEqual(5, ne_players_count)
     ne_def = len(
-        [p for p in roster.sorted_players() if p.team == "NE" and p.pos == "DST"]
+        [
+            p
+            for p in roster.sorted_players()
+            if p.team == "NE" and p.pos == "DST"
+        ]
     )
     assertions.assertEqual(ne_def, 0)
     wides = len(
-        [p for p in roster.sorted_players() if p.team == "NE" and p.pos == "WR"]
+        [
+            p
+            for p in roster.sorted_players()
+            if p.team == "NE" and p.pos == "WR"
+        ]
     )
     assertions.assertEqual(wides, 4)
 
@@ -375,7 +409,9 @@ def test_force_combo():
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
-        optimizer_settings=OptimizerSettings(stacks=[Stack(team="NE", count=5)]),
+        optimizer_settings=OptimizerSettings(
+            stacks=[Stack(team="NE", count=5)]
+        ),
         constraints=LineupConstraints(
             locked=["Sam Bradford"],
         ),
@@ -403,12 +439,20 @@ def test_force_combo():
     assertions.assertEqual(qb.pos, "QB")
 
     wr_team_count = len(
-        [x for x in roster.sorted_players() if x.team == qb.team and x.pos == "WR"]
+        [
+            x
+            for x in roster.sorted_players()
+            if x.team == qb.team and x.pos == "WR"
+        ]
     )
     assertions.assertEqual(wr_team_count, 1)
 
     te_team_count = len(
-        [x for x in roster.sorted_players() if x.team == qb.team and x.pos == "TE"]
+        [
+            x
+            for x in roster.sorted_players()
+            if x.team == qb.team and x.pos == "TE"
+        ]
     )
     assertions.assertEqual(te_team_count, 0)
 
@@ -436,7 +480,11 @@ def test_te_combo():
     qb = roster.sorted_players()[0]
     assertions.assertEqual(qb.pos, "QB")
     team_count = len(
-        [x for x in roster.sorted_players() if x.team == qb.team and x.pos == "TE"]
+        [
+            x
+            for x in roster.sorted_players()
+            if x.team == qb.team and x.pos == "TE"
+        ]
     )
     assertions.assertEqual(team_count, 1)
 
@@ -461,7 +509,11 @@ def test_te_combo():
     qb = roster.sorted_players()[0]
     assertions.assertEqual(qb.pos, "QB")
     team_count = len(
-        [x for x in roster.sorted_players() if x.team == qb.team and x.pos == "WR"]
+        [
+            x
+            for x in roster.sorted_players()
+            if x.team == qb.team and x.pos == "WR"
+        ]
     )
     assertions.assertEqual(team_count, 1)
 
@@ -476,7 +528,8 @@ def test_impossible_constraints():
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(
-            stacks=[Stack(team="NE", count=100)], no_offense_against_defense=True
+            stacks=[Stack(team="NE", count=100)],
+            no_offense_against_defense=True,
         ),
         constraints=LineupConstraints(
             banned=["Sammy Watkins", "Kellen Davis"],
@@ -567,7 +620,9 @@ def test_multi_position_group_constraint():
         verbose=True,
     )
 
-    group_count = len([x for x in roster.sorted_players() if x.name in grouped_players])
+    group_count = len(
+        [x for x in roster.sorted_players() if x.name in grouped_players]
+    )
     assertions.assertEqual(group_count, 2)
     assertions.assertEqual(roster.projected(), 1304)
 
@@ -592,37 +647,81 @@ def test_multi_position_group_constraint2():
         verbose=True,
     )
 
-    group_count = len([x for x in roster.sorted_players() if x.name in grouped_players])
+    group_count = len(
+        [x for x in roster.sorted_players() if x.name in grouped_players]
+    )
     assertions.assertEqual(group_count, 2)
     assertions.assertAlmostEqual(roster.projected(), 120.89999999999999)
 
 
 def test_no_opposing_def_dk_nfl_mock():
     mock_pool = [
-        Player(name="A1", cost=5500, proj=40, pos="QB", team="X", matchup="X@Y"),
-        Player(name="A2", cost=5500, proj=41, pos="QB", team="Y", matchup="X@Y"),
-        Player(name="A11", cost=5500, proj=50, pos="WR", team="X", matchup="X@Y"),
-        Player(name="A3", cost=5500, proj=42, pos="WR", team="Y", matchup="X@Y"),
-        Player(name="A4", cost=5500, proj=43, pos="WR", team="X", matchup="X@Y"),
-        Player(name="A5", cost=5500, proj=44, pos="WR", team="Y", matchup="X@Y"),
-        Player(name="A111", cost=5500, proj=50, pos="WR", team="X", matchup="X@Y"),
-        Player(name="A31", cost=5500, proj=42, pos="WR", team="Y", matchup="X@Y"),
-        Player(name="A41", cost=5500, proj=62, pos="WR", team="X", matchup="X@Y"),
-        Player(name="A51", cost=5500, proj=63, pos="WR", team="Y", matchup="X@Y"),
-        Player(name="A6", cost=5500, proj=45, pos="RB", team="X", matchup="X@Y"),
-        Player(name="A7", cost=5500, proj=46, pos="RB", team="Y", matchup="X@Y"),
-        Player(name="A8", cost=5500, proj=47, pos="RB", team="X", matchup="X@Y"),
-        Player(name="A71", cost=5500, proj=46, pos="RB", team="Y", matchup="X@Y"),
-        Player(name="A81", cost=5500, proj=47, pos="RB", team="X", matchup="X@Y"),
-        Player(name="A711", cost=5500, proj=46, pos="RB", team="Y", matchup="X@Y"),
-        Player(name="A9", cost=5500, proj=48, pos="TE", team="X", matchup="X@Y"),
-        Player(name="A10", cost=5500, proj=49, pos="TE", team="Y", matchup="X@Y"),
-        Player(name="A12", cost=5500, proj=51, pos="DST", team="X", matchup="X@Y"),
-        Player(name="A13", cost=5500, proj=500, pos="DST", team="Y", matchup="X@Y"),
+        Player(
+            name="A1", cost=5500, proj=40, pos="QB", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A2", cost=5500, proj=41, pos="QB", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A11", cost=5500, proj=50, pos="WR", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A3", cost=5500, proj=42, pos="WR", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A4", cost=5500, proj=43, pos="WR", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A5", cost=5500, proj=44, pos="WR", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A111", cost=5500, proj=50, pos="WR", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A31", cost=5500, proj=42, pos="WR", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A41", cost=5500, proj=62, pos="WR", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A51", cost=5500, proj=63, pos="WR", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A6", cost=5500, proj=45, pos="RB", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A7", cost=5500, proj=46, pos="RB", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A8", cost=5500, proj=47, pos="RB", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A71", cost=5500, proj=46, pos="RB", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A81", cost=5500, proj=47, pos="RB", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A711", cost=5500, proj=46, pos="RB", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A9", cost=5500, proj=48, pos="TE", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A10", cost=5500, proj=49, pos="TE", team="Y", matchup="X@Y"
+        ),
+        Player(
+            name="A12", cost=5500, proj=51, pos="DST", team="X", matchup="X@Y"
+        ),
+        Player(
+            name="A13", cost=5500, proj=500, pos="DST", team="Y", matchup="X@Y"
+        ),
     ]
 
     # mock pool is constructed such that optimal lineup has qb opposing dst
-    roster = run(rule_set=rules.DK_NFL_RULE_SET, player_pool=mock_pool, verbose=True)
+    roster = run(
+        rule_set=rules.DK_NFL_RULE_SET, player_pool=mock_pool, verbose=True
+    )
 
     assertions.assertEqual(roster.projected(), 909)
     qb_team = roster.sorted_players()[0].team
@@ -655,7 +754,9 @@ def test_no_opposing_def_dk_nfl_mock():
 
     # add a player from a third team, min 2 teams
     mock_pool.append(
-        Player(name="B2", cost=5500, proj=70, pos="QB", team="Q", matchup="Q@Z")
+        Player(
+            name="B2", cost=5500, proj=70, pos="QB", team="Q", matchup="Q@Z"
+        )
     )
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -724,7 +825,9 @@ def test_no_opposing_def_fd_nfl():
         rule_set=rules.FD_NFL_RULE_SET,
         player_pool=players,
         optimizer_settings=OptimizerSettings(no_offense_against_defense=True),
-        constraints=LineupConstraints(locked=["Eric Ebron", "Jacksonville Jaguars"]),
+        constraints=LineupConstraints(
+            locked=["Eric Ebron", "Jacksonville Jaguars"]
+        ),
         verbose=True,
     )
 

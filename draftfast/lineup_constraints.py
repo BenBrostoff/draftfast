@@ -311,7 +311,9 @@ class PlayerGroupConstraint(PlayerConstraint):
 
     def _exact_bounds_sanity_check(self):
         if self.exact <= 0:
-            raise ConstraintException("Exact bound may not less than or equal to zero")
+            raise ConstraintException(
+                "Exact bound may not less than or equal to zero"
+            )
         if self.exact >= len(self.players):
             raise ConstraintException(
                 "Exact bound may not be greater than or equal to number "
@@ -329,7 +331,9 @@ class PlayerGroupConstraint(PlayerConstraint):
             )
         if self.ub < self.lb:
             raise ConstraintException(
-                "Upper bound for {!r} cannot be less than lower bound.".format(self)
+                "Upper bound for {!r} cannot be less than lower bound.".format(
+                    self
+                )
             )
         if self.ub > len(self.players) or self.lb > len(self.players):
             raise ConstraintException(

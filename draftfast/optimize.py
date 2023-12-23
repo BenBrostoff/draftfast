@@ -88,7 +88,10 @@ PLAYER POOL SETTINGS:
 
 PLAYER COUNT: {}
         """.format(
-                optimizer_settings, constraints, player_settings, len(players or [])
+                optimizer_settings,
+                constraints,
+                player_settings,
+                len(players or []),
             )
         )
     return None

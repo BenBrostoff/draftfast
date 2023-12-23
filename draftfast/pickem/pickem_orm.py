@@ -51,7 +51,11 @@ class TieredLineup(object):
         ]
         for p in self.players:
             table_data.append(p.to_table_row())
-        return AsciiTable(table_data).table + "\n" + "Total: {}".format(self.total)
+        return (
+            AsciiTable(table_data).table
+            + "\n"
+            + "Total: {}".format(self.total)
+        )
 
     @property
     def players(self):
