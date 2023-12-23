@@ -6,7 +6,7 @@ from draftfast import (
     exposure,
     pickem,
     showdown,
-    constants
+    constants,
 )
 
 assert optimize

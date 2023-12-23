@@ -5,12 +5,11 @@ import types
 from draftfast import rules
 from draftfast import optimize
 from draftfast.csv_parse import uploaders, salary_download
-from draftfast.pickem.pickem_optimize import (
-    optimize as p_optimize
-)
+from draftfast.pickem.pickem_optimize import optimize as p_optimize
 
 import unittest
-assertions = unittest.TestCase('__init__')
+
+assertions = unittest.TestCase("__init__")
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -20,48 +19,50 @@ assertEqual = assertions.assertEqual
 def test_dk_nba_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk-nba-salaries.csv'.format(CURRENT_DIR),
+        salary_file_location="{}/data/dk-nba-salaries.csv".format(CURRENT_DIR),
         rule_set=rules.DK_NBA_RULE_SET,
-        pid_file='{}/data/dk-nba-pids.csv'.format(CURRENT_DIR),
+        pid_file="{}/data/dk-nba-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNBAUploader,
     )
     assertEqual(
         sorted(row),
-        sorted([
-            '11743190',
-            '11743146',
-            '11743013',
-            '11743142',
-            '11743007',
-            '11743176',
-            '11743369',
-            '11743024',
-        ])
+        sorted(
+            [
+                "11743190",
+                "11743146",
+                "11743013",
+                "11743142",
+                "11743007",
+                "11743176",
+                "11743369",
+                "11743024",
+            ]
+        ),
     )
 
 
 def test_dk_nfl_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk-nfl-upload-salaries.csv'.format(
+        salary_file_location="{}/data/dk-nfl-upload-salaries.csv".format(
             CURRENT_DIR
         ),
         rule_set=rules.DK_NFL_RULE_SET,
-        pid_file='{}/data/dk-nfl-upload.csv'.format(CURRENT_DIR),
+        pid_file="{}/data/dk-nfl-upload.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNFLUploader,
     )
     assertEqual(
         row,
         [
-            '13651346',
-            '13651384',
-            '13651396',
-            '13651574',
-            '13651608',
-            '13651652',
-            '13651838',
-            '13651402',
-            '13651964',
+            "13651346",
+            "13651384",
+            "13651396",
+            "13651574",
+            "13651608",
+            "13651652",
+            "13651838",
+            "13651402",
+            "13651964",
         ],
     )
 
@@ -69,22 +70,22 @@ def test_dk_nfl_upload():
 def test_dk_el_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk-euro-league-salaries.csv'.format(
+        salary_file_location="{}/data/dk-euro-league-salaries.csv".format(
             CURRENT_DIR
         ),
         rule_set=rules.DK_EURO_LEAGUE_RULE_SET,
-        pid_file='{}/data/dk-euro-league-pids.csv'.format(CURRENT_DIR),
+        pid_file="{}/data/dk-euro-league-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsELUploader,
     )
     assertEqual(
         row,
         [
-            '11799918',
-            '11799942',
-            '11799922',
-            '11799956',
-            '11800052',
-            '11799950',
+            "11799918",
+            "11799942",
+            "11799922",
+            "11799956",
+            "11800052",
+            "11799950",
         ],
     )
 
@@ -92,24 +93,24 @@ def test_dk_el_upload():
 def test_dk_soccer_upload():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk-soccer-salaries.csv'.format(
+        salary_file_location="{}/data/dk-soccer-salaries.csv".format(
             CURRENT_DIR
         ),
         rule_set=rules.DK_SOCCER_RULE_SET,
-        pid_file='{}/data/dk-soccer-pids.csv'.format(CURRENT_DIR),
+        pid_file="{}/data/dk-soccer-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsSoccerUploader,
     )
     assertEqual(
         row,
         [
-            '11801828',
-            '11801837',
-            '11801757',
-            '11801761',
-            '11801685',
-            '11801733',
-            '11801676',
-            '11801778',
+            "11801828",
+            "11801837",
+            "11801757",
+            "11801761",
+            "11801685",
+            "11801733",
+            "11801676",
+            "11801778",
         ],
     )
 
@@ -117,53 +118,55 @@ def test_dk_soccer_upload():
 def test_fd_nba_upload():
     row = _get_first_written_row(
         game=rules.FAN_DUEL,
-        salary_file_location='{}/data/fd-nba-salaries.csv'.format(CURRENT_DIR),
+        salary_file_location="{}/data/fd-nba-salaries.csv".format(CURRENT_DIR),
         rule_set=rules.FD_NBA_RULE_SET,
-        pid_file='{}/data/fd-nba-pids.csv'.format(CURRENT_DIR),
+        pid_file="{}/data/fd-nba-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.FanDuelNBAUploader,
     )
     assertEqual(
         row,
         [
-            '30803-9535:Kyle Lowry',
-            '30803-9475:Derrick Rose',
-            '30803-9714:DeMar DeRozan',
-            '30803-40201:Dennis Schroder',
-            '30803-9646:Kevin Durant',
-            '30803-12341:Paul George',
-            '30803-9957:Serge Ibaka',
-            '30803-9874:Kevin Love',
-            '30803-12362:DeMarcus Cousins',
-        ]
+            "30803-9535:Kyle Lowry",
+            "30803-9475:Derrick Rose",
+            "30803-9714:DeMar DeRozan",
+            "30803-40201:Dennis Schroder",
+            "30803-9646:Kevin Durant",
+            "30803-12341:Paul George",
+            "30803-9957:Serge Ibaka",
+            "30803-9874:Kevin Love",
+            "30803-12362:DeMarcus Cousins",
+        ],
     )
 
 
 def test_dk_nhl_uploader():
     row = _get_first_written_row(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk-nhl-salaries.csv'.format(CURRENT_DIR),
+        salary_file_location="{}/data/dk-nhl-salaries.csv".format(CURRENT_DIR),
         rule_set=rules.DK_NHL_RULE_SET,
-        pid_file='{}/data/dk-nhl-pids.csv'.format(CURRENT_DIR),
+        pid_file="{}/data/dk-nhl-pids.csv".format(CURRENT_DIR),
         Uploader=uploaders.DraftKingsNHLUploader,
     )
     assertEqual(
         sorted(row),
-        sorted([
-            '11845288',
-            '11845290',
-            '11845526',
-            '11845550',
-            '11845942',
-            '11845960',
-            '11846094',
-            '11846329',
-            '11845460',
-        ]),
+        sorted(
+            [
+                "11845288",
+                "11845290",
+                "11845526",
+                "11845550",
+                "11845942",
+                "11845960",
+                "11846094",
+                "11846329",
+                "11845460",
+            ]
+        ),
     )
 
 
 def test_pickem_nba_upload():
-    salary_file_location = '{}/data/dk-nba-pickem-salaries.csv'.format(
+    salary_file_location = "{}/data/dk-nba-pickem-salaries.csv".format(
         CURRENT_DIR
     )
     players = salary_download.generate_players_from_csvs(
@@ -171,12 +174,14 @@ def test_pickem_nba_upload():
         salary_file_location=salary_file_location,
         ruleset=rules.DK_NBA_PICKEM_RULE_SET,
     )
-    rosters = [p_optimize(
-        all_players=players,
-    )]
+    rosters = [
+        p_optimize(
+            all_players=players,
+        )
+    ]
 
-    pid_file = '{}/data/dk-nba-pickem-pids.csv'.format(CURRENT_DIR)
-    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    pid_file = "{}/data/dk-nba-pickem-pids.csv".format(CURRENT_DIR)
+    upload_file = "{}/data/current-upload.csv".format(CURRENT_DIR)
     uploader = uploaders.DraftKingsNBAPickemUploader(
         pid_file=pid_file,
         upload_file=upload_file,
@@ -184,80 +189,80 @@ def test_pickem_nba_upload():
     uploader.write_rosters(rosters)
 
     row = None
-    with open(upload_file, 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+    with open(upload_file, "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
         for idx, row in enumerate(reader):
             if idx == 0:
                 continue
     assertEqual(
         row,
         [
-            '11839390',
-            '11839397',
-            '11839400',
-            '11839405',
-            '11839420',
-            '11839422',
-        ]
+            "11839390",
+            "11839397",
+            "11839400",
+            "11839405",
+            "11839420",
+            "11839422",
+        ],
     )
 
 
 def test_dk_nfl_showdown_upload():
     row = _get_first_written_row_dk_showdown(
-        salary_file='dk-nfl-showdown-salaries.csv',
-        pid_file='dk-nfl-showdown-pids.csv',
+        salary_file="dk-nfl-showdown-salaries.csv",
+        pid_file="dk-nfl-showdown-pids.csv",
         ruleset=rules.DK_NFL_SHOWDOWN_RULE_SET,
         Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
     assertEqual(
         row,
         [
-            '11896024',
-            '11895994',
-            '11895995',
-            '11895996',
-            '11895997',
-            '11896018',
-        ]
+            "11896024",
+            "11895994",
+            "11895995",
+            "11895996",
+            "11895997",
+            "11896018",
+        ],
     )
 
 
 def test_dk_nba_showdown_upload():
     row = _get_first_written_row_dk_showdown(
-        salary_file='dk-nba-showdown-salaries.csv',
-        pid_file='dk-nba-showdown-pids.csv',
+        salary_file="dk-nba-showdown-salaries.csv",
+        pid_file="dk-nba-showdown-pids.csv",
         ruleset=rules.DK_NBA_SHOWDOWN_RULE_SET,
         Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
     assertEqual(
         row,
         [
-            '11915867',
-            '11915844',
-            '11915845',
-            '11915846',
-            '11915852',
-            '11915853',
+            "11915867",
+            "11915844",
+            "11915845",
+            "11915846",
+            "11915852",
+            "11915853",
         ],
     )
 
 
 def test_dk_mlb_showdown_upload():
     row = _get_first_written_row_dk_showdown(
-        salary_file='dk-mlb-showdown-salaries.csv',
-        pid_file='dk-mlb-showdown-pids.csv',
+        salary_file="dk-mlb-showdown-salaries.csv",
+        pid_file="dk-mlb-showdown-pids.csv",
         ruleset=rules.DK_MLB_SHOWDOWN_RULE_SET,
         Uploader=uploaders.DraftKingsCaptainShowdownUploader,
     )
     assertEqual(
         row,
         [
-            '12895602',
-            '12895494',
-            '12895495',
-            '12895496',
-            '12895510',
-            '12895600',
+            "12895602",
+            "12895494",
+            "12895495",
+            "12895496",
+            "12895510",
+            "12895600",
         ],
     )
 
@@ -268,32 +273,32 @@ def test_dk_xfl_classic_upload():
             p.proj = idx
 
     row = _get_first_written_row_dk_showdown(
-        salary_file='dk-xfl-salaries.csv',
-        pid_file='dk-xfl-pids.csv',
+        salary_file="dk-xfl-salaries.csv",
+        pid_file="dk-xfl-pids.csv",
         ruleset=rules.DK_XFL_CLASSIC_RULE_SET,
         Uploader=uploaders.DraftKingsXFLUploader,
-        players_side_effect=proj
+        players_side_effect=proj,
     )
     assertEqual(
         row,
         [
-            '14224920',
-            '14225002',
-            '14225226',
-            '14225228',
-            '14225230',
-            '14225232',
-            '14225241'
-        ]
+            "14224920",
+            "14225002",
+            "14225226",
+            "14225228",
+            "14225230",
+            "14225232",
+            "14225241",
+        ],
     )
 
 
 def _get_first_written_row(
-        game: str,
-        salary_file_location: str,
-        rule_set: rules.RuleSet,
-        pid_file: str,
-        Uploader: Type[uploaders.CSVUploader],
+    game: str,
+    salary_file_location: str,
+    rule_set: rules.RuleSet,
+    pid_file: str,
+    Uploader: Type[uploaders.CSVUploader],
 ) -> list:
     players = salary_download.generate_players_from_csvs(
         game=game,
@@ -305,7 +310,7 @@ def _get_first_written_row(
         player_pool=players,
         verbose=True,
     )
-    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    upload_file = "{}/data/current-upload.csv".format(CURRENT_DIR)
     uploader = Uploader(
         pid_file=pid_file,
         upload_file=upload_file,
@@ -313,8 +318,8 @@ def _get_first_written_row(
     uploader.write_rosters([roster])
 
     row = None
-    with open(upload_file, 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+    with open(upload_file, "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
         for idx, row in enumerate(reader):
             if idx == 0:
                 continue
@@ -331,9 +336,9 @@ def _get_first_written_row_dk_showdown(
     pid_file: str,
     ruleset: rules.RuleSet,
     Uploader: Type[uploaders.CSVUploader],
-    players_side_effect: types.FunctionType = _noop
+    players_side_effect: types.FunctionType = _noop,
 ) -> list:
-    salary_file_location = '{}/data/{}'.format(
+    salary_file_location = "{}/data/{}".format(
         CURRENT_DIR,
         salary_file,
     )
@@ -343,14 +348,16 @@ def _get_first_written_row_dk_showdown(
         ruleset=ruleset,
     )
     players_side_effect(players)
-    rosters = [optimize.run(
-        player_pool=players,
-        rule_set=ruleset,
-        verbose=True,
-    )]
+    rosters = [
+        optimize.run(
+            player_pool=players,
+            rule_set=ruleset,
+            verbose=True,
+        )
+    ]
 
-    pid_file_location = '{}/data/{}'.format(CURRENT_DIR, pid_file)
-    upload_file = '{}/data/current-upload.csv'.format(CURRENT_DIR)
+    pid_file_location = "{}/data/{}".format(CURRENT_DIR, pid_file)
+    upload_file = "{}/data/current-upload.csv".format(CURRENT_DIR)
     uploader = Uploader(
         pid_file=pid_file_location,
         upload_file=upload_file,
@@ -358,8 +365,8 @@ def _get_first_written_row_dk_showdown(
     uploader.write_rosters(rosters)
 
     row = None
-    with open(upload_file, 'r') as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
+    with open(upload_file, "r") as csvfile:
+        reader = csv.reader(csvfile, delimiter=",")
         for idx, row in enumerate(reader):
             if idx == 0:
                 continue

@@ -5,20 +5,20 @@ from draftfast.pickem import pickem_orm
 
 def map_pids(pid_file):
     player_map = {}
-    with open(pid_file, 'r') as f:
+    with open(pid_file, "r") as f:
         n = 0
         fields = None
         for line in f.readlines():
             n += 1
-            if 'TeamAbbrev' in line:  # line with field names was found
-                fields = line.split(',')
+            if "TeamAbbrev" in line:  # line with field names was found
+                fields = line.split(",")
                 break
 
         f.close()
-        f = islice(open(pid_file, 'r'), n, None)
+        f = islice(open(pid_file, "r"), n, None)
         reader = csv.DictReader(f, fieldnames=fields)
         for line in reader:
-            player_map[line['Name']] = line['ID']
+            player_map[line["Name"]] = line["ID"]
 
     return player_map
 

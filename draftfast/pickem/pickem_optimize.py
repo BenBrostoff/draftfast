@@ -8,16 +8,15 @@ from draftfast.pickem.pickem_orm import TieredPlayer
 def optimize(
     all_players: list,
     player_settings: PlayerPoolSettings = PlayerPoolSettings(),
-    constraints: LineupConstraints = LineupConstraints()
+    constraints: LineupConstraints = LineupConstraints(),
 ):
     lineup_players = []
-    all_players = list(filter(
-        add_pickem_contraints(player_settings),
-        all_players
-    ))
+    all_players = list(
+        filter(add_pickem_contraints(player_settings), all_players)
+    )
 
     if constraints.has_group_constraints():
-        raise NotImplementedError('Groups are not supported for pickem')
+        raise NotImplementedError("Groups are not supported for pickem")
 
     for p in all_players:
         if constraints.is_banned(p.name):
@@ -43,6 +42,4 @@ def optimize(
 
 
 def _get_player(name, all_players) -> TieredPlayer:
-    return next(
-        p for p in all_players if p.name == name
-    )
+    return next(p for p in all_players if p.name == name)

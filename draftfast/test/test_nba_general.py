@@ -5,39 +5,38 @@ from draftfast.optimize import run
 from draftfast import rules
 from draftfast.csv_parse import salary_download as sd
 
-assertions = unittest.TestCase('__init__')
+assertions = unittest.TestCase("__init__")
 
 
 def test_general_guard():
-    pg = Player(name='A', cost=1, proj=1, pos='PG')
-    assertions.assertEqual(pg.nba_general_position, 'G')
-    sg = Player(name='A', cost=1, proj=1, pos='SG')
-    assertions.assertEqual(sg.nba_general_position, 'G')
+    pg = Player(name="A", cost=1, proj=1, pos="PG")
+    assertions.assertEqual(pg.nba_general_position, "G")
+    sg = Player(name="A", cost=1, proj=1, pos="SG")
+    assertions.assertEqual(sg.nba_general_position, "G")
 
 
 def test_general_forward():
-    pg = Player(name='A', cost=1, proj=1, pos='SF')
-    assertions.assertEqual(pg.nba_general_position, 'F')
-    sg = Player(name='A', cost=1, proj=1, pos='PF')
-    assertions.assertEqual(sg.nba_general_position, 'F')
+    pg = Player(name="A", cost=1, proj=1, pos="SF")
+    assertions.assertEqual(pg.nba_general_position, "F")
+    sg = Player(name="A", cost=1, proj=1, pos="PF")
+    assertions.assertEqual(sg.nba_general_position, "F")
 
 
 def test_general_center():
-    pg = Player(name='A', cost=1, proj=1, pos='C')
-    assertions.assertEqual(pg.nba_general_position, 'C')
+    pg = Player(name="A", cost=1, proj=1, pos="C")
+    assertions.assertEqual(pg.nba_general_position, "C")
 
 
 def test_optimize_with_general():
     def get_player_count_at_pos(roster, pos):
-        return len([
-            p for p in roster.players
-            if p.nba_general_position == pos
-        ])
+        return len(
+            [p for p in roster.players if p.nba_general_position == pos]
+        )
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     players = sd.generate_players_from_csvs(
         game=rules.DRAFT_KINGS,
-        salary_file_location='{}/data/dk-nba-salaries.csv'.format(current_dir)
+        salary_file_location="{}/data/dk-nba-salaries.csv".format(current_dir),
     )
 
     rosters = []
@@ -65,12 +64,12 @@ def test_optimize_with_general():
         assertions.assertEqual(rosters[i], rosters[0])
 
         assertions.assertEqual(rosters[i].projected(), 279.53)
-        assertions.assertTrue(get_player_count_at_pos(
-            rosters[i], 'G') in [3, 4]
+        assertions.assertTrue(
+            get_player_count_at_pos(rosters[i], "G") in [3, 4]
         )
-        assertions.assertTrue(get_player_count_at_pos(
-            rosters[i], 'F') in [3, 4]
+        assertions.assertTrue(
+            get_player_count_at_pos(rosters[i], "F") in [3, 4]
         )
-        assertions.assertTrue(get_player_count_at_pos(
-            rosters[i], 'C') in [1, 2]
+        assertions.assertTrue(
+            get_player_count_at_pos(rosters[i], "C") in [1, 2]
         )
