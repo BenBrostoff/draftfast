@@ -8,12 +8,14 @@ def _iterableify(x):
 
 
 class LineupConstraints(object):
-    def __init__(self,
-                 locked: list = [],
-                 position_locked: list = [],
-                 banned: list = [],
-                 position_banned: list = [],
-                 groups: list = []):
+    def __init__(
+        self,
+        locked: list = [],
+        position_locked: list = [],
+        banned: list = [],
+        position_banned: list = [],
+        groups: list = [],
+    ):
         self._constraints = []
         self._banned = set()
         self._locked = set()
@@ -43,32 +45,32 @@ class LineupConstraints(object):
 
     def __len__(self):
         return (
-            len(self._constraints) +
-            len(self._locked) +
-            len(self._banned) +
-            len(self._position_locked) +
-            len(self._position_banned)
+            len(self._constraints)
+            + len(self._locked)
+            + len(self._banned)
+            + len(self._position_locked)
+            + len(self._position_banned)
         )
 
     def __repr__(self):
-        constraints = ', '.join([repr(c) for c in self._constraints])
-        lcs = 'LineupConstraintSet: {}'.format(constraints)
-        b1 = '<Banned: {!r}>'.format(self._banned)
-        bp1 = '<PositionBanned: {!r}>'.format(self._position_banned)
-        lp1 = '<Locked: {!r}>'.format(self._locked)
-        l1 = '<PositionLocked: {!r}>'.format(self._position_locked)
-        return '<{}, {}, {}, {}, {}>'.format(lcs, b1, bp1, l1, lp1)
+        constraints = ", ".join([repr(c) for c in self._constraints])
+        lcs = "LineupConstraintSet: {}".format(constraints)
+        b1 = "<Banned: {!r}>".format(self._banned)
+        bp1 = "<PositionBanned: {!r}>".format(self._position_banned)
+        lp1 = "<Locked: {!r}>".format(self._locked)
+        l1 = "<PositionLocked: {!r}>".format(self._position_locked)
+        return "<{}, {}, {}, {}, {}>".format(lcs, b1, bp1, l1, lp1)
 
     def __str__(self):
         lines = [str(c) for c in self._constraints]
         if len(self._banned):
-            lines.append('Banned: ' + ', '.join(p for p in self._banned))
+            lines.append("Banned: " + ", ".join(p for p in self._banned))
         if len(self._locked):
-            lines.append('Locked: ' + ', '.join(p for p in self._locked))
+            lines.append("Locked: " + ", ".join(p for p in self._locked))
         if len(lines):
-            return '\n'.join(lines)
+            return "\n".join(lines)
         else:
-            return 'None'
+            return "None"
 
     def __eq__(self, constraintset):
         if len(self._constraints) != len(constraintset._constraints):
@@ -110,7 +112,7 @@ class LineupConstraints(object):
             for p in constraint.players:
                 if p in self._locked or p in self._banned:
                     raise ConstraintConflictException(
-                        'Ban/lock constraint for {} already exists'.format(p)
+                        "Ban/lock constraint for {} already exists".format(p)
                     )
 
     def _add(self, constraint):
@@ -119,7 +121,7 @@ class LineupConstraints(object):
         if constraint not in self._constraints:
             self._constraints.append(constraint)
         else:
-            raise ConstraintConflictException('Duplicate constraint')
+            raise ConstraintConflictException("Duplicate constraint")
 
     def is_banned(self, player: str) -> bool:
         return player in self._banned
@@ -143,12 +145,12 @@ class LineupConstraints(object):
         _players = _iterableify(players)
 
         if len(_players) == 0:
-            raise ConstraintException('Empty ban group')
+            raise ConstraintException("Empty ban group")
 
         for p in _players:
             if p in self:
                 raise ConstraintConflictException(
-                    '{} exists in another constraint'.format(p)
+                    "{} exists in another constraint".format(p)
                 )
         self._banned.update(_players)
 
@@ -156,12 +158,12 @@ class LineupConstraints(object):
         _players = _iterableify(players)
 
         if len(_players) == 0:
-            raise ConstraintException('Empty lock group')
+            raise ConstraintException("Empty lock group")
 
         for p in _players:
             if p in self:
                 raise ConstraintConflictException(
-                    '{} exists in another constraint'.format(p)
+                    "{} exists in another constraint".format(p)
                 )
         self._locked.update(_players)
 
@@ -169,12 +171,12 @@ class LineupConstraints(object):
         _solver_ids = _iterableify(solver_ids)
 
         if len(_solver_ids) == 0:
-            raise ConstraintException('Empty position lock group')
+            raise ConstraintException("Empty position lock group")
 
         for p in _solver_ids:
             if p in self:
                 raise ConstraintConflictException(
-                    '{} exists in another constraint'.format(p)
+                    "{} exists in another constraint".format(p)
                 )
         self._position_locked.update(_solver_ids)
 
@@ -182,12 +184,12 @@ class LineupConstraints(object):
         _solver_ids = _iterableify(solver_ids)
 
         if len(_solver_ids) == 0:
-            raise ConstraintException('Empty position lock group')
+            raise ConstraintException("Empty position lock group")
 
         for p in _solver_ids:
             if p in self:
                 raise ConstraintConflictException(
-                    '{} exists in another constraint'.format(p)
+                    "{} exists in another constraint".format(p)
                 )
         self._position_banned.update(_solver_ids)
 
@@ -243,10 +245,10 @@ class ConstraintException(Exception):
 class PlayerConstraint(AbstractConstraint):
     def __init__(self, players):
         if not len(players):
-            raise ConstraintException('No players in group')
+            raise ConstraintException("No players in group")
 
         if len(players) != len(set(players)):
-            raise ConstraintException('Duplicate players in group')
+            raise ConstraintException("Duplicate players in group")
 
         self.players = players
 
@@ -256,7 +258,7 @@ class PlayerConstraint(AbstractConstraint):
         return set(self.players) == set(rule.players)
 
     def __hash__(self):
-        return hash(''.join(sorted(self.players)))
+        return hash("".join(sorted(self.players)))
 
     def __contains__(self, player):
         return player in self.players
@@ -277,21 +279,25 @@ class PlayerGroupConstraint(PlayerConstraint):
             self.exact = bound
             self._exact_bounds_sanity_check()
         else:
-            raise ConstraintException('Bound must be length 2 or int')
+            raise ConstraintException("Bound must be length 2 or int")
 
     def __repr__(self):
-        return '<PlayerGroupConstraint: {} of {}>'.format(self._bounds_str,
-                                                          self.players)
+        return "<PlayerGroupConstraint: {} of {}>".format(
+            self._bounds_str, self.players
+        )
 
     def __str__(self):
-        return 'Using {} of: {}'.format(
-            self._bounds_str,
-            ', '.join(p for p in self.players)
+        return "Using {} of: {}".format(
+            self._bounds_str, ", ".join(p for p in self.players)
         )
 
     def __eq__(self, constraint):
-        return super().__eq__(constraint) and self.exact == constraint.exact \
-               and self.lb == constraint.lb and self.ub == constraint.ub
+        return (
+            super().__eq__(constraint)
+            and self.exact == constraint.exact
+            and self.lb == constraint.lb
+            and self.ub == constraint.ub
+        )
 
     def __hash__(self):
         return hash((super().__hash__(), self.exact, self.lb, self.ub))
@@ -299,37 +305,34 @@ class PlayerGroupConstraint(PlayerConstraint):
     @property
     def _bounds_str(self):
         if self.exact:
-            return '{0.exact}'.format(self)
+            return "{0.exact}".format(self)
 
-        return '{0.lb} to {0.ub}'.format(self)
+        return "{0.lb} to {0.ub}".format(self)
 
     def _exact_bounds_sanity_check(self):
         if self.exact <= 0:
-            raise ConstraintException(
-                'Exact bound may not less than or equal to zero'
-            )
+            raise ConstraintException("Exact bound may not less than or equal to zero")
         if self.exact >= len(self.players):
             raise ConstraintException(
-                'Exact bound may not be greater than or equal to number '
-                'of players in group'
+                "Exact bound may not be greater than or equal to number "
+                "of players in group"
             )
 
     def _ub_lb_bounds_sanity_check(self):
         if self.lb < 1:
             raise ConstraintException(
-                'Lower bound for {!r} cannot be less than 1'.format(self)
+                "Lower bound for {!r} cannot be less than 1".format(self)
             )
         if self.ub == self.lb:
             raise ConstraintException(
-                'Lower bound for {!r} cannot equal upper bound'.format(self)
+                "Lower bound for {!r} cannot equal upper bound".format(self)
             )
         if self.ub < self.lb:
             raise ConstraintException(
-                'Upper bound for {!r} cannot be less than lower bound.'
-                .format(self)
+                "Upper bound for {!r} cannot be less than lower bound.".format(self)
             )
         if self.ub > len(self.players) or self.lb > len(self.players):
             raise ConstraintException(
-                'Bound for {!r} cannot be greater than number of players '
-                'group'.format(self)
+                "Bound for {!r} cannot be greater than number of players "
+                "group".format(self)
             )

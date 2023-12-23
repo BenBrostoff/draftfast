@@ -6,9 +6,9 @@ from draftfast.csv_parse import salary_download
 from draftfast.settings import OptimizerSettings, Stack
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file = '{}/data/dk-nhl-salaries.csv'.format(CURRENT_DIR)
+salary_file = "{}/data/dk-nhl-salaries.csv".format(CURRENT_DIR)
 
-assertions = unittest.TestCase('__init__')
+assertions = unittest.TestCase("__init__")
 
 
 def test_nhl_dk():
@@ -37,17 +37,17 @@ def test_triple_stack():
         verbose=True,
         optimizer_settings=OptimizerSettings(
             stacks=[
-                Stack(team='TOR', count=3),
-                Stack(team='COL', count=3),
-                Stack(team='VAN', count=2),
+                Stack(team="TOR", count=3),
+                Stack(team="COL", count=3),
+                Stack(team="VAN", count=2),
             ]
-        )
+        ),
     )
     players = roster.sorted_players()
 
-    phi_players = [x for x in players if x.team == 'TOR']
-    fla_players = [x for x in players if x.team == 'COL']
-    nsh_players = [x for x in players if x.team == 'VAN']
+    phi_players = [x for x in players if x.team == "TOR"]
+    fla_players = [x for x in players if x.team == "COL"]
+    nsh_players = [x for x in players if x.team == "VAN"]
     assertions.assertEqual(len(phi_players), 3)
     assertions.assertEqual(len(fla_players), 3)
     assertions.assertEqual(len(nsh_players), 2)

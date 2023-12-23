@@ -4,21 +4,27 @@ from typing import List
 from draftfast import player_pool as pool
 from draftfast.orm import RosterSelect, Roster
 from draftfast.optimizer import Optimizer
-from draftfast.exposure import check_exposure, \
-    get_exposure_table, get_exposure_matrix, get_exposure_args
+from draftfast.exposure import (
+    check_exposure,
+    get_exposure_table,
+    get_exposure_matrix,
+    get_exposure_args,
+)
 from draftfast.rules import RuleSet
 from draftfast.settings import PlayerPoolSettings, OptimizerSettings
 from draftfast.lineup_constraints import LineupConstraints
 
 
-def run(rule_set: RuleSet,
-        player_pool: list,
-        constraints: LineupConstraints = LineupConstraints(),
-        optimizer_settings: OptimizerSettings = OptimizerSettings(),
-        player_settings: PlayerPoolSettings = PlayerPoolSettings(),
-        exposure_dict: dict = dict(),
-        roster_gen: Roster = None,
-        verbose=False) -> Roster:
+def run(
+    rule_set: RuleSet,
+    player_pool: list,
+    constraints: LineupConstraints = LineupConstraints(),
+    optimizer_settings: OptimizerSettings = OptimizerSettings(),
+    player_settings: PlayerPoolSettings = PlayerPoolSettings(),
+    exposure_dict: dict = dict(),
+    roster_gen: Roster = None,
+    verbose=False,
+) -> Roster:
     players = player_pool
     if player_settings.exist() or constraints.exist():
         players = pool.filter_pool(
@@ -29,11 +35,11 @@ def run(rule_set: RuleSet,
     if not isinstance(rule_set, RuleSet):
         raise Exception("RuleSet not defined. Please refer to the docs")
 
-    if rule_set.game_type == 'showdown':
+    if rule_set.game_type == "showdown":
         if optimizer_settings.no_offense_against_defense:
-            print('WARNING:')
-            print('no_offense_against_defense setting ignored for showdown')
-            print('game types. Use no_defense_against_captain instead.')
+            print("WARNING:")
+            print("no_offense_against_defense setting ignored for showdown")
+            print("game types. Use no_defense_against_captain instead.")
             print()
 
     optimizer = Optimizer(
@@ -57,14 +63,14 @@ def run(rule_set: RuleSet,
                 roster.add_player(player)
 
         if verbose:
-            print('Optimal roster for: {}'.format(rule_set.league))
+            print("Optimal roster for: {}".format(rule_set.league))
             print(roster)
 
         return roster
 
     if verbose:
         print(
-            '''
+            """
 No solution found.
 Try adjusting your query by taking away constraints.
 
@@ -81,11 +87,8 @@ PLAYER POOL SETTINGS:
 {}
 
 PLAYER COUNT: {}
-        '''.format(
-                optimizer_settings,
-                constraints,
-                player_settings,
-                len(players or [])
+        """.format(
+                optimizer_settings, constraints, player_settings, len(players or [])
             )
         )
     return None
@@ -102,7 +105,6 @@ def run_multi(
     exposure_bounds: List[dict] = list(),
     exposure_random_seed=None,
 ) -> [List[Roster], list]:
-
     if not isinstance(rule_set, RuleSet):
         raise Exception("RuleSet not defined. Please refer to the docs")
 
@@ -150,9 +152,9 @@ def run_multi(
         exposure_diffs = check_exposure(rosters, exposure_bounds)
         for n, d in exposure_diffs.items():
             if d < 0:
-                print('{} is UNDER exposure by {} lineups'.format(n, d))
+                print("{} is UNDER exposure by {} lineups".format(n, d))
             else:
-                print('{} is OVER exposure by {} lineups'.format(n, d))
+                print("{} is OVER exposure by {} lineups".format(n, d))
 
     return rosters, exposure_diffs
 

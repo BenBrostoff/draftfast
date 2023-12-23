@@ -5,30 +5,31 @@ from draftfast.pickem.pickem_orm import TieredPlayer
 from draftfast.showdown.orm import ShowdownPlayer, MVPPlayer
 from draftfast.rules import (
     RuleSet,
-    DRAFT_KINGS, FAN_DUEL,
+    DRAFT_KINGS,
+    FAN_DUEL,
     FD_NFL_MVP_RULE_SET,
     FD_MLB_MVP_RULE_SET,
-    FD_NBA_MVP_RULE_SET
+    FD_NBA_MVP_RULE_SET,
 )
 
 GAME_KEY_MAP = {
     DRAFT_KINGS: {
-        'name': 'Name',
-        'salary': 'Salary',
-        'team': 'teamAbbrev',
-        'team_alt': 'TeamAbbrev',
-        'game': 'GameInfo',
-        'game_alt': 'Game Info',
-        'avg': 'AvgPointsPerGame',
+        "name": "Name",
+        "salary": "Salary",
+        "team": "teamAbbrev",
+        "team_alt": "TeamAbbrev",
+        "game": "GameInfo",
+        "game_alt": "Game Info",
+        "avg": "AvgPointsPerGame",
     },
     FAN_DUEL: {
-        'name': 'Nickname',
-        'team': 'Team',
-        'team_alt': None,
-        'game': 'Game',
-        'game_alt': None,
-        'avg': 'FPPG',
-    }
+        "name": "Nickname",
+        "team": "Team",
+        "team_alt": None,
+        "game": "Game",
+        "game_alt": None,
+        "avg": "FPPG",
+    },
 }
 
 
@@ -38,10 +39,10 @@ GAME_KEY_MAP = {
 def generate_players_from_csvs(
     salary_file_location: str,
     game: str,
-    projection_file_location='',
+    projection_file_location="",
     verbose=False,
-    encoding='utf-8',
-    errors='replace',
+    encoding="utf-8",
+    errors="replace",
     ruleset=None,
 ) -> list:
     players = []
@@ -53,25 +54,24 @@ def generate_players_from_csvs(
             errors,
         )
 
-    with open(salary_file_location, 'r',
-              encoding=encoding, errors=errors) as csv_file:
+    with open(salary_file_location, "r", encoding=encoding, errors=errors) as csv_file:
         csv_data = csv.DictReader(csv_file)
-        pos_key = 'Position'
-        is_nhl = ruleset and ruleset.league == 'NHL'
-        is_showdown = ruleset and ruleset.game_type == 'showdown'
+        pos_key = "Position"
+        is_nhl = ruleset and ruleset.league == "NHL"
+        is_showdown = ruleset and ruleset.game_type == "showdown"
         if is_nhl or is_showdown:
-            pos_key = 'Roster Position'
+            pos_key = "Roster Position"
 
         for row in csv_data:
-            if ruleset and ruleset.game_type == 'pickem':
+            if ruleset and ruleset.game_type == "pickem":
                 player = TieredPlayer(
                     cost=0,  # salary not applicable in pickem
-                    name=row['Name'],
-                    pos=row['Position'],
-                    team=row['TeamAbbrev'],
-                    matchup=row['Game Info'],
-                    average_score=float(row['AvgPointsPerGame']),
-                    tier=row['Roster Position'],
+                    name=row["Name"],
+                    pos=row["Position"],
+                    team=row["TeamAbbrev"],
+                    matchup=row["Game Info"],
+                    average_score=float(row["AvgPointsPerGame"]),
+                    tier=row["Roster Position"],
                 )
                 _set_projections(
                     projections,
@@ -81,14 +81,14 @@ def generate_players_from_csvs(
                 players.append(player)
             elif ruleset == FD_NFL_MVP_RULE_SET:
                 parsed = _parse_fd_mvp_nfl_row(
-                    pos=row['Position'],
+                    pos=row["Position"],
                     row=row,
                 )
                 players += parsed
                 continue
             elif ruleset in [FD_MLB_MVP_RULE_SET, FD_NBA_MVP_RULE_SET]:
                 parsed = _parse_mvp_mlb_row(
-                    pos=row['Position'],
+                    pos=row["Position"],
                     row=row,
                     ruleset=ruleset,
                 )
@@ -97,7 +97,7 @@ def generate_players_from_csvs(
             elif is_showdown:
                 pos = row[pos_key]
                 player = generate_player(
-                    pos=row['Position'],
+                    pos=row["Position"],
                     row=row,
                     game=game,
                 )
@@ -106,12 +106,12 @@ def generate_players_from_csvs(
                     player,
                     verbose,
                 )
-                captain = pos == 'CPT'
+                captain = pos == "CPT"
 
                 showdown_pos = None
 
                 # F1 requires unique non-captain position
-                if ruleset.league == 'F1_SHOWDOWN':
+                if ruleset.league == "F1_SHOWDOWN":
                     showdown_pos = pos if not captain else None
 
                 players.append(
@@ -122,8 +122,8 @@ def generate_players_from_csvs(
                     )
                 )
             else:
-                for pos in row[pos_key].split('/'):
-                    if is_nhl and pos == 'UTIL':
+                for pos in row[pos_key].split("/"):
+                    if is_nhl and pos == "UTIL":
                         continue
                     player = generate_player(
                         pos=pos,
@@ -142,26 +142,26 @@ def generate_players_from_csvs(
 
 
 def generate_player(pos, row, game):
-    '''
+    """
     Parses CSV row for DraftKings or FanDuel
     and returns a player. Note that DraftKings
     has different CSV formats for different
     sports.
-    '''
-    avg_key = GAME_KEY_MAP[game]['avg']
-    name_key = GAME_KEY_MAP[game]['name']
-    team_key = GAME_KEY_MAP[game]['team']
-    team_alt_key = GAME_KEY_MAP[game]['team_alt']
-    game_key = GAME_KEY_MAP[game]['game']
-    game_alt_key = GAME_KEY_MAP[game]['game_alt']
+    """
+    avg_key = GAME_KEY_MAP[game]["avg"]
+    name_key = GAME_KEY_MAP[game]["name"]
+    team_key = GAME_KEY_MAP[game]["team"]
+    team_alt_key = GAME_KEY_MAP[game]["team_alt"]
+    game_key = GAME_KEY_MAP[game]["game"]
+    game_alt_key = GAME_KEY_MAP[game]["game_alt"]
     avg = float(row.get(avg_key, 0) or 0)
 
     player = Player(
         pos,
         row[name_key].strip().rstrip(),
-        row['Salary'],
-        possible_positions=row['Position'],
-        multi_position='/' in row['Position'],
+        row["Salary"],
+        possible_positions=row["Position"],
+        multi_position="/" in row["Position"],
         team=row.get(team_key) or row.get(team_alt_key),
         matchup=row.get(game_key) or row.get(game_alt_key),
         average_score=avg,
@@ -200,9 +200,7 @@ def _parse_fd_mvp_nfl_row(pos: str, row: dict) -> List[ShowdownPlayer]:
     ]
 
 
-def _parse_mvp_mlb_row(
-    pos: str, row: dict, ruleset: RuleSet
-) -> List[ShowdownPlayer]:
+def _parse_mvp_mlb_row(pos: str, row: dict, ruleset: RuleSet) -> List[ShowdownPlayer]:
     """
     FanDuel CSVs give all players without breaking out an MVP / STAR position.
     Unlike DK, salary does not change here.
@@ -213,15 +211,12 @@ def _parse_mvp_mlb_row(
         row=row,
         game=FAN_DUEL,
     )
-    util = MVPPlayer.from_player(player, game_position='UTIL')
+    util = MVPPlayer.from_player(player, game_position="UTIL")
     mvp = MVPPlayer.from_player(
         player,
-        game_position='MVP',
+        game_position="MVP",
     )
-    star = MVPPlayer.from_player(
-        player,
-        game_position='STAR'
-    )
+    star = MVPPlayer.from_player(player, game_position="STAR")
 
     # Unlike DK, FD does not break out players by multiplier position
     mvp.average_score *= MVPPlayer.MVP_MULTIPLIER
@@ -229,26 +224,24 @@ def _parse_mvp_mlb_row(
 
     # NBA contains PRO
     if ruleset == FD_NBA_MVP_RULE_SET:
-        pro = MVPPlayer.from_player(
-            player,
-            game_position='PRO'
-        )
+        pro = MVPPlayer.from_player(player, game_position="PRO")
         pro.average_score *= MVPPlayer.PRO_MULTIPLIER
         return [mvp, star, pro, util]
 
     return [mvp, star, util]
 
 
-def _generate_projection_dict(projection_file_location: str,
-                              encoding: str,
-                              errors: str) -> dict:
+def _generate_projection_dict(
+    projection_file_location: str, encoding: str, errors: str
+) -> dict:
     projections = {}
-    with open(projection_file_location, 'r',
-              encoding=encoding, errors=errors) as csv_file:
+    with open(
+        projection_file_location, "r", encoding=encoding, errors=errors
+    ) as csv_file:
         csv_data = csv.DictReader(csv_file)
         for row in csv_data:
-            name = row.get('playername').strip().rstrip()
-            projections[name] = float(row.get('points'))
+            name = row.get("playername").strip().rstrip()
+            projections[name] = float(row.get("points"))
 
     return projections
 
@@ -259,12 +252,12 @@ def _set_projections(projections, player, verbose):
 
         # try to find projection for e.g. 'Andrew Luck IND'
         if proj is None and player.team is not None:
-            alt_name = '{} {}'.format(player.name, player.team.upper())
+            alt_name = "{} {}".format(player.name, player.team.upper())
             proj = projections.get(alt_name)
 
         if proj is None:
             if verbose:
-                print('No projection for {}'.format(player.name))
+                print("No projection for {}".format(player.name))
             player.proj = 0
         else:
             player.proj = proj

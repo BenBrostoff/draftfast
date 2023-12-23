@@ -6,13 +6,13 @@ from functools import total_ordering
 import re
 
 try:
-    locale.setlocale(locale.LC_ALL, 'en_US')
+    locale.setlocale(locale.LC_ALL, "en_US")
 except Exception:
     pass
 
 
 def cs(n):
-    return locale._format('%d', n, grouping=True)
+    return locale._format("%d", n, grouping=True)
 
 
 @total_ordering
@@ -55,7 +55,7 @@ class Player(object):
         self.kv_store = kv_store
 
     def get_player_id(self, player_map):
-        return player_map[self.name + ' ' + self.possible_positions]
+        return player_map[self.name + " " + self.possible_positions]
 
     def to_table_row(self):
         return [
@@ -66,7 +66,7 @@ class Player(object):
             cs(self.cost),
             self.proj,
             self.__format_v_avg(),
-            'LOCK' if self.lock else ''
+            "LOCK" if self.lock else "",
         ]
 
     def to_exposure_table_row(self, n, s_min, s_max):
@@ -79,12 +79,13 @@ class Player(object):
             self.proj,
             n,
             s_min,
-            s_max
+            s_max,
         ]
 
     def is_opposing_team_in_match_up(self, team):
-        return (team.upper() != self.team.upper()) and \
-               (team.upper() in self.matchup.upper())
+        return (team.upper() != self.team.upper()) and (
+            team.upper() in self.matchup.upper()
+        )
 
     def __repr__(self):
         v_avg = self.__format_v_avg()
@@ -96,18 +97,21 @@ class Player(object):
             cost=cs(self.cost),
             proj=self.proj,
             v_avg=v_avg,
-            lock='LOCK' if self.lock else ''
+            lock="LOCK" if self.lock else "",
         )
 
-        return "[{pos: <2}] {name: <20} {team} {match} " \
-               "(${cost}, {proj} ({v_avg})), {lock}".format(
-                   **player_dict)
+        return (
+            "[{pos: <2}] {name: <20} {team} {match} "
+            "(${cost}, {proj} ({v_avg})), {lock}".format(**player_dict)
+        )
 
     def __eq__(self, player):
-        return self.pos == player.pos and \
-            self.name == player.name and \
-            self.cost == player.cost and \
-            self.team == player.team
+        return (
+            self.pos == player.pos
+            and self.name == player.name
+            and self.cost == player.cost
+            and self.team == player.team
+        )
 
     def __hash__(self):
         return hash((self.pos, self.name, self.cost, self.team))
@@ -126,7 +130,7 @@ class Player(object):
         """
         Used by optimizer to accommodate same player in different positions
         """
-        return f'{self.name} {self.pos} {self.team}'
+        return f"{self.name} {self.pos} {self.team}"
 
     @property
     def roster_id(self):
@@ -135,12 +139,12 @@ class Player(object):
         entering lineups,a lineup with the same players scores
         the same points irrespective of positions
         """
-        return f'{self.name} {self.team}'
+        return f"{self.name} {self.team}"
 
     @property
     def formatted_position(self):
         if self.multi_position:
-            return f'{self.possible_positions} ({self.pos})'
+            return f"{self.possible_positions} ({self.pos})"
         return self.pos
 
     @property
@@ -149,21 +153,21 @@ class Player(object):
 
     @property
     def is_home(self):
-        match_up_teams = self.matchup.split(' ')[0]
-        return self.team == match_up_teams.split('@')[-1]
+        match_up_teams = self.matchup.split(" ")[0]
+        return self.team == match_up_teams.split("@")[-1]
 
     @property
     def nba_general_position(self):
-        if self.pos == 'SG' or self.pos == 'PG' or self.pos == 'G':
-            return 'G'
-        elif self.pos == 'SF' or self.pos == 'PF' or self.pos == 'F':
-            return 'F'
-        return 'C'
+        if self.pos == "SG" or self.pos == "PG" or self.pos == "G":
+            return "G"
+        elif self.pos == "SF" or self.pos == "PF" or self.pos == "F":
+            return "F"
+        return "C"
 
     @property
     def mlb_general_position(self):
-        if self.pos in {'SP', 'RP'}:
-            return 'P'
+        if self.pos in {"SP", "RP"}:
+            return "P"
         return self.pos
 
     @property
@@ -175,10 +179,10 @@ class Player(object):
             return self.name
 
         # like "AJ McCarron"
-        if re.match(r'^[A-Z]{2}$', s[0]):
+        if re.match(r"^[A-Z]{2}$", s[0]):
             return s
 
-        return f'{s[0][0]}. {s[1]}'
+        return f"{s[0][0]}. {s[1]}"
 
     def __set_from_data_cache(self, player_data):
         if player_data is None:
@@ -188,8 +192,8 @@ class Player(object):
 
     def __format_v_avg(self):
         if self.v_avg > 0:
-            return '\x1b[0;32;40m{:0.2f}\x1b[0m'.format(self.v_avg)
-        return '\x1b[0;31;40m{:0.2f}\x1b[0m'.format(self.v_avg)
+            return "\x1b[0;32;40m{:0.2f}\x1b[0m".format(self.v_avg)
+        return "\x1b[0;31;40m{:0.2f}\x1b[0m".format(self.v_avg)
 
 
 class Roster:
@@ -200,27 +204,27 @@ class Roster:
     def __repr__(self):
         table_data = []
         headers = [
-            'Position',
-            'Player',
-            'Team',
-            'Matchup',
-            'Salary',
-            'Projection',
-            'vs. Avg.',
-            'Locked'
+            "Position",
+            "Player",
+            "Team",
+            "Matchup",
+            "Salary",
+            "Projection",
+            "vs. Avg.",
+            "Locked",
         ]
         table_data.append(headers)
         for p in self.sorted_players():
             table_data.append(p.to_table_row())
 
         table = AsciiTable(table_data)
-        table.justify_columns[4] = 'right'
-        table.justify_columns[5] = 'right'
-        table.justify_columns[6] = 'right'
+        table.justify_columns[4] = "right"
+        table.justify_columns[5] = "right"
+        table.justify_columns[6] = "right"
 
-        aggregate_info = '\n\nProjected Score: {:0.2f} \t Cost: ${}'.format(
-            self.projected(),
-            cs(self.spent()))
+        aggregate_info = "\n\nProjected Score: {:0.2f} \t Cost: ${}".format(
+            self.projected(), cs(self.spent())
+        )
 
         return table.table + aggregate_info
 
@@ -228,9 +232,7 @@ class Roster:
     def identifier(self):
         if self.cached_id:
             return self.cached_id
-        self.cached_id = ' '.join(sorted([
-            x.roster_id for x in self.sorted_players()
-        ]))
+        self.cached_id = " ".join(sorted([x.roster_id for x in self.sorted_players()]))
 
         return self.cached_id
 
@@ -266,16 +268,13 @@ class Roster:
 
     def position_order(self, player):
         # raises exception in case someone tries to instantiate base class
-        position_order = getattr(self, 'POSITION_ORDER')
+        position_order = getattr(self, "POSITION_ORDER")
 
         # default sort order is low->high, so use the negative of cost
         return position_order[player.pos], -player.cost
 
     def sorted_players(self):
-        return sorted(
-            self.players,
-            key=lambda p: self.position_order(p)
-        )
+        return sorted(self.players, key=lambda p: self.position_order(p))
 
     def different_player_count(self, other_roster):
         dpc = 0
@@ -323,10 +322,7 @@ class RosterGroup:
             salaries.append(r.spent())
 
         counter = Counter(salaries)
-        return sorted(
-            counter.items(),
-            key=lambda items: items[0]
-        )
+        return sorted(counter.items(), key=lambda items: items[0])
 
     def get_similarity_score(self):
         """
@@ -344,12 +340,7 @@ class RosterGroup:
                 if r == r_comp:
                     scores.append(1)
                 else:
-                    scores.append(
-                        self.__get_roster_similarity(
-                            r,
-                            r_comp
-                        )
-                    )
+                    scores.append(self.__get_roster_similarity(r, r_comp))
                 pairs.append(sorted([idx_comp, idx]))
 
         return sum(scores) / len(scores)
@@ -358,16 +349,16 @@ class RosterGroup:
         return roster_a.shared_player_count(roster_b) / len(roster_a.players)
 
 
-'''
+"""
 POSITION_ORDER is based on the order
 required by DraftKings' CSV download
-'''
+"""
 
 
 class ShowdownRoster(Roster):
     POSITION_ORDER = {
-        'CPT': 0,
-        'FLEX': 1,
+        "CPT": 0,
+        "FLEX": 1,
     }
 
     @property
@@ -379,9 +370,7 @@ class ShowdownRoster(Roster):
         """
         if self.cached_id:
             return self.cached_id
-        self.cached_id = ' '.join(sorted([
-            x.solver_id for x in self.sorted_players()
-        ]))
+        self.cached_id = " ".join(sorted([x.solver_id for x in self.sorted_players()]))
 
         return self.cached_id
 
@@ -390,115 +379,109 @@ class MVPRoster(ShowdownRoster):
     POSITION_ORDER = {
         # TODO - adjust NFL FD to MVP format
         # and remove CPT, FLEX
-        'CPT': 0,
-        'MVP': 0,
-        'FLEX': 1,
-        'STAR': 1,
-        'PRO': 2,
-        'UTIL': 3,
+        "CPT": 0,
+        "MVP": 0,
+        "FLEX": 1,
+        "STAR": 1,
+        "PRO": 2,
+        "UTIL": 3,
     }
 
 
 class NFLRoster(Roster):
     POSITION_ORDER = {
-        'QB': 0,
-        'RB': 1,
-        'WR': 2,
-        'TE': 3,
-        'DST': 4,
-        'D': 5,
+        "QB": 0,
+        "RB": 1,
+        "WR": 2,
+        "TE": 3,
+        "DST": 4,
+        "D": 5,
     }
 
 
 class TenRoster(Roster):
     POSITION_ORDER = {
-        'P': 1,
+        "P": 1,
     }
 
 
 class MLBRoster(Roster):
     POSITION_ORDER = {
-        'P': 0,
-        'RP': 0,
-        'SP': 0,
-        'C': 1,
-        '1B': 2,
-        '2B': 3,
-        '3B': 4,
-        'SS': 5,
-        'OF': 6,
+        "P": 0,
+        "RP": 0,
+        "SP": 0,
+        "C": 1,
+        "1B": 2,
+        "2B": 3,
+        "3B": 4,
+        "SS": 5,
+        "OF": 6,
     }
 
 
 class NBARoster(Roster):
-    POSITION_ORDER = {
-        'PG': 0,
-        'SG': 1,
-        'SF': 2,
-        'PF': 3,
-        'C': 4
-    }
+    POSITION_ORDER = {"PG": 0, "SG": 1, "SF": 2, "PF": 3, "C": 4}
 
 
 class WNBARoster(Roster):
     POSITION_ORDER = {
-        'G': 0,
-        'F': 1,
-        'SG': 2,
-        'SF': 3,
-        'PF': 4,
+        "G": 0,
+        "F": 1,
+        "SG": 2,
+        "SF": 3,
+        "PF": 4,
     }
 
 
 class NASCARRoster(Roster):
     POSITION_ORDER = {
-        'D': 0,
+        "D": 0,
     }
 
 
 class PGARoster(Roster):
     POSITION_ORDER = {
-        'G': 0,
+        "G": 0,
     }
 
 
 class PGACaptainRoster(Roster):
     POSITION_ORDER = {
-        'CPT': 0,
-        'G': 1,
+        "CPT": 0,
+        "G": 1,
     }
 
 
 class SoccerRoster(Roster):
     POSITION_ORDER = {
-        'F': 0,
-        'M': 1,
-        'D': 2,
-        'GK': 3,
+        "F": 0,
+        "M": 1,
+        "D": 2,
+        "GK": 3,
     }
 
 
 class ELRoster(Roster):
     POSITION_ORDER = {
-        'G': 0,
-        'F': 1,
+        "G": 0,
+        "F": 1,
     }
 
 
 class NHLRoster(Roster):
     POSITION_ORDER = {
-        'C': 0,
-        'W': 1,
-        'D': 2,
-        'G': 3,
+        "C": 0,
+        "W": 1,
+        "D": 2,
+        "G": 3,
     }
 
 
 class F1ShowdownRoster(Roster):
     POSITION_ORDER = {
-        'CPT': 0,
-        'D': 1,
-        'CNSTR': 2,
+        "CPT": 0,
+        "D": 1,
+        "CNSTR": 2,
     }
 
 
@@ -506,28 +489,28 @@ class RosterSelect:
     @staticmethod
     def roster_gen(league):
         roster_dict = {
-            'NBA': NBARoster(),
-            'NBA_SHOWDOWN': ShowdownRoster(),
-            'WNBA': WNBARoster(),
-            'NFL': NFLRoster(),
-            'NFL_SHOWDOWN': ShowdownRoster(),
-            'MLB_MVP': MVPRoster(),
-            'NBA_MVP': MVPRoster(),
-            'NFL_MVP': MVPRoster(),
-            'MLB': MLBRoster(),
-            'PGA': PGARoster(),
-            'PGA_CAPTAIN': PGACaptainRoster(),
-            'NASCAR': NASCARRoster(),
-            'SOCCER': SoccerRoster(),
-            'EL': ELRoster(),
-            'NHL': NHLRoster(),
-            'NHL_SHOWDOWN': ShowdownRoster(),
-            'MLB_SHOWDOWN': ShowdownRoster(),
+            "NBA": NBARoster(),
+            "NBA_SHOWDOWN": ShowdownRoster(),
+            "WNBA": WNBARoster(),
+            "NFL": NFLRoster(),
+            "NFL_SHOWDOWN": ShowdownRoster(),
+            "MLB_MVP": MVPRoster(),
+            "NBA_MVP": MVPRoster(),
+            "NFL_MVP": MVPRoster(),
+            "MLB": MLBRoster(),
+            "PGA": PGARoster(),
+            "PGA_CAPTAIN": PGACaptainRoster(),
+            "NASCAR": NASCARRoster(),
+            "SOCCER": SoccerRoster(),
+            "EL": ELRoster(),
+            "NHL": NHLRoster(),
+            "NHL_SHOWDOWN": ShowdownRoster(),
+            "MLB_SHOWDOWN": ShowdownRoster(),
             # XFL uses the same positions as NFL
-            'XFL': NFLRoster(),
-            'TEN': TenRoster(),
-            'CSGO_SHOWDOWN': ShowdownRoster(),
-            'F1_SHOWDOWN': F1ShowdownRoster(),
+            "XFL": NFLRoster(),
+            "TEN": TenRoster(),
+            "CSGO_SHOWDOWN": ShowdownRoster(),
+            "F1_SHOWDOWN": F1ShowdownRoster(),
         }
         return roster_dict[league]
 
@@ -538,7 +521,7 @@ class Game:
         self.opponent = opp
 
     def __repr__(self):
-        return f'{self.team} @ {self.opponent}'
+        return f"{self.team} @ {self.opponent}"
 
     def team_in_game(self, team):
         return team == self.team or team == self.opponent

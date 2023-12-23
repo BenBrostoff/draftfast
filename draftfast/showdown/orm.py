@@ -4,25 +4,21 @@ from copy import deepcopy
 
 
 class ShowdownPlayer(Player):
-
     # Captain and MVP multiplier
     # TODO - make public
     _CAPTAIN_MULTIPLIER = 1.5
 
     def __init__(
-        self,
-        player: Player,
-        captain: bool = False,
-        pos: Optional[str] = None
+        self, player: Player, captain: bool = False, pos: Optional[str] = None
     ):
         for k, v in player.__dict__.items():
-            if hasattr(self, k) or k.startswith('__'):
+            if hasattr(self, k) or k.startswith("__"):
                 continue
             setattr(self, k, deepcopy(v))
 
         if captain:
             self.real_pos = self.pos
-            self.pos = 'CPT'
+            self.pos = "CPT"
             self.captain = True
         else:
             if pos:
@@ -30,17 +26,17 @@ class ShowdownPlayer(Player):
                 self.real_pos = pos
             else:
                 self.real_pos = self.pos
-                self.pos = 'FLEX'
+                self.pos = "FLEX"
 
             self.captain = False
 
     @property
     def formatted_position(self):
-        return '{} ({})'.format(self.pos, self.real_pos)
+        return "{} ({})".format(self.pos, self.real_pos)
 
     @property
     def is_captain(self):
-        return self.pos == 'CPT'
+        return self.pos == "CPT"
 
     @property
     def roster_id(self):
@@ -48,7 +44,7 @@ class ShowdownPlayer(Player):
         Used for roster equality.
         Unlike classic, position matters in showdown at CPT level.
         """
-        return f'{self.name} {self.team} {self.is_captain}'
+        return f"{self.name} {self.team} {self.is_captain}"
 
     @property
     def v_avg(self):
@@ -98,4 +94,4 @@ class MVPPlayer(Player):
         Used for roster equality.
         Unlike classic, multipliers exist at MVP and star levels
         """
-        return f'{self.name} {self.team} {self.pos}'
+        return f"{self.name} {self.team} {self.pos}"

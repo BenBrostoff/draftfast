@@ -3,14 +3,14 @@ def get_nfl_positions(
     wr_min=3,
     te_min=1,
     te_upper=2,
-    d_abbrev='DST',
+    d_abbrev="DST",
 ):
     return [
-        ['QB', 1, 1],
-        ['RB', rb_min, 3],
-        ['WR', wr_min, 4],
-        ['TE', te_min, te_upper],
-        [d_abbrev, 1, 1]
+        ["QB", 1, 1],
+        ["RB", rb_min, 3],
+        ["WR", wr_min, 4],
+        ["TE", te_min, te_upper],
+        [d_abbrev, 1, 1],
     ]
 
 
@@ -22,7 +22,4 @@ def get_nfl_showdown_positions(dk: bool = False, fd: bool = False) -> list:
     else:
         raise NotImplementedError
 
-    return [
-        ['CPT', 1, 1],
-        ['FLEX', ub, ub]
-    ]
+    return [["CPT", 1, 1], ["FLEX", ub, ub]]

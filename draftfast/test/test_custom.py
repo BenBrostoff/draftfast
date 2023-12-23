@@ -5,33 +5,34 @@ from draftfast.csv_parse import salary_download
 from draftfast.orm import Roster
 
 import unittest
-assertions = unittest.TestCase('__init__')
+
+assertions = unittest.TestCase("__init__")
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file = '{}/data/soccer-showdown.csv'.format(CURRENT_DIR)
+salary_file = "{}/data/soccer-showdown.csv".format(CURRENT_DIR)
 
 
 class Showdown(Roster):
     POSITION_ORDER = {
-        'M': 0,
-        'F': 1,
-        'D': 2,
-        'GK': 3,
+        "M": 0,
+        "F": 1,
+        "D": 2,
+        "GK": 3,
     }
 
 
 showdown_limits = [
-    ['M', 0, 6],
-    ['F', 0, 6],
-    ['D', 0, 6],
-    ['GK', 0, 6],
+    ["M", 0, 6],
+    ["F", 0, 6],
+    ["D", 0, 6],
+    ["GK", 0, 6],
 ]
 
 
 def test_el_dk():
     soccer_rules = rules.RuleSet(
         site=rules.DRAFT_KINGS,
-        league='SOCCER_SHOWDOWN',
+        league="SOCCER_SHOWDOWN",
         roster_size=6,
         position_limits=showdown_limits,
         salary_max=50_000,

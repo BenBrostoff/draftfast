@@ -3,10 +3,16 @@ from ortools.linear_solver import pywraplp
 
 
 class PlayerPoolSettings(object):
-
-    def __init__(self, min_proj=None, max_proj=None,
-                 min_avg=None, max_avg=None, min_salary=None,
-                 max_salary=None, randomize=None):
+    def __init__(
+        self,
+        min_proj=None,
+        max_proj=None,
+        min_avg=None,
+        max_avg=None,
+        min_salary=None,
+        max_salary=None,
+        randomize=None,
+    ):
         self.min_proj = min_proj
         self.max_proj = max_proj
         self.min_avg = min_avg
@@ -16,36 +22,36 @@ class PlayerPoolSettings(object):
         self.randomize = randomize
 
     def exist(self):
-        return str(self) != 'None'
+        return str(self) != "None"
 
     # TODO: format this like a proper repr(), i.e. <PlayerPoolSettings: ...>
     def __repr__(self):
         if not str(self):
-            return '<PlayerPoolSettings: None>'
+            return "<PlayerPoolSettings: None>"
         else:
             return str(self)
 
     def __str__(self):
         lines = []
         if self.min_proj:
-            lines.append('Min projection: {}'.format(self.min_proj))
+            lines.append("Min projection: {}".format(self.min_proj))
         if self.max_proj:
-            lines.append('Max projection: {}'.format(self.min_proj))
+            lines.append("Max projection: {}".format(self.min_proj))
         if self.min_avg:
-            lines.append('Min average: {}'.format(self.min_proj))
+            lines.append("Min average: {}".format(self.min_proj))
         if self.max_avg:
-            lines.append('Max average: {}'.format(self.min_proj))
+            lines.append("Max average: {}".format(self.min_proj))
         if self.min_salary:
-            lines.append('Min salary: {}'.format(self.min_proj))
+            lines.append("Min salary: {}".format(self.min_proj))
         if self.max_salary:
-            lines.append('Max salary: {}'.format(self.min_proj))
+            lines.append("Max salary: {}".format(self.min_proj))
         if self.randomize:
-            lines.append('Randomization factor: {}'.format(self.min_proj))
+            lines.append("Randomization factor: {}".format(self.min_proj))
 
         if len(lines):
-            return '\n'.join(lines)
+            return "\n".join(lines)
         else:
-            return 'None'
+            return "None"
 
 
 def default_comparison(
@@ -81,13 +87,15 @@ class CustomRule(object):
 
     def __repr__(self):
         import inspect as i
-        return f"{i.getsource(self.group_a)}" \
-               f"{i.getsource(self.group_b)}" \
-               f"{i.getsource(self.comparison)}"
+
+        return (
+            f"{i.getsource(self.group_a)}"
+            f"{i.getsource(self.group_b)}"
+            f"{i.getsource(self.comparison)}"
+        )
 
 
 class OptimizerSettings(object):
-
     def __init__(
         self,
         stacks=None,
@@ -115,39 +123,31 @@ class OptimizerSettings(object):
     # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
     def __repr__(self):
         if not str(self):
-            return '<OptimizerSettings: None>'
+            return "<OptimizerSettings: None>"
         else:
             return str(self)
 
     def __str__(self):
         lines = []
         if self.stacks and len(self.stacks):
-            lines.append('Stacks: {}'.format(
-                        [(x.team, x.count) for x in self.stacks]
-                    )
-                )
+            lines.append("Stacks: {}".format([(x.team, x.count) for x in self.stacks]))
         if self.min_teams:
-            lines.append('Min teams: {}'.format(self.min_teams))
+            lines.append("Min teams: {}".format(self.min_teams))
         if self.no_offense_against_defense:
-            lines.append('No offense against D: {}'.format(
-                    self.no_offense_against_defense
-                )
+            lines.append(
+                "No offense against D: {}".format(self.no_offense_against_defense)
             )
         if self.custom_rules:
-            lines.append('Custom rules: {}'.format(
-                self.custom_rules
-            ))
+            lines.append("Custom rules: {}".format(self.custom_rules))
 
         if len(lines):
-            return '\n'.join(lines)
+            return "\n".join(lines)
         else:
-            return 'None'
+            return "None"
 
 
 class UploadSettings(object):
-
-    def __init__(self, pid_file, upload_file,
-                 rule_set, rosters):
+    def __init__(self, pid_file, upload_file, rule_set, rosters):
         self.pid_file = pid_file
         self.upload_file = upload_file
         self.rule_set = rule_set
@@ -156,11 +156,7 @@ class UploadSettings(object):
 
 class Stack(object):
     def __init__(
-        self,
-        team: str,
-        count: int,
-        stack_lock_pos=None,
-        stack_eligible_pos=None
+        self, team: str, count: int, stack_lock_pos=None, stack_eligible_pos=None
     ):
         self.team = team
         self.count = count

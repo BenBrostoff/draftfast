@@ -1,8 +1,7 @@
 from typing import List
 from ortools.linear_solver import pywraplp
 from draftfast.settings import OptimizerSettings
-from draftfast.dke_exceptions import (InvalidBoundsException,
-                                      PlayerBanAndLockException)
+from draftfast.dke_exceptions import InvalidBoundsException, PlayerBanAndLockException
 from draftfast.orm import Player
 from draftfast.rules import RuleSet
 from draftfast.lineup_constraints import LineupConstraints
@@ -15,11 +14,10 @@ class Optimizer(object):
         rule_set: RuleSet,
         settings: OptimizerSettings,
         lineup_constraints: LineupConstraints,
-        exposure_dict: dict
+        exposure_dict: dict,
     ):
         self.solver = pywraplp.Solver(
-            'FD',
-            pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
+            "FD", pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
         )
         self.players = players
         self.enumerated_players = list(enumerate(players))
@@ -32,11 +30,11 @@ class Optimizer(object):
         self.defensive_positions = rule_set.defensive_positions
         self.general_position_limits = rule_set.general_position_limits
         self.max_players_per_team = rule_set.max_players_per_team
-        self.showdown = rule_set.game_type == 'showdown'
+        self.showdown = rule_set.game_type == "showdown"
         self.settings = settings
         self.lineup_constraints = lineup_constraints
-        self.banned_for_exposure = exposure_dict.get('banned', [])
-        self.locked_for_exposure = exposure_dict.get('locked', [])
+        self.banned_for_exposure = exposure_dict.get("banned", [])
+        self.locked_for_exposure = exposure_dict.get("locked", [])
         self.custom_rules = settings.custom_rules
         self.min_teams = rule_set.min_teams or settings.min_teams
         self.position_per_team_rules = rule_set.position_per_team_rules
@@ -48,9 +46,7 @@ class Optimizer(object):
         self.player_to_idx_map = dict()
 
         for idx, player in self.enumerated_players:
-            self.variables.append(
-                self.solver.IntVar(0, 1, player.solver_id)
-            )
+            self.variables.append(self.solver.IntVar(0, 1, player.solver_id))
 
             self._add_player_to_idx_maps(player, idx)
 
@@ -80,14 +76,18 @@ class Optimizer(object):
         self.name_to_idx_map[p.name].update([idx])
 
     def _is_locked(self, p: Player) -> bool:
-        return self.lineup_constraints.is_locked(p.name) or \
-               p.name in self.locked_for_exposure or \
-               p.lock
+        return (
+            self.lineup_constraints.is_locked(p.name)
+            or p.name in self.locked_for_exposure
+            or p.lock
+        )
 
     def _is_banned(self, p: Player) -> bool:
-        return self.lineup_constraints.is_banned(p.name) or \
-               p.name in self.banned_for_exposure or \
-               p.ban
+        return (
+            self.lineup_constraints.is_banned(p.name)
+            or p.name in self.banned_for_exposure
+            or p.ban
+        )
 
     def _is_position_locked(self, p: Player) -> bool:
         return self.lineup_constraints.is_position_locked(p.solver_id)
@@ -110,9 +110,13 @@ class Optimizer(object):
         self._set_custom_rules()
         self._set_position_team_constraints()
 
-        if self.offensive_positions and self.defensive_positions \
-                and self.settings.no_offense_against_defense or \
-                self.showdown and self.settings.no_defense_against_captain:
+        if (
+            self.offensive_positions
+            and self.defensive_positions
+            and self.settings.no_offense_against_defense
+            or self.showdown
+            and self.settings.no_defense_against_captain
+        ):
             self._set_no_opp_defense()
 
         solution = self.solver.Solve()
@@ -127,14 +131,11 @@ class Optimizer(object):
             ub = 0 if (p.ban or p.position_ban) else 1
 
             if lb > ub:
-                raise InvalidBoundsException(
-                    'Invalid bounds for {}'.format(
-                        p.name
-                    )
-                )
+                raise InvalidBoundsException("Invalid bounds for {}".format(p.name))
 
             if (p.multi_position or self.showdown) and not (
-                    p.position_lock or p.position_ban):
+                p.position_lock or p.position_ban
+            ):
                 if p.name not in multi_constraints.keys():
                     multi_constraints[p.name] = self.solver.Constraint(lb, ub)
                 constraint = multi_constraints[p.name]
@@ -175,10 +176,7 @@ class Optimizer(object):
             self.salary_max,
         )
         for i, player in self.enumerated_players:
-            salary_cap.SetCoefficient(
-                self.variables[i],
-                player.cost
-            )
+            salary_cap.SetCoefficient(self.variables[i], player.cost)
 
     def _set_roster_size(self):
         size_cap = self.solver.Constraint(
@@ -207,16 +205,10 @@ class Optimizer(object):
 
                     for i, player in self.enumerated_players:
                         if stack_team == player.team:
-                            stack_cap.SetCoefficient(
-                                self.variables[i],
-                                1
-                            )
+                            stack_cap.SetCoefficient(self.variables[i], 1)
 
                     self._set_stacking_type(
-                        stack_lock_pos,
-                        stack_lock_eligible_pos,
-                        stack_team,
-                        stack.count
+                        stack_lock_pos, stack_lock_eligible_pos, stack_team, stack.count
                     )
 
     def _set_stacking_type(
@@ -231,30 +223,29 @@ class Optimizer(object):
                 enumerated_players = self.enumerated_players
 
                 skillplayers_on_team = [
-                    self.variables[i] for i, p in enumerated_players
+                    self.variables[i]
+                    for i, p in enumerated_players
                     if p.team == team and p.pos in stack_eligible_pos
                 ]
                 locked_on_team = [
-                    self.variables[i] for i, p in enumerated_players
+                    self.variables[i]
+                    for i, p in enumerated_players
                     if p.team == team and p.pos == stack_lock_pos
                 ]
                 self.solver.Add(
-                    self.solver.Sum(skillplayers_on_team) >=
-                    self.solver.Sum(locked_on_team)
+                    self.solver.Sum(skillplayers_on_team)
+                    >= self.solver.Sum(locked_on_team)
                 )
-                self.solver.Add(
-                    (self.solver.Sum(skillplayers_on_team)) >=
-                    count - 1
-                )
+                self.solver.Add((self.solver.Sum(skillplayers_on_team)) >= count - 1)
 
     def _set_combo(self):
         if self.settings:
             combo = self.settings.force_combo
             combo_allow_te = self.settings.combo_allow_te
 
-            combo_skill_type = ['WR']
+            combo_skill_type = ["WR"]
             if combo_allow_te:
-                combo_skill_type.append('TE')
+                combo_skill_type.append("TE")
 
             if combo:
                 teams = set([p.team for p in self.players])
@@ -262,16 +253,18 @@ class Optimizer(object):
 
                 for team in teams:
                     skillplayers_on_team = [
-                        self.variables[i] for i, p in enumerated_players
+                        self.variables[i]
+                        for i, p in enumerated_players
                         if p.team == team and p.pos in combo_skill_type
                     ]
                     qbs_on_team = [
-                        self.variables[i] for i, p in enumerated_players
-                        if p.team == team and p.pos == 'QB'
+                        self.variables[i]
+                        for i, p in enumerated_players
+                        if p.team == team and p.pos == "QB"
                     ]
                     self.solver.Add(
-                        self.solver.Sum(skillplayers_on_team) >=
-                        self.solver.Sum(qbs_on_team)
+                        self.solver.Sum(skillplayers_on_team)
+                        >= self.solver.Sum(qbs_on_team)
                     )
 
     def _set_no_opp_defense(self):
@@ -282,16 +275,19 @@ class Optimizer(object):
 
         for team in self.teams:
             offensive_against = [
-                self.variables[i] for i, p in enumerated_players
-                if p.pos in offensive_pos and
-                p.is_opposing_team_in_match_up(team)
+                self.variables[i]
+                for i, p in enumerated_players
+                if p.pos in offensive_pos and p.is_opposing_team_in_match_up(team)
             ]
 
             # TODO this is gross for showdown
             defensive = [
-                self.variables[i] for i, p in enumerated_players
-                if p.team == team and p.pos in defensive_pos or
-                self.showdown and p.real_pos in defensive_pos
+                self.variables[i]
+                for i, p in enumerated_players
+                if p.team == team
+                and p.pos in defensive_pos
+                or self.showdown
+                and p.real_pos in defensive_pos
             ]
 
             for p in offensive_against:
@@ -306,70 +302,53 @@ class Optimizer(object):
                 for rule in self.position_per_team_rules:
                     position_group_func, max_pos = rule
                     grouped_position_by_team = [
-                        self.variables[i] for i, p
-                        in self.enumerated_players if p.team == team
-                        and position_group_func(p.pos)
+                        self.variables[i]
+                        for i, p in self.enumerated_players
+                        if p.team == team and position_group_func(p.pos)
                     ]
                     self.solver.Add(
-                        max_pos >=
-                        self.solver.Sum(grouped_position_by_team)
+                        max_pos >= self.solver.Sum(grouped_position_by_team)
                     )
 
     def _set_custom_rules(self):
         if self.custom_rules:
             for rule in self.custom_rules:
                 group_a = [
-                    self.variables[i] for i, p
-                    in self.enumerated_players if rule.group_a(p)
+                    self.variables[i]
+                    for i, p in self.enumerated_players
+                    if rule.group_a(p)
                 ]
                 group_b = [
-                    self.variables[i] for i, p
-                    in self.enumerated_players if rule.group_b(p)
+                    self.variables[i]
+                    for i, p in self.enumerated_players
+                    if rule.group_b(p)
                 ]
-                self.solver.Add(
-                    rule.comparison(self.solver.Sum, group_a, group_b)
-                )
+                self.solver.Add(rule.comparison(self.solver.Sum, group_a, group_b))
 
     def _set_positions(self):
         for position, min_limit, max_limit in self.position_limits:
-            position_cap = self.solver.Constraint(
-                min_limit,
-                max_limit
-            )
+            position_cap = self.solver.Constraint(min_limit, max_limit)
 
             for i, player in self.enumerated_players:
                 if position == player.pos:
                     position_cap.SetCoefficient(self.variables[i], 1)
 
     def _set_general_positions(self):
-        for general_position, min_limit, max_limit in \
-                self.general_position_limits:
+        for general_position, min_limit, max_limit in self.general_position_limits:
             position_cap = self.solver.Constraint(min_limit, max_limit)
 
             for i, player in self.enumerated_players:
                 if general_position == player.mlb_general_position:
-                    position_cap.SetCoefficient(
-                        self.variables[i],
-                        1
-                    )
+                    position_cap.SetCoefficient(self.variables[i], 1)
                 if general_position == player.nba_general_position:
-                    position_cap.SetCoefficient(
-                        self.variables[i],
-                        1
-                    )
+                    position_cap.SetCoefficient(self.variables[i], 1)
 
     def _set_no_duplicate_lineups(self):
         for roster in self.existing_rosters:
             max_repeats = self.roster_size - 1
             if self.settings.uniques:
-                max_repeats = max(
-                    self.roster_size - self.settings.uniques,
-                    1
-                )
-            repeated_players = self.solver.Constraint(
-                0,
-                max_repeats
-            )
+                max_repeats = max(self.roster_size - self.settings.uniques, 1)
+            repeated_players = self.solver.Constraint(0, max_repeats)
             for player in roster.sorted_players():
                 i = self.player_to_idx_map.get(player.solver_id)
                 if i is not None:
@@ -385,19 +364,14 @@ class Optimizer(object):
                     team_var = self.solver.IntVar(0, 1, team)
                     teams.append(team_var)
                     players_on_team = [
-                        self.variables[i] for i, p
-                        in self.enumerated_players if p.team == team
+                        self.variables[i]
+                        for i, p in self.enumerated_players
+                        if p.team == team
                     ]
+                    self.solver.Add(team_var <= self.solver.Sum(players_on_team))
                     self.solver.Add(
-                        team_var <=
-                        self.solver.Sum(players_on_team)
-                    )
-                    self.solver.Add(
-                        self.max_players_per_team >=
-                        self.solver.Sum(players_on_team)
+                        self.max_players_per_team >= self.solver.Sum(players_on_team)
                     )
 
         if len(teams) > 0:
-            self.solver.Add(
-                self.solver.Sum(teams) >= self.settings.min_teams
-            )
+            self.solver.Add(self.solver.Sum(teams) >= self.settings.min_teams)

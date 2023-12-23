@@ -4,31 +4,31 @@ from draftfast.orm import Player
 from draftfast.settings import PlayerPoolSettings
 
 
-def filter_pool(pool: list,
-                player_settings: PlayerPoolSettings) -> List[Player]:
+def filter_pool(pool: list, player_settings: PlayerPoolSettings) -> List[Player]:
     if player_settings.randomize:
         for player in pool:
-            factor = 1 + runiform(
-                -player_settings.randomize,
-                player_settings.randomize
-            )
+            factor = 1 + runiform(-player_settings.randomize, player_settings.randomize)
             player.proj = player.proj * factor
 
-    return list(filter(
-        add_filters(player_settings),
-        pool,
-    ))
+    return list(
+        filter(
+            add_filters(player_settings),
+            pool,
+        )
+    )
 
 
 def add_filters(settings: PlayerPoolSettings):
     def filter_fn(player: Player):
-        kwargs = {'player': player, 'settings': settings}
-        return _is_above_min_cost(**kwargs) and \
-            _is_below_max_cost(**kwargs) and \
-            _is_above_min_proj(**kwargs) and \
-            _is_below_max_proj(**kwargs) and \
-            _is_above_min_avg(**kwargs) and \
-            _is_below_max_avg(**kwargs)
+        kwargs = {"player": player, "settings": settings}
+        return (
+            _is_above_min_cost(**kwargs)
+            and _is_below_max_cost(**kwargs)
+            and _is_above_min_proj(**kwargs)
+            and _is_below_max_proj(**kwargs)
+            and _is_above_min_avg(**kwargs)
+            and _is_below_max_avg(**kwargs)
+        )
 
     return filter_fn
 
@@ -36,9 +36,10 @@ def add_filters(settings: PlayerPoolSettings):
 def add_pickem_contraints(settings: PlayerPoolSettings):
     def filter_fn(player: Player):
         # TODO - add team banning
-        kwargs = {'player': player, 'settings': settings}
+        kwargs = {"player": player, "settings": settings}
         return (
-            _is_above_min_proj(**kwargs) and
+            _is_above_min_proj(**kwargs)
+            and
             # (not _is_banned_team(**kwargs)) and
             # _is_locked_team(**kwargs) and
             # _is_within_avg(**kwargs) and
@@ -50,7 +51,7 @@ def add_pickem_contraints(settings: PlayerPoolSettings):
 
 def lock_override(fn):
     def override_fn(**kwargs):
-        if kwargs['player'].lock:
+        if kwargs["player"].lock:
             return True
         return fn(**kwargs)
 

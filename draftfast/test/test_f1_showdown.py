@@ -5,11 +5,12 @@ from draftfast.csv_parse import salary_download
 from draftfast.showdown.orm import ShowdownPlayer
 
 import unittest
-assertions = unittest.TestCase('__init__')
+
+assertions = unittest.TestCase("__init__")
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-salary_file = '{}/data/f1-salaries-showdown.csv'.format(CURRENT_DIR)
+salary_file = "{}/data/f1-salaries-showdown.csv".format(CURRENT_DIR)
 
 
 def test_f1_dk():
