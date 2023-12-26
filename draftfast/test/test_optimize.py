@@ -739,15 +739,16 @@ def test_no_opposing_def_dk_nfl_mock():
     assertions.assertEqual(roster, None)
 
     # relax min teams
+    rules.DK_NFL_RULE_SET.min_teams = 1
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=mock_pool,
         optimizer_settings=OptimizerSettings(
-            min_teams=1,
             no_offense_against_defense=True,
         ),
         verbose=True,
     )
+    rules.DK_NFL_RULE_SET.min_teams = 3
 
     assertions.assertEqual(roster.projected(), 877)
     assertions.assertEqual(len(set([p.team for p in roster.players])), 1)

@@ -50,6 +50,7 @@ DK_NBA_RULE_SET = RuleSet(
     salary_max=SALARY_CAP_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["NBA"],
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["NBA"],
     general_position_limits=NBA_GENERAL_POSITIONS,
+    min_teams=3,
 )
 
 DK_NBA_SHOWDOWN_RULE_SET = RuleSet(
@@ -78,6 +79,7 @@ DK_WNBA_RULE_SET = RuleSet(
     salary_max=SALARY_CAP_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["WNBA"],
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["WNBA"],
     general_position_limits=NBA_GENERAL_POSITIONS,
+    min_teams=3,
 )
 
 FD_WNBA_RULE_SET = RuleSet(
@@ -98,6 +100,7 @@ DK_NFL_RULE_SET = RuleSet(
     offensive_positions=["QB", "RB", "WR", "TE"],
     defensive_positions=["DST"],
     general_position_limits=[],
+    min_teams=3,
 )
 
 FD_NFL_RULE_SET = RuleSet(
@@ -253,6 +256,7 @@ DK_NHL_RULE_SET = RuleSet(
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["NHL"],
     offensive_positions=["C", "W"],
     defensive_positions=["G", "D"],
+    min_teams=3,
     general_position_limits=[],
 )
 
