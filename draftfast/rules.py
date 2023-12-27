@@ -25,6 +25,7 @@ class RuleSet(object):
         defensive_positions=None,
         max_players_per_team=None,
         min_teams=None,
+        min_matchups=None,
         position_per_team_rules=None,
         game_type="classic",
     ):
@@ -41,6 +42,7 @@ class RuleSet(object):
         self.max_players_per_team = max_players_per_team or (roster_size - 1)
         self.position_per_team_rules = position_per_team_rules
         self.min_teams = min_teams
+        self.min_matchups = min_matchups
 
 
 DK_NBA_RULE_SET = RuleSet(

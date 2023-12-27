@@ -40,6 +40,7 @@ class Optimizer(object):
         self.locked_for_exposure = exposure_dict.get("locked", [])
         self.custom_rules = settings.custom_rules
         self.min_teams = rule_set.min_teams or settings.min_teams
+        self.min_matchups = rule_set.min_matchups or settings.min_matchups
         self.position_per_team_rules = rule_set.position_per_team_rules
 
         self.player_to_idx_map = {}

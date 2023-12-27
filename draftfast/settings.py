@@ -107,6 +107,7 @@ class OptimizerSettings(object):
         no_defense_against_captain=False,
         showdown_teams=None,
         min_teams=2,
+        min_matchups=1,
         custom_rules=None,
     ):
         self.stacks = stacks
@@ -118,6 +119,7 @@ class OptimizerSettings(object):
         self.no_defense_against_captain = no_defense_against_captain
         self.showdown_teams = showdown_teams
         self.min_teams = min_teams
+        self.min_matchups = min_matchups
         self.custom_rules = custom_rules
 
     # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
