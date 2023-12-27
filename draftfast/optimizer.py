@@ -405,7 +405,8 @@ class Optimizer(object):
                         >= self.solver.Sum(players_on_team)
                     )
 
-        if len(teams) > 0:
+        # If min matchups is more than 1, this constraint is redundant
+        if len(teams) > 0 and (self.min_matchups or 0) < 2:
             self.solver.Add(self.solver.Sum(teams) >= self.min_teams)
 
     def _set_min_matchups(self):

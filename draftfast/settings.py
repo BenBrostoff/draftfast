@@ -113,7 +113,11 @@ class OptimizerSettings(object):
         """
         A note on defaults:
 
-        - min_teams 2 - this constraint is common across Classic and Showdown.
+        min_teams 2 - this constraint is common across Classic and Showdown.
+
+        - In Showdown, you must have two teams represented, although only
+        one matchup exists to choose from.
+        - In Classic, the constraint of two matchups forces a minimum of two teams.
         """
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
