@@ -107,9 +107,14 @@ class OptimizerSettings(object):
         no_defense_against_captain=False,
         showdown_teams=None,
         min_teams=2,
-        min_matchups=1,
+        min_matchups=None,
         custom_rules=None,
     ):
+        """
+        A note on defaults:
+
+        - min_teams 2 - this constraint is common across Classic and Showdown.
+        """
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo

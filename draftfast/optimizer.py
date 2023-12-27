@@ -69,7 +69,8 @@ class Optimizer(object):
                 raise PlayerBanAndLockException(player.name)
 
         self.teams = set([p.team for p in self.players])
-        self.matchups = set([p.matchup for p in self.players])
+        if self.min_matchups:
+            self.matchups = set([p.matchup for p in self.players])
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
 
@@ -413,7 +414,7 @@ class Optimizer(object):
         generally two for classic sports
         """
         matchups = []
-        if self.min_matchups > 1:
+        if self.min_matchups and self.min_matchups > 1:
             for matchup in self.matchups:
                 if matchup:
                     matchup_var = self.solver.IntVar(0, 1, matchup)
