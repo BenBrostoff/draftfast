@@ -773,6 +773,7 @@ def test_no_opposing_def_dk_nfl_mock():
 
     rules.DK_NFL_RULE_SET.min_teams = 3
 
+
 def test_no_opposing_def_dk_nfl():
     players = salary_download.generate_players_from_csvs(
         salary_file_location=salary_file,
