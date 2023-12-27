@@ -410,7 +410,8 @@ class Optimizer(object):
         # Ex given min matchups of two, there will always be two teams,
         # so adding this constraint is needless if data is good.
         # That said, keep constraint to spot check data.
-        self.solver.Add(self.solver.Sum(teams) >= self.min_teams)
+        if len(teams) > 0:
+            self.solver.Add(self.solver.Sum(teams) >= self.min_teams)
 
     def _set_min_matchups(self):
         """
