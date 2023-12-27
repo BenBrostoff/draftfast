@@ -10,19 +10,19 @@ assertions = unittest.TestCase("__init__")
 
 def construct_pool():
     mock_nba_pool = [
-        Player(name="A1", cost=5500, proj=100, pos="PG", matchup='AvB'),
-        Player(name="A2", cost=5500, proj=41, pos="PG", matchup='AvB'),
-        Player(name="A100", cost=5500, proj=501, pos="PG", matchup='AvB'),
-        Player(name="A101", cost=5500, proj=500, pos="PG", matchup='AvB'),
-        Player(name="A11", cost=5500, proj=50, pos="PG", matchup='AvB'),
-        Player(name="A3", cost=5500, proj=42, pos="SG", matchup='AvB'),
-        Player(name="A4", cost=5500, proj=0, pos="SG", matchup='CvD'),
-        Player(name="A5", cost=5500, proj=44, pos="SF", matchup='CvD'),
-        Player(name="A6", cost=5500, proj=45, pos="SF", matchup='CvD'),
-        Player(name="A7", cost=5500, proj=46, pos="PF", matchup='CvD'),
-        Player(name="A8", cost=5500, proj=47, pos="PF", matchup='CvD'),
-        Player(name="A9", cost=5500, proj=0, pos="C", matchup='CvD'),
-        Player(name="A10", cost=5500, proj=49, pos="C", matchup='CvD'),
+        Player(name="A1", cost=5500, proj=100, pos="PG", matchup="AvB"),
+        Player(name="A2", cost=5500, proj=41, pos="PG", matchup="AvB"),
+        Player(name="A100", cost=5500, proj=501, pos="PG", matchup="AvB"),
+        Player(name="A101", cost=5500, proj=500, pos="PG", matchup="AvB"),
+        Player(name="A11", cost=5500, proj=50, pos="PG", matchup="AvB"),
+        Player(name="A3", cost=5500, proj=42, pos="SG", matchup="AvB"),
+        Player(name="A4", cost=5500, proj=0, pos="SG", matchup="CvD"),
+        Player(name="A5", cost=5500, proj=44, pos="SF", matchup="CvD"),
+        Player(name="A6", cost=5500, proj=45, pos="SF", matchup="CvD"),
+        Player(name="A7", cost=5500, proj=46, pos="PF", matchup="CvD"),
+        Player(name="A8", cost=5500, proj=47, pos="PF", matchup="CvD"),
+        Player(name="A9", cost=5500, proj=0, pos="C", matchup="CvD"),
+        Player(name="A10", cost=5500, proj=49, pos="C", matchup="CvD"),
     ]
 
     team = 0
