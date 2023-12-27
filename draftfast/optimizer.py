@@ -40,6 +40,7 @@ class Optimizer(object):
         self.locked_for_exposure = exposure_dict.get("locked", [])
         self.custom_rules = settings.custom_rules
         self.min_teams = rule_set.min_teams or settings.min_teams
+        self.min_matchups = rule_set.min_matchups or settings.min_matchups
         self.position_per_team_rules = rule_set.position_per_team_rules
 
         self.player_to_idx_map = {}
@@ -68,6 +69,8 @@ class Optimizer(object):
                 raise PlayerBanAndLockException(player.name)
 
         self.teams = set([p.team for p in self.players])
+        if self.min_matchups:
+            self.matchups = set([p.matchup for p in self.players])
         self.objective = self.solver.Objective()
         self.objective.SetMaximization()
 
@@ -110,6 +113,7 @@ class Optimizer(object):
         self._set_combo()
         self._set_no_duplicate_lineups()
         self._set_min_teams()
+        self._set_min_matchups()
         self._set_custom_rules()
         self._set_position_team_constraints()
 
@@ -372,6 +376,10 @@ class Optimizer(object):
                     repeated_players.SetCoefficient(self.variables[i], 1)
 
     def _set_min_teams(self):
+        """
+        Add constraints for maximum players on an individual team
+        and total represented teams if applicable
+        """
         teams = []
         min_teams = self.min_teams
 
@@ -385,6 +393,10 @@ class Optimizer(object):
                         for i, p in self.enumerated_players
                         if p.team == team
                     ]
+
+                    # Teams in lineup must be <= total teams
+                    # TODO - determine if this is actually necessary,
+                    # as team is always 1:1 with player
                     self.solver.Add(
                         team_var <= self.solver.Sum(players_on_team)
                     )
@@ -393,5 +405,24 @@ class Optimizer(object):
                         >= self.solver.Sum(players_on_team)
                     )
 
+        # If min matchups is more than or equal to min_teams,
+        # this constraint is redundant
+        # Ex given min matchups of two, there will always be two teams,
+        # so adding this constraint is needless if data is good.
+        # That said, keep constraint to spot check data.
         if len(teams) > 0:
             self.solver.Add(self.solver.Sum(teams) >= self.min_teams)
+
+    def _set_min_matchups(self):
+        """
+        Add minimum required matchups in a lineup,
+        generally two for classic sports
+        """
+        matchups = []
+        if self.min_matchups and self.min_matchups > 1:
+            for matchup in self.matchups:
+                if matchup:
+                    matchup_var = self.solver.IntVar(0, 1, matchup)
+                    matchups.append(matchup_var)
+
+            self.solver.Add(self.solver.Sum(matchups) >= self.min_matchups)

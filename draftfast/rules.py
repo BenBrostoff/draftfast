@@ -25,6 +25,7 @@ class RuleSet(object):
         defensive_positions=None,
         max_players_per_team=None,
         min_teams=None,
+        min_matchups=None,
         position_per_team_rules=None,
         game_type="classic",
     ):
@@ -41,6 +42,7 @@ class RuleSet(object):
         self.max_players_per_team = max_players_per_team or (roster_size - 1)
         self.position_per_team_rules = position_per_team_rules
         self.min_teams = min_teams
+        self.min_matchups = min_matchups
 
 
 DK_NBA_RULE_SET = RuleSet(
@@ -50,7 +52,7 @@ DK_NBA_RULE_SET = RuleSet(
     salary_max=SALARY_CAP_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["NBA"],
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["NBA"],
     general_position_limits=NBA_GENERAL_POSITIONS,
-    min_teams=3,
+    min_matchups=2,
 )
 
 DK_NBA_SHOWDOWN_RULE_SET = RuleSet(
@@ -79,7 +81,7 @@ DK_WNBA_RULE_SET = RuleSet(
     salary_max=SALARY_CAP_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["WNBA"],
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["WNBA"],
     general_position_limits=NBA_GENERAL_POSITIONS,
-    min_teams=3,
+    min_matchups=2,
 )
 
 FD_WNBA_RULE_SET = RuleSet(
@@ -100,7 +102,7 @@ DK_NFL_RULE_SET = RuleSet(
     offensive_positions=["QB", "RB", "WR", "TE"],
     defensive_positions=["DST"],
     general_position_limits=[],
-    min_teams=3,
+    min_matchups=2,
 )
 
 FD_NFL_RULE_SET = RuleSet(
@@ -215,7 +217,7 @@ DK_MLB_RULE_SET = RuleSet(
     salary_max=SALARY_CAP_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["MLB"],
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["MLB"],
     general_position_limits=MLB_GENERAL_POSITIONS,
-    min_teams=3,
+    min_matchups=2,
     position_per_team_rules=[[lambda pos: "P" not in pos, 5]],
 )
 
@@ -256,7 +258,7 @@ DK_NHL_RULE_SET = RuleSet(
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[DRAFT_KINGS]["NHL"],
     offensive_positions=["C", "W"],
     defensive_positions=["G", "D"],
-    min_teams=3,
+    min_matchups=2,
     general_position_limits=[],
 )
 

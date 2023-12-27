@@ -107,8 +107,23 @@ class OptimizerSettings(object):
         no_defense_against_captain=False,
         showdown_teams=None,
         min_teams=2,
+        min_matchups=None,
         custom_rules=None,
     ):
+        """
+        A note on defaults:
+
+        min_teams 2 - this constraint is common across Classic and Showdown.
+
+        - In Showdown, you must have two teams represented, although only
+        one matchup exists to choose from.
+        - In Classic, the constraint of two matchups
+        forces a minimum of two teams
+
+        Certain sports additionally impose
+        max players per team constraints, which
+        is not overridable outside of mutating RuleSets.
+        """
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
         self.force_combo = force_combo
@@ -118,6 +133,7 @@ class OptimizerSettings(object):
         self.no_defense_against_captain = no_defense_against_captain
         self.showdown_teams = showdown_teams
         self.min_teams = min_teams
+        self.min_matchups = min_matchups
         self.custom_rules = custom_rules
 
     # TODO: format this like a proper repr(), i.e. <OptimizerSettings: ...>
