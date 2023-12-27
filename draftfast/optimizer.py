@@ -394,9 +394,7 @@ class Optimizer(object):
                         if p.team == team
                     ]
 
-                    # Teams in lineup must be <= total teams
-                    # TODO - determine if this is actually necessary,
-                    # as team is always 1:1 with player
+                    # Constrain to individual team for all players
                     self.solver.Add(
                         team_var <= self.solver.Sum(players_on_team)
                     )
@@ -424,5 +422,14 @@ class Optimizer(object):
                 if matchup:
                     matchup_var = self.solver.IntVar(0, 1, matchup)
                     matchups.append(matchup_var)
+                    players_in_matchup = [
+                        self.variables[i]
+                        for i, p in self.enumerated_players
+                        if p.matchup == matchup
+                    ]
+                    # Constrain to individual matchup for all players
+                    self.solver.Add(
+                        matchup_var <= self.solver.Sum(players_in_matchup)
+                    )
 
             self.solver.Add(self.solver.Sum(matchups) >= self.min_matchups)
