@@ -718,10 +718,13 @@ def test_no_opposing_def_dk_nfl_mock():
         ),
     ]
 
+    # relax min teams for simplified player pool
+    rules.DK_NFL_RULE_SET.min_teams = 1
     # mock pool is constructed such that optimal lineup has qb opposing dst
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET, player_pool=mock_pool, verbose=True
     )
+    rules.DK_NFL_RULE_SET.min_teams = 3
 
     assertions.assertEqual(roster.projected(), 909)
     qb_team = roster.sorted_players()[0].team
@@ -738,7 +741,6 @@ def test_no_opposing_def_dk_nfl_mock():
 
     assertions.assertEqual(roster, None)
 
-    # relax min teams
     rules.DK_NFL_RULE_SET.min_teams = 1
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
@@ -748,7 +750,6 @@ def test_no_opposing_def_dk_nfl_mock():
         ),
         verbose=True,
     )
-    rules.DK_NFL_RULE_SET.min_teams = 3
 
     assertions.assertEqual(roster.projected(), 877)
     assertions.assertEqual(len(set([p.team for p in roster.players])), 1)
@@ -770,6 +771,7 @@ def test_no_opposing_def_dk_nfl_mock():
         if p.pos in rules.DK_NFL_RULE_SET.offensive_positions:
             assertions.assertNotEqual(p.team, "X")
 
+    rules.DK_NFL_RULE_SET.min_teams = 3
 
 def test_no_opposing_def_dk_nfl():
     players = salary_download.generate_players_from_csvs(

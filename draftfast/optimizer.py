@@ -394,4 +394,4 @@ class Optimizer(object):
                     )
 
         if len(teams) > 0:
-            self.solver.Add(self.solver.Sum(teams) >= self.settings.min_teams)
+            self.solver.Add(self.solver.Sum(teams) >= self.min_teams)
