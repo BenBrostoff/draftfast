@@ -554,6 +554,7 @@ def test_multi_position_group_constraint():
             pos="QB",
             possible_positions="QB/WR",
             multi_position=True,
+            matchup='AvB',
         ),
         Player(
             name="A",
@@ -562,8 +563,9 @@ def test_multi_position_group_constraint():
             pos="WR",
             possible_positions="QB/WR",
             multi_position=True,
+            matchup='CvD',
         ),
-        Player(name="B", cost=5500, proj=41, pos="QB"),
+        Player(name="B", cost=5500, proj=41, pos="QB", matchup='AvB'),
         Player(
             name="C",
             cost=5500,
@@ -571,6 +573,7 @@ def test_multi_position_group_constraint():
             pos="WR",
             possible_positions="RB/WR",
             multi_position=True,
+            matchup='AvB',
         ),
         Player(
             name="C",
@@ -579,13 +582,14 @@ def test_multi_position_group_constraint():
             pos="RB",
             possible_positions="RB/WR",
             multi_position=True,
+            matchup='AvB',
         ),
-        Player(name="D", cost=5500, proj=42, pos="WR"),
-        Player(name="E", cost=5500, proj=43, pos="WR"),
-        Player(name="F", cost=5500, proj=44, pos="WR"),
-        Player(name="G", cost=5500, proj=45, pos="RB"),
-        Player(name="H", cost=5500, proj=46, pos="RB"),
-        Player(name="I", cost=5500, proj=47, pos="RB"),
+        Player(name="D", cost=5500, proj=42, pos="WR", matchup='AvB'),
+        Player(name="E", cost=5500, proj=43, pos="WR", matchup='AvB'),
+        Player(name="F", cost=5500, proj=44, pos="WR", matchup='AvB'),
+        Player(name="G", cost=5500, proj=45, pos="RB", matchup='AvB'),
+        Player(name="H", cost=5500, proj=46, pos="RB", matchup='AvB'),
+        Player(name="I", cost=5500, proj=47, pos="RB", matchup='AvB'),
         Player(
             name="J",
             cost=5500,
@@ -593,6 +597,7 @@ def test_multi_position_group_constraint():
             pos="TE",
             possible_positions="TE/WR",
             multi_position=True,
+            matchup='AvB',
         ),
         Player(
             name="J",
@@ -601,10 +606,11 @@ def test_multi_position_group_constraint():
             pos="WR",
             possible_positions="TE/WR",
             multi_position=True,
+            matchup='AvB',
         ),
-        Player(name="K", cost=5500, proj=49, pos="TE"),
-        Player(name="L", cost=5500, proj=51, pos="DST"),
-        Player(name="M", cost=5500, proj=52, pos="DST"),
+        Player(name="K", cost=5500, proj=49, pos="TE", matchup='CvD'),
+        Player(name="L", cost=5500, proj=51, pos="DST", matchup='CvD'),
+        Player(name="M", cost=5500, proj=52, pos="DST", matchup='CvD'),
     ]
 
     grouped_players = ("A", "C", "J")
@@ -719,12 +725,12 @@ def test_no_opposing_def_dk_nfl_mock():
     ]
 
     # relax min teams for simplified player pool
-    rules.DK_NFL_RULE_SET.min_teams = 1
+    rules.DK_NFL_RULE_SET.min_matchups = 1
     # mock pool is constructed such that optimal lineup has qb opposing dst
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET, player_pool=mock_pool, verbose=True
     )
-    rules.DK_NFL_RULE_SET.min_teams = 3
+    rules.DK_NFL_RULE_SET.min_matchups = 2
 
     assertions.assertEqual(roster.projected(), 909)
     qb_team = roster.sorted_players()[0].team
@@ -741,7 +747,7 @@ def test_no_opposing_def_dk_nfl_mock():
 
     assertions.assertEqual(roster, None)
 
-    rules.DK_NFL_RULE_SET.min_teams = 1
+    rules.DK_NFL_RULE_SET.min_matchups = 1
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=mock_pool,
@@ -754,7 +760,7 @@ def test_no_opposing_def_dk_nfl_mock():
     assertions.assertEqual(roster.projected(), 877)
     assertions.assertEqual(len(set([p.team for p in roster.players])), 1)
 
-    # add a player from a third team, min 2 teams
+    # add a player from a second matchup, min two matchups
     mock_pool.append(
         Player(
             name="B2", cost=5500, proj=70, pos="QB", team="Q", matchup="Q@Z"
@@ -771,7 +777,7 @@ def test_no_opposing_def_dk_nfl_mock():
         if p.pos in rules.DK_NFL_RULE_SET.offensive_positions:
             assertions.assertNotEqual(p.team, "X")
 
-    rules.DK_NFL_RULE_SET.min_teams = 3
+    rules.DK_NFL_RULE_SET.min_matchups = 2
 
 
 def test_no_opposing_def_dk_nfl():
