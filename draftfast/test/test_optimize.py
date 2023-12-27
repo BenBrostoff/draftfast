@@ -726,6 +726,8 @@ def test_no_opposing_def_dk_nfl_mock():
 
     # relax min teams for simplified player pool
     rules.DK_NFL_RULE_SET.min_matchups = 1
+    rules.DK_NFL_RULE_SET.min_teams = 1
+
     # mock pool is constructed such that optimal lineup has qb opposing dst
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET, player_pool=mock_pool, verbose=True
@@ -748,6 +750,7 @@ def test_no_opposing_def_dk_nfl_mock():
     assertions.assertEqual(roster, None)
 
     rules.DK_NFL_RULE_SET.min_matchups = 1
+    rules.DK_NFL_RULE_SET.min_teams = 1
     roster = run(
         rule_set=rules.DK_NFL_RULE_SET,
         player_pool=mock_pool,
@@ -778,6 +781,7 @@ def test_no_opposing_def_dk_nfl_mock():
             assertions.assertNotEqual(p.team, "X")
 
     rules.DK_NFL_RULE_SET.min_matchups = 2
+    rules.DK_NFL_RULE_SET.min_teams = 2
 
 
 def test_no_opposing_def_dk_nfl():
