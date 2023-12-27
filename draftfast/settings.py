@@ -117,7 +117,10 @@ class OptimizerSettings(object):
 
         - In Showdown, you must have two teams represented, although only
         one matchup exists to choose from.
-        - In Classic, the constraint of two matchups forces a minimum of two teams.
+        - In Classic, the constraint of two matchups forces a minimum of two teams
+
+        Certain sports additionally impose max players per team constraints, which
+        is not overridable outside of mutating RuleSets.
         """
         self.stacks = stacks
         self.existing_rosters = existing_rosters or []
