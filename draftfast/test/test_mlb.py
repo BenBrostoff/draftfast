@@ -31,17 +31,17 @@ def test_mlb_dk():
 
 def test_five_batters_max():
     player_pool = [
-        Player(pos="P", name="A", cost=5000, team="C"),
-        Player(pos="P", name="B", cost=5000, team="B"),
-        Player(pos="1B", name="C", cost=5000, team="C"),
-        Player(pos="OF", name="H", cost=5000, team="C"),
-        Player(pos="OF", name="I", cost=5000, team="C"),
-        Player(pos="C", name="F", cost=5000, team="C"),
-        Player(pos="2B", name="D", cost=5000, team="C"),
-        Player(pos="2B", name="E", cost=5000, team="C"),
-        Player(pos="3B", name="E", cost=5000, team="C"),
-        Player(pos="SS", name="G", cost=5000, team="Q"),
-        Player(pos="OF", name="J", cost=5000, team="G"),
+        Player(pos="P", name="A", cost=5000, team="C", matchup='CvB'),
+        Player(pos="P", name="B", cost=5000, team="B", matchup='CvB'),
+        Player(pos="1B", name="C", cost=5000, team="C", matchup='CvB'),
+        Player(pos="OF", name="H", cost=5000, team="C", matchup='CvB'),
+        Player(pos="OF", name="I", cost=5000, team="C", matchup='CvB'),
+        Player(pos="C", name="F", cost=5000, team="C", matchup='CvB'),
+        Player(pos="2B", name="D", cost=5000, team="C", matchup='CvB'),
+        Player(pos="2B", name="E", cost=5000, team="C", matchup='CvB'),
+        Player(pos="3B", name="E", cost=5000, team="C", matchup='CvB'),
+        Player(pos="SS", name="G", cost=5000, team="Q", matchup='QvG'),
+        Player(pos="OF", name="J", cost=5000, team="G", matchup='QvG'),
     ]
 
     roster = run(
