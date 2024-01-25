@@ -390,7 +390,7 @@ class Optimizer(object):
         min_teams = self.min_teams
 
         if min_teams > 1:
-            is_dk_nhl = self.ruleset == DK_NHL_RULE_SET
+            is_dk_nhl = self.rule_set == DK_NHL_RULE_SET
             for team in self.teams:
                 if team:
                     team_var = self.solver.IntVar(0, 1, team)
