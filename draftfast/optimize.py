@@ -70,30 +70,24 @@ def run(
 
     if verbose:
         print(
-            """
+            f"""
 No solution found.
 Try adjusting your query by taking away constraints.
 
 OPTIMIZER CONSTRAINTS:
 
-{}
+{optimizer_settings}
 
 LINEUP CONSTRAINTS:
 
-{}
+{constraints}
 
 PLAYER POOL SETTINGS:
 
-{}
+{players}
 
-PLAYER COUNT: {}
-        """.format(
-                optimizer_settings,
-                constraints,
-                player_settings,
-                len(players or []),
-            )
-        )
+PLAYER COUNT: {len(players or [])}
+        """)
     return None
 
 

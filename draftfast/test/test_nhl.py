@@ -24,6 +24,33 @@ def test_nhl_dk():
     )
     assertions.assertNotEqual(roster, None)
 
+def test_nhl_dk_unsolvable_three_team_non_goalie_restriction():
+    """
+    Should not solve if unable to get min teams of 3
+    not including goalie team
+    """
+    player_pool = salary_download.generate_players_from_csvs(
+        salary_file_location=salary_file,
+        game=rules.DRAFT_KINGS,
+        ruleset=rules.DK_NHL_RULE_SET,
+    )
+    unique_teams = set()
+    new_player_pool = []
+    for p in player_pool:
+        if p.pos != 'G':
+            unique_teams.add(p.team)
+        if len(unique_teams) > 2 and p.team not in unique_teams:
+            continue
+
+        new_player_pool.append(p)
+
+    roster = run(
+        rule_set=rules.DK_NHL_RULE_SET,
+        player_pool=new_player_pool,
+        verbose=True,
+    )
+    assertions.assertEqual(roster, None)
+
 
 def test_triple_stack():
     player_pool = salary_download.generate_players_from_csvs(
