@@ -259,6 +259,9 @@ DK_NHL_RULE_SET = RuleSet(
     offensive_positions=["C", "W"],
     defensive_positions=["G", "D"],
     min_matchups=2,
+    # Note min teams restriction is only for non-skaters,
+    # and this logic is handled in Optimizer
+    min_teams=3,
     general_position_limits=[],
 )
 

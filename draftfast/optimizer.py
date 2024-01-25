@@ -6,7 +6,7 @@ from draftfast.dke_exceptions import (
     PlayerBanAndLockException,
 )
 from draftfast.orm import Player
-from draftfast.rules import RuleSet
+from draftfast.rules import RuleSet, DK_NHL_RULE_SET
 from draftfast.lineup_constraints import LineupConstraints
 
 
@@ -19,6 +19,7 @@ class Optimizer(object):
         lineup_constraints: LineupConstraints,
         exposure_dict: dict,
     ):
+        self.rule_set = rule_set
         self.solver = pywraplp.Solver(
             "FD", pywraplp.Solver.CBC_MIXED_INTEGER_PROGRAMMING
         )
@@ -378,12 +379,18 @@ class Optimizer(object):
     def _set_min_teams(self):
         """
         Add constraints for maximum players on an individual team
-        and total represented teams if applicable
+        and total represented teams if applicable.
+
+        For NHL, the min team restriction does not count
+        goalies
+
+        Ref: https://www.draftkings.com/help/rules/nhl
         """
         teams = []
         min_teams = self.min_teams
 
         if min_teams > 1:
+            is_dk_nhl = self.rule_set == DK_NHL_RULE_SET
             for team in self.teams:
                 if team:
                     team_var = self.solver.IntVar(0, 1, team)
@@ -392,6 +399,10 @@ class Optimizer(object):
                         self.variables[i]
                         for i, p in self.enumerated_players
                         if p.team == team
+                        and (
+                            not is_dk_nhl
+                            or p.pos != 'G'
+                        )
                     ]
 
                     # Constrain to individual team for all players
