@@ -76,7 +76,8 @@ Try adjusting your query by taking away constraints.
 
 OPTIMIZER CONSTRAINTS:
 
-{optimizer_settings}
+Minimum teams: {rule_set.min_teams or optimizer_settings.min_teams}
+Other optimizer contraints: {optimizer_settings}
 
 LINEUP CONSTRAINTS:
 

@@ -114,6 +114,9 @@ class OptimizerSettings(object):
         A note on defaults:
 
         min_teams 2 - this constraint is common across Classic and Showdown.
+        Note that a ruleset cannot be override on min_teams and you
+        must mutate the ruleset directly; this feature is to avoid
+        modifying rules that would cause invalid lineups.
 
         - In Showdown, you must have two teams represented, although only
         one matchup exists to choose from.
@@ -148,8 +151,6 @@ class OptimizerSettings(object):
             lines.append(
                 "Stacks: {}".format([(x.team, x.count) for x in self.stacks])
             )
-        if self.min_teams:
-            lines.append("Min teams: {}".format(self.min_teams))
         if self.no_offense_against_defense:
             lines.append(
                 "No offense against D: {}".format(
