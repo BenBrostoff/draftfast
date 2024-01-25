@@ -37,12 +37,16 @@ def test_nhl_dk_unsolvable_three_team_non_goalie_restriction():
     unique_teams = set()
     new_player_pool = []
     for p in player_pool:
-        if p.pos != 'G':
-            unique_teams.add(p.team)
         if len(unique_teams) > 2 and p.team not in unique_teams:
             continue
 
-        new_player_pool.append(p)
+        if p.pos != 'G':
+            unique_teams.add(p.team)
+
+        if len(unique_teams) < 3:
+            new_player_pool.append(p)
+
+    assertions.assertEqual(len(unique_teams) > 2, True)
 
     roster = run(
         rule_set=rules.DK_NHL_RULE_SET,
