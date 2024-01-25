@@ -24,6 +24,7 @@ def test_nhl_dk():
     )
     assertions.assertNotEqual(roster, None)
 
+
 def test_nhl_dk_unsolvable_three_team_non_goalie_restriction():
     """
     Should not solve if unable to get min teams of 3
