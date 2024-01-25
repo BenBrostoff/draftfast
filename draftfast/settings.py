@@ -140,8 +140,7 @@ class OptimizerSettings(object):
     def __repr__(self):
         if not str(self):
             return "<OptimizerSettings: None>"
-        else:
-            return str(self)
+        return str(self)
 
     def __str__(self):
         lines = []
