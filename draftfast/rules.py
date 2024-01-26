@@ -44,6 +44,16 @@ class RuleSet(object):
         self.min_teams = min_teams
         self.min_matchups = min_matchups
 
+    def __eq__(self, other):
+        if not other:
+            return False
+
+        return (
+            self.site == other.site
+            and self.league == other.league
+            and self.game_type == other.game_type
+        )
+
 
 DK_NBA_RULE_SET = RuleSet(
     site=DRAFT_KINGS,
