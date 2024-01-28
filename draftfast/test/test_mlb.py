@@ -29,6 +29,10 @@ def test_mlb_dk():
     assertions.assertTrue("RP" in [x.pos for x in roster.players])
 
 
+def test_mlb_fd():
+    pass
+
+
 def test_five_batters_max():
     player_pool = [
         Player(pos="P", name="A", cost=5000, team="C", matchup="CvB"),

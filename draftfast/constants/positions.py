@@ -89,7 +89,8 @@ POSITIONS_BY_SITE_BY_LEAGUE = {
         ],
         "MLB": [
             ["P", 1, 1],
-            ["1B", 1, 2],  # TODO - allow C or 1B
+            ["C", 0, 1],
+            ["1B", 0, 1],
             ["2B", 1, 2],
             ["3B", 1, 2],
             ["SS", 1, 2],
