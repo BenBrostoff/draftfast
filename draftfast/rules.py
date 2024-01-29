@@ -244,7 +244,11 @@ FD_MLB_RULE_SET = RuleSet(
     # Rules below take 5 and subtract the pitcher to end up in same place.
     # Ref:
     # https://support.fanduel.com/s/article/How-many-players-can-I-select-from-one-team
-    position_per_team_rules=[[lambda pos: "P" not in pos, 4]],
+    position_per_team_rules=[
+        [lambda pos: "P" not in pos, 4],
+        # Must include at least one C or 1B
+        [lambda pos: pos in ['C', '1B'], 1]
+    ],
 )
 
 DK_SOCCER_RULE_SET = RuleSet(
