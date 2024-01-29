@@ -237,7 +237,13 @@ FD_MLB_RULE_SET = RuleSet(
     roster_size=ROSTER_SIZE_BY_SITE_BY_SPORT[FAN_DUEL]["MLB"],
     salary_max=SALARY_CAP_BY_SITE_BY_LEAGUE[FAN_DUEL]["MLB"],
     position_limits=POSITIONS_BY_SITE_BY_LEAGUE[FAN_DUEL]["MLB"],
+    min_teams=3,
     general_position_limits=[],
+
+    # "Up to five players from same team, provided one is a pitcher."
+    # Rules below take 5 and subtract the pitcher to end up in same place.
+    # Ref: https://support.fanduel.com/s/article/How-many-players-can-I-select-from-one-team
+    position_per_team_rules=[[lambda pos: "P" not in pos, 4]],
 )
 
 DK_SOCCER_RULE_SET = RuleSet(
