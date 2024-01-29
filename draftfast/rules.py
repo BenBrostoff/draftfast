@@ -246,8 +246,6 @@ FD_MLB_RULE_SET = RuleSet(
     # https://support.fanduel.com/s/article/How-many-players-can-I-select-from-one-team
     position_per_team_rules=[
         [lambda pos: "P" not in pos, 4],
-        # Must include at least one C or 1B
-        [lambda pos: pos in ['C', '1B'], 1]
     ],
 )
 
