@@ -242,7 +242,8 @@ FD_MLB_RULE_SET = RuleSet(
 
     # "Up to five players from same team, provided one is a pitcher."
     # Rules below take 5 and subtract the pitcher to end up in same place.
-    # Ref: https://support.fanduel.com/s/article/How-many-players-can-I-select-from-one-team
+    # Ref:
+    # https://support.fanduel.com/s/article/How-many-players-can-I-select-from-one-team
     position_per_team_rules=[[lambda pos: "P" not in pos, 4]],
 )
 
