@@ -39,7 +39,7 @@ class Optimizer(object):
         self.lineup_constraints = lineup_constraints
         self.banned_for_exposure = exposure_dict.get("banned", [])
         self.locked_for_exposure = exposure_dict.get("locked", [])
-        self.custom_rules = settings.custom_rules
+        self.custom_rules = (rule_set.custom_rules or []) + (settings.custom_rules or [])
         self.min_teams = rule_set.min_teams or settings.min_teams
         self.min_matchups = rule_set.min_matchups or settings.min_matchups
         self.position_per_team_rules = rule_set.position_per_team_rules

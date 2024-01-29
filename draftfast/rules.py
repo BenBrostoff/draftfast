@@ -3,6 +3,7 @@ from draftfast.constants.positions import (
     NBA_GENERAL_POSITIONS,
     POSITIONS_BY_SITE_BY_LEAGUE,
 )
+from draftfast.settings import CustomRule
 from draftfast.constants.roster_size import ROSTER_SIZE_BY_SITE_BY_SPORT
 from draftfast.constants.salary_cap import SALARY_CAP_BY_SITE_BY_LEAGUE
 
@@ -27,6 +28,7 @@ class RuleSet(object):
         min_teams=None,
         min_matchups=None,
         position_per_team_rules=None,
+        custom_rules=None,
         game_type="classic",
     ):
         self.site = site
@@ -43,6 +45,7 @@ class RuleSet(object):
         self.position_per_team_rules = position_per_team_rules
         self.min_teams = min_teams
         self.min_matchups = min_matchups
+        self.custom_rules = custom_rules
 
     def __eq__(self, other):
         if not other:
@@ -247,6 +250,15 @@ FD_MLB_RULE_SET = RuleSet(
     position_per_team_rules=[
         [lambda pos: "P" not in pos, 4],
     ],
+
+    # Handle C/1B minimums,
+    custom_rules=[
+        CustomRule(
+            group_a=lambda p: p.pos in ['C', '1B'],
+            group_b=lambda p: p,
+            comparison=lambda sum, a, b: sum(a) == 1,
+        )
+    ]
 )
 
 DK_SOCCER_RULE_SET = RuleSet(
