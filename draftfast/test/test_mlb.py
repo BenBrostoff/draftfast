@@ -8,6 +8,7 @@ from draftfast.settings import CustomRule, OptimizerSettings
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 salary_file = "{}/data/dk-mlb-salaries.csv".format(CURRENT_DIR)
+fd_salary_file = "{}/data/fd-mlb-salaries.csv".format(CURRENT_DIR)
 
 assertions = unittest.TestCase("__init__")
 
@@ -27,6 +28,22 @@ def test_mlb_dk():
     # Test general position limits
     assertions.assertNotEqual(roster, None)
     assertions.assertTrue("RP" in [x.pos for x in roster.players])
+
+
+def test_mlb_fd():
+    player_pool = salary_download.generate_players_from_csvs(
+        salary_file_location=fd_salary_file,
+        game=rules.FAN_DUEL,
+        ruleset=rules.FD_MLB_RULE_SET,
+    )
+    roster = run(
+        rule_set=rules.FD_MLB_RULE_SET,
+        player_pool=player_pool,
+        verbose=True,
+    )
+    assertions.assertNotEqual(roster, None)
+    assertions.assertTrue("C" in [x.pos for x in roster.players])
+    assertions.assertTrue("Keibert Ruiz" in [x.name for x in roster.players])
 
 
 def test_five_batters_max():
